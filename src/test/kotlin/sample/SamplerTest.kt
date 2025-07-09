@@ -1,78 +1,94 @@
 package sample
 
-import org.junit.jupiter.api.Assertions.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
-class SamplerTest {
-
-
-    // 다양한 설정으로 샘플링하는 함수들
-    fun sampleShakespeare() {
-        val config = SampleConfig(
-            initFrom = "resume",
-            outDir = "out-shakespeare-char",
-            start = "ROMEO: ",
-            numSamples = 3,
-            maxNewTokens = 200,
-            temperature = 0.8,
-            topK = 40
-        )
-
-        val sampler = Sampler(config)
-        sampler.sample()
+fun main() {
+    runBlocking {
+        //test()
+        testVariousPrompts()
     }
+}
 
-    fun sampleWithDifferentTemperatures() {
-        val temperatures = listOf(0.5, 0.8, 1.0, 1.2)
+suspend fun testVariousPrompts() = withContext(Dispatchers.Default) {
+    val prompts = listOf(
+        "once upon a time",
+        "the cat and the dog",
+        "the boy saw a",
+        "the girl said,",
+        "they lived happily"
+    )
 
-        for (temp in temperatures) {
-            println("\n========== Temperature: $temp ==========")
+    val loss = listOf("16", "17", "18", "19", "20", "21", "22", "23")
+
+    // 모든 loss 값을 병렬로 처리
+    val result = loss.map { l ->
+        async {
             val config = SampleConfig(
-                start = "To be or not to be",
-                numSamples = 1,
-                maxNewTokens = 100,
-                temperature = temp,
-                topK = 0 // top-k 비활성화
+                modelDir = "model/71200/$l",
+                numSamples = 5,
+                maxNewTokens = 50,
+                topK = 10
             )
-
             val sampler = Sampler(config)
-            sampler.sample()
+
+            // 각 loss 값에 대해 모든 프롬프트를 병렬로 처리
+            prompts.map { prompt ->
+                async {
+                    //println("\n=== Loss: $l, Prompt: $prompt ===")
+                    sampler.sample(prompt)
+                }
+            }.awaitAll()
+        }
+    }.awaitAll().flatten()
+
+    result.forEach {
+        println("\n=== ModelId: ${it.uid}, Prompt: ${it.prompt} ===")
+        it.results.forEach { line ->
+            println(line)
         }
     }
+}
 
-    fun sampleInteractive() {
-        println("대화형 텍스트 생성")
-        println("종료하려면 'quit'를 입력하세요.")
 
+suspend fun test() {
+    val config = SampleConfig(
+        initFrom = "resume",
+        modelDir = "model/71200/16",
+        numSamples = 3,
+        maxNewTokens = 20,
+        temperature = 1.0f,
+        topK = 20
+    )
+
+    val sampler = Sampler(config)
+    sampler.sample("sky")
+}
+
+fun sampleInteractive() {
+    println("대화형 텍스트 생성")
+    println("종료하려면 'quit'를 입력하세요.")
+
+    val config = SampleConfig(
+        numSamples = 1,
+        maxNewTokens = 100,
+        temperature = 0.8f,
+        topK = 50
+    )
+
+    val sampler = Sampler(config)
+
+    runBlocking {
         while (true) {
             print("\n프롬프트 입력: ")
-            val prompt = readLine() ?: break
+            val prompt = readlnOrNull() ?: break
 
             if (prompt.lowercase() == "quit") break
 
-            val config = SampleConfig(
-                start = prompt,
-                numSamples = 1,
-                maxNewTokens = 100,
-                temperature = 0.8,
-                topK = 50
-            )
-
-            val sampler = Sampler(config)
-            sampler.sample()
+            sampler.sample(prompt)
         }
-    }
-
-    // 메인 함수
-    fun main() {
-        // 기본 샘플링
-        println("=== 기본 Shakespeare 샘플링 ===")
-        sampleShakespeare()
-
-        // 다양한 온도로 샘플링
-        println("\n=== 온도 변화 실험 ===")
-        sampleWithDifferentTemperatures()
-
-        // 대화형 모드
-        // sampleInteractive()
     }
 }

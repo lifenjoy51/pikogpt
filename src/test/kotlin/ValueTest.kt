@@ -6,9 +6,9 @@ class ValueTest {
     @Test
     fun main() {
         // 간단한 연산 그래프 생성
-        val a = Value(2.0)
-        val b = Value(3.0)
-        val c = a * b + b.pow(2.0)
+        val a = Value(2.0f)
+        val b = Value(3.0f)
+        val c = a * b + b.pow(2.0f)
         val d = c.relu()
 
         println("Forward pass:")

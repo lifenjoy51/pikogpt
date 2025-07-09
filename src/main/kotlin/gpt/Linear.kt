@@ -11,9 +11,9 @@ class Linear(
 ) {
     // 표준 라이브러리의 nextGaussian() 사용
     private val weight = Array(outFeatures) {
-        Array(inFeatures) { Value(RandomGaussian.next() * 0.02) }
+        Array(inFeatures) { Value((RandomGaussian.next() * 0.02).toFloat()) }
     }
-    private val biasParams = if (bias) Array(outFeatures) { Value(0.0) } else null
+    private val biasParams = if (bias) Array(outFeatures) { Value(0.0f) } else null
 
     fun forward(input: Array<Value>): Array<Value> {
         return Array(outFeatures) { i ->

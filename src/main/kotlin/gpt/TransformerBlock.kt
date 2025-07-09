@@ -3,7 +3,7 @@ package gpt
 import Value
 
 // Transformer 블록
-class TransformerBlock(private val config: GPTConfig) {
+class TransformerBlock(config: GPTConfig) {
     private val ln1 = LayerNorm(config.nEmbd, config.bias)
     private val attn = SimpleSelfAttention(config)
     private val ln2 = LayerNorm(config.nEmbd, config.bias)
@@ -28,6 +28,6 @@ class TransformerBlock(private val config: GPTConfig) {
     }
 
     fun parameters(): List<Value> {
-        return attn.parameters() + mlp.parameters()
+        return ln1.parameters() + attn.parameters() + ln2.parameters() + mlp.parameters()
     }
 }

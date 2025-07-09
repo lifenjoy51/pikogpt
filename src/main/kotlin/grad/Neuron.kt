@@ -8,8 +8,8 @@ class Neuron(
     private val nonlin: Boolean = true
 ) : Module() {
 
-    val w: List<Value> = List(nin) { Value(Random.nextDouble(-1.0, 1.0)) }
-    val b: Value = Value(0.0)
+    val w: List<Value> = List(nin) { Value(Random.nextDouble(-1.0, 1.0).toFloat()) }
+    val b: Value = Value(0.0f)
 
     operator fun invoke(x: List<Value>): Value {
         var act = b

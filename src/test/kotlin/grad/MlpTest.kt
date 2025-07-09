@@ -15,7 +15,7 @@ class MlpTest {
         println("Number of parameters: ${model.parameters().size}")
 
         // 입력 데이터 생성
-        val x = listOf(Value(2.0), Value(3.0), Value(-1.0))
+        val x = listOf(Value(2.0f), Value(3.0f), Value(-1.0f))
 
         // 순전파
         val output = model(x)
@@ -45,12 +45,12 @@ class MlpTest {
 
         // XOR 문제를 위한 데이터
         val xs = listOf(
-            listOf(Value(0.0), Value(0.0)),
-            listOf(Value(0.0), Value(1.0)),
-            listOf(Value(1.0), Value(0.0)),
-            listOf(Value(1.0), Value(1.0))
+            listOf(Value(0.0f), Value(0.0f)),
+            listOf(Value(0.0f), Value(1.0f)),
+            listOf(Value(1.0f), Value(0.0f)),
+            listOf(Value(1.0f), Value(1.0f))
         )
-        val ys = listOf(Value(0.0), Value(1.0), Value(1.0), Value(0.0))
+        val ys = listOf(Value(0.0f), Value(1.0f), Value(1.0f), Value(0.0f))
 
         // 훈련 루프
         for (epoch in 0 until 100) {
@@ -58,7 +58,7 @@ class MlpTest {
             val ypred = xs.map { x -> model(x) as Value }
 
             // 손실 계산 (MSE)
-            var loss = Value(0.0)
+            var loss = Value(0.0f)
             for ((yp, y) in ypred.zip(ys)) {
                 val diff = yp - y
                 loss = loss + diff * diff
@@ -69,7 +69,7 @@ class MlpTest {
             loss.backward()
 
             // 파라미터 업데이트 (경사 하강법)
-            val learningRate = 0.01
+            val learningRate = 0.01f
             for (p in model.parameters()) {
                 p.data -= learningRate * p.grad
             }

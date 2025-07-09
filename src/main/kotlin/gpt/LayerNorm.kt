@@ -3,20 +3,20 @@ package gpt
 import Value
 
 class LayerNorm(
-    private val ndim: Int,
-    private val bias: Boolean
+    ndim: Int,
+    bias: Boolean
 ) {
-    private val weight = Array(ndim) { Value(1.0) } // gain
-    private val biasParams = if (bias) Array(ndim) { Value(0.0) } else null // bias
+    private val weight = Array(ndim) { Value(1.0f) } // gain
+    private val biasParams = if (bias) Array(ndim) { Value(0.0f) } else null // bias
 
     fun forward(input: Array<Value>): Array<Value> {
-        val n = input.size.toDouble()
+        val n = input.size.toFloat()
         val mean = input.reduce { acc, v -> acc + v } / n
-        val variance = input.map { x -> (x - mean).pow(2.0) }
+        val variance = input.map { x -> (x - mean).pow(2.0f) }
             .reduce { acc, v -> acc + v } / n
 
-        val eps = Value(1e-5)
-        val stdInv = (variance + eps).pow(-0.5)
+        val eps = Value(1e-5f)
+        val stdInv = (variance + eps).pow(-0.5f)
 
         return input.mapIndexed { i, x ->
             val normalized = (x - mean) * stdInv

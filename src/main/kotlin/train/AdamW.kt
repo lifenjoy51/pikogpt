@@ -7,20 +7,20 @@ import kotlin.math.sqrt
 // AdamW 옵티마이저
 class AdamW(
     private val params: List<Value>,
-    private val lr: Double = 1e-3,
-    private val beta1: Double = 0.9,
-    private val beta2: Double = 0.999,
-    private val weightDecay: Double = 0.01,
-    private val eps: Double = 1e-8
+    private var lr: Float = 1e-3f,
+    private val beta1: Float = 0.9f,
+    private val beta2: Float = 0.999f,
+    private val weightDecay: Float = 0.01f,
+    private val eps: Float = 1e-8f
 ) {
-    private val m = mutableMapOf<Value, Double>() // 1차 모멘트
-    private val v = mutableMapOf<Value, Double>() // 2차 모멘트
+    private val m = mutableMapOf<Value, Float>() // 1차 모멘트
+    private val v = mutableMapOf<Value, Float>() // 2차 모멘트
     private var t = 0
 
     init {
         params.forEach { param ->
-            m[param] = 0.0
-            v[param] = 0.0
+            m[param] = 0.0f
+            v[param] = 0.0f
         }
     }
 
@@ -28,7 +28,7 @@ class AdamW(
         t++
 
         params.forEach { param ->
-            if (param.grad == 0.0) return@forEach
+            if (param.grad == 0.0f) return@forEach
 
             // Weight decay
             if (weightDecay > 0) {
@@ -50,6 +50,10 @@ class AdamW(
     }
 
     fun zeroGrad() {
-        params.forEach { it.grad = 0.0 }
+        params.forEach { it.grad = 0.0f }
+    }
+    
+    fun updateLearningRate(newLr: Float) {
+        lr = newLr
     }
 }

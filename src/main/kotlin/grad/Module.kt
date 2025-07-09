@@ -6,7 +6,7 @@ abstract class Module {
 
     fun zeroGrad() {
         for (p in parameters()) {
-            p.grad = 0.0
+            p.grad = 0.0f
         }
     }
 

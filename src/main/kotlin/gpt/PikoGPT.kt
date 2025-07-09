@@ -4,10 +4,10 @@ import Value
 
 class PikoGPT(val config: GPTConfig) {
     private val tokenEmbedding = Array(config.vocabSize) {
-        Array(config.nEmbd) { Value(RandomGaussian.next() * 0.02) }
+        Array(config.nEmbd) { Value((RandomGaussian.next() * 0.02).toFloat()) }
     }
     private val positionEmbedding = Array(config.blockSize) {
-        Array(config.nEmbd) { Value(RandomGaussian.next() * 0.02) }
+        Array(config.nEmbd) { Value((RandomGaussian.next() * 0.02).toFloat()) }
     }
     private val blocks = Array(config.nLayer) { TransformerBlock(config) }
     private val lnF = LayerNorm(config.nEmbd, config.bias)

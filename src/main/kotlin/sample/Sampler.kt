@@ -3,11 +3,13 @@ package sample
 import Value
 import data.MetaInfo
 import gpt.PikoGPT
+import kotlinx.coroutines.*
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import train.Checkpoint
 import java.io.File
 import java.nio.ByteBuffer
+import java.util.*
 import kotlin.math.exp
 import kotlin.random.Random
 
@@ -17,51 +19,61 @@ class Sampler(private val config: SampleConfig) {
     private lateinit var encode: (String) -> List<Int>
     private lateinit var decode: (List<Int>) -> String
     private var vocabSize: Int = 0
+    val uid = UUID.randomUUID().toString()
 
     init {
         Random(config.seed)
-    }
-
-    fun sample() {
-        println("=== MiniGPT 텍스트 생성 ===")
-        println("설정: $config")
 
         // 모델 로드
         loadModel()
 
         // 인코더/디코더 설정
         setupEncoding()
+    }
+
+    suspend fun sample(prompt: String) : Result = withContext(Dispatchers.Default) {
+        //println("=== PikoGPT 텍스트 생성 ===")
+        //println("설정: $config")
 
         // 시작 텍스트 준비
-        val startText = if (config.start.startsWith("FILE:")) {
-            File(config.start.substring(5)).readText()
+        val startText = if (prompt.startsWith("FILE:")) {
+            File(prompt.substring(5)).readText()
         } else {
-            config.start
+            prompt
         }
 
-        println("시작 텍스트: \"$startText\"")
+        //println("시작 텍스트: \"$startText\"")
         val startIds = encode(startText)
-        println("시작 토큰: $startIds")
+        //println("시작 토큰: $startIds")
 
-        // 샘플 생성
-        for (k in 0 until config.numSamples) {
-            println("\n--- 샘플 ${k + 1} ---")
-            val generated = generate(
-                startIds,
-                config.maxNewTokens,
-                config.temperature,
-                config.topK
-            )
-            println(decode(generated))
-        }
+        // 샘플 병렬 생성
+        val results = (0 until config.numSamples).map { k ->
+            async {
+                //println("\n--- 샘플 ${k + 1} ---")
+                val generated = generate(
+                    startIds,
+                    config.maxNewTokens,
+                    config.temperature,
+                    config.topK
+                ).takeWhile { it == 0 } // EOS 제외.
+
+                decode(generated)
+            }
+        }.awaitAll()
+
+        Result(
+            uid = uid,
+            prompt = startText,
+            results = results
+        )
     }
 
     private fun loadModel() {
         when (config.initFrom) {
             "resume" -> {
-                println("체크포인트에서 모델 로드 중...")
+                //println("체크포인트에서 모델 로드 중...")
 
-                val checkpointFile = File("${config.outDir}/checkpoint.json")
+                val checkpointFile = File("${config.modelDir}/checkpoint.json")
                 if (!checkpointFile.exists()) {
                     throw IllegalStateException("체크포인트를 찾을 수 없습니다: ${checkpointFile.absolutePath}")
                 }
@@ -76,9 +88,10 @@ class Sampler(private val config: SampleConfig) {
                 vocabSize = modelConfig.vocabSize
 
                 // 가중치 로드
-                loadModelWeights("${config.outDir}/model_weights.bin")
+                loadModelWeights("${config.modelDir}/model_weights.bin")
 
-                println("모델 로드 완료 (iteration: ${checkpoint.iterNum}, val loss: ${checkpoint.bestValLoss})")
+                // println("\n#############################")
+                println("# 모델 로드 완료 #id:${uid} (iteration: ${checkpoint.iterNum}, val loss: ${checkpoint.bestValLoss})")
             }
 
             "scratch" -> {
@@ -100,47 +113,30 @@ class Sampler(private val config: SampleConfig) {
 
             params.forEach { param ->
                 if (stream.read(buffer) == 8) {
-                    param.data = ByteBuffer.wrap(buffer).double
+                    param.data = ByteBuffer.wrap(buffer).double.toFloat()
                 }
             }
         }
 
-        println("모델 가중치 로드 완료")
+        //println("모델 가중치 로드 완료")
     }
 
     private fun setupEncoding() {
         // meta.json 확인
-        val metaPath = File("data/${getDataset()}/meta.json")
+        val metaPath = File("${config.modelDir}/meta.json")
+        //println("meta.json에서 인코딩 정보 로드 중...")
+        val json = Json { ignoreUnknownKeys = true }
+        val meta = json.decodeFromString<MetaInfo>(metaPath.readText())
 
-        if (metaPath.exists()) {
-            println("meta.json에서 인코딩 정보 로드 중...")
-            val json = Json { ignoreUnknownKeys = true }
-            val meta = json.decodeFromString<MetaInfo>(metaPath.readText())
-
-            encode = { s -> s.map { meta.stoi[it.toString()]!! } }
-            decode = { l -> l.joinToString("") { meta.itos[it]!! } }
-            vocabSize = meta.vocabSize
-        } else {
-            println("meta.json을 찾을 수 없습니다. 기본 문자 인코딩 사용...")
-            // 간단한 문자 수준 인코딩
-            val chars = (0..127).map { it.toChar() }
-            val stoi = chars.withIndex().associate { it.value.toString() to it.index }
-            val itos = chars.withIndex().associate { it.index to it.value.toString() }
-
-            encode = { s -> s.map { stoi[it.toString()] ?: 0 } }
-            decode = { l -> l.joinToString("") { itos[it] ?: "?" } }
-        }
-    }
-
-    private fun getDataset(): String {
-        // 실제로는 체크포인트에서 읽어야 함
-        return "shakespeare_char"
+        encode = { s -> s.map { meta.stoi[it.toString()] ?: 1 } }
+        decode = { l -> l.joinToString("") { meta.itos[it] ?: "" } }
+        vocabSize = meta.vocabSize
     }
 
     private fun generate(
         contextIds: List<Int>,
         maxNewTokens: Int,
-        temperature: Double,
+        temperature: Float,
         topK: Int
     ): List<Int> {
         val generated = contextIds.toMutableList()
@@ -175,13 +171,8 @@ class Sampler(private val config: SampleConfig) {
             // 생성된 토큰 추가
             generated.add(nextToken)
             context = context + nextToken
-
-            // 생성 중 출력 (선택사항)
-            if ((it + 1) % 50 == 0) {
-                print(".")
-            }
         }
-        println() // 줄바꿈
+        //println() // 줄바꿈
 
         return generated
     }
@@ -196,23 +187,23 @@ class Sampler(private val config: SampleConfig) {
             if (i in topKIndices) {
                 logit
             } else {
-                Value(Double.NEGATIVE_INFINITY)
+                Value(Float.NEGATIVE_INFINITY)
             }
         }.toTypedArray()
     }
 
-    private fun softmax(logits: Array<Value>): DoubleArray {
+    private fun softmax(logits: Array<Value>): FloatArray {
         // 수치 안정성을 위해 최대값 빼기
-        val maxLogit = logits.maxByOrNull { it.data }?.data ?: 0.0
+        val maxLogit = logits.maxByOrNull { it.data }?.data ?: 0.0f
         val expValues = logits.map { exp(it.data - maxLogit) }
         val sum = expValues.sum()
 
-        return expValues.map { it / sum }.toDoubleArray()
+        return expValues.map { it / sum }.toFloatArray()
     }
 
-    private fun sampleFromDistribution(probs: DoubleArray): Int {
+    private fun sampleFromDistribution(probs: FloatArray): Int {
         // 누적 분포 함수
-        val cumsum = DoubleArray(probs.size)
+        val cumsum = FloatArray(probs.size)
         cumsum[0] = probs[0]
         for (i in 1 until probs.size) {
             cumsum[i] = cumsum[i - 1] + probs[i]
@@ -228,4 +219,10 @@ class Sampler(private val config: SampleConfig) {
 
         return probs.size - 1 // 안전장치
     }
+
+        data class Result(
+        val uid: String,
+        val prompt: String,
+        val results: List<String>
+    )
 }

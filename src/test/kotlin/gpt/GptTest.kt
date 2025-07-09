@@ -9,7 +9,6 @@ fun main() {
         nLayer = 2,
         nHead = 2,
         nEmbd = 64,
-        dropout = 0.0,
         bias = true
     )
 

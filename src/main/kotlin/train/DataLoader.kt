@@ -21,11 +21,11 @@ class DataLoader(
         val file = File(dataPath)
         val bytes = file.readBytes()
         val buffer = ByteBuffer.wrap(bytes)
-        buffer.order(ByteOrder.LITTLE_ENDIAN)
+        buffer.order(ByteOrder.BIG_ENDIAN)
 
-        data = IntArray(bytes.size / 2)
+        data = IntArray(bytes.size / 4)
         for (i in data.indices) {
-            data[i] = buffer.getShort().toInt() and 0xFFFF
+            data[i] = buffer.getInt()
         }
         println("데이터 로드 완료: ${data.size} 토큰")
     }
