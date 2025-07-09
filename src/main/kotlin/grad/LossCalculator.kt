@@ -5,7 +5,7 @@ import Value
 // 손실 함수 구현
 class LossCalculator(
     private val model: MLP,
-    private val x: Array<DoubleArray>,
+    private val x: Array<FloatArray>,
     private val y: IntArray
 ) {
     fun loss(batchSize: Int? = null): Pair<Value, Double> {
@@ -31,13 +31,13 @@ class LossCalculator(
 
         // SVM "max-margin" 손실
         val losses = scores.zip(yb.toList()) { score, yi ->
-            (Value(1.0) + Value(-yi.toDouble()) * score).relu()
+            (Value(1.0f) + Value(-yi.toFloat()) * score).relu()
         }
 
-        val dataLoss = losses.reduce { acc, loss -> acc + loss } * Value(1.0 / losses.size)
+        val dataLoss = losses.reduce { acc, loss -> acc + loss } * Value(1.0f / losses.size)
 
         // L2 정규화
-        val alpha = 1e-4
+        val alpha = 1e-4f
         val regLoss = model.parameters()
             .map { p -> p * p }
             .reduce { acc, p2 -> acc + p2 } * Value(alpha)

@@ -5,8 +5,8 @@ import kotlin.math.*
 import kotlin.random.Random
 
 // 데이터 생성을 위한 함수 (make_moons와 유사)
-fun makeMoons(nSamples: Int, noise: Double = 0.1): Pair<Array<DoubleArray>, IntArray> {
-    val x = Array(nSamples) { DoubleArray(2) }
+fun makeMoons(nSamples: Int, noise: Float = 0.1f): Pair<Array<FloatArray>, IntArray> {
+    val x = Array(nSamples) { FloatArray(2) }
     val y = IntArray(nSamples)
 
     val random = Random(1337)
@@ -15,13 +15,13 @@ fun makeMoons(nSamples: Int, noise: Double = 0.1): Pair<Array<DoubleArray>, IntA
         val angle = Math.PI * i / (nSamples / 2)
         if (i < nSamples / 2) {
             // 첫 번째 반달
-            x[i][0] = cos(angle) + random.nextDouble() * noise
-            x[i][1] = sin(angle) + random.nextDouble() * noise
+            x[i][0] = cos(angle).toFloat() + random.nextFloat() * noise
+            x[i][1] = sin(angle).toFloat() + random.nextFloat() * noise
             y[i] = -1
         } else {
             // 두 번째 반달
-            x[i][0] = 1 - cos(angle) + random.nextDouble() * noise
-            x[i][1] = 1 - sin(angle) - 0.5 + random.nextDouble() * noise
+            x[i][0] = 1 - cos(angle).toFloat() + random.nextFloat() * noise
+            x[i][1] = 1 - sin(angle).toFloat() - 0.5f + random.nextFloat() * noise
             y[i] = 1
         }
     }
@@ -36,7 +36,7 @@ fun main1() {
     Random(1337)
 
     // 데이터셋 생성
-    val (x, y) = makeMoons(100, 0.1)
+    val (x, y) = makeMoons(100, 0.1f)
     println("데이터셋 생성 완료: ${x.size} 샘플")
 
     // 모델 초기화
@@ -61,7 +61,7 @@ fun main1() {
         totalLoss.backward()
 
         // 파라미터 업데이트 (SGD)
-        val learningRate = 1.0 - 0.9 * k / 100
+        val learningRate: Float = 1.0f - 0.9f * k / 100
         for (p in model.parameters()) {
             p.data -= learningRate * p.grad
         }
@@ -81,10 +81,10 @@ fun main1() {
     // 예측 테스트
     println("\n예측 테스트:")
     val testPoints = arrayOf(
-        doubleArrayOf(0.5, 0.5),
-        doubleArrayOf(-0.5, 0.5),
-        doubleArrayOf(0.5, -0.5),
-        doubleArrayOf(-0.5, -0.5)
+        floatArrayOf(0.5f, 0.5f),
+        floatArrayOf(-0.5f, 0.5f),
+        floatArrayOf(0.5f, -0.5f),
+        floatArrayOf(-0.5f, -0.5f)
     )
 
     for (point in testPoints) {
@@ -98,7 +98,7 @@ fun main1() {
 // 배치 학습을 위한 확장 함수
 fun main2() {
     // 배치 학습 예제
-    val (x, y) = makeMoons(100, 0.1)
+    val (x, y) = makeMoons(100, 0.1f)
     val model = MLP(2, listOf(16, 16, 1))
     val lossCalculator = LossCalculator(model, x, y)
 
@@ -111,7 +111,7 @@ fun main2() {
         model.zeroGrad()
         totalLoss.backward()
 
-        val learningRate = 0.1
+        val learningRate = 0.1f
         for (p in model.parameters()) {
             p.data -= learningRate * p.grad
         }
@@ -125,10 +125,10 @@ fun main2() {
     // 예측 테스트
     println("\n예측 테스트:")
     val testPoints = arrayOf(
-        doubleArrayOf(0.5, 0.5),
-        doubleArrayOf(-0.5, 0.5),
-        doubleArrayOf(0.5, -0.5),
-        doubleArrayOf(-0.5, -0.5)
+        floatArrayOf(0.5f, 0.5f),
+        floatArrayOf(-0.5f, 0.5f),
+        floatArrayOf(0.5f, -0.5f),
+        floatArrayOf(-0.5f, -0.5f)
     )
 
     for (point in testPoints) {

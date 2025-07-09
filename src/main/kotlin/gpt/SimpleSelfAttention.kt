@@ -12,6 +12,9 @@ class SimpleSelfAttention(private val config: GPTConfig) {
     private val kProj = Linear(config.nEmbd, config.nEmbd, config.bias)
     private val vProj = Linear(config.nEmbd, config.nEmbd, config.bias)
     private val outProj = Linear(config.nEmbd, config.nEmbd, config.bias)
+    
+    // Dropout 레이어
+    private val dropout = Dropout(config.dropout)
 
     fun forward(x: Array<Array<Value>>): Array<Array<Value>> {
         val seqLen = x.size
@@ -23,24 +26,24 @@ class SimpleSelfAttention(private val config: GPTConfig) {
         val values = x.map { vProj.forward(it) }.toTypedArray()
 
         // Attention scores 계산 (간단한 버전)
-        val scale = Value(1.0 / sqrt(headDim.toDouble()))
+        val scale = Value(1.0f / sqrt(headDim.toFloat()))
         val scores = Array(seqLen) { i ->
             Array(seqLen) { j ->
                 if (j <= i) { // Causal mask
-                    var score = Value(0.0)
+                    var score = Value(0.0f)
                     for (k in 0 until config.nEmbd) {
                         score = score + queries[i][k] * keys[j][k]
                     }
                     score * scale
                 } else {
-                    Value(-1e9) // 마스킹
+                    Value(-1e9f) // 마스킹
                 }
             }
         }
 
         // Softmax (행 단위)
         val attentionWeights = scores.map { row ->
-            val maxVal = row.maxByOrNull { it.data } ?: Value(0.0)
+            val maxVal = row.maxByOrNull { it.data } ?: Value(0.0f)
             val expScores = row.map { (it - maxVal).exp() }.toTypedArray()
             val sumExp = expScores.reduce { acc, v -> acc + v }
             expScores.map { it / sumExp }.toTypedArray()
@@ -49,7 +52,7 @@ class SimpleSelfAttention(private val config: GPTConfig) {
         // Attention 적용
         val output = Array(seqLen) { i ->
             Array(config.nEmbd) { k ->
-                var sum = Value(0.0)
+                var sum = Value(0.0f)
                 for (j in 0 until seqLen) {
                     sum = sum + attentionWeights[i][j] * values[j][k]
                 }
@@ -57,8 +60,9 @@ class SimpleSelfAttention(private val config: GPTConfig) {
             }
         }
 
-        // 출력 프로젝션
-        return output.map { outProj.forward(it) }.toTypedArray()
+        // 출력 프로젝션과 Dropout 적용
+        val projected = output.map { outProj.forward(it) }.toTypedArray()
+        return dropout.forward(projected)
     }
 
     fun parameters(): List<Value> {

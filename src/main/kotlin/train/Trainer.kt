@@ -7,8 +7,11 @@ import gpt.PikoGPT
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlinx.coroutines.*
+import sumOf
 import java.io.File
 import java.nio.ByteBuffer
+import kotlin.io.path.Path
 import kotlin.math.*
 import kotlin.random.Random
 
@@ -21,20 +24,24 @@ class Trainer(private val config: TrainConfig) {
 
     private var iterNum = 0
     private var bestValLoss = Double.MAX_VALUE
+    private var baselineLoss = ln(getVocabSize().toDouble())
+    val ds = "${config.calculateTotalParameters(getVocabSize())}"
+    val path = "${config.modelDir}/${config.subDir ?: ds}"
 
     fun train() {
-        println("=== MiniGPT 훈련 시작 ===")
+        println("=== PikoGPT 훈련 시작 ===")
         println("설정: $config")
+        println("베이스라인 손실: ${baselineLoss.format(4)} (0% 진행률 기준)")
 
         // 디렉토리 생성
-        File(config.outDir).mkdirs()
+        Path(path).toFile().mkdirs()
 
         // 모델 초기화
         initModel()
 
         // 데이터 로더 초기화
-        trainLoader = DataLoader("data/${config.dataset}/train.bin", config.batchSize, config.blockSize)
-        valLoader = DataLoader("data/${config.dataset}/val.bin", config.batchSize, config.blockSize)
+        trainLoader = DataLoader("${config.dataPath}/train.bin", config.batchSize, config.blockSize)
+        valLoader = DataLoader("${config.dataPath}/val.bin", config.batchSize, config.blockSize)
 
         // 옵티마이저 초기화
         optimizer = AdamW(
@@ -49,15 +56,17 @@ class Trainer(private val config: TrainConfig) {
         val startTime = System.currentTimeMillis()
         var runningLoss = 0.0
 
-        while (iterNum < config.maxIters) {
+        while (iterNum <= config.maxIters) {
             // 학습률 조정
             val lr = getLearningRate(iterNum)
-            // 실제로는 optimizer의 lr을 업데이트해야 함
+            optimizer.updateLearningRate(lr)
 
             // 평가
             if (iterNum % config.evalInterval == 0) {
                 val losses = estimateLoss()
-                println("스텝 $iterNum: 훈련 손실 ${losses.first.format(4)}, 검증 손실 ${losses.second.format(4)}")
+                val trainProgress = formatLossWithProgress(losses.first)
+                val valProgress = formatLossWithProgress(losses.second)
+                println("스텝 $iterNum: 훈련 $trainProgress | 검증 $valProgress")
 
                 if (losses.second < bestValLoss || config.alwaysSaveCheckpoint) {
                     bestValLoss = losses.second
@@ -93,8 +102,8 @@ class Trainer(private val config: TrainConfig) {
 
             if (iterNum % config.logInterval == 0) {
                 val elapsed = (System.currentTimeMillis() - startTime) / 1000.0
-                val iterPerSec = iterNum / elapsed
-                println("반복 $iterNum: 손실 ${runningLoss.format(4)}, ${iterPerSec.format(2)} iter/s")
+                val lossProgress = formatLossWithProgress(runningLoss)
+                println("반복 $iterNum: 손실 $lossProgress, elapsed ${elapsed.format(0)}s.")
             }
 
             iterNum++
@@ -110,8 +119,8 @@ class Trainer(private val config: TrainConfig) {
             nLayer = config.nLayer,
             nHead = config.nHead,
             nEmbd = config.nEmbd,
-            dropout = config.dropout,
-            bias = config.bias
+            bias = config.bias,
+            dropout = config.dropout
         )
 
         when (config.initFrom) {
@@ -133,20 +142,18 @@ class Trainer(private val config: TrainConfig) {
 
     private fun getVocabSize(): Int {
         // meta.json에서 vocab_size 읽기
-        val metaFile = File("data/${config.dataset}/meta.json")
-        return if (metaFile.exists()) {
-            val json = Json { ignoreUnknownKeys = true }
-            val meta = json.decodeFromString<MetaInfo>(metaFile.readText())
-            meta.vocabSize
-        } else {
-            // 기본값 (문자 수준)
-            65
-        }
+        val metaFile = File("${config.dataPath}/meta.json")
+        val json = Json { ignoreUnknownKeys = true }
+        val meta = json.decodeFromString<MetaInfo>(metaFile.readText())
+        return meta.vocabSize
     }
 
-    private fun trainStep(x: Array<IntArray>, y: Array<IntArray>): Double {
+    private fun trainStep(x: Array<IntArray>, y: Array<IntArray>): Float {
+        // 훈련 모드 설정
+        gpt.Dropout.training = true
+        
         // 순전파
-        var totalLoss = Value(0.0)
+        var totalLoss = Value(0.0f)
 
         for (b in x.indices) {
             val logits = model.forward(x[b])
@@ -157,7 +164,7 @@ class Trainer(private val config: TrainConfig) {
                 val logitVec = logits[t]
 
                 // Softmax와 cross-entropy
-                val maxLogit = logitVec.maxByOrNull { it.data } ?: Value(0.0)
+                val maxLogit = logitVec.maxByOrNull { it.data } ?: Value(0.0f)
                 val expLogits = logitVec.map { (it - maxLogit).exp() }
                 val sumExp = expLogits.reduce { acc, v -> acc + v }
 
@@ -166,31 +173,40 @@ class Trainer(private val config: TrainConfig) {
             }
         }
 
-        val avgLoss = totalLoss * Value(1.0 / (x.size * y[0].size))
+        val avgLoss = totalLoss * Value(1.0f / (x.size * y[0].size))
 
         // 역전파
-        model.parameters().forEach { it.grad = 0.0 }
+        model.parameters().forEach { it.grad = 0.0f }
         avgLoss.backward()
 
         return avgLoss.data
     }
 
-    private fun estimateLoss(): Pair<Double, Double> {
-        val trainLosses = mutableListOf<Double>()
-        val valLosses = mutableListOf<Double>()
-
-        repeat(config.evalIters) {
-            val (xTrain, yTrain) = trainLoader.getBatch()
-            trainLosses.add(evaluateBatch(xTrain, yTrain))
-
-            val (xVal, yVal) = valLoader.getBatch()
-            valLosses.add(evaluateBatch(xVal, yVal))
+    private fun estimateLoss(): Pair<Double, Double> = runBlocking {
+        val trainLossesDeferred = (0 until config.evalIters).map { 
+            async(Dispatchers.Default) {
+                val (x, y) = trainLoader.getBatch()
+                evaluateBatch(x, y)
+            }
+        }
+        
+        val valLossesDeferred = (0 until config.evalIters).map { 
+            async(Dispatchers.Default) {
+                val (x, y) = valLoader.getBatch()
+                evaluateBatch(x, y)
+            }
         }
 
-        return Pair(trainLosses.average(), valLosses.average())
+        val trainLosses = trainLossesDeferred.awaitAll()
+        val valLosses = valLossesDeferred.awaitAll()
+
+        return@runBlocking Pair(trainLosses.average(), valLosses.average())
     }
 
     private fun evaluateBatch(x: Array<IntArray>, y: Array<IntArray>): Double {
+        // 평가 모드 설정 (dropout 비활성화)
+        gpt.Dropout.training = false
+        
         var totalLoss = 0.0
 
         for (b in x.indices) {
@@ -200,7 +216,7 @@ class Trainer(private val config: TrainConfig) {
                 val target = y[b][t]
                 val logitVec = logits[t]
 
-                val maxLogit = logitVec.maxByOrNull { it.data }?.data ?: 0.0
+                val maxLogit = logitVec.maxByOrNull { it.data }?.data ?: 0.0f
                 val expSum = logitVec.sumOf { exp((it.data - maxLogit)) }
 
                 totalLoss += -logitVec[target].data + maxLogit + ln(expSum)
@@ -210,7 +226,7 @@ class Trainer(private val config: TrainConfig) {
         return totalLoss / (x.size * y[0].size)
     }
 
-    private fun getLearningRate(iter: Int): Double {
+    private fun getLearningRate(iter: Int): Float {
         if (!config.decayLr) return config.learningRate
 
         // Warmup
@@ -225,18 +241,15 @@ class Trainer(private val config: TrainConfig) {
 
         // Cosine decay
         val decayRatio = (iter - config.warmupIters).toDouble() / (config.lrDecayIters - config.warmupIters)
-        val coeff = 0.5 * (1.0 + cos(PI * decayRatio))
+        val coeff: Float = 0.5f * (1.0f + cos(PI * decayRatio).toFloat())
         return config.minLr + coeff * (config.learningRate - config.minLr)
     }
 
-    private fun clipGradients(maxNorm: Double) {
+    private fun clipGradients(maxNorm: Float) {
         val params = model.parameters()
-        var totalNorm = 0.0
-
-        params.forEach { param ->
-            totalNorm += param.grad * param.grad
-        }
-        totalNorm = sqrt(totalNorm)
+        
+        // 직렬로 노름 계산 (작은 모델에서는 더 빠름)
+        val totalNorm = sqrt(params.sumOf { param -> param.grad * param.grad })
 
         if (totalNorm > maxNorm) {
             val scale = maxNorm / totalNorm
@@ -274,11 +287,23 @@ class Trainer(private val config: TrainConfig) {
             prettyPrint = true
             encodeDefaults = true
         }
-        val checkpointFile = File("${config.outDir}/checkpoint.json")
+        val lossInt = (bestValLoss * 10).toInt()
+        File("${path}/${lossInt}").mkdir()
+        val checkpointFile = File("${path}/${lossInt}/checkpoint.json")
         checkpointFile.writeText(json.encodeToString(checkpoint))
 
         // 가중치를 별도의 바이너리 파일로 저장 (더 효율적)
-        saveModelWeights("${config.outDir}/model_weights.bin")
+        saveModelWeights("${path}/${lossInt}/model_weights.bin")
+
+        // meta.json 파일 복사
+        val sourceMetaFile = File("${config.dataPath}/meta.json")
+        val targetMetaFile = File("${path}/${lossInt}/meta.json")
+        if (sourceMetaFile.exists()) {
+            sourceMetaFile.copyTo(targetMetaFile, overwrite = true)
+            println("meta.json 복사 완료")
+        } else {
+            println("경고: meta.json 파일을 찾을 수 없습니다: ${sourceMetaFile.absolutePath}")
+        }
 
         println("체크포인트 저장 완료: ${checkpointFile.absolutePath}")
     }
@@ -336,7 +361,7 @@ class Trainer(private val config: TrainConfig) {
         file.outputStream().use { stream ->
             model.parameters().forEach { param ->
                 // Double을 바이트로 변환하여 저장
-                val bytes = ByteBuffer.allocate(8).putDouble(param.data).array()
+                val bytes = ByteBuffer.allocate(8).putFloat(param.data).array()
                 stream.write(bytes)
             }
         }
@@ -345,7 +370,7 @@ class Trainer(private val config: TrainConfig) {
     private fun loadCheckpoint() {
         println("체크포인트 로드 중...")
 
-        val checkpointFile = File("${config.outDir}/checkpoint.json")
+        val checkpointFile = File("${path}/checkpoint.json")
         if (!checkpointFile.exists()) {
             throw IllegalStateException("체크포인트 파일을 찾을 수 없습니다: ${checkpointFile.absolutePath}")
         }
@@ -358,7 +383,7 @@ class Trainer(private val config: TrainConfig) {
         model = PikoGPT(modelConfig)
 
         // 가중치 로드
-        loadModelWeights("${config.outDir}/model_weights.bin")
+        loadModelWeights("${path}/model_weights.bin")
 
         // 훈련 상태 복원
         iterNum = checkpoint.iterNum
@@ -380,7 +405,7 @@ class Trainer(private val config: TrainConfig) {
 
             params.forEach { param ->
                 if (stream.read(buffer) == 8) {
-                    param.data = ByteBuffer.wrap(buffer).double
+                    param.data = ByteBuffer.wrap(buffer).getFloat()
                 }
             }
         }
@@ -388,7 +413,26 @@ class Trainer(private val config: TrainConfig) {
 
     // 확장 함수들
     fun Double.format(digits: Int): String = "%.${digits}f".format(this)
-    fun Value.negate(): Value = this * Value(-1.0)
+    fun Value.negate(): Value = this * Value(-1.0f)
+    
+    // 퍼센트 기반 손실 변환 함수
+    private fun lossToPercentage(loss: Double): Double {
+        return maxOf(0.0, (baselineLoss - loss) / baselineLoss * 100)
+    }
+    
+    // 진행률 바 생성 함수
+    private fun createProgressBar(percentage: Double, width: Int = 5): String {
+        val filled = (percentage / 100.0 * width).toInt()
+        val empty = width - filled
+        return "▓".repeat(filled) + "░".repeat(empty)
+    }
+    
+    // 손실과 퍼센트를 함께 표시하는 함수
+    private fun formatLossWithProgress(loss: Double): String {
+        val percentage = lossToPercentage(loss)
+        val progressBar = createProgressBar(percentage)
+        return "${loss.format(2)} (${percentage.format(1)}%) $progressBar"
+    }
 
     fun Value.log(): Value {
         val output = Value(ln(this.data), setOf(this), "log")
@@ -400,3 +444,4 @@ class Trainer(private val config: TrainConfig) {
         return output
     }
 }
+
