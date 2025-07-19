@@ -6,7 +6,7 @@ class Layer(
     nin: Int,
     nout: Int,
     nonlin: Boolean = true
-) : Module() {
+) {
 
     val neurons: List<Neuron> = List(nout) { Neuron(nin, nonlin) }
 
@@ -15,7 +15,7 @@ class Layer(
         return if (out.size == 1) out[0] else out
     }
 
-    override fun parameters(): List<Value> {
+    fun parameters(): List<Value> {
         return neurons.flatMap { it.parameters() }
     }
 

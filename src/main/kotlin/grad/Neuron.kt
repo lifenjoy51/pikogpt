@@ -6,7 +6,7 @@ import kotlin.random.Random
 class Neuron(
     nin: Int,
     private val nonlin: Boolean = true
-) : Module() {
+) {
 
     val w: List<Value> = List(nin) { Value(Random.nextDouble(-1.0, 1.0).toFloat()) }
     val b: Value = Value(0.0f)
@@ -19,7 +19,7 @@ class Neuron(
         return if (nonlin) act.relu() else act
     }
 
-    override fun parameters(): List<Value> {
+    fun parameters(): List<Value> {
         return w + b
     }
 
