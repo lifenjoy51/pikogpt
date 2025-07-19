@@ -17,6 +17,9 @@
 *   PyTorch와 같은 외부 라이브러리 의존성을 최소화하고, Kotlin의 표준 라이브러리와 기본적인 기능에 중점을 두어 변환 작업을 진행했습니다.
 
 ## 주요 클래스 설명
+### grad
+- micrograd 구현체. 실제 학습엔 사용되지 않음.
+ 
 ### data
 - StoryGenerator 학습데이터 생성. LmStudio에 Gemma3-1B 모델을 활용하여 쉬운 어휘를 사용한 간단한 이야기 생성.
 - StoriesBpePrep 생성한 이야기를 바탕으로 간단한 BPE를 사용하여 훈련,검증 데이터 생성.
