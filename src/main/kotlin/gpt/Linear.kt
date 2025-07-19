@@ -2,7 +2,6 @@ package gpt
 
 import RandomGaussian
 import Value
-import kotlin.random.Random
 
 class Linear(
     inFeatures: Int,

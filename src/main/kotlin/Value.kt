@@ -2,13 +2,10 @@ import kotlin.math.exp
 import kotlin.math.pow
 import kotlin.math.sqrt
 import kotlin.math.PI
-import kotlin.math.*
-import kotlin.random.Random
 
 class Value(
     var data: Float,
-    private val _children: Set<Value> = emptySet(),
-    var _op: String = ""
+    private val _children: Set<Value> = emptySet()
 ) {
     var grad: Float = 0.0f
     var _backward: () -> Unit = {}
@@ -16,7 +13,7 @@ class Value(
     // --- 연산자 오버로딩 최적화 ---
 
     operator fun plus(other: Value): Value {
-        val out = Value(this.data + other.data, setOf(this, other), "+")
+        val out = Value(this.data + other.data, setOf(this, other))
         out._backward = {
             this.grad += out.grad
             other.grad += out.grad
@@ -27,7 +24,7 @@ class Value(
     operator fun plus(other: Number): Value = this + Value(other.toFloat())
 
     operator fun times(other: Value): Value {
-        val out = Value(this.data * other.data, setOf(this, other), "*")
+        val out = Value(this.data * other.data, setOf(this, other))
         out._backward = {
             this.grad += other.data * out.grad
             other.grad += this.data * out.grad
@@ -45,7 +42,7 @@ class Value(
 
     // pow(-1) 대신 직접 나누기 구현
     operator fun div(other: Value): Value {
-        val out = Value(this.data / other.data, setOf(this, other), "/")
+        val out = Value(this.data / other.data, setOf(this, other))
         out._backward = {
             this.grad += (1.0f / other.data) * out.grad
             other.grad += (-this.data / (other.data * other.data)) * out.grad
@@ -56,7 +53,7 @@ class Value(
     operator fun div(other: Number): Value = this / Value(other.toFloat())
 
     fun pow(other: Float): Value {
-        val out = Value(this.data.pow(other), setOf(this), "**$other")
+        val out = Value(this.data.pow(other), setOf(this))
         out._backward = {
             this.grad += (other * this.data.pow(other - 1)) * out.grad
         }
@@ -66,7 +63,7 @@ class Value(
     // --- 활성화 함수 (Utils에서 이동) ---
 
     fun relu(): Value {
-        val out = Value(if (this.data < 0) 0.0f else this.data, setOf(this), "ReLU")
+        val out = Value(if (this.data < 0) 0.0f else this.data, setOf(this))
         out._backward = {
             this.grad += (if (out.data > 0) 1.0f else 0.0f) * out.grad
         }
@@ -74,7 +71,7 @@ class Value(
     }
 
     fun exp(): Value {
-        val out = Value(exp(this.data.toDouble()).toFloat(), setOf(this), "exp")
+        val out = Value(exp(this.data.toDouble()).toFloat(), setOf(this))
         out._backward = {
             this.grad += out.data * out.grad
         }

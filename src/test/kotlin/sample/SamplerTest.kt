@@ -8,8 +8,8 @@ import kotlinx.coroutines.withContext
 
 fun main() {
     runBlocking {
-        //test()
-        testVariousPrompts()
+        test()
+        //testVariousPrompts()
     }
 }
 
@@ -45,6 +45,8 @@ suspend fun testVariousPrompts() = withContext(Dispatchers.Default) {
         }
     }.awaitAll().flatten()
 
+    println(result.size)
+
     result.forEach {
         println("\n=== ModelId: ${it.uid}, Prompt: ${it.prompt} ===")
         it.results.forEach { line ->
@@ -57,15 +59,13 @@ suspend fun testVariousPrompts() = withContext(Dispatchers.Default) {
 suspend fun test() {
     val config = SampleConfig(
         initFrom = "resume",
-        modelDir = "model/71200/16",
+        modelDir = "model/71200/20",
         numSamples = 3,
-        maxNewTokens = 20,
-        temperature = 1.0f,
-        topK = 20
     )
 
     val sampler = Sampler(config)
-    sampler.sample("sky")
+    val result = sampler.sample("the cat and the dog")
+    println(result)
 }
 
 fun sampleInteractive() {

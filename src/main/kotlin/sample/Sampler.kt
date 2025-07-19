@@ -55,7 +55,7 @@ class Sampler(private val config: SampleConfig) {
                     config.maxNewTokens,
                     config.temperature,
                     config.topK
-                ).takeWhile { it == 0 } // EOS 제외.
+                ).takeWhile { it != 0 } // EOS 제외.
 
                 decode(generated)
             }
@@ -129,7 +129,7 @@ class Sampler(private val config: SampleConfig) {
         val meta = json.decodeFromString<MetaInfo>(metaPath.readText())
 
         encode = { s -> s.map { meta.stoi[it.toString()] ?: 1 } }
-        decode = { l -> l.joinToString("") { meta.itos[it] ?: "" } }
+        decode = { l -> l.joinToString("") { meta.itos[it] ?: " " } }
         vocabSize = meta.vocabSize
     }
 
