@@ -5,8 +5,8 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
 import kotlin.test.Test
-import kotlin.test.assertTrue
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class LossTest {
 
@@ -39,10 +39,10 @@ class LossTest {
 
         // 초기 손실 계산
         val (initialLoss, initialAcc) = lossCalculator.loss()
-        println("초기 손실: ${initialLoss.data}, 정확도: ${initialAcc * 100}%")
+        println("초기 손실: ${initialLoss.scalarValue}, 정확도: ${initialAcc * 100}%")
         
         // 초기 손실이 합리적인 범위인지 확인
-        assertTrue(initialLoss.data > 0, "Initial loss should be positive")
+        assertTrue(initialLoss.scalarValue > 0, "Initial loss should be positive")
         assertTrue(initialAcc >= 0.0f && initialAcc <= 1.0f, "Initial accuracy should be between 0 and 1")
 
         // 최적화 (학습)
@@ -57,23 +57,23 @@ class LossTest {
             // 파라미터 업데이트 (SGD)
             val learningRate: Float = 1.0f - 0.9f * k / 100
             for (p in model.parameters()) {
-                p.data -= learningRate * p.grad
+                p.scalarValue -= learningRate * p.gradient
             }
 
             // 10 스텝마다 결과 출력
             if (k % 10 == 0) {
-                println("스텝 $k - 손실: ${totalLoss.data}, 정확도: ${acc * 100}%")
+                println("스텝 $k - 손실: ${totalLoss.scalarValue}, 정확도: ${acc * 100}%")
             }
         }
 
         // 최종 평가
         val (finalLoss, finalAcc) = lossCalculator.loss()
         println("\n학습 완료!")
-        println("최종 손실: ${finalLoss.data}")
+        println("최종 손실: ${finalLoss.scalarValue}")
         println("최종 정확도: ${finalAcc * 100}%")
         
         // 학습 효과 검증
-        assertTrue(finalLoss.data < initialLoss.data, "Loss should decrease after training (initial: ${initialLoss.data}, final: ${finalLoss.data})")
+        assertTrue(finalLoss.scalarValue < initialLoss.scalarValue, "Loss should decrease after training (initial: ${initialLoss.scalarValue}, final: ${finalLoss.scalarValue})")
         assertTrue(finalAcc > initialAcc, "Accuracy should improve after training (initial: $initialAcc, final: $finalAcc)")
         assertTrue(finalAcc > 0.5f, "Final accuracy should be better than random guessing")
 
@@ -90,9 +90,9 @@ class LossTest {
         for (point in testPoints) {
             val input = point.map { Value(it) }
             val output = model(input) as Value
-            val prediction = if (output.data > 0) 1 else -1
+            val prediction = if (output.scalarValue > 0) 1 else -1
             predictions.add(prediction)
-            println("입력: (${point[0]}, ${point[1]}) -> 예측: $prediction (점수: ${output.data})")
+            println("입력: (${point[0]}, ${point[1]}) -> 예측: $prediction (점수: ${output.scalarValue})")
             
             // 출력이 Value 타입인지 확인
             assertTrue(output is Value, "Model output should be a Value")
@@ -114,7 +114,7 @@ class LossTest {
         
         // 초기 성능 저장
         val (initialLoss, initialAcc) = lossCalculator.loss()
-        assertTrue(initialLoss.data > 0, "Initial loss should be positive")
+        assertTrue(initialLoss.scalarValue > 0, "Initial loss should be positive")
         assertTrue(initialAcc in 0.0f..1.0f, "Initial accuracy should be between 0 and 1")
 
         for (epoch in 0 until 500) {
@@ -126,12 +126,12 @@ class LossTest {
 
             val learningRate = 0.1f
             for (p in model.parameters()) {
-                p.data -= learningRate * p.grad
+                p.scalarValue -= learningRate * p.gradient
             }
 
             if (epoch % 10 == 0) {
                 val (evalLoss, evalAcc) = lossCalculator.loss()
-                println("에폭 $epoch - 손실: ${evalLoss.data}, 정확도: ${evalAcc * 100}%")
+                println("에폭 $epoch - 손실: ${evalLoss.scalarValue}, 정확도: ${evalAcc * 100}%")
             }
         }
         
@@ -139,7 +139,7 @@ class LossTest {
         val (finalLoss, finalAcc) = lossCalculator.loss()
         
         // 배치 학습 효과 검증
-        assertTrue(finalLoss.data < initialLoss.data, "Batch training should reduce loss")
+        assertTrue(finalLoss.scalarValue < initialLoss.scalarValue, "Batch training should reduce loss")
         assertTrue(finalAcc >= initialAcc, "Batch training should maintain or improve accuracy")
         assertTrue(finalAcc > 0.6f, "Final accuracy should be reasonable for batch training")
 
@@ -156,9 +156,9 @@ class LossTest {
         for (point in testPoints) {
             val input = point.map { Value(it) }
             val output = model(input) as Value
-            val prediction = if (output.data > 0) 1 else -1
+            val prediction = if (output.scalarValue > 0) 1 else -1
             batchPredictions.add(prediction)
-            println("입력: (${point[0]}, ${point[1]}) -> 예측: $prediction (점수: ${output.data})")
+            println("입력: (${point[0]}, ${point[1]}) -> 예측: $prediction (점수: ${output.scalarValue})")
             
             // 출력 검증
             assertTrue(output is Value, "Model output should be a Value")

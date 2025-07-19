@@ -1,10 +1,9 @@
 package grad
 
 import Value
+import kotlin.math.abs
 import kotlin.test.Test
 import kotlin.test.assertTrue
-import kotlin.test.assertEquals
-import kotlin.math.abs
 
 class MlpTest {
 
@@ -39,7 +38,7 @@ class MlpTest {
             }
             
             // 역전파 후 그래디언트가 계산되었는지 확인
-            val hasNonZeroGrad = model.parameters().any { it.grad != 0.0f }
+            val hasNonZeroGrad = model.parameters().any { it.gradient != 0.0f }
             assertTrue(hasNonZeroGrad, "Some gradients should be non-zero after backward pass")
         }
 
@@ -47,11 +46,11 @@ class MlpTest {
         model.zeroGrad()
         println("\nAfter zero_grad:")
         model.parameters().take(3).forEachIndexed { i, p ->
-            println("Parameter $i grad: ${p.grad}")
+            println("Parameter $i grad: ${p.gradient}")
         }
         
         // 모든 그래디언트가 0으로 초기화되었는지 확인
-        assertTrue(model.parameters().all { it.grad == 0.0f }, "All gradients should be zero after zeroGrad")
+        assertTrue(model.parameters().all { it.gradient == 0.0f }, "All gradients should be zero after zeroGrad")
     }
 
     // 훈련 루프 예제
@@ -76,7 +75,7 @@ class MlpTest {
                 val diff = yp - y
                 loss = loss + diff * diff
             }
-            loss.data
+            loss.scalarValue
         }
         
         // 훈련 루프
@@ -99,15 +98,15 @@ class MlpTest {
             // 파라미터 업데이트 (경사 하강법)
             val learningRate = 0.01f
             for (p in model.parameters()) {
-                p.data -= learningRate * p.grad
+                p.scalarValue -= learningRate * p.gradient
             }
 
             if (epoch % 10 == 0) {
-                println("Epoch $epoch, Loss: ${loss.data}")
+                println("Epoch $epoch, Loss: ${loss.scalarValue}")
             }
             
             if (epoch == 99) {
-                finalLoss = loss.data
+                finalLoss = loss.scalarValue
             }
         }
         
@@ -115,7 +114,7 @@ class MlpTest {
         assertTrue(finalLoss < initialLoss, "Loss should decrease after training (initial: $initialLoss, final: $finalLoss)")
         
         // XOR 문제 테스트 - 훈련된 모델로 예측
-        val testPredictions = xs.map { x -> (model(x) as Value).data }
+        val testPredictions = xs.map { x -> (model(x) as Value).scalarValue }
         println("\nFinal predictions: $testPredictions")
         
         // 예측값이 타겟에 어느 정도 가까워졌는지 확인 (완벽하지 않을 수 있음)

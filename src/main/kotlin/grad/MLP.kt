@@ -14,7 +14,7 @@ class MLP(
 
     fun zeroGrad() {
         for (parameter in parameters()) {
-            parameter.grad = 0.0f
+            parameter.gradient = 0.0f
         }
     }
 

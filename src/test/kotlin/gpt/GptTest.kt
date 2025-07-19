@@ -7,13 +7,13 @@ class GptTest {
     fun main() {
         // 작은 설정으로 모델 생성
         val config = GPTConfig(
-            blockSize = 32,
-            vocabSize = 100,
-            nLayer = 1,
-            nHead = 1,
-            nEmbd = 16,
-            bias = true,
-            dropout = 0.1f
+            maxSequenceLength = 32,
+            vocabularySize = 100,
+            numberOfLayers = 1,
+            numberOfAttentionHeads = 1,
+            embeddingDimension = 16,
+            useBias = true,
+            dropoutProbability = 0.1f
         )
 
         val model = PikoGPT(config)
