@@ -3,34 +3,34 @@ package grad
 import Value
 
 class MLP(
-    nin: Int,
-    nouts: List<Int>
+    numberOfInputs: Int,
+    layerOutputSizes: List<Int>
 ) {
 
-    private val sz: List<Int> = listOf(nin) + nouts
-    val layers: List<Layer> = List(nouts.size) { i ->
-        Layer(sz[i], sz[i + 1], nonlin = i != nouts.size - 1)
+    private val layerSizes: List<Int> = listOf(numberOfInputs) + layerOutputSizes
+    val layers: List<Layer> = List(layerOutputSizes.size) { layerIndex ->
+        Layer(layerSizes[layerIndex], layerSizes[layerIndex + 1], nonlinear = layerIndex != layerOutputSizes.size - 1)
     }
 
     fun zeroGrad() {
-        for (p in parameters()) {
-            p.grad = 0.0f
+        for (parameter in parameters()) {
+            parameter.grad = 0.0f
         }
     }
 
-    operator fun invoke(x: List<Value>): Any {
-        var current: Any = x
+    operator fun invoke(inputValues: List<Value>): Any {
+        var currentOutput: Any = inputValues
         for (layer in layers) {
-            current = when (current) {
+            currentOutput = when (currentOutput) {
                 is List<*> -> {
                     @Suppress("UNCHECKED_CAST")
-                    layer(current as List<Value>)
+                    layer(currentOutput as List<Value>)
                 }
-                is Value -> layer(listOf(current))
+                is Value -> layer(listOf(currentOutput))
                 else -> throw IllegalArgumentException("Unexpected type")
             }
         }
-        return current
+        return currentOutput
     }
 
     fun parameters(): List<Value> {

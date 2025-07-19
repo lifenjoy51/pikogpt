@@ -2,7 +2,7 @@ package gpt
 
 import Value
 
-class FeedForward(config: GPTConfig) {
+class MLP(config: GPTConfig) {
     private val cFc = Linear(config.nEmbd, 4 * config.nEmbd, config.bias)
     private val cProj = Linear(4 * config.nEmbd, config.nEmbd, config.bias)
     private val dropout = Dropout(config.dropout)
