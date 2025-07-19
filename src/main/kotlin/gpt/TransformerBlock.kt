@@ -7,7 +7,7 @@ class TransformerBlock(config: GPTConfig) {
     private val ln1 = LayerNorm(config.nEmbd, config.bias)
     private val attn = SimpleSelfAttention(config)
     private val ln2 = LayerNorm(config.nEmbd, config.bias)
-    private val mlp = FeedForward(config)
+    private val mlp = MLP(config)
 
     fun forward(x: Array<Array<Value>>): Array<Array<Value>> {
         // x + self.attn(self.ln_1(x))

@@ -3,16 +3,16 @@ package grad
 import Value
 
 class Layer(
-    nin: Int,
-    nout: Int,
-    nonlin: Boolean = true
+    numberOfInputs: Int,
+    numberOfOutputs: Int,
+    nonlinear: Boolean = true
 ) {
 
-    val neurons: List<Neuron> = List(nout) { Neuron(nin, nonlin) }
+    val neurons: List<Neuron> = List(numberOfOutputs) { Neuron(numberOfInputs, nonlinear) }
 
-    operator fun invoke(x: List<Value>): Any {
-        val out = neurons.map { n -> n(x) }
-        return if (out.size == 1) out[0] else out
+    operator fun invoke(inputValues: List<Value>): Any {
+        val outputs = neurons.map { neuron -> neuron(inputValues) }
+        return if (outputs.size == 1) outputs[0] else outputs
     }
 
     fun parameters(): List<Value> {

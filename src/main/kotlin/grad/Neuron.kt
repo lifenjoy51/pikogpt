@@ -4,26 +4,26 @@ import Value
 import kotlin.random.Random
 
 class Neuron(
-    nin: Int,
-    private val nonlin: Boolean = true
+    numberOfInputs: Int,
+    private val nonlinear: Boolean = true
 ) {
 
-    val w: List<Value> = List(nin) { Value(Random.nextDouble(-1.0, 1.0).toFloat()) }
-    val b: Value = Value(0.0f)
+    val weights: List<Value> = List(numberOfInputs) { Value(Random.nextDouble(-1.0, 1.0).toFloat()) }
+    val bias: Value = Value(0.0f)
 
-    operator fun invoke(x: List<Value>): Value {
-        var act = b
-        for ((wi, xi) in w.zip(x)) {
-            act = act + wi * xi
+    operator fun invoke(inputValues: List<Value>): Value {
+        var activation = bias
+        for ((weight, inputValue) in weights.zip(inputValues)) {
+            activation = activation + weight * inputValue
         }
-        return if (nonlin) act.relu() else act
+        return if (nonlinear) activation.relu() else activation
     }
 
     fun parameters(): List<Value> {
-        return w + b
+        return weights + bias
     }
 
     override fun toString(): String {
-        return "${if (nonlin) "ReLU" else "gpt.Linear"}grad.Neuron(${w.size})"
+        return "${if (nonlinear) "ReLU" else "gpt.Linear"}grad.Neuron(${weights.size})"
     }
 }
