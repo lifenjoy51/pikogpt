@@ -18,30 +18,30 @@ data class TrainConfig(
 
     // 데이터
     val dataset: String = "stories",
-    val gradientAccumulationSteps: Int = 1, // 4 -> 1로 줄여서 속도 향상
-    val batchSize: Int = 8, // 16 -> 8로 줄여서 메모리/속도 최적화
-    val blockSize: Int = 32, // 64 -> 32로 줄여서 시퀀스 길이 최소화
+    val gradientAccumulationSteps: Int = 4, // 메모리의 한계로 인해 배치 크기(batchSize)를 키울 수 없을 때, 실질적인(Effective) 배치 크기를 늘리는 효과를 내는 기법입니다. Effective Batch Size = batchSize * gradientAccumulationSteps
+    val batchSize: Int = 4, // 한 번의 모델 가중치 업데이트(1 스텝)에 사용되는 데이터 샘플의 수를 의미합니다.
+    val blockSize: Int = 24, // 모델이 한 번의 예측을 위해 참고하는 토큰(단어)의 최대 개수를 의미합니다. 즉, 모델의 "시야" 또는 "단기 기억력"의 범위를 결정합니다.
 
     // 모델
-    val nLayer: Int = 3, // 레이어 수 최소화
-    val nHead: Int = 5, // 헤드 수 최소화
-    val nEmbd: Int = 32, // 임베딩 차원 최소화
+    val nEmbd: Int = 4, // 가장 기본적인 성능 향상 방법입니다. 모델이 각 토큰을 표현하는 정보의 양을 늘려줍니다.
+    val nLayer: Int = 1, // 모델의 깊이를 늘려 더 복잡하고 추상적인 패턴을 학습하게 합니다.
+    val nHead: Int = 1, // 어텐션 메커니즘이 한 번에 다양한 종류의 관계를 보도록 합니다. nHead는 nEmbd의 약수여야 합니다.
     val bias: Boolean = true,
-    val dropout: Float = 0.1f, // Dropout 확률
+    val dropout: Float = 0.15f, // Dropout 확률
 
     // 옵티마이저
-    val learningRate: Float = 3e-3f,
+    val learningRate: Float = 5e-4f,
     val maxIters: Int = 5000,
-    val weightDecay: Float = 1e-2f,
+    val weightDecay: Float = 0.05f,
     val beta1: Float = 0.9f,
     val beta2: Float = 0.99f,
     val gradClip: Float = 1.0f,
 
     // 학습률 스케줄
     val decayLr: Boolean = true,
-    val warmupRatio: Float = 0.2f, // maxIters의 10%를 warmup으로 사용
+    val warmupRatio: Float = 0.01f, // maxIters의 10%를 warmup으로 사용
     val lrDecayRatio: Float = 0.8f, // maxIters의 100%까지 decay (훈련 끝까지)
-    val minLr: Float = 1e-4f
+    val minLr: Float = 1e-5f
 ) {
     // 계산된 속성들
     val warmupIters: Int get() = (maxIters * warmupRatio).toInt()

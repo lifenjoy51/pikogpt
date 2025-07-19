@@ -231,7 +231,7 @@ class Trainer(private val config: TrainConfig) {
 
         // Warmup
         if (iter < config.warmupIters) {
-            return config.learningRate * (iter + 1) / (config.warmupIters + 1)
+            return config.learningRate * (iter + 1).toFloat() / config.warmupIters.toFloat()
         }
 
         // Min LR
@@ -435,7 +435,7 @@ class Trainer(private val config: TrainConfig) {
     }
 
     fun Value.log(): Value {
-        val output = Value(ln(this.data), setOf(this), "log")
+        val output = Value(ln(this.data), setOf(this))
 
         output._backward = {
             this.grad += output.grad / this.data

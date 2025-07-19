@@ -16,6 +16,12 @@
 *   `nanoGPT`와 `micrograd`의 핵심 코드를 Python에서 Kotlin으로 포팅했습니다.
 *   PyTorch와 같은 외부 라이브러리 의존성을 최소화하고, Kotlin의 표준 라이브러리와 기본적인 기능에 중점을 두어 변환 작업을 진행했습니다.
 
+## 주요 클래스 설명
+### data
+- StoryGenerator 학습데이터 생성. LmStudio에 Gemma3-1B 모델을 활용하여 쉬운 어휘를 사용한 간단한 이야기 생성.
+- StoriesBpePrep 생성한 이야기를 바탕으로 간단한 BPE를 사용하여 훈련,검증 데이터 생성.
+- SimpleBPE 간단한 BPE구현. 학습용으로 Byte가 아닌 String 기반으로 구현. 
+
 ## 동기
 
 이 프로젝트의 주된 목표는 Python으로 작성된 유명한 머신러닝 라이브러리를 Kotlin으로 변환하면서 언어의 특성과 사용법을 깊이 있게 이해하고 학습하는 것입니다.

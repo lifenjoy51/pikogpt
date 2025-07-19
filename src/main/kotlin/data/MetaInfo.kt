@@ -2,7 +2,9 @@ package data
 
 import kotlinx.serialization.Serializable
 
-// 메타 정보를 저장할 데이터 클래스
+/**
+ * 메타 정보를 저장할 데이터 클래스
+ */
 @Serializable
 data class MetaInfo(
     val vocabSize: Int,
