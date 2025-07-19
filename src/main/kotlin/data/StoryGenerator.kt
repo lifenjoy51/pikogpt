@@ -12,8 +12,16 @@ import java.net.URL
 import kotlin.random.Random
 import kotlin.system.exitProcess
 
+/**
+ * LM Studio를 사용하여 어린이를 위한 이야기를 생성하고 검증하는 클래스입니다.
+ *
+ * 이 클래스는 로컬에서 실행되는 LM Studio 서버에 HTTP 요청을 보내
+ * 주어진 주제에 대한 이야기를 생성하고, 생성된 이야기가 특정 품질 기준을
+ * 만족하는지 검증하는 기능을 제공합니다。
+ */
 class StoryGenerator {
-    
+
+    /** 이야기 생성을 위한 다양한 주제 목록 */
     private val randomTopics = listOf(
         // 동물 친구들 (Animal Friends)
         "brave little mouse", "friendly dragon", "cute kitten", "rainbow fish", "happy bunny",
@@ -146,11 +154,27 @@ class StoryGenerator {
         "subway ride", "taxi trip", "walking feet", "running shoes", "climbing stairs",
         "elevator ride", "escalator fun", "bridge crossing", "tunnel journey", "road trip"
     )
-    
+
+    /**
+     * `randomTopics` 목록에서 무작위 주제를 하나 선택하여 반환합니다.
+     *
+     * @return 무작위로 선택된 이야기 주제 문자열
+     */
     fun getRandomTopic(): String {
         return randomTopics[Random.nextInt(randomTopics.size)]
     }
 
+    /**
+     * 주어진 프롬프트를 기반으로 LM Studio에 요청하여 이야기를 생성합니다.
+     *
+     * 1. 프롬프트를 강화하여 모델에 더 구체적인 지침을 제공합니다.
+     * 2. LM Studio의 `/v1/chat/completions` 엔드포인트에 HTTP POST 요청을 보냅니다.
+     * 3. 응답을 파싱하여 이야기 텍스트를 추출하고, 불필요한 태그를 제거합니다.
+     *
+     * @param prompt 이야기의 기본 주제 또는 아이디어
+     * @return 생성된 이야기 텍스트
+     * @throws IOException HTTP 요청 실패 또는 응답 파싱 오류 시 발생
+     */
     fun generateStory(prompt: String): String {
         val enhancedPrompt = createEnhancedPrompt(prompt)
         
@@ -249,6 +273,15 @@ class StoryGenerator {
         }
     }
 
+    /**
+     * 생성된 이야기의 품질을 검증합니다.
+     *
+     * 이야기가 6세 아동의 눈높이에 맞는지, 완전한 구조를 갖추었는지 등
+     * 6가지 핵심 조건을 만족하는지 LM Studio에 다시 질문하여 확인합니다.
+     *
+     * @param story 검증할 이야기 텍스트
+     * @return 이야기가 모든 조건을 만족하면 true, 그렇지 않으면 false
+     */
     fun validateStoryQuality(story: String): Boolean {
         val validationPrompt = createValidationPrompt(story)
 
@@ -336,6 +369,12 @@ class StoryGenerator {
         }
     }
 
+    /**
+     * 이야기 품질 검증을 위한 프롬프트를 생성합니다.
+     *
+     * @param story 검증할 이야기
+     * @return 검증용 프롬프트 문자열
+     */
     private fun createValidationPrompt(story: String): String {
         return """
 Please evaluate this story:
@@ -357,6 +396,14 @@ Answer:
         """.trimIndent()
     }
 
+    /**
+     * 이야기 생성을 위한 강화된 프롬프트를 생성합니다.
+     *
+     * 모델이 요구사항을 더 잘 따르도록 상세한 지침과 예시를 포함합니다.
+     *
+     * @param userPrompt 사용자가 제공한 기본 주제
+     * @return 강화된 프롬프트 문자열
+     */
     private fun createEnhancedPrompt(userPrompt: String): String {
         
         return """
@@ -390,6 +437,12 @@ Write the entire COMPLETE story as one line with a proper ending:
     }
 }
 
+/**
+ * 이야기 생성기 메인 실행 함수
+ *
+ * `StoryGenerator`를 사용하여 목표 파일 크기에 도달할 때까지
+ * 계속해서 이야기를 생성하고 파일에 저장합니다.
+ */
 fun main() {
     // 설정 변수들
     val targetTotalSize = 1_000_000_000  // 최종 결과물 목표 크기 (바이트)
