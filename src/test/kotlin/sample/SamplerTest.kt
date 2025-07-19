@@ -28,10 +28,10 @@ suspend fun testVariousPrompts() = withContext(Dispatchers.Default) {
     val result = loss.map { l ->
         async {
             val config = SampleConfig(
-                modelDir = "model/71200/$l",
-                numSamples = 5,
-                maxNewTokens = 50,
-                topK = 10
+                modelDirectoryPath = "model/71200/$l",
+                numberOfSamples = 5,
+                maximumNewTokens = 50,
+                topKFilteringSize = 10
             )
             val sampler = Sampler(config)
 
@@ -58,9 +58,9 @@ suspend fun testVariousPrompts() = withContext(Dispatchers.Default) {
 
 suspend fun test() {
     val config = SampleConfig(
-        initFrom = "resume",
-        modelDir = "model/71200/20",
-        numSamples = 3,
+        modelInitializationMode = "resume",
+        modelDirectoryPath = "model/71200/20",
+        numberOfSamples = 3,
     )
 
     val sampler = Sampler(config)
@@ -73,10 +73,10 @@ fun sampleInteractive() {
     println("종료하려면 'quit'를 입력하세요.")
 
     val config = SampleConfig(
-        numSamples = 1,
-        maxNewTokens = 100,
-        temperature = 0.8f,
-        topK = 50
+        numberOfSamples = 1,
+        maximumNewTokens = 100,
+        samplingTemperature = 0.8f,
+        topKFilteringSize = 50
     )
 
     val sampler = Sampler(config)

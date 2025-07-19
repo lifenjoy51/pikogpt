@@ -46,7 +46,7 @@ class LossCalculator(
 
         // 정확도 계산
         val accuracy = modelScores.zip(batchLabels.toList()) { predictedScore, actualLabel ->
-            if ((actualLabel > 0) == (predictedScore.data > 0)) 1 else 0
+            if ((actualLabel > 0) == (predictedScore.scalarValue > 0)) 1 else 0
         }.sum().toDouble() / modelScores.size
 
         return Pair(totalLoss, accuracy)
