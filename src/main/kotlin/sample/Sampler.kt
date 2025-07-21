@@ -13,7 +13,6 @@ import train.Checkpoint
 import java.io.File
 import java.nio.ByteBuffer
 import java.util.*
-import kotlin.math.exp
 import kotlin.random.Random
 
 /**
@@ -236,7 +235,7 @@ class Sampler(private val samplingConfiguration: SampleConfig) {
 
             // 모델을 사용하여 다음 토팠 예측
             val outputLogits = textGenerationModel.forward(currentContext)
-            val finalPositionLogits = outputLogits.last() // 마지막 위치의 로짓 (다음 토팠 예측용)
+            val finalPositionLogits = outputLogits.getLastPositionLogits() // 마지막 위치의 로짓 (다음 토팠 예측용)
 
             // 온도 스케일링 적용 (높은 온도는 더 다양한 선택)
             val temperatureScaledLogits = finalPositionLogits.map { logitValue ->
@@ -251,7 +250,10 @@ class Sampler(private val samplingConfiguration: SampleConfig) {
             }
 
             // Softmax 확률 분포 계산 및 토팠 샘플링
-            val tokenProbabilities = softmax(filteredLogits)
+            val logitsData = arrayOf(filteredLogits)
+            val logits = gpt.Logits(logitsData)
+            val softmaxResult = logits.softmax()
+            val tokenProbabilities = softmaxResult.get(0).map { it.scalarValue }.toFloatArray()
             val selectedToken = sampleFromDistribution(tokenProbabilities)
 
             // 생성된 토팠을 시퀀스에 추가
@@ -287,28 +289,6 @@ class Sampler(private val samplingConfiguration: SampleConfig) {
         }.toTypedArray()
     }
 
-    /**
-     * Softmax 확률 분포 계산
-     *
-     * 로짓 배열을 확률 분포로 변환합니다.
-     * 수치 안정성을 위해 최대값을 미리 빼서 오버플로우를 방지합니다.
-     *
-     * @param logitArray 로짓 배열
-     * @return 정규화된 확률 분포 (합이 1.0이 되는 배열)
-     */
-    private fun softmax(logitArray: Array<Value>): FloatArray {
-        // 수치 안정성을 위해 최대 로짓 값을 미리 빼기
-        val maximumLogit = logitArray.maxByOrNull { it.scalarValue }?.scalarValue ?: 0.0f
-
-        // 지수 함수 적용 (max 값을 빼서 안정성 확보)
-        val exponentialValues = logitArray.map { logit -> exp(logit.scalarValue - maximumLogit) }
-
-        // 지수 값들의 합계 계산
-        val exponentialSum = exponentialValues.sum()
-
-        // 정규화하여 확률 분포 생성
-        return exponentialValues.map { expValue -> expValue / exponentialSum }.toFloatArray()
-    }
 
     /**
      * 확률 분포에서 토팠 샘플링

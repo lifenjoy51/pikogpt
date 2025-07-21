@@ -52,32 +52,32 @@ class SimpleSelfAttention(private val modelConfig: GPTConfig) {
      * 5. Value 행렬과 가중 합 계산
      * 6. 출력 프로젝션 및 Dropout 적용
      *
-     * @param inputSequence 입력 시퀀스 [sequence_length, embedding_dimension]
-     * @return 어텐션이 적용된 출력 시퀀스 [sequence_length, embedding_dimension]
+     * @param inputSequence 입력 시퀀스
+     * @return 어텐션이 적용된 출력 시퀀스
      */
-    fun forward(inputSequence: Array<Array<Value>>): Array<Array<Value>> {
-        val sequenceLength = inputSequence.size
+    fun forward(inputSequence: Sequence): Sequence {
+        val tokenCount = inputSequence.tokenCount
         // 단순화를 위해 배치 크기를 1로 고정 (실제 구현에서는 배치 처리 필요)
 
         // 1. Query, Key, Value 행렬 생성
-        val queryMatrix = inputSequence.map { sequenceElement ->
+        val queryMatrix = inputSequence.mapTokens { sequenceElement ->
             queryProjection.forward(sequenceElement)
-        }.toTypedArray()
+        }
 
-        val keyMatrix = inputSequence.map { sequenceElement ->
+        val keyMatrix = inputSequence.mapTokens { sequenceElement ->
             keyProjection.forward(sequenceElement)
-        }.toTypedArray()
+        }
 
-        val valueMatrix = inputSequence.map { sequenceElement ->
+        val valueMatrix = inputSequence.mapTokens { sequenceElement ->
             valueProjection.forward(sequenceElement)
-        }.toTypedArray()
+        }
 
         // 2. Scaled Dot-Product Attention 점수 계산
         // 스케일 팩터: 1/sqrt(head_dimension) - 어텐션 점수의 분산을 안정화
         val attentionScale = Value(1.0f / sqrt(attentionHeadDimension.toFloat()))
 
-        val attentionScores = Array(sequenceLength) { queryIndex ->
-            Array(sequenceLength) { keyIndex ->
+        val attentionScores = Matrix.fromArray(Array(tokenCount) { queryIndex ->
+            Array(tokenCount) { keyIndex ->
                 if (keyIndex <= queryIndex) { // Causal mask: 현재 이전 위치만 참조 가능
                     // 닷젝곱 계산: Q[i] · K[j]
                     var dotProduct = Value(0.0f)
@@ -90,22 +90,22 @@ class SimpleSelfAttention(private val modelConfig: GPTConfig) {
                     Value(-1e9f)
                 }
             }
-        }
+        })
 
         // 3. Softmax 정규화 (각 행별로 수행)
-        val normalizedAttentionWeights = attentionScores.map { scoreRow ->
+        val normalizedAttentionWeights = attentionScores.mapRows { scoreRow ->
             // 수치 안정성을 위해 최대값을 뺄
             val maxScore = scoreRow.maxByOrNull { it.scalarValue } ?: Value(0.0f)
             val exponentialScores = scoreRow.map { score -> (score - maxScore).exp() }.toTypedArray()
             val sumOfExponentials = exponentialScores.reduce { accumulator, expScore -> accumulator + expScore }
             exponentialScores.map { expScore -> expScore / sumOfExponentials }.toTypedArray()
-        }.toTypedArray()
+        }
 
         // 4. Value 행렬과 어텐션 가중치의 가중 합 계산
-        val attentionOutput = Array(sequenceLength) { queryIndex ->
+        val attentionOutputArray = Array(tokenCount) { queryIndex ->
             Array(modelConfig.nEmbd) { embeddingIndex ->
                 var weightedSum = Value(0.0f)
-                for (keyIndex in 0 until sequenceLength) {
+                for (keyIndex in 0 until tokenCount) {
                     weightedSum = weightedSum + normalizedAttentionWeights[queryIndex][keyIndex] * valueMatrix[keyIndex][embeddingIndex]
                 }
                 weightedSum
@@ -113,11 +113,11 @@ class SimpleSelfAttention(private val modelConfig: GPTConfig) {
         }
 
         // 5. 출력 프로젝션 및 Dropout 적용
-        val projectedOutput = attentionOutput.map { attentionVector ->
+        val outputSequence = Sequence.fromArray(attentionOutputArray).mapTokens { attentionVector ->
             outputProjection.forward(attentionVector)
-        }.toTypedArray()
+        }
 
-        return attentionDropout.forward(projectedOutput)
+        return attentionDropout.forward(outputSequence)
     }
 
     /**

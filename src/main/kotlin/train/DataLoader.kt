@@ -59,14 +59,14 @@ class DataLoader(
      * 훈련/검증을 위한 미니배치 생성
      *
      * 랜덤한 시작 위치에서 batchSize만큼의 시퀀스를 생성합니다.
-     * 각 시퀀스는 blockSize 길이를 가지며, 입력과 타곟 시퀀스는 1토큰씩 시프트됩니다.
+     * 각 시퀀스는 blockSize 길이를 가지며, 입력과 타겟 시퀀스는 1토큰씩 시프트됩니다.
      *
      * 예시:
      * - 원본 데이터: [1, 2, 3, 4, 5, 6, 7, ...]
      * - 입력 시퀀스: [1, 2, 3, 4, 5]
-     * - 타곟 시퀀스: [2, 3, 4, 5, 6]
+     * - 타겟 시퀀스: [2, 3, 4, 5, 6]
      *
-     * @return Pair<입력_시퀀스, 타곟_시퀀스> 형태의 배치 데이터
+     * @return Pair<입력_시퀀스, 타겟_시퀀스> 형태의 배치 데이터
      */
     fun getBatch(): Pair<Array<IntArray>, Array<IntArray>> {
         val inputSequences = Array(batchSize) { IntArray(blockSize) }
@@ -74,12 +74,13 @@ class DataLoader(
 
         for (batchIndex in 0 until batchSize) {
             // 랜덤 시작 위치 선택 (마지막에 blockSize+1만큼 여유 공간 필요)
-            val startPosition = Random.nextInt(0, tokenData.size - blockSize - 1)
+            val margin = blockSize + 1
+            val startPosition = Random.nextInt(0, tokenData.size - margin)
 
             for (sequenceIndex in 0 until blockSize) {
                 // 입력: [startPosition, startPosition+blockSize-1]
                 inputSequences[batchIndex][sequenceIndex] = tokenData[startPosition + sequenceIndex]
-                // 타곟: [startPosition+1, startPosition+blockSize] (1토큰 시프트)
+                // 타겟: [startPosition+1, startPosition+blockSize] (1토큰 시프트)
                 targetSequences[batchIndex][sequenceIndex] = tokenData[startPosition + sequenceIndex + 1]
             }
         }

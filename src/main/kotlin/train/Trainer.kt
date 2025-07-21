@@ -2,6 +2,7 @@ package train
 
 import Value
 import data.MetaInfo
+import gpt.Dropout
 import gpt.GPTConfig
 import gpt.PikoGPT
 import kotlinx.coroutines.Dispatchers
@@ -43,20 +44,20 @@ class Trainer(private val config: TrainConfig) {
     /** 검증 데이터 로더 */
     private lateinit var validationDataLoader: DataLoader
 
-    /** 현재 훈련 이터레이션 번호 */
-    private var iterationNumber = 0
-
-    /** 지금까지의 최고 검증 성능 (손실이 작을수록 좋음) */
-    private var bestValidationLoss = Double.MAX_VALUE
-
-    /** 베이스라인 손실 - 랜덤 추측의 이론적 손실 값 (ln(어휘수)) */
-    private var baselineLoss = ln(getVocabularySize().toDouble())
-
     /** 데이터셋 크기 식별자 (모델 파라미터 수 기반) */
-    val datasetSize = "${config.calculateTotalParameters(getVocabularySize())}"
+    private val datasetSize = "${config.calculateTotalParameters(getVocabularySize())}"
 
     /** 모델 저장 경로 */
-    val modelPath = "${config.modelDir}/${config.subDir ?: datasetSize}"
+    private val modelPath = "${config.modelDir}/${config.subDir ?: datasetSize}"
+
+    /** 베이스라인 손실 - 랜덤 추측의 이론적 손실 값 (ln(어휘수)) */
+    private val baselineLoss = ln(getVocabularySize().toDouble())
+
+    /** 지금까지의 최고 검증 성능 (손실이 작을수록 좋음) */
+    private var bestLoss = baselineLoss
+
+    /** 현재 훈련 이터레이션 번호 */
+    private var iterationNumber = 0
 
     /**
      * 메인 훈련 프로세스 실행
@@ -102,15 +103,14 @@ class Trainer(private val config: TrainConfig) {
             // 평가
             if (iterationNumber % config.evalInterval == 0) {
                 val estimatedLosses = estimateLoss()
+                val lossValue = (estimatedLosses.first + estimatedLosses.second) / 2
                 val trainingProgress = formatLossWithProgress(estimatedLosses.first)
                 val validationProgress = formatLossWithProgress(estimatedLosses.second)
-                println("스텝 $iterationNumber: 훈련 $trainingProgress | 검증 $validationProgress")
-
-                if (estimatedLosses.second < bestValidationLoss || config.alwaysSaveCheckpoint) {
-                    bestValidationLoss = estimatedLosses.second
-                    if (iterationNumber > 0) {
-                        saveCheckpoint()
-                    }
+                println("스텝 $iterationNumber: 훈련 $trainingProgress | 검증 $validationProgress | 평균 $lossValue")
+                
+                if (lossValue < bestLoss) {
+                    bestLoss = lossValue
+                    saveCheckpoint()
                 }
             }
 
@@ -207,15 +207,15 @@ class Trainer(private val config: TrainConfig) {
      * 입력 시퀀스로부터 다음 토큰을 예측하는 Cross-Entropy 손실을 계산합니다.
      *
      * @param inputSequences 입력 토큰 시퀀스 배열 [batch_size, block_size]
-     * @param targetSequences 타곟 토큰 시퀀스 배열 [batch_size, block_size]
+     * @param targetSequences 타겟 토큰 시퀀스 배열 [batch_size, block_size]
      * @return 평균 손실 값
      */
     private fun trainStep(inputSequences: Array<IntArray>, targetSequences: Array<IntArray>): Float {
         // 훈련 모드 설정
-        gpt.Dropout.training = true
+        Dropout.training = true
         
         // 순전파
-        var totalLoss = Value(0.0f)
+        var totalLoss = 0.0f
 
         for (batchIndex in inputSequences.indices) {
             val logits = model.forward(inputSequences[batchIndex])
@@ -231,11 +231,11 @@ class Trainer(private val config: TrainConfig) {
                 val sumExponential = exponentialLogits.reduce { accumulator, value -> accumulator + value }
 
                 val stepLoss = (logitVector[targetToken] - maxLogit).negate() + sumExponential.log()
-                totalLoss = totalLoss + stepLoss
+                totalLoss += stepLoss.scalarValue
             }
         }
 
-        val averageLoss = totalLoss * Value(1.0f / (inputSequences.size * targetSequences[0].size))
+        val averageLoss = Value(totalLoss / (inputSequences.size * targetSequences[0].size))
 
         // 역전파
         model.parameters().forEach { it.gradient = 0.0f }
@@ -280,7 +280,7 @@ class Trainer(private val config: TrainConfig) {
      * 평가 모드에서의 실제 성능을 측정하기 위해 사용됩니다.
      *
      * @param inputSequences 입력 토큰 시퀀스 배열
-     * @param targetSequences 타곟 토큰 시퀀스 배열
+     * @param targetSequences 타겟 토큰 시퀀스 배열
      * @return 배치의 평균 손실
      */
     private fun evaluateBatch(inputSequences: Array<IntArray>, targetSequences: Array<IntArray>): Double {
@@ -383,7 +383,7 @@ class Trainer(private val config: TrainConfig) {
             optimizerState = optimizerState,
             modelArgs = model.config,
             iterationNumber = iterationNumber,
-            bestValidationLoss = bestValidationLoss,
+            bestValidationLoss = bestLoss,
             config = config
         )
 
@@ -392,7 +392,7 @@ class Trainer(private val config: TrainConfig) {
             prettyPrint = true
             encodeDefaults = true
         }
-        val lossInteger = (bestValidationLoss * 10).toInt()
+        val lossInteger = (bestLoss * 10).toInt()
         File("${modelPath}/${lossInteger}").mkdir()
         val checkpointFile = File("${modelPath}/${lossInteger}/checkpoint.json")
         checkpointFile.writeText(jsonEncoder.encodeToString(checkpoint))
@@ -524,9 +524,9 @@ class Trainer(private val config: TrainConfig) {
 
         // 훈련 상태 복원
         iterationNumber = checkpoint.iterationNumber
-        bestValidationLoss = checkpoint.bestValidationLoss
+        bestLoss = checkpoint.bestValidationLoss
 
-        println("체크포인트 로드 완료 (iteration: $iterationNumber, best val loss: $bestValidationLoss)")
+        println("체크포인트 로드 완료 (iteration: $iterationNumber, best val loss: $bestLoss)")
     }
 
     /**
