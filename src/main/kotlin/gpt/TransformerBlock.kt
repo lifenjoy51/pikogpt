@@ -35,23 +35,19 @@ class TransformerBlock(config: GPTConfig) {
      * Pre-Norm 구조를 사용하여 각 서브 레이어 전에 Layer Normalization을 적용합니다.
      * 잔여 연결을 통해 그래디언트 흐름을 개선하고 훈련 안정성을 향상시킵니다.
      *
-     * @param x 입력 시퀀스 [seq_len, embedding_dim]
-     * @return 변환된 시퀀스 [seq_len, embedding_dim]
+     * @param x 입력 시퀀스
+     * @return 변환된 시퀀스
      */
-    fun forward(x: Array<Array<Value>>): Array<Array<Value>> {
+    fun forward(x: Sequence): Sequence {
         // 첫 번째 서브레이어: x + self.attn(self.ln_1(x))
-        val normalized1 = x.map { ln1.forward(it) }.toTypedArray()
+        val normalized1 = x.map { ln1.forward(it) }
         val attnOut = attn.forward(normalized1)
-        val x1 = x.zip(attnOut) { xi, attni ->
-            xi.zip(attni) { a, b -> a + b }.toTypedArray()  // 요소별 잔여 연결
-        }.toTypedArray()
+        val x1 = x.zipWith(attnOut) { a, b -> a + b }
 
         // 두 번째 서브레이어: x + self.mlp(self.ln_2(x))
-        val normalized2 = x1.map { ln2.forward(it) }.toTypedArray()
-        val mlpOut = normalized2.map { mlp.forward(it) }.toTypedArray()
-        val x2 = x1.zip(mlpOut) { xi, mlpi ->
-            xi.zip(mlpi) { a, b -> a + b }.toTypedArray()  // 요소별 잔여 연결
-        }.toTypedArray()
+        val normalized2 = x1.map { ln2.forward(it) }
+        val mlpSequence = normalized2.map { mlp.forward(it) }
+        val x2 = x1.zipWith(mlpSequence) { a, b -> a + b }
 
         return x2
     }

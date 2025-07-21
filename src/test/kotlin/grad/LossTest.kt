@@ -31,7 +31,7 @@ class LossTest {
         println("파라미터 수: ${model.parameters().size}")
         
         // 모델 구조 검증
-        assertTrue(model.parameters().size > 0, "Model should have parameters")
+        assertTrue(model.parameters().isNotEmpty(), "Model should have parameters")
         assertEquals(3, model.layers.size, "Should have 3 layers")
 
         // 손실 계산기 생성
@@ -43,7 +43,7 @@ class LossTest {
         
         // 초기 손실이 합리적인 범위인지 확인
         assertTrue(initialLoss.scalarValue > 0, "Initial loss should be positive")
-        assertTrue(initialAcc >= 0.0f && initialAcc <= 1.0f, "Initial accuracy should be between 0 and 1")
+        assertTrue(initialAcc in 0.0f..1.0f, "Initial accuracy should be between 0 and 1")
 
         // 최적화 (학습)
         for (k in 0 until 100) {
@@ -93,9 +93,6 @@ class LossTest {
             val prediction = if (output.scalarValue > 0) 1 else -1
             predictions.add(prediction)
             println("입력: (${point[0]}, ${point[1]}) -> 예측: $prediction (점수: ${output.scalarValue})")
-            
-            // 출력이 Value 타입인지 확인
-            assertTrue(output is Value, "Model output should be a Value")
         }
         
         // 예측이 올바른 범위에 있는지 확인
@@ -119,7 +116,7 @@ class LossTest {
 
         for (epoch in 0 until 500) {
             // 배치 크기 32로 학습
-            val (totalLoss, acc) = lossCalculator.loss(32)
+            val (totalLoss, _) = lossCalculator.loss(32)
 
             model.zeroGrad()
             totalLoss.backward()
@@ -159,9 +156,6 @@ class LossTest {
             val prediction = if (output.scalarValue > 0) 1 else -1
             batchPredictions.add(prediction)
             println("입력: (${point[0]}, ${point[1]}) -> 예측: $prediction (점수: ${output.scalarValue})")
-            
-            // 출력 검증
-            assertTrue(output is Value, "Model output should be a Value")
         }
         
         // 배치 학습 예측 검증

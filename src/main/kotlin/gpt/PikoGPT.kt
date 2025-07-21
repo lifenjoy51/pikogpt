@@ -21,14 +21,10 @@ import Value
 class PikoGPT(val config: GPTConfig) {
 
     /** 토큰 임베딩 테이블 [vocab_size, embedding_dim] */
-    private val tokenEmbedding = Array(config.vocabSize) {
-        Array(config.nEmbd) { Value((RandomGaussian.next() * 0.02).toFloat()) }
-    }
+    private val tokenEmbedding = EmbeddingTable(config.vocabSize, config.nEmbd)
 
     /** 위치 임베딩 테이블 [block_size, embedding_dim] */
-    private val positionEmbedding = Array(config.blockSize) {
-        Array(config.nEmbd) { Value((RandomGaussian.next() * 0.02).toFloat()) }
-    }
+    private val positionEmbedding = EmbeddingTable(config.blockSize, config.nEmbd)
 
     /** Transformer 블록들의 리스트 */
     private val blocks = Array(config.nLayer) { TransformerBlock(config) }
@@ -51,27 +47,30 @@ class PikoGPT(val config: GPTConfig) {
      * 4. Language Model Head로 어휘 로짓 생성
      *
      * @param tokenIds 입력 토큰 ID 배열 [sequence_length]
-     * @return 각 위치에서의 어휘 로짓 [sequence_length, vocab_size]
+     * @return 각 위치에서의 어휘 로짓 분포
      */
-    fun forward(tokenIds: IntArray): Array<Array<Value>> {
+    fun forward(tokenIds: IntArray): Logits {
         val seqLen = tokenIds.size
 
         // 1. 임베딩 레이어: 토큰 + 위치 임베딩
-        val embeddings = Array(seqLen) { i ->
-            val tokEmb = tokenEmbedding[tokenIds[i]]  // 토큰 임베딩
-            val posEmb = positionEmbedding[i]         // 위치 임베딩
-            // 요소별 덧셈으로 결합
-            tokEmb.zip(posEmb) { t, p -> t + p }.toTypedArray()
-        }
+        val tokenSequence = tokenEmbedding.lookup(tokenIds)
+        val positionIds = IntArray(seqLen) { it } // [0, 1, 2, ..., seqLen-1]
+        val positionSequence = positionEmbedding.lookup(positionIds)
+        
+        // 요소별 덧셈으로 결합
+        var sequence = tokenSequence.zipWith(positionSequence) { t, p -> t + p }
 
         // 2. 모든 Transformer 블록을 순차적으로 통과
-        var x = blocks.fold(embeddings) { current, block -> block.forward(current) }
+        for (block in blocks) {
+            sequence = block.forward(sequence)
+        }
 
         // 3. 최종 Layer Normalization
-        x = x.map { lnF.forward(it) }.toTypedArray()
+        sequence = sequence.map { lnF.forward(it) }
 
         // 4. Language Model Head로 어휘 로짓 생성
-        return x.map { lmHead.forward(it) }.toTypedArray()
+        val logitValues = sequence.values.map { lmHead.forward(it) }.toTypedArray()
+        return Logits.fromArray(logitValues)
     }
 
     /**
@@ -89,10 +88,10 @@ class PikoGPT(val config: GPTConfig) {
      * @return 모든 학습 가능한 Value 객체들의 리스트
      */
     fun parameters(): List<Value> {
-        return tokenEmbedding.flatten() +
-                positionEmbedding.flatten() +
+        return tokenEmbedding.parameters() +
+                positionEmbedding.parameters() +
                 blocks.flatMap { it.parameters() } +
-            lnF.parameters() +
+                lnF.parameters() +
                 lmHead.parameters()
     }
 }

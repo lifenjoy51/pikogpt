@@ -20,7 +20,7 @@ data class TrainConfig(
     /** 훈련 중 로그를 얼마나 자주 출력할지에 대한 반복 수 간격 */
     val logInterval: Int = 1,
     /** 검증 단계에서 사용할 반복 횟수 */
-    val evalIters: Int = 1,
+    val evalIters: Int = 10,
     /** true일 경우, 훈련 없이 검증만 실행 */
     val evalOnly: Boolean = false,
     /** true일 경우, 성능 향상 여부와 관계없이 항상 체크포인트를 저장 */

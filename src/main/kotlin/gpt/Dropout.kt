@@ -65,7 +65,7 @@ class Dropout(
     }
 
     /**
-     * 2차원 입력에 대한 Dropout 순전파
+     * 시퀀스에 대한 Dropout 순전파
      *
      * 시퀀스 데이터에 대해 드롭아웃을 적용합니다.
      * 각 시퀀스 위치의 모든 특징에 대해 독립적으로 드롭아웃을 적용합니다.
@@ -75,28 +75,27 @@ class Dropout(
      * - MLP 출력에 대한 정규화
      * - 임베딩 레이어 출력에 대한 정규화
      *
-     * @param inputMatrix 2차원 Value 배열 [sequence_length, feature_dimension]
-     * @return Dropout이 적용된 2차원 Value 배열
+     * @param inputSequence 입력 시퀀스
+     * @return Dropout이 적용된 시퀀스
      */
-    fun forward(inputMatrix: Array<Array<Value>>): Array<Array<Value>> {
+    fun forward(inputSequence: Sequence): Sequence {
         // 추론 모드이거나 드롭아웃 확률이 0이면 입력 그대로 반환
         if (!training || dropoutProbability <= 0.0f) {
-            return inputMatrix
+            return inputSequence
         }
 
         // 스케일링 팩터: 드롭아웃된 뉴런들을 보상하기 위해 나머지 뉴런을 증폭
-        val compensationScale = 1.0f / (1.0f - dropoutProbability)
+        val compensationScale = Value(1.0f / (1.0f - dropoutProbability))
 
-        return Array(inputMatrix.size) { sequenceIndex ->
-            Array(inputMatrix[sequenceIndex].size) { featureIndex ->
+        return inputSequence.map { tokenEmbedding ->
+            tokenEmbedding.map { featureValue ->
                 if (Random.nextFloat() < dropoutProbability) {
-                    // 드롭아웃: 해당 뉴런을 0으로 설정
                     Value(0.0f)
                 } else {
-                    // 유지: 스케일링 적용하여 기대값 유지
-                    inputMatrix[sequenceIndex][featureIndex] * Value(compensationScale)
+                    featureValue * compensationScale
                 }
-            }
+            }.toTypedArray()
         }
     }
+
 }
