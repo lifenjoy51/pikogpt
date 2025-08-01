@@ -39,7 +39,7 @@ class Linear(
      * 선형 변환에 추가되는 학습 가능한 편향 항입니다.
      * 0으로 초기화되며, enableBias가 false인 경우 null입니다.
      */
-    private val biasVector = if (enableBias) Array(outputFeatureCount) { Value(0.0f) } else null
+    private val biasVector = if (enableBias) Array(outputFeatureCount) { Value.ZERO } else null
 
     /**
      * 선형 변환 순전파

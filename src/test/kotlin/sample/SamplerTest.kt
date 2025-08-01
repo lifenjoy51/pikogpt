@@ -1,15 +1,13 @@
 package sample
 
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 fun main() {
     runBlocking {
-        test()
-        //testVariousPrompts()
+//        test()
+        testVariousPrompts()
     }
 }
 
@@ -22,30 +20,22 @@ suspend fun testVariousPrompts() = withContext(Dispatchers.Default) {
         "they lived happily"
     )
 
-    val loss = listOf("16", "17", "18", "19", "20", "21", "22", "23")
+    val loss = listOf("36", "38", "37")
 
     // 모든 loss 값을 병렬로 처리
     val result = loss.map { l ->
-        async {
-            val config = SampleConfig(
-                modelDirectoryPath = "model/71200/$l",
-                numberOfSamples = 5,
-                maximumNewTokens = 50,
-                topKFilteringSize = 10
-            )
-            val sampler = Sampler(config)
+        val config = SampleConfig(
+            modelDirectoryPath = "model/78096/$l",
+            numberOfSamples = 1
+        )
+        val sampler = Sampler(config)
 
-            // 각 loss 값에 대해 모든 프롬프트를 병렬로 처리
-            prompts.map { prompt ->
-                async {
-                    //println("\n=== Loss: $l, Prompt: $prompt ===")
-                    sampler.sample(prompt)
-                }
-            }.awaitAll()
+        // 각 loss 값에 대해 모든 프롬프트를 병렬로 처리
+        prompts.map { prompt ->
+            //println("\n=== Loss: $l, Prompt: $prompt ===")
+            sampler.generateText(prompt)
         }
-    }.awaitAll().flatten()
-
-    println(result.size)
+    }.flatten()
 
     result.forEach {
         println("\n=== ModelId: ${it.uid}, Prompt: ${it.prompt} ===")
@@ -64,7 +54,7 @@ suspend fun test() {
     )
 
     val sampler = Sampler(config)
-    val result = sampler.sample("the cat and the dog")
+    val result = sampler.generateText("the cat and the dog")
     println(result)
 }
 
@@ -88,7 +78,7 @@ fun sampleInteractive() {
 
             if (prompt.lowercase() == "quit") break
 
-            sampler.sample(prompt)
+            sampler.generateText(prompt)
         }
     }
 }

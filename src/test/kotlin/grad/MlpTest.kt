@@ -20,7 +20,7 @@ class MlpTest {
         assertTrue(model.parameters().size > 0, "Should have parameters")
 
         // 입력 데이터 생성
-        val x = listOf(Value(2.0f), Value(3.0f), Value(-1.0f))
+        val x = listOf(Value(2.0f), Value(3.0f), Value.MINUS_ONE)
 
         // 순전파
         val output = model(x)
@@ -60,17 +60,17 @@ class MlpTest {
 
         // XOR 문제를 위한 데이터
         val xs = listOf(
-            listOf(Value(0.0f), Value(0.0f)),
-            listOf(Value(0.0f), Value(1.0f)),
-            listOf(Value(1.0f), Value(0.0f)),
-            listOf(Value(1.0f), Value(1.0f))
+            listOf(Value.ZERO, Value.ZERO),
+            listOf(Value.ZERO, Value.ONE),
+            listOf(Value.ONE, Value.ZERO),
+            listOf(Value.ONE, Value.ONE)
         )
-        val ys = listOf(Value(0.0f), Value(1.0f), Value(1.0f), Value(0.0f))
+        val ys = listOf(Value.ZERO, Value.ONE, Value.ONE, Value.ZERO)
 
         // 초기 손실 저장
         val initialLoss = run {
             val ypred = xs.map { x -> model(x) as Value }
-            var loss = Value(0.0f)
+            var loss = Value.ZERO
             for ((yp, y) in ypred.zip(ys)) {
                 val diff = yp - y
                 loss = loss + diff * diff
@@ -85,7 +85,7 @@ class MlpTest {
             val ypred = xs.map { x -> model(x) as Value }
 
             // 손실 계산 (MSE)
-            var loss = Value(0.0f)
+            var loss = Value.ZERO
             for ((yp, y) in ypred.zip(ys)) {
                 val diff = yp - y
                 loss = loss + diff * diff

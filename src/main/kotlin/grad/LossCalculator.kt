@@ -55,7 +55,7 @@ class LossCalculator(
         // 3. SVM "max-margin" 데이터 손실 계산
         val individualLosses = modelScores.zip(batchLabels.toList()) { predictedScore, actualLabel ->
             // loss = max(0, 1 - label * score)
-            (Value(1.0f) + Value(-actualLabel.toFloat()) * predictedScore).relu()
+            (Value.ONE + Value(-actualLabel.toFloat()) * predictedScore).relu()
         }
         val averageDataLoss = individualLosses.reduce { acc, loss -> acc + loss } * Value(1.0f / individualLosses.size)
 

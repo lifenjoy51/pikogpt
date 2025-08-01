@@ -25,13 +25,13 @@ class LayerNorm(
      * 스케일 파라미터 (감마, γ) [featureDimension]
      * 정규화된 값에 곱해지는 학습 가능한 가중치로, 1.0으로 초기화됩니다.
      */
-    private val scaleParameters = Array(featureDimension) { Value(1.0f) }
+    private val scaleParameters = Array(featureDimension) { Value.ONE }
 
     /**
      * 시프트 파라미터 (베타, β) [featureDimension]
      * 정규화된 값에 더해지는 학습 가능한 편향으로, 0.0으로 초기화됩니다.
      */
-    private val shiftParameters = if (enableBias) Array(featureDimension) { Value(0.0f) } else null
+    private val shiftParameters = if (enableBias) Array(featureDimension) { Value.ZERO } else null
 
     /**
      * Layer Normalization 순전파
@@ -60,7 +60,7 @@ class LayerNorm(
         }.reduce { accumulator, squaredDiff -> accumulator + squaredDiff } / featureCount
 
         // 3. 수치 안정성을 위한 엡실론 및 표준편차 역수
-        val epsilon = Value(1e-5f)  // 나눗셈에서 0을 방지하기 위한 작은 상수
+        val epsilon = Value(1e-5f)  // 나눗셈에서 0을 방지하기 위한 작은 상수 FIXME MIN_VALUE?
         val inverseStandardDeviation = (featureVariance + epsilon).pow(-0.5f)
 
         // 4. 정규화, 스케일링, 시프트 적용

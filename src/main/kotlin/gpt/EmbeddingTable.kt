@@ -69,7 +69,7 @@ class EmbeddingTable : Matrix {
         val embeddings = Array(indices.size) { i ->
             get(indices[i])
         }
-        return Sequence.fromArray(embeddings)
+        return Sequence(embeddings)
     }
     
     /**

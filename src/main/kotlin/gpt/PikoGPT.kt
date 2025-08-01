@@ -46,7 +46,7 @@ class PikoGPT(val config: GPTConfig) {
      * 3. 최종 Layer Normalization
      * 4. Language Model Head로 어휘 로짓 생성
      *
-     * @param tokenIds 입력 토큰 ID 배열 [sequence_length]
+     * @param tokenIds 입력 토큰 ID 배열
      * @return 각 위치에서의 어휘 로짓 분포
      */
     fun forward(tokenIds: IntArray): Logits {
@@ -66,10 +66,12 @@ class PikoGPT(val config: GPTConfig) {
         }
 
         // 3. 최종 Layer Normalization
-        sequence = sequence.map { lnF.forward(it) }
+        sequence = sequence.mapTokens { lnF.forward(it) }
 
         // 4. Language Model Head로 어휘 로짓 생성
-        val logitValues = sequence.values.map { lmHead.forward(it) }.toTypedArray()
+        val logitValues = sequence.values
+            .map { lmHead.forward(it) }
+            .toTypedArray()
         return Logits.fromArray(logitValues)
     }
 

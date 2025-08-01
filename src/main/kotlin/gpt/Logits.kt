@@ -52,7 +52,7 @@ class Logits(data: Array<Array<Value>>) : Matrix(data) {
     fun softmax(): Logits {
         val probabilities = mapRows { logitRow ->
             // 수치 안정성을 위해 최댓값을 빼줌
-            val maxLogit = logitRow.maxByOrNull { it.scalarValue } ?: Value(0.0f)
+            val maxLogit = logitRow.maxByOrNull { it.scalarValue } ?: Value.ZERO
             val expValues = logitRow.map { (it - maxLogit).exp() }.toTypedArray()
             val sumExp = expValues.reduce { acc, exp -> acc + exp }
             expValues.map { it / sumExp }.toTypedArray()

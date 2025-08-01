@@ -52,7 +52,7 @@ class DataLoader(
         for (tokenIndex in tokenData.indices) {
             tokenData[tokenIndex] = buffer.getInt()
         }
-        println("데이터 로드 완룮: ${tokenData.size} 토큰")
+        println("데이터 로드 완료: ${tokenData.size} 토큰")
     }
 
     /**

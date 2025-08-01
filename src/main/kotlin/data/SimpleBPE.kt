@@ -6,7 +6,7 @@ package data
  */
 class SimpleBPE(
     private val maxVocabSize: Int,
-    private val specialTokens: List<String> = listOf("<|eos|>", " ")
+    private val specialTokens: List<String> = listOf("<|eos|>", UNKNOWN_TOKEN)
 ) {
     /**
      * 토큰과 ID 매핑을 위한 맵
@@ -31,7 +31,8 @@ class SimpleBPE(
         println("예약된 특수 토큰: $specialTokens")
 
         // 모든 문자를 vocab에 추가
-        val uniqueChars: Set<Char> = processedText.toSet()
+        val uniqueChars = processedText.toSet()
+            .sorted()
         uniqueChars.forEach { char ->
             val charStr = char.toString()
             if (charStr !in tokenToId) {
@@ -53,8 +54,8 @@ class SimpleBPE(
                 break
             }
 
-            // 가장 빈번한 쌍 찾기
-            val mostCommon = pairs.maxByOrNull { it.value }?.key ?: break
+            // 가장 빈번한 쌍 찾기 (개선: 빈도와 길이를 고려한 우선순위)
+            val mostCommon = selectBestPair(pairs)
             val newToken = mostCommon.toMergedToken()
 
             // 새 토큰을 어휘에 추가
@@ -74,6 +75,9 @@ class SimpleBPE(
 
         // 최종 로깅
         loggingEnd(startTime, processedText, tokens)
+        
+        // 디버그: merges 개수 확인
+        println("DEBUG: 학습 완료 후 merges 개수: ${merges.size}")
     }
 
     /**
@@ -92,16 +96,35 @@ class SimpleBPE(
         var tokens: List<String> = tokenize(processedText)
 
         // 학습된 병합 규칙을 순서대로 적용
-        for (mergeRule in merges) {
+        println("DEBUG: encode 시작 - merges 개수: ${merges.size}, 초기 토큰 수: ${tokens.size}")
+        for ((index, mergeRule) in merges.withIndex()) {
             if (tokens.size < 2) break // 더 이상 병합할 수 없음
+            val beforeSize = tokens.size
             tokens = mergeTokens(tokens, mergeRule)
+            if (index % 100 == 0) {
+                println("DEBUG: 병합 진행 $index/${merges.size} - 토큰 수: $beforeSize -> ${tokens.size}")
+            }
         }
+        println("DEBUG: encode 병합 완료 - 최종 토큰 수: ${tokens.size}")
         
         // 토큰을 인덱스로 변환 (null 체크 최적화)
-        val unknownTokenId = tokenToId[" "] ?: 1
-        return tokens.map { token ->
-            tokenToId[token] ?: unknownTokenId
+        val unknownTokenId = tokenToId[UNKNOWN_TOKEN] ?: 1
+        var unknownCount = 0 
+        val result = tokens.map { token ->
+            tokenToId[token] ?: run {
+                unknownCount++
+                if (unknownCount <= 20) { // 첫 20개만 로깅
+                    println("Unknown token found: '$token' -> using ID $unknownTokenId")
+                }
+                unknownTokenId
+            }
         }
+        
+        if (unknownCount > 0) {
+            println("Total unknown tokens found: $unknownCount out of ${tokens.size} tokens (${String.format("%.2f", unknownCount.toDouble() / tokens.size * 100)}%)")
+        }
+        
+        return result
     }
 
     fun getVocabSize(): Int = tokenToId.size
@@ -264,6 +287,31 @@ class SimpleBPE(
     }
 
     /**
+     * 최적의 병합 쌍을 선택합니다.
+     * 빈도뿐만 아니라 토큰 길이와 의미적 가치를 고려합니다.
+     */
+    private fun selectBestPair(pairs: Map<TokenPair, Int>): TokenPair {
+        return pairs.maxByOrNull { (pair, frequency) ->
+            // 기본 점수: 빈도
+            var score = frequency.toDouble()
+            
+            // 길이 보너스: 더 긴 토큰을 선호 (하지만 너무 길지 않게)
+            val totalLength = pair.first.length + pair.second.length
+            if (totalLength <= 6) { // 적당한 길이의 토큰 선호
+                score *= (1.0 + totalLength * 0.1)
+            }
+            
+            // 공백 패널티: 공백이 많은 토큰은 선호하지 않음
+            val spaceCount = pair.first.count { it == ' ' } + pair.second.count { it == ' ' }
+            if (spaceCount > 0) {
+                score *= (1.0 - spaceCount * 0.2)
+            }
+            
+            score
+        }?.key ?: pairs.keys.first()
+    }
+
+    /**
      * 두 토큰의 쌍을 나타내는 데이터 클래스
      */
     data class TokenPair(
@@ -271,6 +319,10 @@ class SimpleBPE(
         val second: String
     ) {
         fun toMergedToken(): String = "$first$second"
+    }
+
+    companion object {
+        const val UNKNOWN_TOKEN = "<|unk|>" // 알 수 없는 토큰, BPE에서 자주 사용되는 특수 토큰
     }
 
 }

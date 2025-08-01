@@ -2,6 +2,7 @@ package sample
 
 import Value
 import data.MetaInfo
+import data.SimpleBPE.Companion.UNKNOWN_TOKEN
 import gpt.PikoGPT
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -12,7 +13,7 @@ import kotlinx.serialization.json.Json
 import train.Checkpoint
 import java.io.File
 import java.nio.ByteBuffer
-import java.util.*
+import java.security.MessageDigest
 import kotlin.random.Random
 
 /**
@@ -42,8 +43,14 @@ class Sampler(private val samplingConfiguration: SampleConfig) {
     /** 모델의 어휘 사전 크기 (가능한 총 토큰 수) */
     private var vocabularySize: Int = 0
 
+    /** 어휘 메타데이터 (디버깅용) */
+    private lateinit var vocabularyMetadata: MetaInfo
+
     /** 이 샘플러 인스턴스의 고유 식별자 (로깅 및 추적용) */
-    val uniqueIdentifier = UUID.randomUUID().toString()
+    val uniqueIdentifier = MessageDigest.getInstance("MD5")
+        .digest(samplingConfiguration.modelDir.toByteArray())
+        .joinToString("") { "%02x".format(it) }
+        .take(4)
 
     /**
      * 샘플러 초기화
@@ -71,6 +78,8 @@ class Sampler(private val samplingConfiguration: SampleConfig) {
      * @return 생성 결과를 담은 Result 객체 (UID, 프롬프트, 생성된 텍스트 리스트 포함)
      */
     suspend fun generateText(inputPrompt: String): GenerationResult = withContext(Dispatchers.Default) {
+        println("# 텍스트 생성 시작 #id:${uniqueIdentifier}")
+
         // 입력 프롬프트 처리 (파일에서 읽기 또는 직접 사용)
         val initialText = if (inputPrompt.startsWith("FILE:")) {
             // 파일에서 텍스트 로드
@@ -82,10 +91,13 @@ class Sampler(private val samplingConfiguration: SampleConfig) {
 
         // 시작 텍스트를 토큰 ID로 변환
         val initialTokenIds = textToTokenEncoder(initialText)
+        println("# 프롬프트 처리 완료 #id:${uniqueIdentifier} (입력 길이: ${initialText.length}자, 토큰 수: ${initialTokenIds.size}개)")
 
         // 여러 샘플을 병렬로 생성
         val generatedTexts = (0 until samplingConfiguration.numSamples).map { sampleIndex ->
             async {
+                println("# 샘플 생성 시작 #id:${uniqueIdentifier} (샘플 ${sampleIndex + 1}/${samplingConfiguration.numSamples})")
+
                 val generatedTokenIds = generateTokenSequence(
                     contextTokenIds = initialTokenIds,
                     maxNewTokens = samplingConfiguration.maxNewTokens,
@@ -94,9 +106,14 @@ class Sampler(private val samplingConfiguration: SampleConfig) {
                 ).takeWhile { tokenId -> tokenId != 0 } // EOS 토큰 제거
 
                 // 토큰 ID를 다시 텍스트로 변환
-                tokenToTextDecoder(generatedTokenIds)
+                val generatedText = tokenToTextDecoder(generatedTokenIds)
+                println("# 샘플 생성 완료 #id:${uniqueIdentifier} (샘플 ${sampleIndex + 1}, 생성된 토큰 수: ${generatedTokenIds.size - initialTokenIds.size}개) 생성됨: $generatedText")
+
+                generatedText
             }
         }.awaitAll()
+
+        println("# 텍스트 생성 완료 #id:${uniqueIdentifier} (총 ${samplingConfiguration.numSamples}개 샘플 생성)")
 
         GenerationResult(
             uniqueId = uniqueIdentifier,
@@ -104,14 +121,6 @@ class Sampler(private val samplingConfiguration: SampleConfig) {
             generatedTexts = generatedTexts
         )
     }
-
-    /**
-     * 호환성을 위한 별칭 메서드
-     *
-     * @param prompt 생성을 시작할 초기 텍스트
-     * @return 생성 결과를 담은 Result 객체
-     */
-    suspend fun sample(prompt: String): GenerationResult = generateText(prompt)
 
     /**
      * 학습된 모델 로드
@@ -165,13 +174,13 @@ class Sampler(private val samplingConfiguration: SampleConfig) {
 
         weightsFile.inputStream().use { inputStream ->
             val modelParameters = textGenerationModel.parameters()
-            val byteBuffer = ByteArray(8)
+            val byteBuffer = ByteArray(4)
 
             // 모든 파라미터에 대해 순차적으로 가중치 로드
             modelParameters.forEach { parameter ->
-                if (inputStream.read(byteBuffer) == 8) {
-                    // 8바이트 Double 값을 Float으로 변환하여 설정
-                    parameter.scalarValue = ByteBuffer.wrap(byteBuffer).double.toFloat()
+                if (inputStream.read(byteBuffer) == 4) {
+                    // 4바이트 Float 값을 직접 설정
+                    parameter.scalarValue = ByteBuffer.wrap(byteBuffer).float
                 }
             }
         }
@@ -187,23 +196,63 @@ class Sampler(private val samplingConfiguration: SampleConfig) {
         // 어휘 메타데이터 파일 로드
         val metadataFile = File("${samplingConfiguration.modelDir}/meta.json")
         val jsonParser = Json { ignoreUnknownKeys = true }
-        val vocabularyMetadata = jsonParser.decodeFromString<MetaInfo>(metadataFile.readText())
+        vocabularyMetadata = jsonParser.decodeFromString<MetaInfo>(metadataFile.readText())
 
-        // 인코더 함수: 문자열 → 토큰 ID 리스트
+        // 인코더 함수: 문자열 → 토큰 ID 리스트 (그리디 최장매칭)
         textToTokenEncoder = { inputText ->
-            inputText.map { character ->
-                vocabularyMetadata.stoi[character.toString()] ?: 1  // 알 수 없는 문자는 UNK 토큰(1)로 처리
-            }
+            greedyTokenize(inputText, vocabularyMetadata.stoi)
         }
 
         // 디코더 함수: 토큰 ID 리스트 → 문자열
         tokenToTextDecoder = { tokenIdList ->
-            tokenIdList.joinToString("") { tokenId ->
-                vocabularyMetadata.itos[tokenId] ?: " "  // 알 수 없는 토큰 ID는 공백으로 처리
-            }
+            tokenIdList.filter { it > 0 } // 0은 EOS 토큰이므로 제외
+                .joinToString("") { tokenId ->
+                    vocabularyMetadata.itos[tokenId] ?: ""
+                }
         }
 
         vocabularySize = vocabularyMetadata.vocabSize
+    }
+
+    /**
+     * 그리디 최장매칭 토큰화
+     * 
+     * 문자열에서 가장 긴 매칭되는 토큰을 찾아 토큰화합니다.
+     * BPE 병합 규칙이 없을 때 사용할 수 있는 대안적 접근법입니다.
+     * 
+     * @param text 토큰화할 텍스트
+     * @param stoi 문자열-ID 매핑
+     * @return 토큰 ID 리스트
+     */
+    private fun greedyTokenize(text: String, stoi: Map<String, Int>): List<Int> {
+        val tokens = mutableListOf<Int>()
+        var i = 0
+        val longestTokenLength = stoi.keys.maxOf { it.length }
+        
+        while (i < text.length) {
+            var found = false
+            
+            // 현재 위치에서 가장 긴 매칭 토큰 찾기
+            for (length in minOf(text.length - i, longestTokenLength) downTo 1) {
+                val candidate = text.substring(i, i + length)
+                val tokenId = stoi[candidate]
+                
+                if (tokenId != null) {
+                    tokens.add(tokenId)
+                    i += length
+                    found = true
+                    break
+                }
+            }
+            
+            // 매칭되는 토큰이 없으면 UNK 토큰으로 처리하고 한 글자씩 진행
+            if (!found) {
+                tokens.add(1) // UNK 토큰 ID
+                i++
+            }
+        }
+        
+        return tokens
     }
 
     /**
@@ -227,7 +276,13 @@ class Sampler(private val samplingConfiguration: SampleConfig) {
         val generatedSequence = contextTokenIds.toMutableList()
         var currentContext = contextTokenIds.toIntArray()
 
-        repeat(maxNewTokens) {
+        repeat(maxNewTokens) { stepIndex ->
+            // 진행 상황 로깅 (10% 간격으로)
+
+            //val progressPercent = (stepIndex * 100) / maxNewTokens
+            //println("# 토큰 생성 진행 #id:${uniqueIdentifier} ${progressPercent}% 완료 ${stepIndex}/${maxNewTokens} 토큰")
+
+
             // 컨텍스트 길이가 모델의 최대 블록 크기를 초과하면 자르기
             if (currentContext.size > textGenerationModel.config.blockSize) {
                 currentContext = currentContext.takeLast(textGenerationModel.config.blockSize).toIntArray()
@@ -253,8 +308,42 @@ class Sampler(private val samplingConfiguration: SampleConfig) {
             val logitsData = arrayOf(filteredLogits)
             val logits = gpt.Logits(logitsData)
             val softmaxResult = logits.softmax()
-            val tokenProbabilities = softmaxResult.get(0).map { it.scalarValue }.toFloatArray()
+            val tokenProbabilities = softmaxResult.get(0)
+                .map { it.scalarValue }.toFloatArray()
+
+            // === 디버깅 정보 출력 ===
+            if (stepIndex < 10) { // 처음 10 스텝만 출력
+                println("Step $stepIndex:")
+                
+                // 1. Top-5 토큰과 확률 출력
+                val top5 = tokenProbabilities.withIndex()
+                    .sortedByDescending { it.value }
+                    .take(5)
+                
+                println("  Top-5 tokens:")
+                top5.forEach { (tokenId, prob) ->
+                    val tokenText = vocabularyMetadata.itos[tokenId] ?: "?"
+                    println("    ID:$tokenId '${tokenText.replace("\n", "\\n").replace(UNKNOWN_TOKEN, "[FULL_SPACE]")}' prob:${prob.format(4)}")
+                }
+                
+                // 2. Full-width space 토큰(ID 1)의 확률 확인
+                val fullSpaceProb = tokenProbabilities.getOrNull(1) ?: 0.0f
+                println("  Full-width space (ID:1) probability: ${fullSpaceProb.format(4)}")
+                
+                // 3. 현재 컨텍스트 출력
+                val contextText = tokenToTextDecoder(currentContext.toList())
+                println("  Current context: '${contextText.takeLast(20)}'")
+            }
+
             val selectedToken = sampleFromDistribution(tokenProbabilities)
+            
+            // 선택된 토큰 정보 출력
+            if (stepIndex < 10) {
+                val selectedTokenText = vocabularyMetadata.itos[selectedToken] ?: "?"
+                val selectedProb = tokenProbabilities.getOrNull(selectedToken) ?: 0.0f
+                println("  Selected: ID:$selectedToken '${selectedTokenText.replace(UNKNOWN_TOKEN, "[FULL_SPACE]")}' prob:${selectedProb.format(4)}")
+                println()
+            }
 
             // 생성된 토팠을 시퀀스에 추가
             generatedSequence.add(selectedToken)
@@ -300,6 +389,7 @@ class Sampler(private val samplingConfiguration: SampleConfig) {
      * @return 선택된 토팠의 인덱스
      */
     private fun sampleFromDistribution(probabilityDistribution: FloatArray): Int {
+        // FIXME 로깅 상세하게 추가.
         // 누적 확률 분포 함수(CDF) 계산
         val cumulativeProbabilities = FloatArray(probabilityDistribution.size)
         cumulativeProbabilities[0] = probabilityDistribution[0]
@@ -339,4 +429,7 @@ class Sampler(private val samplingConfiguration: SampleConfig) {
         val prompt: String get() = originalPrompt
         val results: List<String> get() = generatedTexts
     }
+
+    // Float 포맷팅을 위한 확장 함수
+    private fun Float.format(decimals: Int): String = "%.${decimals}f".format(this)
 }

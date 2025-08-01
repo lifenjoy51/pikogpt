@@ -10,17 +10,29 @@ import kotlin.math.sqrt
  * 순전파 계산 중에 계산 그래프를 구축하고, 역전파 시 연쇄 법칙(chain rule)을 적용하여 그래디언트를 계산합니다.
  *
  * @param scalarValue 이 노드가 저장하는 실제 스칼라 값
- * @param parentNodes 이 값을 생성한 부모 노드들의 집합 (계산 그래프 구성용)
+ * @param _parentNodes 이 값을 생성한 부모 노드들의 집합 (계산 그래프 구성용)
  */
 class Value(
     var scalarValue: Float,
-    private val parentNodes: Set<Value> = emptySet()
+    private var _parentNodes: Set<Value>? = null
 ) {
     /** 이 노드에 대한 그래디언트 값 (역전파로 계산됨) */
     var gradient: Float = 0.0f
 
     /** 역전파 시 실행될 함수 (각 연산마다 고유한 그래디언트 계산 로직) */
     var backwardFunction: () -> Unit = {}
+    
+    /** 부모 노드들에 대한 지연 접근 */
+    private val parentNodes: Set<Value> get() = _parentNodes ?: emptySet()
+    
+    companion object {
+        /** 자주 사용되는 상수들 - Flyweight 패턴 */
+        val ZERO = Value(0.0f)
+        val ONE = Value(1.0f)
+        val MINUS_ONE = Value(-1.0f)
+        val HALF = Value(0.5f)
+        val MIN = Value(-1e9f)    // FIXME MIN_VALUE?
+    }
 
     // --- 연산자 오버로딩 최적화 ---
 
@@ -34,7 +46,8 @@ class Value(
      * @return 덧셈 결과를 담은 새로운 Value 객체
      */
     operator fun plus(rightOperand: Value): Value {
-        val resultValue = Value(this.scalarValue + rightOperand.scalarValue, setOf(this, rightOperand))
+        val resultValue = Value(this.scalarValue + rightOperand.scalarValue)
+        resultValue._parentNodes = setOf(this, rightOperand)
         resultValue.backwardFunction = {
             // 덧셈의 로컬 그래디언트는 항상 1이므로, 출력 그래디언트를 그대로 전파
             this.gradient += resultValue.gradient
@@ -49,7 +62,16 @@ class Value(
      * @param number 더할 숫자 값
      * @return 덧셈 결과를 담은 새로운 Value 객체
      */
-    operator fun plus(number: Number): Value = this + Value(number.toFloat())
+    operator fun plus(number: Number): Value {
+        val numFloat = number.toFloat()
+        return when (numFloat) {
+            0.0f -> this
+            1.0f -> this + ONE
+            -1.0f -> this + MINUS_ONE
+            0.5f -> this + HALF
+            else -> this + Value(numFloat)
+        }
+    }
 
     /**
      * 두 Value 객체의 곱셈 연산
@@ -61,7 +83,8 @@ class Value(
      * @return 곱셈 결과를 담은 새로운 Value 객체
      */
     operator fun times(rightOperand: Value): Value {
-        val resultValue = Value(this.scalarValue * rightOperand.scalarValue, setOf(this, rightOperand))
+        val resultValue = Value(this.scalarValue * rightOperand.scalarValue)
+        resultValue._parentNodes = setOf(this, rightOperand)
         resultValue.backwardFunction = {
             // 곱셈의 로컬 그래디언트: 각 피연산자에 대해 상대방의 값
             this.gradient += rightOperand.scalarValue * resultValue.gradient
@@ -76,14 +99,23 @@ class Value(
      * @param number 곱할 숫자 값
      * @return 곱셈 결과를 담은 새로운 Value 객체
      */
-    operator fun times(number: Number): Value = this * Value(number.toFloat())
+    operator fun times(number: Number): Value {
+        val numFloat = number.toFloat()
+        return when (numFloat) {
+            0.0f -> ZERO
+            1.0f -> this
+            -1.0f -> this * MINUS_ONE
+            0.5f -> this * HALF
+            else -> this * Value(numFloat)
+        }
+    }
 
     /**
      * 단항 마이너스 연산 (부호 반전)
      *
      * @return 부호가 반전된 새로운 Value 객체
      */
-    operator fun unaryMinus(): Value = this * -1.0f
+    operator fun unaryMinus(): Value = this * MINUS_ONE
 
     /**
      * 두 Value 객체의 뺄셈 연산
@@ -101,7 +133,16 @@ class Value(
      * @param number 뺄 숫자 값
      * @return 뺄셈 결과를 담은 새로운 Value 객체
      */
-    operator fun minus(number: Number): Value = this - Value(number.toFloat())
+    operator fun minus(number: Number): Value {
+        val numFloat = number.toFloat()
+        return when (numFloat) {
+            0.0f -> this
+            1.0f -> this - ONE
+            -1.0f -> this - MINUS_ONE
+            0.5f -> this - HALF
+            else -> this - Value(numFloat)
+        }
+    }
 
     /**
      * 두 Value 객체의 나눗셈 연산
@@ -113,7 +154,8 @@ class Value(
      * @return 나눗셈 결과를 담은 새로운 Value 객체
      */
     operator fun div(denominator: Value): Value {
-        val resultValue = Value(this.scalarValue / denominator.scalarValue, setOf(this, denominator))
+        val resultValue = Value(this.scalarValue / denominator.scalarValue)
+        resultValue._parentNodes = setOf(this, denominator)
         resultValue.backwardFunction = {
             // 나눗셈의 로컬 그래디언트
             this.gradient += (1.0f / denominator.scalarValue) * resultValue.gradient
@@ -128,7 +170,15 @@ class Value(
      * @param number 나눌 숫자 값
      * @return 나눗셈 결과를 담은 새로운 Value 객체
      */
-    operator fun div(number: Number): Value = this / Value(number.toFloat())
+    operator fun div(number: Number): Value {
+        val numFloat = number.toFloat()
+        return when (numFloat) {
+            1.0f -> this
+            -1.0f -> this / MINUS_ONE
+            0.5f -> this / HALF
+            else -> this / Value(numFloat)
+        }
+    }
 
     /**
      * 거듭제곱 연산
@@ -140,7 +190,8 @@ class Value(
      * @return 거듭제곱 결과를 담은 새로운 Value 객체
      */
     fun pow(exponent: Float): Value {
-        val resultValue = Value(this.scalarValue.pow(exponent), setOf(this))
+        val resultValue = Value(this.scalarValue.pow(exponent))
+        resultValue._parentNodes = setOf(this)
         resultValue.backwardFunction = {
             // 거듭제곱의 로컬 그래디언트: exponent * base^(exponent-1)
             this.gradient += (exponent * this.scalarValue.pow(exponent - 1)) * resultValue.gradient
@@ -163,7 +214,8 @@ class Value(
      * @return ReLU 적용 결과를 담은 새로운 Value 객체
      */
     fun relu(): Value {
-        val activatedValue = Value(if (this.scalarValue < 0) 0.0f else this.scalarValue, setOf(this))
+        val activatedValue = Value(if (this.scalarValue < 0) 0.0f else this.scalarValue)
+        activatedValue._parentNodes = setOf(this)
         activatedValue.backwardFunction = {
             // ReLU의 로컬 그래디언트: 입력이 양수면 1, 음수면 0
             this.gradient += (if (activatedValue.scalarValue > 0) 1.0f else 0.0f) * activatedValue.gradient
@@ -182,7 +234,8 @@ class Value(
      * @return 지수 함수 결과를 담은 새로운 Value 객체
      */
     fun exp(): Value {
-        val exponentialResult = Value(exp(this.scalarValue.toDouble()).toFloat(), setOf(this))
+        val exponentialResult = Value(exp(this.scalarValue.toDouble()).toFloat())
+        exponentialResult._parentNodes = setOf(this)
         exponentialResult.backwardFunction = {
             // 지수 함수의 로컬 그래디언트: exp(x)
             this.gradient += exponentialResult.scalarValue * exponentialResult.gradient
@@ -203,7 +256,7 @@ class Value(
     fun sigmoid(): Value {
         // sigmoid(x) = 1 / (1 + exp(-x))
         // 체인 룰(chain rule)에 의해 자동으로 역전파 처리됨
-        val sigmoidResult = 1.0f / (1.0f + (-this).exp())
+        val sigmoidResult = ONE / (ONE + (-this).exp())
         return sigmoidResult
     }
 
@@ -227,10 +280,10 @@ class Value(
 
         // tanh(y) = (exp(2y) - 1) / (exp(2y) + 1) 공식을 사용하여 tanh 구현
         val exp2y = (innerExpression * 2.0f).exp()
-        val tanhValue = (exp2y - 1.0f) / (exp2y + 1.0f)
+        val tanhValue = (exp2y - ONE) / (exp2y + ONE)
 
         // GELU 최종 결과: 0.5 * x * (1 + tanh(...))
-        return inputValue * 0.5f * (1.0f + tanhValue)
+        return inputValue * HALF * (ONE + tanhValue)
     }
 
 
@@ -263,6 +316,7 @@ class Value(
                 visitedNodes.add(currentNode)
                 // 모든 부모 노드를 재귀적으로 방문
                 currentNode.parentNodes.forEach(::buildTopologicalOrder)
+
                 // 마지막에 현재 노드를 추가 (위상정렬)
                 topologicalOrder.add(currentNode)
             }
@@ -275,12 +329,27 @@ class Value(
 
         // 역순으로 각 노드의 그래디언트 전파 함수 실행
         topologicalOrder.reversed().forEach { node -> node.backwardFunction() }
+
+        // 메모리 최적화: 계산 그래프 참조 해제
+        clearComputationGraph(topologicalOrder)
+    }
+    
+    /**
+     * 계산 그래프의 참조를 해제하여 메모리 사용량 최적화
+     * 
+     * @param nodes 위상정렬된 노드 리스트
+     */
+    private fun clearComputationGraph(nodes: List<Value>) {
+        nodes.forEach { node ->
+            node._parentNodes = null
+            node.backwardFunction = {}
+        }
     }
 
     /**
      * 디버깅을 위한 문자열 표현
      *
-     * Value 객체의 현재 상태를 사람이 읽기 쉽은 형태로 변환합니다.
+     * Value 객체의 현재 상태를 사람이 읽기 쉬운 형태로 변환합니다.
      * 스칼라 값과 그래디언트 값을 동시에 표시하여 디버깅에 도움을 줍니다.
      *
      * @return 데이터와 그래디언트 값을 포함한 문자열
@@ -307,11 +376,28 @@ class Value(
      * 숫자 - Value 연산을 위한 확장 함수
      * 5.0 - valueObject 같은 자연스러운 문법을 지원합니다.
      */
-    operator fun Number.minus(valueObject: Value): Value = Value(this.toFloat()) - valueObject
+    operator fun Number.minus(valueObject: Value): Value {
+        val numFloat = this.toFloat()
+        return when (numFloat) {
+            0.0f -> -valueObject
+            1.0f -> ONE - valueObject
+            -1.0f -> MINUS_ONE - valueObject
+            0.5f -> HALF - valueObject
+            else -> Value(numFloat) - valueObject
+        }
+    }
 
     /**
      * 숫자 / Value 연산을 위한 확장 함수
      * 10.0 / valueObject 같은 자연스러운 문법을 지원합니다.
      */
-    operator fun Number.div(valueObject: Value): Value = Value(this.toFloat()) / valueObject
+    operator fun Number.div(valueObject: Value): Value {
+        val numFloat = this.toFloat()
+        return when (numFloat) {
+            1.0f -> ONE / valueObject
+            -1.0f -> MINUS_ONE / valueObject
+            0.5f -> HALF / valueObject
+            else -> Value(numFloat) / valueObject
+        }
+    }
 }

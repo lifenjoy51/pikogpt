@@ -46,21 +46,7 @@ open class Matrix(protected val data: Array<Array<Value>>) {
     open operator fun set(row: Int, col: Int, value: Value) {
         data[row][col] = value
     }
-    
-    /**
-     * 행렬의 각 원소에 함수 적용
-     * @param transform 적용할 변환 함수
-     * @return 변환된 새로운 행렬
-     */
-    fun map(transform: (Value) -> Value): Matrix {
-        val result = Array(rows) { i ->
-            Array(cols) { j ->
-                transform(data[i][j])
-            }
-        }
-        return Matrix(result)
-    }
-    
+
     /**
      * 행렬의 각 행에 함수 적용
      * @param transform 적용할 변환 함수
@@ -138,7 +124,7 @@ open class Matrix(protected val data: Array<Array<Value>>) {
          * @return 모든 원소가 0인 행렬
          */
         fun zeros(rows: Int, cols: Int): Matrix {
-            val data = Array(rows) { Array(cols) { Value(0.0f) } }
+            val data = Array(rows) { Array(cols) { Value.ZERO } }
             return Matrix(data)
         }
     }

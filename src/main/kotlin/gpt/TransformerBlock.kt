@@ -40,13 +40,13 @@ class TransformerBlock(config: GPTConfig) {
      */
     fun forward(x: Sequence): Sequence {
         // 첫 번째 서브레이어: x + self.attn(self.ln_1(x))
-        val normalized1 = x.map { ln1.forward(it) }
+        val normalized1 = x.mapTokens { ln1.forward(it) } // FIXME Sequence에 normalize가 있어도 될듯?
         val attnOut = attn.forward(normalized1)
         val x1 = x.zipWith(attnOut) { a, b -> a + b }
 
         // 두 번째 서브레이어: x + self.mlp(self.ln_2(x))
-        val normalized2 = x1.map { ln2.forward(it) }
-        val mlpSequence = normalized2.map { mlp.forward(it) }
+        val normalized2 = x1.mapTokens { ln2.forward(it) }
+        val mlpSequence = normalized2.mapTokens { mlp.forward(it) }
         val x2 = x1.zipWith(mlpSequence) { a, b -> a + b }
 
         return x2

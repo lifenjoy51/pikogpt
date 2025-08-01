@@ -9,19 +9,11 @@ import java.nio.ByteBuffer
 import java.nio.channels.FileChannel
 import java.nio.file.StandardOpenOption
 
-/**
- * `StoriesBPEPrep` 객체를 실행하여 BPE 토큰화를 수행하는 메인 함수입니다.
- * 특정 경로("data/1k")에 있는 텍스트 파일을 처리합니다.
- */
 fun main() {
-    StoriesBPEPrep.run("data/simple")
+    AlphabetPrep.run("data/alphabet")
 }
 
-/**
- * 텍스트 데이터를 BPE(Byte Pair Encoding)를 사용하여 토큰화하고,
- * 훈련 및 검증 데이터셋으로 분할하여 저장하는 객체입니다.
- */
-object StoriesBPEPrep {
+object AlphabetPrep {
     /**
      * 지정된 경로의 텍스트 파일을 읽어 BPE 토큰화를 수행하고 결과를 저장합니다.
      *
@@ -34,29 +26,12 @@ object StoriesBPEPrep {
      * @param path 처리할 데이터가 있는 디렉토리 경로 (e.g., "data/1k")
      */
     fun run(path: String) {
-        val inputFile = File("$path/stories.txt")
+        val inputFile = File("$path/az.txt")
         val dataDir = File(path)
         val text = inputFile.readText()
 
-        // 고유 단어 추출 및 파일로 출력
-        val uniqueWords = text.lowercase()
-            .replace(Regex("[^a-z\\s]"), "")
-            .split(Regex("\\s+"))
-            .filter { it.isNotEmpty() }
-            .groupBy { it }
-            .map { it.key to it.value.size }
-            .sortedByDescending { it.second }
-
-        val wordsFile = File(dataDir, "unique_words.txt")
-        wordsFile.writeText("")
-        uniqueWords.forEach { (word, count) ->
-            wordsFile.appendText("$word\t$count\n")
-        }
-        println("Unique words saved to: ${wordsFile.absolutePath}")
-        println("Total unique words: ${String.format("%,d", uniqueWords.size)}")
-
         // BPE 모델 훈련
-        val bpe = SimpleBPE(maxVocabSize = 1500)
+        val bpe = SimpleBPE(maxVocabSize = 28)
         runBlocking {
             bpe.train(text)
         }

@@ -21,7 +21,7 @@ class Neuron(
     val weights: List<Value> = List(numberOfInputs) { Value(Random.nextDouble(-1.0, 1.0).toFloat()) }
 
     /** 가중합에 더해지는 편향. 0으로 초기화됩니다. */
-    val bias: Value = Value(0.0f)
+    val bias: Value = Value.ZERO
 
     /**
      * 뉴런의 순전파를 수행합니다.

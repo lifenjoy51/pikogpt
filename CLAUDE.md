@@ -14,6 +14,19 @@ PikoGPT is a Kotlin port of nanoGPT and micrograd by Andrej Karpathy. This is an
 
 # Clean build artifacts
 ./gradlew clean
+
+# Run tests
+./gradlew test
+
+# Run specific test classes
+./gradlew test --tests "ValueTest"
+./gradlew test --tests "train.TrainerTest"
+./gradlew test --tests "sample.SamplerTest"
+
+# Run main entry points
+./gradlew run --args="train"        # Start training
+./gradlew run --args="sample"       # Generate text
+./gradlew run --args="prepare_data" # Prepare data for training
 ```
 
 ## Architecture
@@ -46,9 +59,10 @@ PikoGPT is a Kotlin port of nanoGPT and micrograd by Andrej Karpathy. This is an
    - `SampleConfig.kt` - Sampling parameters
 
 5. **Data Processing (`src/main/kotlin/data/`)**
-   - `DataLoader.kt` - Training data loading
-   - `MetaInfo.kt` - Vocabulary metadata
-   - Character and BPE tokenization implementations
+   - `SimpleBPE.kt` - Byte Pair Encoding tokenization implementation
+   - `StoriesBpePrep.kt` - Data preprocessing pipeline (main entry point)
+   - `StoryGenerator.kt` - External LLM integration for story generation
+   - `MetaInfo.kt` - Vocabulary metadata structure
 
 ### Key Design Patterns
 
@@ -59,10 +73,17 @@ PikoGPT is a Kotlin port of nanoGPT and micrograd by Andrej Karpathy. This is an
 
 ## Training Workflow
 
-1. **Data Preparation**: Text is tokenized and stored in `data/[dataset]/train.bin` and `val.bin`
-2. **Model Training**: `Trainer` class handles training loop with gradient accumulation
-3. **Checkpointing**: Model state saved to `out/[dataset]/checkpoint.json` and `model_weights.bin`
-4. **Text Generation**: `Sampler` loads checkpoints and generates text
+1. **Data Preparation**: Run `StoriesBpePrep.kt` to tokenize text and create `data/[dataset]/train.bin` and `val.bin`
+2. **Model Training**: `TrainerTest.kt` contains main entry points with predefined configurations (train_1k, etc.)
+3. **Checkpointing**: Model state saved to `model/[steps]/[epoch]/checkpoint.json` and `model_weights.bin`
+4. **Text Generation**: `Sampler.kt` loads checkpoints and generates text with configurable sampling strategies
+
+## Main Entry Points
+
+- `src/main/kotlin/data/StoriesBpePrep.kt` - Data preprocessing with BPE tokenization
+- `src/main/kotlin/data/StoryGenerator.kt` - External LLM story generation
+- `src/test/kotlin/train/TrainerTest.kt` - Training configurations and execution
+- `src/test/kotlin/sample/SamplerTest.kt` - Text generation examples
 
 ## Configuration
 
@@ -74,17 +95,38 @@ PikoGPT is a Kotlin port of nanoGPT and micrograd by Andrej Karpathy. This is an
 
 ```
 data/
-├── shakespeare_char/
-│   ├── input.txt      # Original text
-│   ├── meta.json      # Vocabulary info
-│   ├── train.bin      # Training data
-│   └── val.bin        # Validation data
+├── [dataset_name]/           # e.g., 1k, 3old, 6old
+│   ├── stories.txt           # Original text input
+│   ├── meta.json             # Vocabulary metadata (vocab size, mappings)
+│   ├── train.bin             # Binary training data (tokenized)
+│   ├── val.bin               # Binary validation data (tokenized)
+│   └── unique_words.txt      # Unique vocabulary list
+
+model/
+├── [parameter_size]/                  # Model parameter size
+│   └── [validation_loss]/              # validation loss * 10 at checkpoint
+│       ├── checkpoint.json   # Model training state
+│       ├── meta.json         # Model metadata
+│       └── model_weights.bin # Serialized model parameters
 ```
 
 ## Key Files to Understand
 
-- `Value.kt` - Automatic differentiation foundation
-- `gpt/PikoGPT.kt` - Main model architecture
-- `train/Trainer.kt` - Training loop and checkpointing
-- `sample/Sampler.kt` - Text generation
-- `train/TrainConfig.kt` - Default hyperparameters
+- `Value.kt` - Automatic differentiation foundation (scalar autodiff engine)
+- `gpt/PikoGPT.kt` - Main transformer model architecture
+- `gpt/GPTConfig.kt` - Model configuration and hyperparameters
+- `train/Trainer.kt` - Training loop with gradient accumulation and checkpointing
+- `train/TrainConfig.kt` - Training hyperparameters and file paths
+- `train/AdamW.kt` - AdamW optimizer implementation
+- `sample/Sampler.kt` - Text generation with temperature and top-k sampling
+- `data/SimpleBPE.kt` - Byte Pair Encoding tokenization
+- `train/Checkpoint.kt` - Model state serialization for saving/loading
+
+## Development Notes
+
+- Tests are located in `src/test/kotlin/` and mirror the main source structure
+- Main execution happens through test files rather than traditional main() methods
+- The project uses kotlinx.serialization for JSON serialization of configs and checkpoints
+- Model checkpoints include both model weights and optimizer state for resuming training
+- The Value class implements a complete autodiff engine with gradient computation graph
+- No external ML libraries are used - everything is implemented from scratch in Kotlin

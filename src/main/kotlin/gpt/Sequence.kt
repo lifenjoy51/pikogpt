@@ -17,9 +17,7 @@ class Sequence(data: Array<Array<Value>>) : Matrix(data) {
     
     /** 임베딩 차원 */
     val embeddingDim: Int get() = cols
-    
-    
-    
+
     /**
      * 시퀀스의 각 토큰에 함수 적용
      * @param transform 적용할 변환 함수

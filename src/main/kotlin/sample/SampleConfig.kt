@@ -23,13 +23,13 @@ data class SampleConfig(
     val maximumNewTokens: Int = 50,
 
     /** 샘플링 온도 (0.0: 결정론적, 1.0: 창의적, >1.0: 매우 창의적) */
-    val samplingTemperature: Float = 0.8f,
+    val samplingTemperature: Float = 1.0f,
 
     /** Top-K 샘플링 값 (가장 가능성 높은 K개 토큰만 고려, 0이면 비활성화) */
     val topKFilteringSize: Int = 100,
 
     /** 랜덤 시드 값 (재현 가능한 결과를 위해 사용) */
-    val randomSeed: Int = 1337
+    val randomSeed: Int = 51
 ) {
     // 호환성을 위한 별칭 속성들
     val initFrom: String get() = modelInitializationMode

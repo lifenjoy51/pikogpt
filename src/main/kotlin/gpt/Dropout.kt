@@ -56,7 +56,7 @@ class Dropout(
         return inputVector.map { neuronValue ->
             if (Random.nextFloat() < dropoutProbability) {
                 // 드롭아웃: 뉴런을 0으로 설정
-                Value(0.0f)
+                Value.ZERO
             } else {
                 // 유지: 스케일링 적용하여 기대값 유지
                 neuronValue * Value(compensationScale)
@@ -87,10 +87,10 @@ class Dropout(
         // 스케일링 팩터: 드롭아웃된 뉴런들을 보상하기 위해 나머지 뉴런을 증폭
         val compensationScale = Value(1.0f / (1.0f - dropoutProbability))
 
-        return inputSequence.map { tokenEmbedding ->
+        return inputSequence.mapTokens { tokenEmbedding ->
             tokenEmbedding.map { featureValue ->
                 if (Random.nextFloat() < dropoutProbability) {
-                    Value(0.0f)
+                    Value.ZERO
                 } else {
                     featureValue * compensationScale
                 }

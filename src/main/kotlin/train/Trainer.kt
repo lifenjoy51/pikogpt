@@ -48,7 +48,7 @@ class Trainer(private val config: TrainConfig) {
     private val datasetSize = "${config.calculateTotalParameters(getVocabularySize())}"
 
     /** 모델 저장 경로 */
-    private val modelPath = "${config.modelDir}/${config.subDir ?: datasetSize}"
+    private val modelPath = "${config.modelDir}/${datasetSize}"
 
     /** 베이스라인 손실 - 랜덤 추측의 이론적 손실 값 (ln(어휘수)) */
     private val baselineLoss = ln(getVocabularySize().toDouble())
@@ -190,7 +190,7 @@ class Trainer(private val config: TrainConfig) {
      * 데이터 디렉토리의 meta.json 파일에서 어휘 사전 크기를 읽어옵니다.
      * 이 값은 모델의 출력 레이어 크기를 결정하는데 사용됩니다.
      *
-     * @return 어휘 사전의 크기 (예: shakespeare_char의 경우 65)
+     * @return 어휘 사전의 크기
      */
     private fun getVocabularySize(): Int {
         // meta.json에서 vocab_size 읽기
@@ -215,7 +215,7 @@ class Trainer(private val config: TrainConfig) {
         Dropout.training = true
         
         // 순전파
-        var totalLoss = 0.0f
+        var totalLoss = Value.ZERO
 
         for (batchIndex in inputSequences.indices) {
             val logits = model.forward(inputSequences[batchIndex])
@@ -225,17 +225,17 @@ class Trainer(private val config: TrainConfig) {
                 val targetToken = targetSequences[batchIndex][tokenIndex]
                 val logitVector = logits[tokenIndex]
 
-                // Softmax와 cross-entropy
-                val maxLogit = logitVector.maxByOrNull { it.scalarValue } ?: Value(0.0f)
+                // Softmax와 cross-entropy   // FIXME softmax 함수를 정의할 수 있음.
+                val maxLogit = logitVector.maxByOrNull { it.scalarValue } ?: Value.ZERO
                 val exponentialLogits = logitVector.map { (it - maxLogit).exp() }
                 val sumExponential = exponentialLogits.reduce { accumulator, value -> accumulator + value }
 
                 val stepLoss = (logitVector[targetToken] - maxLogit).negate() + sumExponential.log()
-                totalLoss += stepLoss.scalarValue
+                totalLoss = totalLoss + stepLoss
             }
         }
 
-        val averageLoss = Value(totalLoss / (inputSequences.size * targetSequences[0].size))
+        val averageLoss = totalLoss * Value(1.0f / (inputSequences.size * targetSequences[0].size))
 
         // 역전파
         model.parameters().forEach { it.gradient = 0.0f }
@@ -491,8 +491,8 @@ class Trainer(private val config: TrainConfig) {
         val weightsFile = File(filename)
         weightsFile.outputStream().use { outputStream ->
             model.parameters().forEach { parameter ->
-                // Double을 바이트로 변환하여 저장
-                val bytes = ByteBuffer.allocate(8).putFloat(parameter.scalarValue).array()
+                // Float을 바이트로 변환하여 저장 (4바이트)
+                val bytes = ByteBuffer.allocate(4).putFloat(parameter.scalarValue).array()
                 outputStream.write(bytes)
             }
         }
@@ -507,7 +507,7 @@ class Trainer(private val config: TrainConfig) {
     private fun loadCheckpoint() {
         println("체크포인트 로드 중...")
 
-        val checkpointFile = File("${modelPath}/checkpoint.json")
+        val checkpointFile = File("${config.modelCheckpointDir}/checkpoint.json")
         if (!checkpointFile.exists()) {
             throw IllegalStateException("체크포인트 파일을 찾을 수 없습니다: ${checkpointFile.absolutePath}")
         }
@@ -520,7 +520,7 @@ class Trainer(private val config: TrainConfig) {
         model = PikoGPT(modelConfiguration)
 
         // 가중치 로드
-        loadModelWeights("${modelPath}/model_weights.bin")
+        loadModelWeights("${config.modelCheckpointDir}/model_weights.bin")
 
         // 훈련 상태 복원
         iterationNumber = checkpoint.iterationNumber
@@ -546,10 +546,10 @@ class Trainer(private val config: TrainConfig) {
 
         weightsFile.inputStream().use { inputStream ->
             val parameters = model.parameters()
-            val buffer = ByteArray(8)
+            val buffer = ByteArray(4)
 
             parameters.forEach { parameter ->
-                if (inputStream.read(buffer) == 8) {
+                if (inputStream.read(buffer) == 4) {
                     parameter.scalarValue = ByteBuffer.wrap(buffer).getFloat()
                 }
             }
@@ -564,7 +564,7 @@ class Trainer(private val config: TrainConfig) {
     fun Double.format(digits: Int): String = "%.${digits}f".format(this)
 
     /** Value 객체의 부호 반전 */
-    fun Value.negate(): Value = this * Value(-1.0f)
+    fun Value.negate(): Value = this * Value.MINUS_ONE
 
     /**
      * 손실을 진행률 퍼센트로 변환

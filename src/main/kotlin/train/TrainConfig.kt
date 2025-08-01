@@ -17,7 +17,7 @@ data class TrainConfig(
     val modelDir: String = "model",
     /** 전체 훈련 반복 중 검증을 얼마나 자주 실행할지에 대한 비율 (e.g., 0.01 = 1%) */
     val evalIntervalRatio: Float = 0.01f,
-    /** 훈련 중 로그를 얼마나 자주 출력할지에 대한 반복 수 간격 */
+    /** 훈련 중 로그 출력 빈도 */
     val logInterval: Int = 1,
     /** 검증 단계에서 사용할 반복 횟수 */
     val evalIters: Int = 10,
@@ -28,25 +28,31 @@ data class TrainConfig(
     /** 모델 초기화 방식 ('scratch': 처음부터 학습, 'resume': 체크포인트에서 이어하기) */
     val initFrom: String = "scratch",
     /** 체크포인트를 저장할 때 사용할 하위 디렉토리 이름 (선택 사항) */
-    val subDir: String? = null,
+    val modelCheckpointDir: String? = null,
 
     // 데이터
     /** 사용할 데이터셋의 이름 (e.g., "stories") */
     val dataset: String = "stories",
-    /** 그래디언트 누적 단계 수. 실질적인 배치 크기를 늘려 안정적인 학습을 돕습니다. */
-    val gradientAccumulationSteps: Int = 4,
-    /** 한 번의 반복(iteration)에서 사용할 데이터 샘플의 수 */
-    val batchSize: Int = 4,
-    /** 모델이 한 번에 처리할 수 있는 최대 토큰 시퀀스 길이 (컨텍스트 윈도우) */
-    val blockSize: Int = 24,
+    /** 그래디언트 누적 단계 수. 실질적인 배치 크기를 늘려 안정적인 학습을 돕습니다. [메모리: 낮음, 시간: 선형 증가] */
+    val gradientAccumulationSteps: Int = 2,
+    /** 한 번의 반복(iteration)에서 사용할 데이터 샘플의 수 [메모리: 선형 증가, 시간: 선형 증가] */
+    val batchSize: Int = 8,
+    /** 모델이 한 번에 처리할 수 있는 최대 토큰 시퀀스 길이 (컨텍스트 윈도우)
+     *  더 긴 컨텍스트 학습: 이야기 전체를 한 번에 처리
+     *  일관성 향상: 문장 간 연결성과 스토리 흐름 학습
+     *  [메모리: 제곱 증가(어텐션), 시간: 제곱 증가] */
+    val blockSize: Int = 48,
 
     // 모델
-    /** 모델의 임베딩 벡터 차원. 모델의 표현력을 결정하는 핵심 하이퍼파라미터. */
-    val embeddingDimension: Int = 4,
-    /** 모델에 포함된 트랜스포머 블록(레이어)의 수. 모델의 깊이를 결정. */
-    val numberOfLayers: Int = 1,
-    /** 멀티-헤드 어텐션에서 사용할 헤드의 수. `embeddingDimension`의 약수여야 합니다. */
-    val numberOfHeads: Int = 1,
+    /** 모델의 임베딩 벡터 차원. 모델의 표현력을 결정하는 핵심 하이퍼파라미터.
+     *  표현력 향상: 더 풍부한 의미 표현
+     *  복잡한 패턴 학습: 언어의 미묘한 뉘앙스 캡처
+     *  [메모리: 제곱 증가, 시간: 제곱 증가] */
+    val embeddingDimension: Int = 16,
+    /** 모델에 포함된 트랜스포머 블록(레이어)의 수. 모델의 깊이를 결정. [메모리: 선형 증가, 시간: 선형 증가] */
+    val numberOfLayers: Int = 2,
+    /** 멀티-헤드 어텐션에서 사용할 헤드의 수. `embeddingDimension`의 약수여야 합니다. [메모리: 낮음, 시간: 거의 변화 없음] */
+    val numberOfHeads: Int = 2,
     /** 모델의 선형 레이어에서 편향(bias)을 사용할지 여부 */
     val bias: Boolean = true,
     /** 과적합을 방지하기 위한 드롭아웃 확률 (0.0 ~ 1.0) */
@@ -95,7 +101,7 @@ data class TrainConfig(
      * 2. Transformer 블록들: Attention + FFN + LayerNorm
      * 3. 출력 레이어: Language Model Head
      *
-     * @param vocabularySize 모델의 어휘 사전 크기 (e.g., 65 for shakespeare_char)
+     * @param vocabularySize 모델의 어휘 사전 크기
      * @return 총 파라미터 수 (Long 타입)
      */
     fun calculateTotalParameters(vocabularySize: Int): Long {
@@ -111,24 +117,24 @@ data class TrainConfig(
         var singleBlockParameters = 0L
         val biasParameters = { size: Long -> if (this.bias) size else 0L }
 
-        // a. Multi-Head Self-Attention (MHSA)
-        singleBlockParameters += (this.embeddingDimension.toLong() * this.embeddingDimension * 3) + biasParameters(this.embeddingDimension.toLong() * 3)
-        singleBlockParameters += (this.embeddingDimension.toLong() * this.embeddingDimension) + biasParameters(this.embeddingDimension.toLong())
+        // a. Multi-Head Self-Attention (MHSA) - 4개의 별도 Linear 레이어 (Q, K, V, Output)
+        singleBlockParameters += 4 * ((this.embeddingDimension.toLong() * this.embeddingDimension) + biasParameters(this.embeddingDimension.toLong()))
 
         // b. Feed-Forward Network (FFN)
         val feedForwardHiddenSize = this.embeddingDimension * 4
         singleBlockParameters += (this.embeddingDimension.toLong() * feedForwardHiddenSize) + biasParameters(feedForwardHiddenSize.toLong())
         singleBlockParameters += (feedForwardHiddenSize.toLong() * this.embeddingDimension) + biasParameters(this.embeddingDimension.toLong())
 
-        // c. Layer Normalization (블록 당 2개)
-        singleBlockParameters += 2 * (this.embeddingDimension.toLong() * 2)
+        // c. Layer Normalization (블록 당 2개) - 각각 scale + shift 파라미터
+        val layerNormParams = if (this.bias) 2 * this.embeddingDimension.toLong() else this.embeddingDimension.toLong()
+        singleBlockParameters += 2 * layerNormParams
 
         println(String.format("2. 단일 트랜스포머 블록 파라미터: %,d", singleBlockParameters))
         totalParameters += singleBlockParameters * this.numberOfLayers
         println(String.format("   => 총 트랜스포머 블록 파라미터 (%d개): %,d", this.numberOfLayers, singleBlockParameters * this.numberOfLayers))
 
         // --- 3. 최종 출력층 ---
-        val finalLayerNormParameters = this.embeddingDimension.toLong() * 2
+        val finalLayerNormParameters = if (this.bias) 2 * this.embeddingDimension.toLong() else this.embeddingDimension.toLong()
         totalParameters += finalLayerNormParameters
         println(String.format("3. 최종 LayerNorm 파라미터: %,d", finalLayerNormParameters))
 
