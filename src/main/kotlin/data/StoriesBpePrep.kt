@@ -13,8 +13,9 @@ import java.nio.file.StandardOpenOption
  * `StoriesBPEPrep` 객체를 실행하여 BPE 토큰화를 수행하는 메인 함수입니다.
  * 특정 경로("data/1k")에 있는 텍스트 파일을 처리합니다.
  */
-fun main() {
-    StoriesBPEPrep.run("data/simple")
+fun main(args: Array<String>) {
+    val path = args.getOrNull(0) ?: "data/simple"
+    StoriesBPEPrep.run(path)
 }
 
 /**
