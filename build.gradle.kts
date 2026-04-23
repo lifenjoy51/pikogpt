@@ -72,6 +72,13 @@ tasks.register<JavaExec>("runMiniTrainer") {
     jvmArgs = listOf("-Xmx2g")
 }
 
+tasks.register<JavaExec>("runTinyHelenTrain") {
+    description = "Run TinyHelenTrain (TinyHelen leaner 코퍼스 overnight 학습)"
+    mainClass.set("train.TinyHelenTrainKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx8g")
+}
+
 tasks.register<JavaExec>("runSampler") {
     description = "Run SamplerMain (샘플링)"
     mainClass.set("sample.SamplerMainKt")
