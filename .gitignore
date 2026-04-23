@@ -41,3 +41,8 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+### PikoGPT-specific ###
+model/
+package-lock.json
+run-stories-bpe.kt
