@@ -21,51 +21,74 @@ tasks.test {
 }
 
 // Main 함수들을 실행하는 Gradle 태스크들
-tasks.register("runMain") {
-    dependsOn("classes")
-    doLast {
-        exec {
-            commandLine("java", "-Xmx2g", "-cp", "${sourceSets.main.get().runtimeClasspath.asPath}", "MainKt")
-        }
-    }
+// 규약: 모든 실행 스크립트는 main 소스셋에 있고, JavaExec 태스크로 실행됨.
+
+tasks.register<JavaExec>("runMain") {
+    description = "Run MainKt"
+    mainClass.set("MainKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx2g")
 }
 
-tasks.register("runStoriesBpe") {
+tasks.register<JavaExec>("runStoriesBpe") {
     description = "Run StoriesBpePrep (스토리 BPE 처리)"
-    dependsOn("classes")
-    doLast {
-        exec {
-            commandLine("java", "-Xmx4g", "-cp", "${sourceSets.main.get().runtimeClasspath.asPath}", "data.StoriesBpePrepKt")
-        }
-    }
+    mainClass.set("data.StoriesBpePrepKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx4g")
 }
 
-tasks.register("runAlphabetPrep") {
+tasks.register<JavaExec>("runAlphabetPrep") {
     description = "Run AlphabetPrep (알파벳 데이터 준비)"
-    dependsOn("classes")
-    doLast {
-        exec {
-            commandLine("java", "-Xmx2g", "-cp", "${sourceSets.main.get().runtimeClasspath.asPath}", "data.AlphabetPrepKt")
-        }
-    }
+    mainClass.set("data.AlphabetPrepKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx2g")
 }
 
-tasks.register("runStoryGenerator") {
+tasks.register<JavaExec>("runStoryGenerator") {
     description = "Run StoryGenerator (스토리 생성)"
-    dependsOn("classes")
-    doLast {
-        exec {
-            commandLine("java", "-Xmx4g", "-cp", "${sourceSets.main.get().runtimeClasspath.asPath}", "data.StoryGeneratorKt")
-        }
-    }
+    mainClass.set("data.StoryGeneratorKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx4g")
 }
 
-tasks.register("runBPETest") {
+tasks.register<JavaExec>("runBPETest") {
     description = "Run BPETest (BPE 테스트)"
-    dependsOn("classes")
-    doLast {
-        exec {
-            commandLine("java", "-Xmx2g", "-cp", "${sourceSets.main.get().runtimeClasspath.asPath}", "BPETestKt")
-        }
-    }
+    mainClass.set("BPETestKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx2g")
+}
+
+tasks.register<JavaExec>("runTrainer") {
+    description = "Run TrainerMain (학습 smoke)"
+    mainClass.set("train.TrainerMainKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx8g")
+}
+
+tasks.register<JavaExec>("runMiniTrainer") {
+    description = "Run MiniTrainerMain (경량 학습 - az 알파벳)"
+    mainClass.set("train.MiniTrainerMainKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx2g")
+}
+
+tasks.register<JavaExec>("runSampler") {
+    description = "Run SamplerMain (샘플링)"
+    mainClass.set("sample.SamplerMainKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx2g")
+}
+
+tasks.register<JavaExec>("runAnalyzeTokens") {
+    description = "Run AnalyzeTokensMain (토큰 분포 분석)"
+    mainClass.set("data.AnalyzeTokensMainKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx2g")
+}
+
+tasks.register<JavaExec>("runDebugBPE") {
+    description = "Run DebugBPEMain (BPE 디버깅)"
+    mainClass.set("data.DebugBPEMainKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx2g")
 }

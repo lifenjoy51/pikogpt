@@ -20,12 +20,12 @@ suspend fun testVariousPrompts() = withContext(Dispatchers.Default) {
         "they lived happily"
     )
 
-    val loss = listOf("36", "38", "37")
+    val loss = listOf("68")
 
     // 모든 loss 값을 병렬로 처리
     val result = loss.map { l ->
         val config = SampleConfig(
-            modelDirectoryPath = "model/78096/$l",
+            modelDirectoryPath = "model/39360/$l",
             numberOfSamples = 1
         )
         val sampler = Sampler(config)

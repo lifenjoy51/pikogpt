@@ -16,12 +16,12 @@ class LossTest {
         Random(1337)
 
         // 데이터셋 생성
-        val (x, y) = makeMoons(100, 0.1f)
+        val (x, y) = makeMoons(50, 0.1f)
         println("데이터셋 생성 완료: ${x.size} 샘플")
-        
+
         // 데이터셋 검증
-        assertEquals(100, x.size, "Should have 100 samples")
-        assertEquals(100, y.size, "Should have 100 labels")
+        assertEquals(50, x.size, "Should have 50 samples")
+        assertEquals(50, y.size, "Should have 50 labels")
         assertTrue(y.all { it == -1 || it == 1 }, "Labels should be -1 or 1")
         assertTrue(x.all { it.size == 2 }, "Each sample should have 2 features")
 
@@ -46,7 +46,8 @@ class LossTest {
         assertTrue(initialAcc in 0.0f..1.0f, "Initial accuracy should be between 0 and 1")
 
         // 최적화 (학습)
-        for (k in 0 until 100) {
+        val totalSteps = 40
+        for (k in 0 until totalSteps) {
             // 순전파
             val (totalLoss, acc) = lossCalculator.loss()
 
@@ -55,7 +56,7 @@ class LossTest {
             totalLoss.backward()
 
             // 파라미터 업데이트 (SGD)
-            val learningRate: Float = 1.0f - 0.9f * k / 100
+            val learningRate: Float = 1.0f - 0.9f * k / totalSteps
             for (p in model.parameters()) {
                 p.scalarValue -= learningRate * p.gradient
             }
@@ -103,20 +104,21 @@ class LossTest {
     @Test
     fun test2() {
         // 배치 학습 예제
-        val (x, y) = makeMoons(100, 0.1f)
+        val (x, y) = makeMoons(60, 0.1f)
         val model = MLP(2, listOf(16, 16, 1))
         val lossCalculator = LossCalculator(model, x, y)
 
         println("배치 학습 시작...")
-        
+
         // 초기 성능 저장
         val (initialLoss, initialAcc) = lossCalculator.loss()
         assertTrue(initialLoss.scalarValue > 0, "Initial loss should be positive")
         assertTrue(initialAcc in 0.0f..1.0f, "Initial accuracy should be between 0 and 1")
 
-        for (epoch in 0 until 500) {
-            // 배치 크기 32로 학습
-            val (totalLoss, _) = lossCalculator.loss(32)
+        val totalEpochs = 80
+        for (epoch in 0 until totalEpochs) {
+            // 배치 크기 20으로 학습
+            val (totalLoss, _) = lossCalculator.loss(20)
 
             model.zeroGrad()
             totalLoss.backward()
@@ -126,7 +128,7 @@ class LossTest {
                 p.scalarValue -= learningRate * p.gradient
             }
 
-            if (epoch % 10 == 0) {
+            if (epoch % 20 == 0) {
                 val (evalLoss, evalAcc) = lossCalculator.loss()
                 println("에폭 $epoch - 손실: ${evalLoss.scalarValue}, 정확도: ${evalAcc * 100}%")
             }

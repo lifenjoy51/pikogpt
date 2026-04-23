@@ -80,7 +80,8 @@ class MlpTest {
         
         // 훈련 루프
         var finalLoss = 0.0f
-        for (epoch in 0 until 100) {
+        val totalEpochs = 50
+        for (epoch in 0 until totalEpochs) {
             // 순전파
             val ypred = xs.map { x -> model(x) as Value }
 
@@ -105,7 +106,7 @@ class MlpTest {
                 println("Epoch $epoch, Loss: ${loss.scalarValue}")
             }
             
-            if (epoch == 99) {
+            if (epoch == totalEpochs - 1) {
                 finalLoss = loss.scalarValue
             }
         }

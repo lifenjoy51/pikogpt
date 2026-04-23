@@ -8,12 +8,17 @@ fun main() {
 
 val config = TrainConfig(
     dataPath = "data/simple",
-    gradientAccumulationSteps = 8,
-    batchSize = 4,
-    blockSize = 64,
-    numberOfLayers = 6,
-    numberOfHeads = 4,
-    embeddingDimension = 32,
+    gradientAccumulationSteps = 4,
+    batchSize = 2,
+    blockSize = 48,
+    numberOfLayers = 2,
+    numberOfHeads = 2,
+    embeddingDimension = 16,
+    maxIters = 50,
+    warmupRatio = 0.1f,
+    learningRateDecayRatio = 1.0f,
+    evalIntervalRatio = 0.2f,
+    evalIters = 1,
 )
 
 fun train() {
@@ -38,4 +43,3 @@ fun resume(){
     trainer.train()
 
 }
-

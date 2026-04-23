@@ -56,7 +56,7 @@ object StoriesBPEPrep {
         println("Total unique words: ${String.format("%,d", uniqueWords.size)}")
 
         // BPE 모델 훈련
-        val bpe = SimpleBPE(maxVocabSize = 1500)
+        val bpe = SimpleBPE(maxVocabSize = 1000)
         runBlocking {
             bpe.train(text)
         }

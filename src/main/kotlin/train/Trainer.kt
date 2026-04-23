@@ -101,7 +101,7 @@ class Trainer(private val config: TrainConfig) {
             optimizer.updateLearningRate(currentLearningRate)
 
             // 평가
-            if (iterationNumber % config.evalInterval == 0) {
+            if (iterationNumber % config.evalInterval.coerceAtLeast(1) == 0) {
                 val estimatedLosses = estimateLoss()
                 val lossValue = (estimatedLosses.first + estimatedLosses.second) / 2
                 val trainingProgress = formatLossWithProgress(estimatedLosses.first)
