@@ -86,6 +86,13 @@ tasks.register<JavaExec>("runSampler") {
     jvmArgs = listOf("-Xmx2g")
 }
 
+tasks.register<JavaExec>("runTinyHelenSample") {
+    description = "Run TinyHelenSample (model/ 최신 체크포인트 자동 샘플링)"
+    mainClass.set("sample.TinyHelenSampleKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx2g")
+}
+
 tasks.register<JavaExec>("runAnalyzeTokens") {
     description = "Run AnalyzeTokensMain (토큰 분포 분석)"
     mainClass.set("data.AnalyzeTokensMainKt")
