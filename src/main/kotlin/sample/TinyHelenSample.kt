@@ -46,7 +46,7 @@ fun main(args: Array<String>) = runBlocking {
     }
 }
 
-/** `model/*/*/` 중 checkpoint.json이 있는 디렉토리 중 가장 최근 수정된 것을 반환. */
+// model 루트의 모든 2단 하위 디렉토리 중 checkpoint.json이 있는 곳에서 가장 최근 수정본 반환.
 private fun findLatestCheckpoint(): File? {
     val modelRoot = File("model")
     if (!modelRoot.exists()) return null
