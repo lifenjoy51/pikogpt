@@ -13,9 +13,9 @@ fun main() {
         // 효과 배치 = batchSize * gradientAccumulationSteps = 8
         gradientAccumulationSteps = 4,
         batchSize = 2,
-        blockSize = 64,
-        // 모델 (스칼라 autodiff 기준 현실적인 크기)
-        numberOfLayers = 3,
+        blockSize = 48,
+        // 모델 (이전 세션 OOM 회피를 위해 보수적으로)
+        numberOfLayers = 2,
         numberOfHeads = 3,
         embeddingDimension = 24, // 24 / 3 heads = 8 dim/head
         dropout = 0.1f,
@@ -26,15 +26,15 @@ fun main() {
         gradClip = 1.0f,
         beta1 = 0.9f,
         beta2 = 0.95f,
-        // 스케줄 (밤새 학습 가정, 충분한 iter + 짧은 warmup)
-        maxIters = 2000,
+        // 스케줄 (밤새 학습 기준)
+        maxIters = 1500,
         warmupRatio = 0.03f,
         learningRateDecayRatio = 1.0f,
         minimumLearningRate = 3e-5f,
         decayLr = true,
-        // 로깅/평가 (너무 자주 평가하면 코스트가 커짐; 100 iter마다)
+        // 로깅/평가 (evalIters=1 — estimateLoss 병렬도 = 2(train+val), 8GB 힙 한계)
         evalIntervalRatio = 0.05f,
-        evalIters = 4,
+        evalIters = 1,
         logInterval = 10,
         alwaysSaveCheckpoint = true,
     )
