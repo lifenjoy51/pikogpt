@@ -107,6 +107,15 @@ class Trainer(private val config: TrainConfig) {
             weightDecay = config.weightDecay,
         )
 
+        if (config.initFrom == "resume") {
+            val latest = findLatestCheckpoint()
+            if (latest != null) {
+                loadCheckpoint(latest)
+            } else {
+                println("initFrom=resume 이지만 체크포인트를 찾지 못함 — scratch로 진행합니다 (modelPath=$modelPath)")
+            }
+        }
+
         val startTime = System.currentTimeMillis()
         var runningLoss = 0.0
         val evalInterval = config.evalInterval.coerceAtLeast(1)
@@ -316,6 +325,7 @@ class Trainer(private val config: TrainConfig) {
         val json = Json { prettyPrint = true; encodeDefaults = true }
         File(dir, "checkpoint.json").writeText(json.encodeToString(meta))
         saveModelWeights(File(dir, "model_weights.bin"))
+        optimizer.saveState(File(dir, "optimizer_state.bin"))
 
         val srcMeta = File("${config.dataPath}/meta.json")
         if (srcMeta.exists()) srcMeta.copyTo(File(dir, "meta.json"), overwrite = true)
@@ -330,6 +340,73 @@ class Trainer(private val config: TrainConfig) {
                 val buf = ByteBuffer.allocate(p.numel * 4)
                 for (i in 0 until p.numel) buf.putFloat(p.data[i])
                 out.write(buf.array())
+            }
+        }
+    }
+
+    /**
+     * `modelPath` 하위에서 `checkpoint.json` + `model_weights.bin`을 모두 가진 디렉토리 중
+     * 저장된 `iterationNumber`가 가장 큰 것을 반환. (항상 저장(`alwaysSaveCheckpoint`) 모드에서는
+     * 디렉토리 이름이 best loss가 아니라 **당시 avg**로 결정되므로 여러 디렉토리가 누적되는데,
+     * 그 중 가장 마지막 이터레이션을 고른다.)
+     */
+    private fun findLatestCheckpoint(): File? {
+        val root = File(modelPath)
+        if (!root.exists()) return null
+        val parser = Json { ignoreUnknownKeys = true }
+        var bestDir: File? = null
+        var bestIter = -1
+        for (d in root.listFiles { f -> f.isDirectory } ?: emptyArray()) {
+            val jsonFile = File(d, "checkpoint.json")
+            val weightFile = File(d, "model_weights.bin")
+            if (!jsonFile.exists() || !weightFile.exists()) continue
+            val meta = try {
+                parser.decodeFromString<VCheckpointMeta>(jsonFile.readText())
+            } catch (_: Exception) {
+                continue
+            }
+            if (meta.iterationNumber > bestIter) {
+                bestIter = meta.iterationNumber
+                bestDir = d
+            }
+        }
+        return bestDir
+    }
+
+    /**
+     * 체크포인트 디렉토리에서 iter/bestLoss, 모델 가중치, 옵티마이저 상태(있으면)를 읽어
+     * 현재 학습 상태로 주입. 옵티마이저 상태 파일이 없는 구버전 체크포인트면 moment/timeStep만
+     * 초기값 그대로 유지(=재개 이후 몇 iter는 warm-up 효과가 약해질 수 있으나 치명적이진 않음).
+     */
+    private fun loadCheckpoint(dir: File) {
+        val parser = Json { ignoreUnknownKeys = true }
+        val meta = parser.decodeFromString<VCheckpointMeta>(File(dir, "checkpoint.json").readText())
+        iterationNumber = meta.iterationNumber
+        bestLoss = meta.bestValidationLoss
+        loadModelWeights(File(dir, "model_weights.bin"))
+
+        val optFile = File(dir, "optimizer_state.bin")
+        if (optFile.exists()) {
+            optimizer.loadState(optFile)
+        } else {
+            println("경고: optimizer_state.bin 없음 — 옵티마이저 모멘트는 0에서 재시작합니다.")
+        }
+
+        println(
+            "체크포인트 재개: iter=$iterationNumber, bestLoss=${"%.4f".format(bestLoss)} " +
+                "from ${dir.absolutePath}"
+        )
+    }
+
+    private fun loadModelWeights(file: File) {
+        require(file.exists()) { "가중치 파일 없음: ${file.absolutePath}" }
+        file.inputStream().use { input ->
+            val buf = ByteArray(4)
+            for (p in model.parameters()) {
+                for (i in 0 until p.numel) {
+                    require(input.read(buf) == 4) { "가중치 파일 EOF 조기 도달" }
+                    p.data[i] = ByteBuffer.wrap(buf).float
+                }
             }
         }
     }

@@ -1,5 +1,7 @@
 package vec
 
+import java.io.File
+import java.nio.ByteBuffer
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -77,5 +79,51 @@ class AdamW(
     /** LR 스케줄러에서 호출. */
     fun updateLearningRate(newLearningRate: Float) {
         learningRate = newLearningRate
+    }
+
+    /**
+     * 옵티마이저 상태(timeStep + 모든 파라미터의 1·2차 모멘트)를 binary로 저장.
+     *
+     * 포맷: `[int32 timeStep][param0 m][param0 v][param1 m][param1 v]...`
+     * 모든 float/int는 big-endian. `[paramK m/v]`는 해당 파라미터 크기(numel)의 float32 연속.
+     *
+     * 파라미터 개수/크기는 모델 아키텍처에 의해 결정되므로, 로드 측이 같은 모델로
+     * 옵티마이저를 만든 뒤 이 파일을 읽으면 그대로 복원된다.
+     */
+    fun saveState(file: File) {
+        file.outputStream().use { out ->
+            out.write(ByteBuffer.allocate(4).putInt(timeStep).array())
+            for (pIdx in parameters.indices) {
+                val m = firstMoment[pIdx]
+                val v = secondMoment[pIdx]
+                val buf = ByteBuffer.allocate((m.size + v.size) * 4)
+                for (x in m) buf.putFloat(x)
+                for (x in v) buf.putFloat(x)
+                out.write(buf.array())
+            }
+        }
+    }
+
+    /** [saveState]로 저장된 파일에서 옵티마이저 상태를 복원. 파라미터 shape가 일치해야 한다. */
+    fun loadState(file: File) {
+        file.inputStream().use { input ->
+            val hdr = ByteArray(4)
+            require(input.read(hdr) == 4) { "옵티마이저 상태 파일 EOF 조기 도달 (header)" }
+            timeStep = ByteBuffer.wrap(hdr).int
+
+            val buf = ByteArray(4)
+            for (pIdx in parameters.indices) {
+                val m = firstMoment[pIdx]
+                for (i in m.indices) {
+                    require(input.read(buf) == 4) { "옵티마이저 상태 파일 EOF 조기 도달 (m, param=$pIdx, i=$i)" }
+                    m[i] = ByteBuffer.wrap(buf).float
+                }
+                val v = secondMoment[pIdx]
+                for (i in v.indices) {
+                    require(input.read(buf) == 4) { "옵티마이저 상태 파일 EOF 조기 도달 (v, param=$pIdx, i=$i)" }
+                    v[i] = ByteBuffer.wrap(buf).float
+                }
+            }
+        }
     }
 }

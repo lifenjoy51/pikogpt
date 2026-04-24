@@ -18,10 +18,14 @@ package train
  * 스칼라 autodiff로는 이 규모가 비현실적(≈2-4분/iter × 1500 iter). 벡터 백엔드로는
  * iter 훨씬 짧음 (FloatArray loop 기반). 체크포인트는 `${modelDir}/vec/{params}/{loss*10}/`.
  *
- * CLI 인자로 maxIters override 가능 (`--args="20"` 등으로 smoke).
+ * CLI 인자:
+ *   - 숫자가 주어지면 maxIters override (`--args="20"` smoke)
+ *   - `"resume"` 키워드가 있으면 `model/vec/${paramCount}/` 아래 체크포인트 중
+ *     `iterationNumber` 최대인 것에서 이어서 학습 (`--args="resume"` 또는 `--args="20 resume"`)
  */
 fun main(args: Array<String>) {
-    val maxItersOverride = args.getOrNull(0)?.toIntOrNull()
+    val resume = args.any { it.equals("resume", ignoreCase = true) }
+    val maxItersOverride = args.firstOrNull { !it.equals("resume", ignoreCase = true) }?.toIntOrNull()
 
     val config = TrainConfig(
         dataPath = "data/tinyhelen",
@@ -55,9 +59,10 @@ fun main(args: Array<String>) {
         //   10000 iter × 0.05 = 500 iter마다 eval → 20회
         //   log는 100 iter마다 (긴 run에 로그 과다 방지)
         evalIntervalRatio = 0.05f,
-        evalIters = 4,
+        evalIters = 16,
         logInterval = 100,
         alwaysSaveCheckpoint = true,
+        initFrom = if (resume) "resume" else "scratch",
     )
 
     vec.Trainer(config).train()

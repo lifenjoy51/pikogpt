@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>vec 샘플 비교: ckpt 31 vs 32 (2026-04-24)</title>
+<style>
+  :root {
+    --bg: #0f1115;
+    --fg: #e6e6e6;
+    --muted: #9aa0a6;
+    --border: #2a2f38;
+    --accent-a: #5b9bd5;
+    --accent-b: #e6a23c;
+    --card: #161a22;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 32px;
+    background: var(--bg);
+    color: var(--fg);
+    font: 14px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
+  }
+  h1 { margin: 0 0 4px; font-size: 22px; }
+  .subtitle { color: var(--muted); margin-bottom: 24px; }
+  .meta {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .meta .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .meta .card.a { border-left: 3px solid var(--accent-a); }
+  .meta .card.b { border-left: 3px solid var(--accent-b); }
+  .meta h2 { margin: 0 0 6px; font-size: 15px; font-weight: 600; }
+  .meta dl { margin: 0; display: grid; grid-template-columns: auto 1fr; column-gap: 12px; row-gap: 4px; }
+  .meta dt { color: var(--muted); }
+  .meta dd { margin: 0; font-variant-numeric: tabular-nums; }
+  .prompt {
+    margin-bottom: 24px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--card);
+  }
+  .prompt > header {
+    padding: 10px 16px;
+    background: #1c212b;
+    border-bottom: 1px solid var(--border);
+    font-weight: 600;
+    letter-spacing: 0.2px;
+  }
+  .prompt > header code {
+    background: #0b0d12;
+    border: 1px solid var(--border);
+    padding: 1px 8px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--fg);
+  }
+  .row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .cell {
+    padding: 14px 16px;
+    border-top: 1px dashed var(--border);
+  }
+  .cell:nth-child(2n) { border-left: 1px solid var(--border); }
+  .cell h3 {
+    margin: 0 0 8px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--muted);
+  }
+  .cell.a h3 { color: var(--accent-a); }
+  .cell.b h3 { color: var(--accent-b); }
+  .sample {
+    white-space: pre-wrap;
+    font-family: ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #dcdee1;
+    background: #0b0d12;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+  }
+  .sample:last-child { margin-bottom: 0; }
+  .sample .lbl {
+    display: block;
+    color: var(--muted);
+    font-size: 11px;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .summary {
+    margin-top: 16px;
+    padding: 14px 16px;
+    border-radius: 8px;
+    background: var(--card);
+    border: 1px solid var(--border);
+  }
+  .summary h2 { margin: 0 0 8px; font-size: 15px; }
+  .summary ul { margin: 0; padding-left: 20px; }
+  .summary li { margin-bottom: 4px; }
+  .note {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 24px;
+    border-top: 1px dashed var(--border);
+    padding-top: 12px;
+  }
+</style>
+</head>
+<body>
+
+<h1>벡터 백엔드 체크포인트 비교</h1>
+<div class="subtitle">TinyHelen 10k 학습 중단 시점 · best val loss 3.14 · 2026-04-24</div>
+
+<section class="meta">
+  <div class="card a">
+    <h2>Checkpoint A · <code>model/vec/1057536/31/</code></h2>
+    <dl>
+      <dt>iter</dt><dd>8000</dd>
+      <dt>best val loss</dt><dd>3.1429</dd>
+      <dt>저장 avg</dt><dd>~3.14 (덮어쓰기 최종: 이 dir에 마지막으로 쓰인 시점)</dd>
+    </dl>
+  </div>
+  <div class="card b">
+    <h2>Checkpoint B · <code>model/vec/1057536/32/</code></h2>
+    <dl>
+      <dt>iter</dt><dd>9000</dd>
+      <dt>best val loss</dt><dd>3.1429</dd>
+      <dt>저장 avg</dt><dd>~3.24 (이 avg로 dir가 결정됨)</dd>
+    </dl>
+  </div>
+</section>
+
+<article class="prompt">
+  <header>프롬프트: <code>Once upon a time</code></header>
+  <div class="row">
+    <div class="cell a">
+      <h3>A · ckpt 31 (iter 8000)</h3>
+      <div class="sample"><span class="lbl">샘플 1</span>once upon a time, the group of people who live in cities and places do not like the river, making it recently.
+
+after age that was made in the us company in the uk country both sides. this is more important because it helps kids find different things we don't need to see. if they have different things that are not good, they</div>
+      <div class="sample"><span class="lbl">샘플 2</span>once upon a time when he liked the leaders, he would have been going to be able to do it. but, matthew's worried about the sidum with all the money we spent in fronts would not be worry money.
+
+jack said that the government had to use. he wrestling in the late 1990s in the dance and the</div>
+    </div>
+    <div class="cell b">
+      <h3>B · ckpt 32 (iter 9000)</h3>
+      <div class="sample"><span class="lbl">샘플 1</span>once upon a time, the newspaper was made by a man named jeralis, and emma.</div>
+      <div class="sample"><span class="lbl">샘플 2</span>once upon a time at the early space for the day. after 2001, they came together for a few years.
+jack liam is found out by a man named ethan in august.
+he started his middle of the next group and in a big cake, but he was survive.</div>
+    </div>
+  </div>
+</article>
+
+<article class="prompt">
+  <header>프롬프트: <code>The little girl</code></header>
+  <div class="row">
+    <div class="cell a">
+      <h3>A · ckpt 31</h3>
+      <div class="sample"><span class="lbl">샘플 1</span>the little girls were different, and not many people who live in or place. they might have a lot of people lived in the place they live in.
+the ru and the earther is the smallest part of a big group that is called row.
+in the middle of the 20th century, he was born on a summer day in july.</div>
+      <div class="sample"><span class="lbl">샘플 2</span>the little girls are made and different kinds of enough big parts. the fast are often used to make the special way. in the main group of people who are called the "look". the summer is a very long time ago. the links of the movie, which is about the mix of the middle of the us. some of these parts of</div>
+    </div>
+    <div class="cell b">
+      <h3>B · ckpt 32</h3>
+      <div class="sample"><span class="lbl">샘플 1</span>the little girls were searated at the road and they were hoped to the pass through the late 20th century, which was faith. the biggest case was angry and his ahead or a little bit of suspications in the year. the next morning, the big race, which was the</div>
+      <div class="sample"><span class="lbl">샘플 2</span>the little girls are different and their mommies.
+
+when we think that the child's behavior cry is likely to be a result. this is also the first time when it was a childhood. this happens when young kid can stay with a few months later, or how the babies act when they start to know how his mom was with the best baby.</div>
+    </div>
+  </div>
+</article>
+
+<article class="prompt">
+  <header>프롬프트: <code>In the morning</code></header>
+  <div class="row">
+    <div class="cell a">
+      <h3>A · ckpt 31</h3>
+      <div class="sample"><span class="lbl">샘플 1</span>in the morning and the oldest summer of the time was a little bit later.
+in the yearth century, the first of the first race was in the us place of east. the leaders were the first told mision of the year not longer people.
+e city is a place in the sw country of the region. the main city is a place</div>
+      <div class="sample"><span class="lbl">샘플 2</span>in the morning dark bark.
+
+in the next part, we call the gun that uses the brain that was made. the bridge is made in the room and will daisy of the birth of this way. we will learn about this fun and how it can help us to make a special english that is used for tired</div>
+    </div>
+    <div class="cell b">
+      <h3>B · ckpt 32</h3>
+      <div class="sample"><span class="lbl">샘플 1</span>in the morning in the year when the last summer was said,
+
+"yumb," said no. "an the boys at the big party of the big boss who head about. "i hears the favors for the br city's bank's grew up."
+
+most the trainer to help.
+
+ethan's fight</div>
+      <div class="sample"><span class="lbl">샘플 2</span>in the morning in the late 20th century until it was made by the purple group of votes. it was also the church, and the big place of 107 people.
+after average came back in the us country, he wrote a lot of money.</div>
+    </div>
+  </div>
+</article>
+
+<article class="prompt">
+  <header>프롬프트: <code>He opened the book</code></header>
+  <div class="row">
+    <div class="cell a">
+      <h3>A · ckpt 31</h3>
+      <div class="sample"><span class="lbl">샘플 1</span>he opened the books of the world and the perfect rents theory of the song.</div>
+      <div class="sample"><span class="lbl">샘플 2</span>he opened the books of ja country, and his dad.
+
+david said his name was on a summer day in april in 2017. his job of the cv show was a man from the us country who won a lot. he was especome for a singingup.
+he was the first leader of the leader of a big</div>
+    </div>
+    <div class="cell b">
+      <h3>B · ckpt 32</h3>
+      <div class="sample"><span class="lbl">샘플 1</span>he opened the books of the movie.</div>
+      <div class="sample"><span class="lbl">샘플 2</span>he opened the books of money percent of the us and less.
+
+## word list
+- more things: something that uses a big problem with the idea of the idea of a place.
+- ruins: a part of the first, a group that made the first king of victor.
+
+bo. what a police is:
+the main idea is when a h</div>
+    </div>
+  </div>
+</article>
+
+<article class="prompt">
+  <header>프롬프트: <code>She said,</code></header>
+  <div class="row">
+    <div class="cell a">
+      <h3>A · ckpt 31</h3>
+      <div class="sample"><span class="lbl">샘플 1</span>she said, "i'll give you the money you've been here you, but i'll give you a little, but i'll get idention." "we'll find it?" "friends, i am." "you'll do it." "look at the page with your depending on your data?" "how you understand?" "if you find a little bit of</div>
+      <div class="sample"><span class="lbl">샘플 2</span>she said, there was no politic.
+
+he kevin was the suneteror of a man from a big group from fr country who was born on a fight with a long time after he was 12-2 sittingwestly. the big boss of the leader from city and lo city to lo city to make the government.
+the f</div>
+    </div>
+    <div class="cell b">
+      <h3>B · ckpt 32</h3>
+      <div class="sample"><span class="lbl">샘플 1</span>she said, "i'll give you a lot of paper that was both window, and not such a person's o' bison."
+
+"you should be a certain time," she said he was the same.
+
+not known very strongly, but he was very old.
+
+madison tried to get the same thing. he thought this with</div>
+      <div class="sample"><span class="lbl">샘플 2</span>she said, "you wouldn't be there a lot of money you can relate the fight?"
+
+but, you can do this with young man's fast and cleaning energy because i think you're okay, but i always sleep."
+
+matthew was both very well, because it was hard. people who had been the good things about the</div>
+    </div>
+  </div>
+</article>
+
+<section class="summary">
+  <h2>주관 평가 요약</h2>
+  <ul>
+    <li><b>A (ckpt 31, iter 8000)</b> — 백과사전/위키 톤 drift가 잦음 ("us company", "20th century", "leader of a big"). 짧은 대답이 더 많고, 따옴표 대화는 어색하게 끝남.</li>
+    <li><b>B (ckpt 32, iter 9000)</b> — 고유명사 이름이 자주 등장 (matthew, madison, ethan, liam, emma). 대화체 샘플 ("she said...")이 더 자연스럽고 호흡이 긺. 반면 word list 같은 textbook 블록도 간헐적으로 튀어나옴.</li>
+    <li>두 체크포인트 모두 TinyHelen 코퍼스의 혼합 장르(book / textbook / wiki / conversation)를 그대로 반영 — 장르 drift는 데이터 특성.</li>
+    <li>best val loss 동치라 정량 차이는 없으나, 정성상 <b>story 프롬프트에는 B가 약간 유리</b>.</li>
+  </ul>
+</section>
+
+<p class="note">자동 생성 · <code>docs/vec-sample-compare-2026-04-24.html</code> · 원본 프롬프트는 <code>src/main/kotlin/sample/TinyHelenSampleVec.kt</code>의 기본 세트.</p>
+
+</body>
+</html>
