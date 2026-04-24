@@ -86,6 +86,13 @@ tasks.register<JavaExec>("runTinyHelenTrainVec") {
     jvmArgs = listOf("-Xmx4g")
 }
 
+tasks.register<JavaExec>("runTinyHelenTrainTextbookVec") {
+    description = "Run TinyHelenTrainTextbookVec (textbook-only, ~1M 파라미터)"
+    mainClass.set("train.TinyHelenTrainTextbookVecKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx4g")
+}
+
 tasks.register<JavaExec>("runSampler") {
     description = "Run SamplerMain (샘플링)"
     mainClass.set("sample.SamplerMainKt")
@@ -103,6 +110,13 @@ tasks.register<JavaExec>("runTinyHelenSample") {
 tasks.register<JavaExec>("runTinyHelenSampleVec") {
     description = "Run TinyHelenSampleVec (model/vec/ 최신 벡터 체크포인트 자동 샘플링)"
     mainClass.set("sample.TinyHelenSampleVecKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx2g")
+}
+
+tasks.register<JavaExec>("runSamplePromptsFromFile") {
+    description = "Run SamplePromptsFromFile (ckpt + 프롬프트 파일로 커스텀 샘플링)"
+    mainClass.set("sample.SamplePromptsFromFileKt")
     classpath = sourceSets.main.get().runtimeClasspath
     jvmArgs = listOf("-Xmx2g")
 }

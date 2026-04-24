@@ -44,6 +44,7 @@ bin/
 
 ### PikoGPT-specific ###
 model/
+model-textbook/
 package-lock.json
 run-stories-bpe.kt
 # 학습/추론 실행 로그 — 이미 tracked된 히스토리 파일(overnight.log 등)은 계속 유지,

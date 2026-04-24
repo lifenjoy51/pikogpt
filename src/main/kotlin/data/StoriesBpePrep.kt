@@ -18,12 +18,19 @@ fun main(args: Array<String>) {
 }
 
 /**
- * 텍스트 데이터를 BPE로 토큰화하고, 훈련/검증 데이터셋으로 분할 저장하는 파이프라인.
+ * 텍스트 데이터를 BPE로 토큰화하고, 훈련/검증 데이터셋으로 저장하는 파이프라인.
+ *
+ * 입력 규약 (우선순위):
+ *   1. `train.txt` + `val.txt`가 둘 다 있으면 → **분리 입력 경로**
+ *      - BPE는 train.txt에서만 학습 (val leakage 방지), val은 encode만
+ *      - train/val.bin은 각 파일의 토큰 전량
+ *   2. 둘 중 하나라도 없으면 → **fallback: `stories.txt` 90:10 cut**
+ *      - 단일 파일에서 BPE 학습 + encode 후 앞 90% / 뒤 10% 순차 절단
  *
  * 산출물 (`<path>/` 아래):
- *   - `train.bin` / `val.bin` : big-endian int32 토큰 시퀀스 (90:10 split)
+ *   - `train.bin` / `val.bin` : big-endian int32 토큰 시퀀스
  *   - `meta.json`             : vocab + BPE merges + 전처리 플래그 (→ 샘플러가 재생)
- *   - `unique_words.txt`      : 진단용 단어 빈도 덤프
+ *   - `unique_words.txt`      : 진단용 단어 빈도 덤프 (train 소스 기준)
  */
 object StoriesBPEPrep {
 
@@ -39,12 +46,30 @@ object StoriesBPEPrep {
         useWordPreTokenize: Boolean = DEFAULT_WORD_PRE_TOKENIZE,
         verbose: Boolean = true,
     ) {
-        val inputFile = File("$path/stories.txt")
         val dataDir = File(path)
-        val rawText = inputFile.readText()
+        val trainFile = File(path, "train.txt")
+        val valFile = File(path, "val.txt")
+        val storiesFile = File(path, "stories.txt")
 
-        // 고유 단어 빈도 덤프 (디버그용) — 정규화는 이 한 번만. BPE 내부의 lowercase와 중복 피함.
-        val analysisText = if (lowercase) rawText.lowercase() else rawText
+        val split: SplitSource = when {
+            trainFile.exists() && valFile.exists() -> {
+                println("분리 입력 감지: train.txt + val.txt → vocab은 train에서만 학습")
+                SplitSource.Separate(trainFile.readText(), valFile.readText())
+            }
+            storiesFile.exists() -> {
+                println("단일 입력: stories.txt → 토큰 90:10 순차 분할 (fallback)")
+                SplitSource.Combined(storiesFile.readText())
+            }
+            else -> error("입력 파일 없음: $path 에 {train.txt+val.txt} 또는 stories.txt 중 하나 필요")
+        }
+
+        val trainText = when (split) {
+            is SplitSource.Separate -> split.trainText
+            is SplitSource.Combined -> split.text
+        }
+
+        // 고유 단어 빈도 덤프 (디버그용) — train 소스 기준. 정규화는 이 한 번만.
+        val analysisText = if (lowercase) trainText.lowercase() else trainText
         val uniqueWords = analysisText
             .replace(Regex("[^a-z\\s]"), "")
             .split(Regex("\\s+"))
@@ -58,7 +83,7 @@ object StoriesBPEPrep {
         })
         println("Unique words: ${String.format("%,d", uniqueWords.size)}")
 
-        // BPE 학습 — SimpleBPE가 lowercase 플래그에 따라 내부적으로 정규화. 여기서는 raw 그대로 넘김.
+        // BPE 학습 — train 소스에서만. val 텍스트는 encode 대상으로만 사용해 leakage 방지.
         val bpe = SimpleBPE(
             maxVocabSize = maxVocabSize,
             lowercase = lowercase,
@@ -66,16 +91,21 @@ object StoriesBPEPrep {
             standardBpeScoring = true,
             verbose = verbose,
         )
-        bpe.train(rawText)
+        bpe.train(trainText)
 
-        // 텍스트 인코딩
-        val encoded = bpe.encode(rawText)
-        val totalCount = encoded.size
-        val splitIdx = (totalCount * 0.9).toInt()
-        val trainTokens = encoded.subList(0, splitIdx)
-        val valTokens = encoded.subList(splitIdx, totalCount)
+        val (trainTokens, valTokens) = when (split) {
+            is SplitSource.Separate -> {
+                val tr = bpe.encode(split.trainText)
+                val vl = bpe.encode(split.valText)
+                tr to vl
+            }
+            is SplitSource.Combined -> {
+                val encoded = bpe.encode(split.text)
+                val splitIdx = (encoded.size * 0.9).toInt()
+                encoded.subList(0, splitIdx) to encoded.subList(splitIdx, encoded.size)
+            }
+        }
 
-        println("Total tokens: ${String.format("%,d", totalCount)}")
         println("Train tokens: ${String.format("%,d", trainTokens.size)}")
         println("Val tokens:   ${String.format("%,d", valTokens.size)}")
 
@@ -99,6 +129,14 @@ object StoriesBPEPrep {
 
         println("Vocab size: ${bpe.getVocabSize()}, merges: ${mergesSerialized.size}")
         println("Saved: ${File(dataDir, "meta.json").absolutePath}")
+    }
+
+    /**
+     * 분리/결합 입력 경로를 표현하는 sealed 소스 타입. `run()` 내부 분기 용.
+     */
+    private sealed class SplitSource {
+        class Separate(val trainText: String, val valText: String) : SplitSource()
+        class Combined(val text: String) : SplitSource()
     }
 
     /** 정수 토큰 리스트를 4바이트 big-endian int로 바이너리 저장. */

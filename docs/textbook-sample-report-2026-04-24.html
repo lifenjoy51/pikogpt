@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>textbook-only 학습 샘플 리포트 (2026-04-24)</title>
+<style>
+  :root {
+    --bg: #0f1115; --fg: #e6e6e6; --muted: #9aa0a6; --border: #2a2f38;
+    --accent: #7bc96f; --warn: #e6a23c; --card: #161a22;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 32px; background: var(--bg); color: var(--fg);
+    font: 14px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif; }
+  h1 { margin: 0 0 4px; font-size: 22px; }
+  .subtitle { color: var(--muted); margin-bottom: 24px; }
+  .meta-card {
+    background: var(--card); border: 1px solid var(--border); border-left: 3px solid var(--accent);
+    border-radius: 8px; padding: 14px 16px; margin-bottom: 24px;
+  }
+  .meta-card h2 { margin: 0 0 8px; font-size: 15px; font-weight: 600; }
+  .meta-card dl { margin: 0; display: grid; grid-template-columns: auto 1fr;
+    column-gap: 12px; row-gap: 4px; }
+  .meta-card dt { color: var(--muted); }
+  .meta-card dd { margin: 0; font-variant-numeric: tabular-nums; }
+  .prompt {
+    margin-bottom: 20px; border: 1px solid var(--border); border-radius: 10px;
+    overflow: hidden; background: var(--card);
+  }
+  .prompt > header { padding: 10px 16px; background: #1c212b; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px; }
+  .tag { background: var(--accent); color: #0a0f06; padding: 2px 8px; border-radius: 4px;
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+  .prompt > header code { background: #0b0d12; border: 1px solid var(--border);
+    padding: 2px 8px; border-radius: 6px; font-size: 13px; color: var(--fg); }
+  .orig { padding: 10px 16px; background: #131720; border-bottom: 1px dashed var(--border);
+    font-size: 13px; color: #b8bcc2; font-style: italic; }
+  .orig .lbl, .sample .lbl { display: block; color: var(--muted); font-size: 11px;
+    margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; font-style: normal; }
+  .samples { padding: 12px 16px; display: grid; gap: 10px; }
+  .sample { white-space: pre-wrap; font-family: ui-monospace, "JetBrains Mono", Menlo, monospace;
+    font-size: 13px; line-height: 1.6; background: #0b0d12; border: 1px solid var(--border);
+    border-radius: 6px; padding: 10px 12px; color: #dcdee1; }
+  .summary { margin-top: 16px; padding: 14px 16px; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border); }
+  .summary h2 { margin: 0 0 8px; font-size: 15px; }
+  .summary ul { margin: 0; padding-left: 20px; }
+  .summary li { margin-bottom: 4px; }
+  .note { color: var(--muted); font-size: 12px; margin-top: 24px;
+    border-top: 1px dashed var(--border); padding-top: 12px; }
+  code.inline { background: #0b0d12; border: 1px solid var(--border); padding: 1px 6px;
+    border-radius: 4px; font-size: 12px; }
+</style>
+</head>
+<body>
+
+<h1>textbook-only 6k run — val 프롬프트 샘플 리포트</h1>
+<div class="subtitle">체크포인트: <code class="inline">model-textbook/vec/1057536/31/</code> · best avg 3.17 (step 5100) · 2026-04-24</div>
+
+<section class="meta-card">
+  <h2>학습 설정</h2>
+  <dl>
+    <dt>데이터</dt><dd>TinyHelen leaner/10M textbook 카테고리, 공식 train/val 분할 (train 610,429 tok · val 30,860 tok)</dd>
+    <dt>모델</dt><dd>1,057,536 파라미터 · layers 4 · heads 4 · embed 128 · block 64</dd>
+    <dt>학습</dt><dd>maxIters 6000 · batch 2 × accum 16 = 32 · LR 3e-4 · warmup 3% · cosine decay 95%</dd>
+    <dt>worker</dt><dd>8 (VEC_MAX_WORKERS=8, step 1800부터 resume로 이어감)</dd>
+    <dt>샘플링</dt><dd>temperature 0.8 · top-k 40 · 프롬프트당 2개 샘플 · 최대 120 토큰</dd>
+    <dt>프롬프트</dt><dd>val.txt 41개 문서 중 랜덤 6개 선정 후 앞 4단어 사용 (seed=42)</dd>
+  </dl>
+</section>
+
+<article class="prompt">
+  <header><span class="tag">prompt</span><code>Lesson: Talking about Important</code></header>
+  <div class="orig"><span class="lbl">원본 val 문서 시작부</span>Lesson: Talking about Important Things Introduction: In this lesson, we will learn about talking and sharing ideas. We will focus on the &quot;No More Hate&quot; idea and how it has brought together famous people to talk about being kind. Core…</div>
+  <div class="samples"><div class="sample"><span class="lbl">샘플 1</span>lesson: talking about important things and being happy.
+
+**what we learned:** # story: learning about the different friendships for people, and ideas in the big fanel. by knowing the fun things we can take care of them and how they are doing. by doing these things are fun and how they work.
+in this part, we can use them to see their fun ways.
+
+now we can use these steps:
+
+peverview:
+
+ading: this is the best thing about playing outside them. it is a good way to be ability to make you feel better or get bigg</div><div class="sample"><span class="lbl">샘플 2</span>lesson: talking about important things from keeping things like using old things, like people, or hurting themselves and trade.
+q: what is making and working well?
+finding and taking care of people from different daily life?
+a: making sure everything is safe and can be too hard.
+**lessons may want to take time and a good way to come up and work with other ideas. it can also be hard to take chances for a lot of good things. in this lesson, we will learn about how to stay safe, how to learn and getting new things</div></div>
+</article>
+<article class="prompt">
+  <header><span class="tag">prompt</span><code>Lesson Title: Wind Power</code></header>
+  <div class="orig"><span class="lbl">원본 val 문서 시작부</span>Lesson Title: Wind Power - Good and Clean Energy Beginning: Wind power is a good and clean energy that people have used for a long time. It is a clean and never-ending source of energy that can help us use…</div>
+  <div class="samples"><div class="sample"><span class="lbl">샘플 1</span>lesson title: wind power that can make the water rule that holds the bit as you water.
+7. setting the photo
+
+subtrys in light beams from a light, shiny water, it can be used for a free luffy it and link for the baby face. this can make the room feel boohicoopy, squareing on a mix of flow stick. these are used in the special source details and keep the normal set on</div><div class="sample"><span class="lbl">샘플 2</span>lesson title: wind power-ups of the moon with pieces that makes it soer to make it his winds.
+strictelly:
+tat the fluffs are the good things about the place and where the rock is. it is made from hard to find out more than one way to the process of the spot.
+
+topic 2: what are the wave?
+light the thing does not be outside the right from the thing. it can be used to make a lot of rh and notead of tight.</div></div>
+</article>
+<article class="prompt">
+  <header><span class="tag">prompt</span><code>Lesson: Understanding Sickness in</code></header>
+  <div class="orig"><span class="lbl">원본 val 문서 시작부</span>Lesson: Understanding Sickness in Deer Introduction: There is a sickness that makes deer, elk, and moose very unwell. It is caused by bad stuff in their brains and bodies. This sickness always makes them die, and there is no way…</div>
+  <div class="samples"><div class="sample"><span class="lbl">샘플 1</span>lesson: understanding sickness in fruits, including pops, early-looking, and space, and similary, and tasting tools in the right away.
+
+ii. looking at the place, the signs of the set and the serience.
+
+4. the myth capters, the ball, and the tasting sticks in the got. this means the ball is the vieest as their part of the top.
+
+5. the the picture is the mix of the stick and the leaves of</div><div class="sample"><span class="lbl">샘플 2</span>lesson: understanding sickness in the past and pasting tool.
+5. mixing different stuff: an old stuff around it in a bar, so we can find the things we eat. for example, if the sand is too many years through the place and the carpet for a big box, which is made to help electricity by making it a fire.
+
+conclusion:
+
+in the end, making a good named bathone is a very important part of understanding the part of this thing. by looking at the importance of learning, making sure that</div></div>
+</article>
+<article class="prompt">
+  <header><span class="tag">prompt</span><code>**Lesson: How to Borrow</code></header>
+  <div class="orig"><span class="lbl">원본 val 문서 시작부</span>**Lesson: How to Borrow a Toy Car and Share in the Playground** **What We Will Learn** In this lesson, we will learn how to borrow a toy car and share in the playground. We will talk about these things: 1.…</div>
+  <div class="samples"><div class="sample"><span class="lbl">샘플 1</span>**lesson: how to borrow to make riffs by a way that goes to the people.
+- change: a way to keeps the process or more goal.
+- plan: a step in a place where a place is
+- fizite: an option that is helpful when we need them.
+- talking: doing something to happen in a group or hurt, do something that is good and bad.
+- getting hurt: being together with others told by working, like a team.
+- being able to do well: the way we should al learn more about something and think</div><div class="sample"><span class="lbl">샘플 2</span>**lesson: how to borrow many yow code, while it is very important to use each other.
+
+afull can be used to make your pipe score, sweet, or language. in this cuture can make sure to ads online, so it&#x27;s side &quot;nack&#x27;s&quot;, the song, and &quot;til you can use your computer night. you usually, like on, you need to give your home, and your drawing and details. with yourself. in this lesson, you will look at the ends</div></div>
+</article>
+<article class="prompt">
+  <header><span class="tag">prompt</span><code>Story: Learning about Special</code></header>
+  <div class="orig"><span class="lbl">원본 val 문서 시작부</span>Story: Learning about Special Houses **Chapter 1: What is a Special House?** A special house is a place where people can learn about old times, art, nature, or other things by looking at stuff. You can find special houses all…</div>
+  <div class="samples"><div class="sample"><span class="lbl">샘플 1</span>story: learning about special ways of giving and getting better in a happy and safest.
+- talk: the gives a way to understand something that can work on a problem or work out.
+- a group: a group where people are created or something that can use.
+- big details: amion that lets us see how things are goals.
+- vote: a kind of fuel: the act of talking about something organizing between people and learning.
+- making friends: making the ideas of us or ideas that help us to make us look at and understand</div><div class="sample"><span class="lbl">샘플 2</span>story: learning about special things and good things about being together is liked from a role in different way. by understanding the good parts of a magic box, we can understand the way a toy or funcrove to the same number.</div></div>
+</article>
+<article class="prompt">
+  <header><span class="tag">prompt</span><code>Story: Learning about Plant</code></header>
+  <div class="orig"><span class="lbl">원본 val 문서 시작부</span>Story: Learning about Plant Food ## Chapter 1: What is Plant Food? Plant food is something we add to dirt to help plants grow. It gives plants things they need to grow big and strong. The three main things plants…</div>
+  <div class="samples"><div class="sample"><span class="lbl">샘플 1</span>story: learning about plant trees?
+- what are some ways to make power pains, like coverredits, round things, and other things.
+- there are kinds of packsparents like linked to be made to make the passround, it is a good way to use and make the panpe.
+part 2: good in real-life life examples
+
+- use report fish to help in a life.
+- popular and stars have seen performs.
+- fast troublics and</div><div class="sample"><span class="lbl">샘플 2</span>story: learning about plant care and finding ways of getting sick.
+- important things: knowing things helps us do our work.
+- working together: talking and being healthy before is important.
+- talking: doing well in being nice on what we need and want to do.
+- sharing and doing things better: how we can help us reach our goals better.
+
+part 2: learning about sharing things
+- talk and sharing and working together
+
+conclusion:
+in this lesson, we learned about making friends, why talking and talks, we can better understand what to talk about they might not have and more about all the world of each other. we will also</div></div>
+</article>
+
+<section class="summary">
+  <h2>관찰</h2>
+  <ul>
+    <li><b>Textbook 톤 재현 강함</b> — "## Chapter", "**what we learned**", "Q:/A:", "Part 2:", "Conclusion:" 등의 형식적 마커가 반복 등장. 단일 장르 학습의 효과.</li>
+    <li><b>단어 목록 스키마 학습</b> — "- word: definition" 구조가 여러 샘플에서 자연스럽게 재현됨 ("- talk:", "- big details:", "- vote:").</li>
+    <li><b>의미 일관성은 여전히 낮음</b> — "fluffs are good things", "bathone", "fizite" 같이 fabricated 단어가 나오거나, 문장 단위 주제가 자주 드리프트.</li>
+    <li><b>Train-val gap 약 0.45</b>로 마지막 구간에서 고정됐으나 best avg 3.17 시점(step 5100) 이후는 val 개선 멈춤 → 이 ckpt가 실사용상 최선.</li>
+  </ul>
+</section>
+
+<p class="note">자동 생성 · <code class="inline">docs/textbook-sample-report-2026-04-24.html</code> · 프롬프트 추출: Python random.seed(42)로 val 41개 문서에서 6개 선정.</p>
+
+</body>
+</html>

@@ -29,6 +29,17 @@ PikoGPT is a Kotlin port of nanoGPT and micrograd by Andrej Karpathy. This is an
 ./gradlew runSampler          # 체크포인트 로드 후 샘플링
 ./gradlew runAnalyzeTokens    # 토큰 분포 분석 디버그
 ./gradlew runDebugBPE         # BPE 디버그
+
+# TinyHelen 전용 학습/샘플링 (1M 파라미터 벡터 백엔드)
+./gradlew runTinyHelenTrainVec              # 혼합 코퍼스(book+textbook+wiki+conversation) 10k
+./gradlew runTinyHelenTrainTextbookVec      # textbook-only 6k, alwaysSave=false (best avg 기반)
+./gradlew runTinyHelenSampleVec             # 최신 ckpt 자동 샘플링
+./gradlew runSamplePromptsFromFile \
+          --args="<ckpt-dir> <prompts.txt>" # 커스텀 프롬프트 샘플링
+
+# Resume (벡터 백엔드만)
+./gradlew runTinyHelenTrainVec --args="resume"              # 최대 iter ckpt에서 이어하기
+./gradlew runTinyHelenTrainVec --args="20000 resume"        # maxIters 늘려 이어하기
 ```
 
 NOTE: `application` 플러그인을 쓰지 않으므로 `./gradlew run`은 없다. 위 `runXxx` 태스크를 사용한다. 역할 분리 원칙:
@@ -130,19 +141,22 @@ The codebase has **two parallel autodiff backends** with deliberately different 
 
 ```
 data/
-├── [dataset]/                # e.g. 1k, simple, stories
-│   ├── stories.txt           # source text (input)
-│   ├── meta.json             # vocab size + token<->id maps
+├── [dataset]/                # e.g. 1k, simple, tinyhelen, tinyhelen-textbook
+│   ├── stories.txt           # 단일 입력 (fallback: 90:10 cut)
+│   ├── train.txt / val.txt   # 분리 입력 (있으면 우선, vocab은 train에서만 학습 — leakage 차단)
+│   ├── meta.json             # vocab size + token<->id maps + BPE merges
 │   ├── train.bin             # tokenized training set
 │   ├── val.bin               # tokenized validation set
 │   └── unique_words.txt      # optional vocab dump
 
-model/
-└── [datasetSize]/            # from TrainConfig (not "parameter size")
+model/                        # 스칼라 백엔드 + 혼합 vec run 체크포인트 (gitignored)
+model-textbook/               # textbook-only vec run (gitignored, TrainConfig.modelDir로 격리)
+└── [datasetSize]/            # 계산된 파라미터 수 (예: 1057536)
     └── [bestLoss * 10]/      # e.g. best val loss 1.73 -> directory "17"
-        ├── checkpoint.json   # iteration, best loss, model args, optimizer state
+        ├── checkpoint.json   # iteration, best loss, model args
         ├── meta.json         # copied from the data dir
-        └── model_weights.bin # serialized weights
+        ├── model_weights.bin # serialized weights (vec: big-endian float32)
+        └── optimizer_state.bin # vec 전용: AdamW timeStep + 모멘트 (resume용)
 ```
 
 ## Key Files to Understand

@@ -247,17 +247,26 @@ class Trainer(private val config: TrainConfig) {
         return perWorkerLoss.sum() / allSeqs.size
     }
 
-    /** train/val 각각 [evalIters]개의 배치를 순차 forward해 평균 cross-entropy loss를 계산. */
+    /**
+     * train/val 각각 [evalIters]개 배치 × batchSize 시퀀스를 forward해 평균 cross-entropy loss 계산.
+     *
+     * - `workers` 비어 있으면 마스터 순차.
+     * - 아니면 `trainStepParallel`과 같은 분산 방식: 워커들에 master param을 1회 동기화한 뒤
+     *   coroutine으로 동시 forward. Eval 중엔 weight 불변이라 grad/sync 필요 없음.
+     */
     private fun estimateLoss(): Pair<Double, Double> {
-        val trainLosses = (0 until config.evalIters).map {
-            val (inputs, targets) = trainLoader.getBatch()
-            evaluateBatch(inputs, targets)
+        val trainBatches = List(config.evalIters) { trainLoader.getBatch() }
+        val valBatches = List(config.evalIters) { valLoader.getBatch() }
+
+        return if (workers.isEmpty()) {
+            val trainAvg = trainBatches.map { evaluateBatch(it.first, it.second) }.average()
+            val valAvg = valBatches.map { evaluateBatch(it.first, it.second) }.average()
+            trainAvg to valAvg
+        } else {
+            // Eval 내내 worker param 불변이므로 train/val 공통 sync 1회.
+            for (worker in workers) syncParamsData(worker.parameters(), model.parameters())
+            evaluateBatchesParallel(trainBatches) to evaluateBatchesParallel(valBatches)
         }
-        val valLosses = (0 until config.evalIters).map {
-            val (inputs, targets) = valLoader.getBatch()
-            evaluateBatch(inputs, targets)
-        }
-        return Pair(trainLosses.average(), valLosses.average())
     }
 
     private fun evaluateBatch(inputs: Array<IntArray>, targets: Array<IntArray>): Double {
@@ -267,6 +276,36 @@ class Trainer(private val config: TrainConfig) {
             sum += crossEntropyForward(logits, targets[b]).loss.toDouble()
         }
         return sum / inputs.size
+    }
+
+    /** 배치 묶음을 모두 시퀀스로 flatten 후 worker들에 round-robin 분배해 coroutine forward. */
+    private fun evaluateBatchesParallel(
+        batches: List<Pair<Array<IntArray>, Array<IntArray>>>,
+    ): Double {
+        val allSeqs = buildList<Pair<IntArray, IntArray>> {
+            for ((inputs, targets) in batches) {
+                for (b in inputs.indices) add(inputs[b] to targets[b])
+            }
+        }
+        val chunks = distributeRoundRobin(allSeqs, workers.size)
+        val perWorkerLoss = DoubleArray(workers.size)
+
+        runBlocking {
+            coroutineScope {
+                chunks.forEachIndexed { wi, chunk ->
+                    launch(Dispatchers.Default) {
+                        val worker = workers[wi]
+                        var localLoss = 0.0
+                        for ((input, target) in chunk) {
+                            val logits = worker.forward(input)
+                            localLoss += crossEntropyForward(logits, target).loss.toDouble()
+                        }
+                        perWorkerLoss[wi] = localLoss
+                    }
+                }
+            }
+        }
+        return perWorkerLoss.sum() / allSeqs.size
     }
 
     /** 모든 파라미터 grad의 L2 norm을 계산해서 반환. */
