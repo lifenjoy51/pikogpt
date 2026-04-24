@@ -44,6 +44,8 @@ class Sampler(private val samplingConfig: SampleConfig) {
 
         // 2) 모델 구성 + 가중치 로드
         model = PikoGPT(meta.modelArgs)
+        // 샘플링은 항상 추론 모드 — dropout 비활성.
+        model.setTraining(false)
         loadWeights(File("${samplingConfig.modelDirectoryPath}/model_weights.bin"))
         vocabSize = meta.modelArgs.vocabSize
         blockSize = meta.modelArgs.blockSize

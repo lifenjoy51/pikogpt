@@ -116,6 +116,9 @@ class Trainer(private val config: TrainConfig) {
             }
         }
 
+        // 학습 모드 ON — dropout 활성화. eval 시점에만 잠시 OFF로 전환.
+        setTrainingMode(true)
+
         val startTime = System.currentTimeMillis()
         var runningLoss = 0.0
         val evalInterval = config.evalInterval.coerceAtLeast(1)
@@ -124,7 +127,11 @@ class Trainer(private val config: TrainConfig) {
             optimizer.updateLearningRate(getLearningRate(iterationNumber))
 
             if (iterationNumber % evalInterval == 0) {
+                // eval 중엔 dropout 끄기 (master + workers 모두).
+                setTrainingMode(false)
                 val (trainLoss, valLoss) = estimateLoss()
+                setTrainingMode(true)
+
                 val avg = (trainLoss + valLoss) / 2.0
                 println(
                     "스텝 $iterationNumber: " +
@@ -308,6 +315,12 @@ class Trainer(private val config: TrainConfig) {
         return perWorkerLoss.sum() / allSeqs.size
     }
 
+    /** master + workers의 모든 Dropout 레이어 training 플래그를 일괄 설정. */
+    private fun setTrainingMode(mode: Boolean) {
+        model.setTraining(mode)
+        for (w in workers) w.setTraining(mode)
+    }
+
     /** 모든 파라미터 grad의 L2 norm을 계산해서 반환. */
     private fun computeGradNorm(): Float {
         var sumSq = 0.0f
@@ -463,7 +476,7 @@ class Trainer(private val config: TrainConfig) {
         numberOfAttentionHeads = config.numberOfHeads,
         embeddingDimension = config.embeddingDimension,
         useBias = config.bias,
-        dropoutProbability = config.dropout,  // 벡터 백엔드는 현재 dropout 미구현. 저장만.
+        dropoutProbability = config.dropout,
     )
 
     private fun formatLoss(loss: Double): String {
