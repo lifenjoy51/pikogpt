@@ -37,6 +37,7 @@ class SelfAttention(
     val embedDim: Int,
     val numHeads: Int,
     useBias: Boolean = true,
+    dropoutProbability: Float = 0.0f,
 ) {
     init {
         require(embedDim % numHeads == 0) { "embedDim=$embedDim must be divisible by numHeads=$numHeads" }
@@ -50,11 +51,20 @@ class SelfAttention(
     val vProjection: Linear = Linear(embedDim, embedDim, useBias)
     val outputProjection: Linear = Linear(embedDim, embedDim, useBias)
 
+    /**
+     * Attention dropout — softmax(scores)로 얻은 attention weights에 적용.
+     * residual dropout — output projection 뒤 최종 출력에 적용 (residual 합산 전).
+     * 표준 GPT-2 convention.
+     */
+    val attnDropout: Dropout = Dropout(dropoutProbability)
+    val residDropout: Dropout = Dropout(dropoutProbability)
+
     // backward 재사용용 캐시 (한 번의 forward→backward 사이클 동안만 유효)
     private var cachedQ: Tensor? = null
     private var cachedK: Tensor? = null
     private var cachedV: Tensor? = null
-    private var cachedAttnProbs: FloatArray? = null   // [H, T, T] row-major: h*T*T + i*T + j
+    private var cachedAttnProbs: FloatArray? = null        // softmax 출력 (pre-dropout), softmax backward용
+    private var cachedDroppedAttn: FloatArray? = null      // post-dropout attn, d_V / d_attn_dropped 계산용
     private var cachedT: Int = 0
 
     fun forward(x: Tensor): Tensor {
@@ -68,21 +78,16 @@ class SelfAttention(
         val v = vProjection.forward(x)
         cachedQ = q; cachedK = k; cachedV = v
 
-        // out[T, C] 누적 버퍼
-        val out = Tensor(intArrayOf(t, embedDim))
+        // 1) softmax(scores)까지만 먼저 계산 — attention dropout이 attn_probs에 들어가야 하므로
+        //    out = attn · V 누적은 dropout 이후에 별도 루프로 수행.
         val attnProbs = FloatArray(numHeads * t * t)
-
         for (h in 0 until numHeads) {
             val headOffset = h * headDim
-            // 각 head에서 scores, softmax, out 계산
-            // scores_h[i, j] = (Σ_d Q[i, headOffset+d] * K[j, headOffset+d]) * scale
-            // causal: j > i 면 mask (softmax 입력에서 제외)
             for (i in 0 until t) {
-                // 1) scores 행 i 계산 + max (수치 안정)
+                // scores_h[i, j] = (Σ_d Q[i, d] * K[j, d]) * scale, j > i는 causal mask로 제외
                 val scoresRow = FloatArray(t)
                 var maxScore = Float.NEGATIVE_INFINITY
-                for (j in 0 until t) {
-                    if (j > i) continue  // causal: 미래 토큰 무시
+                for (j in 0..i) {
                     var dot = 0.0f
                     for (d in 0 until headDim) {
                         dot += q[i, headOffset + d] * k[j, headOffset + d]
@@ -91,7 +96,6 @@ class SelfAttention(
                     scoresRow[j] = s
                     if (s > maxScore) maxScore = s
                 }
-                // 2) exp(score - max), 합
                 var sumExp = 0.0f
                 for (j in 0..i) {
                     val e = exp((scoresRow[j] - maxScore).toDouble()).toFloat()
@@ -100,75 +104,101 @@ class SelfAttention(
                 }
                 val invSum = 1.0f / sumExp
                 for (j in 0..i) {
-                    scoresRow[j] *= invSum
-                    attnProbs[h * t * t + i * t + j] = scoresRow[j]
+                    attnProbs[h * t * t + i * t + j] = scoresRow[j] * invSum
                 }
-                // j > i 위치는 0으로 유지 (이미 FloatArray 초기값 0)
+                // j > i 위치는 0 (FloatArray 초기값 유지)
+            }
+        }
+        // backward에서 softmax 역전파에 쓸 pre-dropout attn 보존.
+        cachedAttnProbs = attnProbs
 
-                // 3) out_h 행 i = Σ_j attn[i, j] * V[j, head]
+        // 2) Attention dropout — attn_probs 전체를 [H*T*T] 평탄 Tensor로 감싸 Dropout에 위임.
+        //    inverted dropout이라 training=false이면 identity, p=0이면 identity.
+        val attnTensor = Tensor(intArrayOf(numHeads * t * t), attnProbs)
+        val droppedAttnTensor = attnDropout.forward(attnTensor)
+        val droppedAttn = droppedAttnTensor.data
+        cachedDroppedAttn = droppedAttn
+
+        // 3) out_h = attn_dropped · V_h
+        val out = Tensor(intArrayOf(t, embedDim))
+        for (h in 0 until numHeads) {
+            val headOffset = h * headDim
+            for (i in 0 until t) {
                 for (d in 0 until headDim) {
                     var acc = 0.0f
                     for (j in 0..i) {
-                        acc += scoresRow[j] * v[j, headOffset + d]
+                        acc += droppedAttn[h * t * t + i * t + j] * v[j, headOffset + d]
                     }
                     out[i, headOffset + d] = acc
                 }
             }
         }
 
-        cachedAttnProbs = attnProbs
-        return outputProjection.forward(out)
+        // 4) Output projection + residual dropout.
+        val projected = outputProjection.forward(out)
+        return residDropout.forward(projected)
     }
 
     fun backward(gy: Tensor): Tensor {
         val q = cachedQ ?: error("forward 전 backward")
         val k = cachedK!!
         val v = cachedV!!
-        val attn = cachedAttnProbs!!
+        val attn = cachedAttnProbs!!            // pre-dropout softmax 출력 (softmax backward 기준)
+        val droppedAttn = cachedDroppedAttn!!   // post-dropout attn (d_attn_dropped 계산의 기준은 droppedAttn)
         val t = cachedT
 
-        // 1) output projection backward → d_mergedOut [T, C]
-        val dMerged = outputProjection.backward(gy)
+        // 1) residual dropout backward → output projection backward → d_mergedOut [T, C]
+        val dResid = residDropout.backward(gy)
+        val dMerged = outputProjection.backward(dResid)
 
-        // 2) head별 backward
+        // 2) head별 backward — out = attn_dropped · V 이므로
+        //    d_attn_dropped[i, j] = Σ_d dMerged[i, d] * V[j, d]
+        //    d_V[j, d]           += Σ_i attn_dropped[i, j] * dMerged[i, d]
         val dQ = Tensor(intArrayOf(t, embedDim))
         val dK = Tensor(intArrayOf(t, embedDim))
         val dV = Tensor(intArrayOf(t, embedDim))
 
+        // attn dropout의 mask를 재사용하려면 평탄 Tensor를 거쳐야 하므로
+        // 먼저 모든 head의 d_attn_dropped를 [H*T*T]로 모았다가 한 번에 dropout backward.
+        val dAttnDropped = FloatArray(numHeads * t * t)
+
         for (h in 0 until numHeads) {
             val headOffset = h * headDim
 
-            // 2a) d_out_h [T, D] ← dMerged의 h번째 슬라이스
-            //     out_h = attn @ V_h  ⇒  d_attn[i, j] = Σ_d d_out_h[i, d] * V_h[j, d]
-            //                           d_V_h[j, d]  += Σ_i attn[i, j] * d_out_h[i, d]
-            val dAttn = FloatArray(t * t)  // 이 head의 [T, T] grad
+            // 2a) d_attn_dropped: out = attn_dropped @ V
             for (i in 0 until t) {
                 for (j in 0..i) {
                     var acc = 0.0f
                     for (d in 0 until headDim) {
                         acc += dMerged[i, headOffset + d] * v[j, headOffset + d]
                     }
-                    dAttn[i * t + j] = acc
-                }
-                for (d in 0 until headDim) {
-                    // d_V_h[j, d] += Σ_i attn[i, j] * dMerged[i, headOffset+d]
-                    // 루프 순서를 바꿔 j 바깥으로 두면 cache friendly
+                    dAttnDropped[h * t * t + i * t + j] = acc
                 }
             }
-            // d_V 누적 (j, d 바깥, i 안)
+            // 2b) d_V — attn_dropped (post-dropout)를 그대로 가중치로 사용.
             for (j in 0 until t) {
                 for (d in 0 until headDim) {
                     var acc = 0.0f
                     for (i in j until t) {  // causal: j ≤ i 일 때만 attn이 0이 아님
-                        acc += attn[h * t * t + i * t + j] * dMerged[i, headOffset + d]
+                        acc += droppedAttn[h * t * t + i * t + j] * dMerged[i, headOffset + d]
                     }
                     dV[j, headOffset + d] += acc
                 }
             }
+        }
 
-            // 2b) softmax backward (행별 Jacobian)
+        // 2c) Attention dropout backward (d_attn_dropped → d_attn). mask 재사용.
+        val dAttnAll = attnDropout.backward(Tensor(intArrayOf(numHeads * t * t), dAttnDropped)).data
+
+        for (h in 0 until numHeads) {
+            val headOffset = h * headDim
+            val dAttn = FloatArray(t * t)
+            for (i in 0 until t) for (j in 0..i) {
+                dAttn[i * t + j] = dAttnAll[h * t * t + i * t + j]
+            }
+
+            // 2d) softmax backward (행별 Jacobian) — attn은 pre-dropout 확률.
             //     dScores[i, j] = attn[i, j] * ( dAttn[i, j] - Σ_k attn[i, k] * dAttn[i, k] )
-            //     causal로 j > i 인 attn은 0이므로 그 부분 기여 없음.
             val dScores = FloatArray(t * t)
             for (i in 0 until t) {
                 var dot = 0.0f
@@ -181,7 +211,7 @@ class SelfAttention(
                 }
             }
 
-            // 2c) scores = Q · K^T * scale
+            // 2e) scores = Q · K^T * scale
             //     dQ_h[i, d] += scale * Σ_j dScores[i, j] * K_h[j, d]
             //     dK_h[j, d] += scale * Σ_i dScores[i, j] * Q_h[i, d]
             for (i in 0 until t) {

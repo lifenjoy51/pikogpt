@@ -26,11 +26,12 @@ class TransformerBlock(
     val embedDim: Int,
     val numHeads: Int,
     useBias: Boolean = true,
+    dropoutProbability: Float = 0.0f,
 ) {
     val layerNorm1: LayerNorm = LayerNorm(embedDim, useBias)
-    val attention: SelfAttention = SelfAttention(embedDim, numHeads, useBias)
+    val attention: SelfAttention = SelfAttention(embedDim, numHeads, useBias, dropoutProbability)
     val layerNorm2: LayerNorm = LayerNorm(embedDim, useBias)
-    val mlp: MLP = MLP(embedDim, useBias)
+    val mlp: MLP = MLP(embedDim, useBias, dropoutProbability)
 
     fun forward(x: Tensor): Tensor {
         val attnOut = attention.forward(layerNorm1.forward(x))

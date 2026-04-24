@@ -9,6 +9,7 @@ import vec.Tensor
  *   Forward:
  *     x[T] (토큰 ids)
  *       → tokEmb[T, C] + posEmb[T, C]     (원소별 덧셈)
+ *       → embedding dropout (표준 GPT-2 스타일)
  *       → stacked TransformerBlock(H, C)
  *       → final LayerNorm
  *       → lmHead (Linear C → V)
@@ -19,8 +20,9 @@ import vec.Tensor
 class PikoGPT(val config: GPTConfig) {
     val tokenEmbedding = EmbeddingTable(config.vocabSize, config.nEmbd)
     val positionEmbedding = EmbeddingTable(config.blockSize, config.nEmbd)
+    val embeddingDropout = Dropout(config.dropoutProbability)
     val blocks: Array<TransformerBlock> = Array(config.nLayer) {
-        TransformerBlock(config.nEmbd, config.nHead, config.bias)
+        TransformerBlock(config.nEmbd, config.nHead, config.bias, config.dropoutProbability)
     }
     val finalLayerNorm = LayerNorm(config.nEmbd, config.bias)
     val lmHead = Linear(config.nEmbd, config.vocabSize, useBias = false)
@@ -37,10 +39,11 @@ class PikoGPT(val config: GPTConfig) {
         cachedTokenIds = tokenIds
         cachedPositionIds = positionIds
 
-        // 1) 임베딩 덧셈
+        // 1) 임베딩 덧셈 → dropout
         val tokEmb = tokenEmbedding.forward(tokenIds)             // [T, C]
         val posEmb = positionEmbedding.forward(positionIds)       // [T, C]
         var x = addTensors(tokEmb, posEmb)                        // [T, C]
+        x = embeddingDropout.forward(x)
 
         // 2) 블록 스택
         for (block in blocks) {
@@ -66,9 +69,25 @@ class PikoGPT(val config: GPTConfig) {
             g = block.backward(g)
         }
 
+        // embedding dropout backward → tokEmb/posEmb grad
+        g = embeddingDropout.backward(g)
+
         // 임베딩 덧셈의 backward: grad가 tokEmb/posEmb에 동일하게 전달됨
         tokenEmbedding.backward(g)
         positionEmbedding.backward(g)
+    }
+
+    /**
+     * 학습/추론 모드 토글. 모든 내부 Dropout 레이어의 `training` 플래그를 설정한다.
+     * 학습 루프에서는 true, 평가·샘플링에서는 false.
+     */
+    fun setTraining(mode: Boolean) {
+        embeddingDropout.training = mode
+        for (block in blocks) {
+            block.attention.attnDropout.training = mode
+            block.attention.residDropout.training = mode
+            block.mlp.dropout.training = mode
+        }
     }
 
     fun parameters(): List<Tensor> {
