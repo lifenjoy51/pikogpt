@@ -115,6 +115,31 @@ TrainConfig(
 nohup bash scripts/run-overnight.sh >/dev/null 2>&1 & disown
 ```
 
+### 6. 벡터 백엔드로 전환 (≈1M 파라미터)
+
+`vec/` 백엔드(커밋 `25538c3`)가 완성된 뒤, 같은 데이터셋에 **4층 / embd 128 / 4 heads / FFN 512 = ≈1.05M 파라미터** 구성을 `TinyHelenTrainVec`로 구동 가능.
+
+```bash
+./gradlew runTinyHelenTrainVec              # 1500 iter 전체 (≈40분)
+./gradlew runTinyHelenTrainVec --args="50"  # 짧은 스모크
+
+# 학습 후
+./gradlew runTinyHelenSampleVec             # model/vec/ 최신 체크포인트 자동 선택
+```
+
+벡터 백엔드는 `model/vec/{params}/{loss*10}/` 경로에 독립적으로 저장 — 스칼라 체크포인트와 간섭 없음.
+
+**측정 (20 iter 스모크, 1M 파라미터)**:
+
+| 구간 | 벡터 백엔드 (1M) | 스칼라 백엔드 (71K) |
+|---|---|---|
+| iter당 | **≈1.7초** | 16초 |
+| 첫 학습 감지 (avg < 6.8) | **iter 5 부근** | iter 150 부근 |
+| 20 iter loss | 6.65 | 6.91 (사실상 제자리) |
+| 1500 iter 예상 소요 | **≈42분** | ≈7시간 |
+
+파라미터당 기준으로 **약 130× 빠름** (15× 큰 모델을 9× 빠르게 학습).
+
 ## 관측 결과 (2026-04-23 ~ 04-24 기준)
 
 ### 타이밍

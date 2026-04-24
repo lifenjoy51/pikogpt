@@ -73,10 +73,17 @@ tasks.register<JavaExec>("runMiniTrainer") {
 }
 
 tasks.register<JavaExec>("runTinyHelenTrain") {
-    description = "Run TinyHelenTrain (TinyHelen leaner 코퍼스 overnight 학습)"
+    description = "Run TinyHelenTrain (TinyHelen leaner 코퍼스 overnight 학습 — 스칼라 백엔드)"
     mainClass.set("train.TinyHelenTrainKt")
     classpath = sourceSets.main.get().runtimeClasspath
     jvmArgs = listOf("-Xmx8g")
+}
+
+tasks.register<JavaExec>("runTinyHelenTrainVec") {
+    description = "Run TinyHelenTrainVec (~1M 파라미터, 벡터 백엔드)"
+    mainClass.set("train.TinyHelenTrainVecKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx4g")
 }
 
 tasks.register<JavaExec>("runSampler") {
@@ -87,8 +94,15 @@ tasks.register<JavaExec>("runSampler") {
 }
 
 tasks.register<JavaExec>("runTinyHelenSample") {
-    description = "Run TinyHelenSample (model/ 최신 체크포인트 자동 샘플링)"
+    description = "Run TinyHelenSample (model/ 최신 스칼라 체크포인트 자동 샘플링)"
     mainClass.set("sample.TinyHelenSampleKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx2g")
+}
+
+tasks.register<JavaExec>("runTinyHelenSampleVec") {
+    description = "Run TinyHelenSampleVec (model/vec/ 최신 벡터 체크포인트 자동 샘플링)"
+    mainClass.set("sample.TinyHelenSampleVecKt")
     classpath = sourceSets.main.get().runtimeClasspath
     jvmArgs = listOf("-Xmx2g")
 }
