@@ -74,11 +74,15 @@ class Trainer(private val config: TrainConfig) {
         println("모델 파라미터 텐서 수: ${model.parameters().size}, 총 스칼라 원소: ${model.parameters().sumOf { it.numel }}")
 
         // Worker 복제본 준비 (data-parallel). 한 iter당 seq 개수보다 많을 이유 없음.
-        // 벤치마크/튜닝 용도로 환경변수 VEC_MAX_WORKERS로 상한을 걸 수 있다.
+        // 기본 상한을 **4**로 둔 이유: 12코어 머신에서 측정 결과 worker 4와 8이 같은
+        // 0.5s/iter로 수렴 (공유 L3 캐시 + Apple Silicon P/E core mix 특성). 그 이상 쓰면
+        // CPU만 더 쓰고 속도는 같으니 4가 비용 효율적. 머신 특성이 다르면
+        // 환경변수 VEC_MAX_WORKERS로 override 가능 (벤치/튜닝 용도).
         val totalSeqsPerIter = config.batchSize * config.gradientAccumulationSteps
         val cpuCount = Runtime.getRuntime().availableProcessors().coerceAtLeast(1)
         val envCap = System.getenv("VEC_MAX_WORKERS")?.toIntOrNull()?.coerceAtLeast(1)
-        val desiredWorkers = minOf(envCap ?: cpuCount, totalSeqsPerIter)
+        val defaultCap = 4
+        val desiredWorkers = minOf(envCap ?: defaultCap, cpuCount, totalSeqsPerIter)
         workers = if (desiredWorkers >= 2) {
             println(
                 "데이터 병렬 학습 활성 — worker 수 $desiredWorkers " +
