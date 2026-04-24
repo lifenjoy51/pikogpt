@@ -26,10 +26,10 @@ fun main(args: Array<String>) {
     val config = TrainConfig(
         dataPath = "data/tinyhelen",
         modelDir = "model",
-        // 효과 배치 = batch * accum = 8 (노이즈 vs 속도 균형)
-        gradientAccumulationSteps = 4,
+        // 효과 배치 = batch * accum = 32 (노이즈 감소)
+        gradientAccumulationSteps = 16,
         batchSize = 2,
-        blockSize = 48,
+        blockSize = 64,
         // 모델 (≈1M 파라미터)
         numberOfLayers = 4,
         numberOfHeads = 4,
@@ -42,16 +42,21 @@ fun main(args: Array<String>) {
         gradClip = 1.0f,
         beta1 = 0.9f,
         beta2 = 0.95f,
-        // 스케줄
-        maxIters = maxItersOverride ?: 1500,
-        warmupRatio = 0.05f,
-        learningRateDecayRatio = 0.85f,
-        minimumLearningRate = 5e-5f,
+        // 스케줄 (long run 용)
+        //   - warmup 3% (0.03 * 10000 = 300 iter)
+        //   - cosine decay 95%까지 (iter 9500), 마지막 5%는 min LR plateau
+        //   - min LR 3e-5: peak(3e-4)의 1/10, 후반에도 충분히 작은 업데이트 허용
+        maxIters = maxItersOverride ?: 10000,
+        warmupRatio = 0.03f,
+        learningRateDecayRatio = 0.95f,
+        minimumLearningRate = 3e-5f,
         decayLr = true,
         // 평가/로깅
+        //   10000 iter × 0.05 = 500 iter마다 eval → 20회
+        //   log는 100 iter마다 (긴 run에 로그 과다 방지)
         evalIntervalRatio = 0.05f,
         evalIters = 4,
-        logInterval = 10,
+        logInterval = 100,
         alwaysSaveCheckpoint = true,
     )
 
