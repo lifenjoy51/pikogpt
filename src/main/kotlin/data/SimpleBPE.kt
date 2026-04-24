@@ -19,7 +19,7 @@ package data
  */
 class SimpleBPE(
     private val maxVocabSize: Int,
-    private val specialTokens: List<String> = listOf("<|eos|>", UNKNOWN_TOKEN),
+    private val specialTokens: List<String> = listOf("<|eos|>", UNKNOWN_TOKEN, BOS_TOKEN),
     private val lowercase: Boolean = false,
     private val useWordPreTokenize: Boolean = false,
     private val standardBpeScoring: Boolean = true,
@@ -289,7 +289,13 @@ class SimpleBPE(
     }
 
     companion object {
-        /** 어휘에 없는 토큰에 할당되는 특수 토큰. */
+        /** 어휘에 없는 토큰에 할당되는 특수 토큰. id 1로 고정되는 것은 기본 specialTokens 순서에 의존. */
         const val UNKNOWN_TOKEN = "<|unk|>"
+
+        /** 문서/샘플 시작을 표시하는 특수 토큰. 기본 배치에서 id 2. */
+        const val BOS_TOKEN = "<|bos|>"
+
+        /** 문서/샘플 끝을 표시하는 특수 토큰. 기본 배치에서 id 0 — Sampler의 stop 조건으로 사용. */
+        const val EOS_TOKEN = "<|eos|>"
     }
 }

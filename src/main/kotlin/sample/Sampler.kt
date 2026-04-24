@@ -220,12 +220,12 @@ class Sampler(private val samplingConfiguration: SampleConfig) {
             }
         }
 
-        // 디코더: 토큰 ID 리스트 → 문자열 (0 = EOS 제외)
+        // 디코더: 토큰 ID → 문자열. 모든 specialTokens(예: <|bos|>, <|eos|>, <|unk|>)은 출력에서 제외.
+        val specialTokenSet = vocabularyMetadata.specialTokens.toHashSet()
         tokenToTextDecoder = { tokenIdList ->
-            tokenIdList.filter { it > 0 }
-                .joinToString("") { tokenId ->
-                    vocabularyMetadata.itos[tokenId] ?: ""
-                }
+            tokenIdList
+                .mapNotNull { id -> vocabularyMetadata.itos[id]?.takeUnless { it in specialTokenSet } }
+                .joinToString("")
         }
 
         vocabularySize = vocabularyMetadata.vocabSize

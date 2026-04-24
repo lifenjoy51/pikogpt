@@ -36,8 +36,8 @@ data class MetaInfo(
     /** 학습 시 단어 pre-tokenize(GPT-2 스타일)를 사용했는지. */
     val useWordPreTokenize: Boolean = false,
 
-    /** BPE 학습 시 기본 특수 토큰 이외에 추가된 특수 토큰들. */
-    val specialTokens: List<String> = listOf("<|eos|>", "<|unk|>"),
+    /** BPE 학습 시 사용된 특수 토큰 목록 (학습 순서 = ID 순서). 기본 배치: eos=0, unk=1, bos=2. */
+    val specialTokens: List<String> = listOf("<|eos|>", "<|unk|>", "<|bos|>"),
 ) {
     // 호환성을 위한 별칭 속성들
     val vocabSize: Int get() = vocabularySize

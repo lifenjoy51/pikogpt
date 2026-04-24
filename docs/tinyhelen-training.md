@@ -28,8 +28,8 @@
 git clone --depth 1 https://github.com/EmpathYang/TinyHelen.git /tmp/TinyHelen
 mkdir -p data/tinyhelen
 for f in book textbook wiki conversation; do
-  jq -r '.text' "/tmp/TinyHelen/data/leaner/10M/train/${f}0000.jsonl"
-  echo ""
+  # 각 jsonl line(= 한 문서)을 <|bos|> … <|eos|>로 감싸 경계 정보를 보존.
+  jq -r '"<|bos|>" + .text + "<|eos|>"' "/tmp/TinyHelen/data/leaner/10M/train/${f}0000.jsonl"
 done > data/tinyhelen/stories.txt
 ```
 
