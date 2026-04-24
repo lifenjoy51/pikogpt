@@ -31,8 +31,10 @@ class Sampler(private val samplingConfig: SampleConfig) {
     private val vocabSize: Int
     private val blockSize: Int
 
+    /** 시드된 RNG (재현성을 위해 Random.Default와 분리). */
+    private val rng: Random = Random(samplingConfig.randomSeed)
+
     init {
-        Random(samplingConfig.randomSeed)
 
         // 1) 체크포인트 메타 로드 (모델 아키텍처 복원용)
         val checkpointFile = File("${samplingConfig.modelDirectoryPath}/checkpoint.json")
@@ -123,7 +125,7 @@ class Sampler(private val samplingConfig: SampleConfig) {
     }
 
     private fun sampleFromDistribution(probs: FloatArray): Int {
-        val r = Random.nextDouble().toFloat()
+        val r = rng.nextDouble().toFloat()
         var cumulative = 0.0f
         for (i in probs.indices) {
             cumulative += probs[i]
@@ -195,7 +197,4 @@ class Sampler(private val samplingConfig: SampleConfig) {
         }
         return tokens
     }
-
-    @Suppress("unused")
-    private fun logForDebug(text: String): Nothing = error(text) // 플레이스홀더 삭제용 suppression
 }

@@ -45,6 +45,9 @@ class Trainer(private val config: TrainConfig) {
     private var iterationNumber: Int = 0
     private var vocabularySize: Int = 0
 
+    /** 직전 optimizer step의 pre-clip gradient L2 norm — eval 로그에 함께 표시해 학습 안정성 진단. */
+    private var lastGradNorm: Float = 0.0f
+
     fun train() {
         println("=== PikoGPT (vec 백엔드) 훈련 시작 ===")
         println("설정: $config")
@@ -80,19 +83,19 @@ class Trainer(private val config: TrainConfig) {
                 val avg = (trainLoss + valLoss) / 2.0
                 println(
                     "스텝 $iterationNumber: " +
-                        "훈련 ${formatLoss(trainLoss)} | 검증 ${formatLoss(valLoss)} | 평균 $avg"
+                        "훈련 ${formatLoss(trainLoss)} | 검증 ${formatLoss(valLoss)} | 평균 $avg" +
+                        " | grad-norm ${"%.3f".format(lastGradNorm)}"
                 )
-                if (avg < bestLoss) {
-                    bestLoss = avg
-                    saveCheckpoint()
-                }
+                val isBest = avg < bestLoss
+                if (isBest) bestLoss = avg
+                if (isBest || config.alwaysSaveCheckpoint) saveCheckpoint(avg, isBest)
             }
 
             if (iterationNumber == 0 && config.evalOnly) break
 
             // 한 optimizer step: accum 만큼 gradient를 누적
             val stepLoss = trainStep()
-            if (config.gradClip > 0.0f) clipGradients(config.gradClip)
+            lastGradNorm = if (config.gradClip > 0.0f) clipGradients(config.gradClip) else computeGradNorm()
             optimizer.step()
             optimizer.zeroGrad()
 
@@ -121,6 +124,12 @@ class Trainer(private val config: TrainConfig) {
             for (b in inputs.indices) {
                 val logits = model.forward(inputs[b])
                 val ce = crossEntropyForward(logits, targets[b])
+                if (!ce.loss.isFinite()) {
+                    error(
+                        "학습 loss가 비정상(NaN/Inf)으로 발산: iter=$iterationNumber, microStep=$microStep, batch=$b, " +
+                            "value=${ce.loss}. 학습 중단."
+                    )
+                }
                 totalLoss += ce.loss.toDouble()
                 val gLogits = crossEntropyBackward(logits, targets[b], ce.softmax, upstreamGrad)
                 model.backward(gLogits)
@@ -151,14 +160,19 @@ class Trainer(private val config: TrainConfig) {
         return sum / inputs.size
     }
 
-    /** L2 norm 기반 gradient clipping. */
-    private fun clipGradients(maxNorm: Float) {
+    /** 모든 파라미터 grad의 L2 norm을 계산해서 반환. */
+    private fun computeGradNorm(): Float {
         var sumSq = 0.0f
         for (p in model.parameters()) {
             val g = p.grad ?: continue
             for (i in g.indices) sumSq += g[i] * g[i]
         }
-        val totalNorm = sqrt(sumSq)
+        return sqrt(sumSq)
+    }
+
+    /** L2 norm 기반 gradient clipping. 반환값은 **clip 전** total norm — 진단용. */
+    private fun clipGradients(maxNorm: Float): Float {
+        val totalNorm = computeGradNorm()
         if (totalNorm > maxNorm) {
             val scale = maxNorm / totalNorm
             for (p in model.parameters()) {
@@ -166,6 +180,7 @@ class Trainer(private val config: TrainConfig) {
                 for (i in g.indices) g[i] *= scale
             }
         }
+        return totalNorm
     }
 
     /** warmup → cosine decay → min LR plateau (train.Trainer의 스케줄 수식 복제). */
@@ -181,8 +196,14 @@ class Trainer(private val config: TrainConfig) {
         return config.minimumLearningRate + coefficient * (config.learningRate - config.minimumLearningRate)
     }
 
-    private fun saveCheckpoint() {
-        val lossInteger = (bestLoss * 10).toInt()
+    /**
+     * 체크포인트를 `${modelPath}/{(loss*10).toInt()}/`에 저장.
+     *
+     * @param loss   저장 경로 결정용 loss (best 갱신 시 새 best, alwaysSaveCheckpoint 시 현재 avg)
+     * @param isBest best validation loss 갱신 여부 — 로그에만 사용
+     */
+    private fun saveCheckpoint(loss: Double, isBest: Boolean) {
+        val lossInteger = (loss * 10).toInt()
         val dir = File("$modelPath/$lossInteger")
         dir.mkdirs()
 
@@ -199,7 +220,8 @@ class Trainer(private val config: TrainConfig) {
         val srcMeta = File("${config.dataPath}/meta.json")
         if (srcMeta.exists()) srcMeta.copyTo(File(dir, "meta.json"), overwrite = true)
 
-        println("체크포인트 저장 완료: ${File(dir, "checkpoint.json").absolutePath}")
+        val label = if (isBest) "best" else "always"
+        println("체크포인트 저장 완료 ($label): ${File(dir, "checkpoint.json").absolutePath}")
     }
 
     private fun saveModelWeights(file: File) {

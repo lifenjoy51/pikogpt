@@ -55,14 +55,18 @@ class Sampler(private val samplingConfiguration: SampleConfig) {
         .take(4)
 
     /**
+     * 샘플링에 사용되는 난수 생성기.
+     * `samplingConfiguration.seed`로 시드된 독립 인스턴스 — `Random.Default`와 분리되어
+     * 같은 시드로 항상 같은 시퀀스를 재현한다.
+     */
+    private val rng: Random = Random(samplingConfiguration.seed)
+
+    /**
      * 샘플러 초기화
      *
-     * 랜덤 시드 설정, 모델 로드, 인코딩 설정을 순차적으로 수행합니다.
+     * 모델 로드, 인코딩 설정을 순차적으로 수행합니다.
      */
     init {
-        // 재현 가능한 결과를 위한 랜덤 시드 설정
-        Random(samplingConfiguration.seed)
-
         // 학습된 모델 로드
         loadTrainedModel()
 
@@ -415,8 +419,8 @@ class Sampler(private val samplingConfiguration: SampleConfig) {
             cumulativeProbabilities[tokenIndex] = cumulativeProbabilities[tokenIndex - 1] + probabilityDistribution[tokenIndex]
         }
 
-        // 0.0과 1.0 사이의 랜덤 값 생성
-        val randomValue = Random.nextDouble()
+        // 0.0과 1.0 사이의 랜덤 값 생성 (시드된 rng 사용 → 재현성 보장)
+        val randomValue = rng.nextDouble()
 
         // CDF에서 랜덤 값보다 큰 최초 인덱스 찾기
         for (tokenIndex in cumulativeProbabilities.indices) {

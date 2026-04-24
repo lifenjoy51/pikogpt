@@ -56,6 +56,9 @@ class Trainer(private val config: TrainConfig) {
     /** 현재 훈련 이터레이션 번호 */
     private var iterationNumber = 0
 
+    /** 직전 optimizer step의 pre-clip gradient L2 norm — eval 로그에 함께 표시해 학습 안정성 진단. */
+    private var lastGradNorm: Float = 0.0f
+
     /**
      * 메인 훈련 프로세스 실행
      *
@@ -103,12 +106,14 @@ class Trainer(private val config: TrainConfig) {
                 val lossValue = (estimatedLosses.first + estimatedLosses.second) / 2
                 val trainingProgress = formatLossWithProgress(estimatedLosses.first)
                 val validationProgress = formatLossWithProgress(estimatedLosses.second)
-                println("스텝 $iterationNumber: 훈련 $trainingProgress | 검증 $validationProgress | 평균 $lossValue")
-                
-                if (lossValue < bestLoss) {
-                    bestLoss = lossValue
-                    saveCheckpoint()
-                }
+                println(
+                    "스텝 $iterationNumber: 훈련 $trainingProgress | 검증 $validationProgress | 평균 $lossValue" +
+                        " | grad-norm ${"%.3f".format(lastGradNorm)}"
+                )
+
+                val isBest = lossValue < bestLoss
+                if (isBest) bestLoss = lossValue
+                if (isBest || config.alwaysSaveCheckpoint) saveCheckpoint(lossValue, isBest)
             }
 
             if (iterationNumber == 0 && config.evalOnly) {
@@ -124,8 +129,10 @@ class Trainer(private val config: TrainConfig) {
             }
 
             // 그래디언트 클리핑
-            if (config.gradClip > 0.0) {
+            lastGradNorm = if (config.gradClip > 0.0) {
                 clipGradients(config.gradClip)
+            } else {
+                computeGradNorm()
             }
 
             // 옵티마이저 스텝
@@ -234,6 +241,14 @@ class Trainer(private val config: TrainConfig) {
 
         val averageLoss = totalLoss * Value(1.0f / (inputSequences.size * targetSequences[0].size))
 
+        // NaN/Inf 가드 — 수치 폭주는 조용히 학습을 망가뜨리므로 즉시 실패시킨다.
+        if (!averageLoss.scalarValue.isFinite()) {
+            error(
+                "학습 loss가 비정상(NaN/Inf)으로 발산: iter=$iterationNumber, " +
+                    "value=${averageLoss.scalarValue}. 학습 중단."
+            )
+        }
+
         // 역전파
         model.parameters().forEach { it.gradient = 0.0f }
         averageLoss.backward()
@@ -336,29 +351,30 @@ class Trainer(private val config: TrainConfig) {
      *
      * @param maximumNorm 그래디언트 노름의 최대 허용 값
      */
-    private fun clipGradients(maximumNorm: Float) {
-        val parameters = model.parameters()
-        
-        // 직렬로 노름 계산 (작은 모델에서는 더 빠름)
-        val totalNorm = sqrt(parameters.sumOf { parameter -> parameter.gradient * parameter.gradient })
-
+    private fun clipGradients(maximumNorm: Float): Float {
+        val totalNorm = computeGradNorm()
         if (totalNorm > maximumNorm) {
             val scalingFactor = maximumNorm / totalNorm
-            parameters.forEach { parameter ->
+            model.parameters().forEach { parameter ->
                 parameter.gradient *= scalingFactor
             }
         }
+        return totalNorm
+    }
+
+    /** 모든 파라미터 gradient의 L2 norm. 진단·clipping 양쪽에서 공유. */
+    private fun computeGradNorm(): Float {
+        val parameters = model.parameters()
+        return sqrt(parameters.sumOf { parameter -> parameter.gradient * parameter.gradient })
     }
 
     /**
-     * 체크포인트 저장
+     * 체크포인트 저장.
      *
-     * 현재 모델의 상태를 저장하여 나중에 훈련을 재개할 수 있도록 합니다.
-     * 모델 가중치, 옵티마이저 상태, 훈련 진행 상황 등을 모두 포함합니다.
+     * @param loss   저장 경로 결정용 loss 값 (best 갱신 시 새 best, always 플래그 시 현재 avg)
+     * @param isBest 이번 eval이 best를 갱신했는지 — 로그 라벨에만 사용
      */
-    private fun saveCheckpoint() {
-        println("체크포인트 저장 중...")
-
+    private fun saveCheckpoint(loss: Double, isBest: Boolean) {
         // 모델 상태 추출
         val modelState = extractModelState()
 
@@ -384,7 +400,7 @@ class Trainer(private val config: TrainConfig) {
             prettyPrint = true
             encodeDefaults = true
         }
-        val lossInteger = (bestLoss * 10).toInt()
+        val lossInteger = (loss * 10).toInt()
         File("${modelPath}/${lossInteger}").mkdir()
         val checkpointFile = File("${modelPath}/${lossInteger}/checkpoint.json")
         checkpointFile.writeText(jsonEncoder.encodeToString(checkpoint))
@@ -397,12 +413,12 @@ class Trainer(private val config: TrainConfig) {
         val targetMetadataFile = File("${modelPath}/${lossInteger}/meta.json")
         if (sourceMetadataFile.exists()) {
             sourceMetadataFile.copyTo(targetMetadataFile, overwrite = true)
-            println("meta.json 복사 완료")
         } else {
             println("경고: meta.json 파일을 찾을 수 없습니다: ${sourceMetadataFile.absolutePath}")
         }
 
-        println("체크포인트 저장 완료: ${checkpointFile.absolutePath}")
+        val label = if (isBest) "best" else "always"
+        println("체크포인트 저장 완료 ($label): ${checkpointFile.absolutePath}")
     }
 
     /**

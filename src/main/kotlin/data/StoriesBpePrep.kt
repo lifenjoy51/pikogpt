@@ -1,7 +1,6 @@
 
 package data
 
-import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -43,10 +42,10 @@ object StoriesBPEPrep {
         val inputFile = File("$path/stories.txt")
         val dataDir = File(path)
         val rawText = inputFile.readText()
-        val normalizedText = if (lowercase) rawText.lowercase() else rawText
 
-        // 고유 단어 빈도 덤프 (디버그용)
-        val uniqueWords = normalizedText
+        // 고유 단어 빈도 덤프 (디버그용) — 정규화는 이 한 번만. BPE 내부의 lowercase와 중복 피함.
+        val analysisText = if (lowercase) rawText.lowercase() else rawText
+        val uniqueWords = analysisText
             .replace(Regex("[^a-z\\s]"), "")
             .split(Regex("\\s+"))
             .filter { it.isNotEmpty() }
@@ -59,8 +58,7 @@ object StoriesBPEPrep {
         })
         println("Unique words: ${String.format("%,d", uniqueWords.size)}")
 
-        // BPE 학습 — 원본 텍스트에 대해 (SimpleBPE 내부에서 다시 lowercase 적용 가능하지만
-        // 위에서 이미 한 번 했으므로 이후 flag는 false로 두고, 대신 인코딩 경로에서 일관되도록 둘 다 true)
+        // BPE 학습 — SimpleBPE가 lowercase 플래그에 따라 내부적으로 정규화. 여기서는 raw 그대로 넘김.
         val bpe = SimpleBPE(
             maxVocabSize = maxVocabSize,
             lowercase = lowercase,
@@ -68,7 +66,7 @@ object StoriesBPEPrep {
             standardBpeScoring = true,
             verbose = verbose,
         )
-        runBlocking { bpe.train(rawText) }  // SimpleBPE가 lowercase 플래그에 따라 스스로 정규화
+        bpe.train(rawText)
 
         // 텍스트 인코딩
         val encoded = bpe.encode(rawText)
