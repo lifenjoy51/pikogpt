@@ -71,6 +71,8 @@ data class TrainConfig(
     val beta2: Float = 0.99f,
     /** 그래디언트 폭발을 방지하기 위한 그래디언트 클리핑(clipping) 임계값 */
     val gradClip: Float = 1.0f,
+    /** Label smoothing 계수(0.0~1.0). 0이면 비활성, 0.1이면 target 분포를 (1-0.1)·onehot + 0.1·uniform로 대체. Overconfidence 완화. 현재는 `vec` 백엔드만 사용. */
+    val labelSmoothing: Float = 0.0f,
 
     // 학습률 스케줄
     /** 학습률을 스케줄에 따라 감소시킬지 여부 */

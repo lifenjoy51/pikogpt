@@ -56,8 +56,8 @@ class ParallelTrainerTest {
         // 학습 완료시 예외 없음이 1차 검증 (병렬 경로가 터지면 여기서 죽음).
         Trainer(trainConfig).train()
 
-        // 체크포인트가 model/vec/*/*/ 어딘가에 존재해야 함 — 최소 1번은 best 갱신됐을 것
-        val vecRoot = File(modelDir, "vec")
+        // 체크포인트가 model/{datasetName}/vec/*/*/ 어딘가에 존재해야 함 — 최소 1번은 best 갱신됐을 것
+        val vecRoot = File(File(modelDir, dataDir.name), "vec")
         val paramDir = vecRoot.listFiles()?.firstOrNull { it.isDirectory }
         assertTrue(paramDir != null, "vec 파라미터 디렉토리 생성 안됨")
         val ckpt = paramDir!!.listFiles()?.firstOrNull {

@@ -149,14 +149,15 @@ data/
 │   ├── val.bin               # tokenized validation set
 │   └── unique_words.txt      # optional vocab dump
 
-model/                        # 스칼라 백엔드 + 혼합 vec run 체크포인트 (gitignored)
-model-textbook/               # textbook-only vec run (gitignored, TrainConfig.modelDir로 격리)
-└── [datasetSize]/            # 계산된 파라미터 수 (예: 1057536)
-    └── [bestLoss * 10]/      # e.g. best val loss 1.73 -> directory "17"
-        ├── checkpoint.json   # iteration, best loss, model args
-        ├── meta.json         # copied from the data dir
-        ├── model_weights.bin # serialized weights (vec: big-endian float32)
-        └── optimizer_state.bin # vec 전용: AdamW timeStep + 모멘트 (resume용)
+model/                        # 모든 체크포인트 루트 (gitignored)
+└── [datasetName]/            # config.dataPath 마지막 segment (예: tinyhelen, tinyhelen-textbook)
+    └── vec/                  # 백엔드 구분 (스칼라는 직접 파라미터 수부터; 곧 통일 예정)
+        └── [paramCount]/     # 예: 1057536
+            └── [bestLoss*10]/ # 예: val best 3.44 → "34"
+                ├── checkpoint.json   # iteration, best loss, model args
+                ├── meta.json         # copied from the data dir
+                ├── model_weights.bin # serialized weights (vec: big-endian float32)
+                └── optimizer_state.bin # vec 전용: AdamW timeStep + 모멘트 (resume용)
 ```
 
 ## Key Files to Understand

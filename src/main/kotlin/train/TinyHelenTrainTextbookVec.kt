@@ -6,8 +6,7 @@ package train
  * 동일한 1M 아키텍처를 TinyHelen 전체 혼합 코퍼스가 아닌 textbook 단독(848 docs, ~549k train tok)
  * 으로 학습해 단일 장르 일관성을 관찰하기 위한 설정. `TinyHelenTrainVec`와 다음만 차이:
  *
- *   - dataPath             : `data/tinyhelen-textbook`
- *   - modelDir             : `model-textbook`   (기존 `model/vec/1057536/` 네임스페이스와 격리)
+ *   - dataPath             : `data/tinyhelen-textbook`  (→ ckpt 경로 `model/tinyhelen-textbook/vec/...`로 자동 격리)
  *   - maxIters             : 6000               (textbook 549k tok × ~11회 노출)
  *   - alwaysSaveCheckpoint : false              (avg best 갱신 시에만 저장 — 디렉토리 clutter 방지)
  *   - evalIters            : 100                (val 61k 중 12.8k 샘플, noise ↓)
@@ -22,7 +21,7 @@ fun main(args: Array<String>) {
 
     val config = TrainConfig(
         dataPath = "data/tinyhelen-textbook",
-        modelDir = "model-textbook",
+        modelDir = "model",
         // 효과 배치 = batch * accum = 32
         gradientAccumulationSteps = 16,
         batchSize = 2,

@@ -28,14 +28,33 @@ data class CrossEntropyResult(
     val softmax: Tensor,
 )
 
-fun crossEntropyForward(logits: Tensor, targets: IntArray): CrossEntropyResult {
+fun crossEntropyForward(
+    logits: Tensor,
+    targets: IntArray,
+    labelSmoothing: Float = 0.0f,
+): CrossEntropyResult {
     require(logits.shape.size == 2)
+    require(labelSmoothing in 0.0f..1.0f) { "labelSmoothing 범위 밖: $labelSmoothing" }
     val n = logits.rows
     val v = logits.cols
     require(targets.size == n) { "targets 크기가 N과 다름: ${targets.size} vs $n" }
 
     val sm = Tensor(intArrayOf(n, v))
     var totalLoss = 0.0f
+
+    // Label smoothing ε>0이면 target 분포가 (1-ε)·onehot + ε·uniform.
+    //   q[target] = 1 - ε + ε/V,  q[j≠target] = ε/V
+    //   loss per i = -Σ_j q[j] * log(softmax[j])
+    //             = (1-ε)·(-log sm[target]) + ε · H(uniform, sm)
+    //             = (1-ε)·NLL_target + ε·(log_sum_exp - mean_logit_no_max_shift)
+    // 수치 안정 위해 log-sum-exp 공식으로 전개:
+    //   log sm[j] = (logits[j] - max) - log(sumExp)
+    //   -Σ q log sm = -(1-ε)*(logits[t]-max-lse) - (ε/V)*Σ_j(logits[j]-max-lse)
+    //   = -(1-ε)*(logits[t]-max)+(1-ε)*lse - (ε/V)*(Σ_j logits[j] - V*max) + ε*lse
+    //   = lse + max - (1-ε)*logits[t] - (ε/V)*Σ_j logits[j]                  (max 상쇄)
+    // ε=0이면 원래 식과 동일.
+    val epsOverV = if (labelSmoothing > 0f) labelSmoothing / v else 0f
+    val oneMinusEps = 1.0f - labelSmoothing
 
     for (i in 0 until n) {
         // 행별 max
@@ -46,18 +65,21 @@ fun crossEntropyForward(logits: Tensor, targets: IntArray): CrossEntropyResult {
         }
         // exp(z - max), 합
         var sumExp = 0.0f
+        var sumLogits = 0.0f
         for (j in 0 until v) {
-            val e = exp((logits.data[i * v + j] - maxVal).toDouble()).toFloat()
+            val z = logits.data[i * v + j]
+            val e = exp((z - maxVal).toDouble()).toFloat()
             sm.data[i * v + j] = e
             sumExp += e
+            if (epsOverV > 0f) sumLogits += z
         }
         val invSum = 1.0f / sumExp
         for (j in 0 until v) sm.data[i * v + j] *= invSum
 
-        // loss: -log(softmax[target]) = log(sumExp) + max - logit[target]
         val t = targets[i]
         require(t in 0 until v) { "target 범위 밖: $t vs vocab $v" }
-        totalLoss += ln(sumExp.toDouble()).toFloat() + maxVal - logits.data[i * v + t]
+        val lse = ln(sumExp.toDouble()).toFloat() + maxVal
+        totalLoss += lse - oneMinusEps * logits.data[i * v + t] - epsOverV * sumLogits
     }
     return CrossEntropyResult(loss = totalLoss / n, softmax = sm)
 }
@@ -65,27 +87,30 @@ fun crossEntropyForward(logits: Tensor, targets: IntArray): CrossEntropyResult {
 /**
  * Cross-entropy backward. `logits`에 대한 기울기를 **새 Tensor로 반환**한다.
  *
- *   dLogits[i, j] = upstreamGrad * ( softmax[i, j] - 1_{j==target_i} ) / N
- *
- * - `upstreamGrad`: 상위 그래프에서 내려오는 loss의 스칼라 기울기. 단일 loss를 backward할 때는 1.
- *   gradient accumulation / batch 평균 등을 처리하려면 외부에서 1/(A*B) 같은 스케일을 넘겨주면 된다.
- * - 반환 Tensor의 shape는 logits와 동일. 호출자가 이 Tensor를 그대로 model.backward()에 전달.
+ * Smoothing ε로 일반화한 형태:
+ *   q[target] = 1 - ε + ε/V,  q[j≠target] = ε/V
+ *   dLogits[i, j] = upstreamGrad * ( softmax[i, j] - q[j] ) / N
+ *   즉 ε=0이면 원래 공식 (softmax - onehot)/N.
  */
 fun crossEntropyBackward(
     logits: Tensor,
     targets: IntArray,
     softmaxOut: Tensor,
     upstreamGrad: Float = 1.0f,
+    labelSmoothing: Float = 0.0f,
 ): Tensor {
     val n = logits.rows
     val v = logits.cols
     val gLogits = Tensor(logits.shape.copyOf())
     val factor = upstreamGrad / n
+    val epsOverV = if (labelSmoothing > 0f) labelSmoothing / v else 0f
+    val targetExtra = if (labelSmoothing > 0f) 1.0f - labelSmoothing else 1.0f
     for (i in 0 until n) {
         for (j in 0 until v) {
-            gLogits.data[i * v + j] = softmaxOut.data[i * v + j] * factor
+            // grad = softmax - q[j]
+            gLogits.data[i * v + j] = (softmaxOut.data[i * v + j] - epsOverV) * factor
         }
-        gLogits.data[i * v + targets[i]] -= factor
+        gLogits.data[i * v + targets[i]] -= targetExtra * factor
     }
     return gLogits
 }

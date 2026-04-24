@@ -50,8 +50,10 @@ class VFullPipelineTest {
         )
         Trainer(trainConfig).train()
 
-        // 체크포인트 찾기 — 벡터 루트는 modelDir/vec/{params}/{loss*10}/
-        val vecRoot = File(modelDir, "vec")
+        // 체크포인트 찾기 — 벡터 루트는 modelDir/{datasetName}/vec/{params}/{loss*10}/
+        // datasetName = dataPath 마지막 segment (이 테스트에선 tmp "data" dir).
+        val datasetDir = File(modelDir, dataDir.name)
+        val vecRoot = File(datasetDir, "vec")
         val paramDir = vecRoot.listFiles()?.firstOrNull { it.isDirectory }
             ?: throw AssertionError("vec 파라미터 디렉토리 없음: ${vecRoot.absolutePath}")
         val ckpt = paramDir.listFiles()?.firstOrNull {

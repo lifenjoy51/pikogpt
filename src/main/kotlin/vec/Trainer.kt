@@ -27,7 +27,9 @@ import kotlin.math.sqrt
  * gradient accumulation, 주기적 evaluation, best-loss checkpoint 저장)을 따르지만
  * 내부 연산은 전부 `vec.Tensor` + 명시적 forward/backward.
  *
- * 체크포인트 경로 규약: `${config.modelDir}/vec/${paramCount}/${(bestLoss*10).toInt()}/`.
+ * 체크포인트 경로 규약: `${config.modelDir}/${datasetName}/vec/${paramCount}/${(bestLoss*10).toInt()}/`.
+ * (datasetName은 `config.dataPath`의 마지막 segment. 예: `data/tinyhelen-textbook` → `tinyhelen-textbook`.
+ * 다른 데이터셋을 같은 `modelDir` 아래에서 자동으로 격리.)
  * 파일 3개:
  *   - `checkpoint.json`  : [VCheckpointMeta] 직렬화
  *   - `model_weights.bin`: 모든 param의 float32를 big-endian 연속 덤프
@@ -52,7 +54,13 @@ class Trainer(private val config: TrainConfig) {
     private val datasetSize: String by lazy {
         config.calculateTotalParameters(vocabularySize).toString()
     }
-    private val modelPath: String by lazy { "${config.modelDir}/vec/$datasetSize" }
+
+    /** `config.dataPath`의 마지막 segment. 데이터셋별로 체크포인트 트리를 분리하는 키. */
+    private val datasetName: String by lazy {
+        config.dataPath.trimEnd('/').substringAfterLast('/')
+    }
+
+    private val modelPath: String by lazy { "${config.modelDir}/$datasetName/vec/$datasetSize" }
     private val baselineLoss: Double by lazy { ln(vocabularySize.toDouble()) }
     private var bestLoss: Double = 0.0
     private var iterationNumber: Int = 0
@@ -189,12 +197,12 @@ class Trainer(private val config: TrainConfig) {
         for ((seqIdx, seq) in allSeqs.withIndex()) {
             val (input, target) = seq
             val logits = model.forward(input)
-            val ce = crossEntropyForward(logits, target)
+            val ce = crossEntropyForward(logits, target, config.labelSmoothing)
             if (!ce.loss.isFinite()) {
                 error("학습 loss가 비정상(NaN/Inf): iter=$iterationNumber, seq=$seqIdx, value=${ce.loss}")
             }
             totalLoss += ce.loss.toDouble()
-            val gLogits = crossEntropyBackward(logits, target, ce.softmax, upstreamGrad)
+            val gLogits = crossEntropyBackward(logits, target, ce.softmax, upstreamGrad, config.labelSmoothing)
             model.backward(gLogits)
         }
         return totalLoss / allSeqs.size
@@ -224,12 +232,12 @@ class Trainer(private val config: TrainConfig) {
                         var localLoss = 0.0
                         for ((input, target) in chunk) {
                             val logits = worker.forward(input)
-                            val ce = crossEntropyForward(logits, target)
+                            val ce = crossEntropyForward(logits, target, config.labelSmoothing)
                             if (!ce.loss.isFinite()) {
                                 error("학습 loss가 비정상(NaN/Inf): iter=$iterationNumber, worker=$wi, value=${ce.loss}")
                             }
                             localLoss += ce.loss.toDouble()
-                            val gLogits = crossEntropyBackward(logits, target, ce.softmax, upstreamGrad)
+                            val gLogits = crossEntropyBackward(logits, target, ce.softmax, upstreamGrad, config.labelSmoothing)
                             worker.backward(gLogits)
                         }
                         perWorkerLoss[wi] = localLoss
