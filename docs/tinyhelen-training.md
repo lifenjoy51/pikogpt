@@ -82,11 +82,15 @@ TrainConfig(
     learningRateDecayRatio = 1.0f,   // cosine decay 전구간
     minimumLearningRate = 3e-5f,
     evalIntervalRatio = 0.05f,       // eval 매 75 iter
-    evalIters = 1,                   // OOM 회피
+    evalIters = 4,                   // no-grad 도입 후 복원 (1 → 4, val loss 노이즈 감소)
     logInterval = 10,
     alwaysSaveCheckpoint = true,
 )
 ```
+
+> **중요**: `evalIters=1`은 이전 attempt에서 OOM을 피하려고 강제로 내렸던 값. 이후 `GradContext.noGrad`
+> (아래 "no-grad 도입 기록" 참조)를 도입해 eval 중 그래프 구축을 생략하므로 4로 복원해도 안전하고,
+> val loss 추정이 4배치 평균으로 훨씬 덜 흔들린다.
 
 모델 파라미터: **71,256** (embed 25,536 + 2×block 14,448 + final LN 48 + lm_head 24,000).
 
@@ -175,12 +179,38 @@ Perplexity ≈ e^6.23 ≈ **509** (vocab 1000 대비 랜덤의 약 2배 좋음).
 
 이후 재실행에서 정상 완료.
 
+## no-grad 도입 기록 (2026-04-24)
+
+`evalIters=1`로 강제되던 근본 원인(병렬 forward × grad 그래프 = 메모리 폭발)을 **구조적으로 해결**:
+
+- `Value.kt`에 `GradContext` object 추가. PyTorch `torch.no_grad()`와 동일한 ThreadLocal 기반 on/off 플래그.
+- Value의 6개 graph-building 연산자 (`plus`/`times`/`div` on Value-Value, `pow`, `relu`, `exp`)에 `if (GradContext.enabled)` 가드 삽입. 블록 안에서는 `_parentNodes`/`backwardFunction` 할당을 건너뛰고 스칼라만 계산.
+- `Trainer.estimateLoss`는 이제 `GradContext.noGrad { ... }` 안에서 **순차 실행** (`async`/`awaitAll` 제거). 코드도 더 짧아지고 OOM 근본 원인 사라짐.
+- `Sampler.generateTokenSequence`도 같은 블록으로 감쌈 (샘플링도 gradient 불필요).
+
+### 벤치 (동일 config, evalIters 제외)
+
+| 구간 | 이전 (evalIters=1, grad eval) | 이후 (evalIters=4, no-grad eval) |
+|---|---|---|
+| iter 0 elapsed | 23s | 21s |
+| iter당 (학습, grad-on) | 15.9s | 16.2s (사실상 동일) |
+| eval 배치 수 | 2 (train 1 + val 1) | **8 (train 4 + val 4)** |
+| eval 피크 메모리 | 8GB 접근 | 크게 감소 (별도 측정 안 함) |
+
+**핵심**: 학습 iter 자체는 안 빨라짐 (훈련은 여전히 grad 필요). 얻은 것은:
+1. **eval 단위 비용 4-5× 하락** → batch 수 4배 늘려도 시간 동일
+2. **val loss 추정이 4배치 평균으로 안정** → 학습 곡선 읽기 쉬움
+3. **메모리 여유** → 향후 `evalIters`를 더 키울 수도 있음
+
+### 참고 커밋
+- `b5fac34` feat: GradContext.noGrad + sequential eval
+
 ## 알려진 한계
 
 1. **스칼라 autodiff**: 71K 파라미터 모델에서 iter당 16초. 현대 vectorized 프레임워크였다면 10-100배 빠름. **2K iter 이상의 실험은 항상 overnight**.
 2. **배치=2 노이즈**: 그래디언트 분산이 커서 loss 곡선이 매끈하지 않음. 벡터화 이후 batch를 키워야 안정 수렴.
 3. **LR 스케줄 후반 플랫**: cosine이 `minimumLearningRate=3e-5`로 너무 일찍 내려가서 후반부에 유의미한 업데이트가 거의 없음. iter 1200 이후 loss 반등이 그 증거.
-4. **평가 신뢰도**: `evalIters=1`은 128 토큰 분량의 단일 배치. val 6.32 vs 6.37 같은 차이는 잡음 가능성 큼.
+4. **평가 신뢰도**: ~~`evalIters=1`은 128 토큰 분량의 단일 배치. val 6.32 vs 6.37 같은 차이는 잡음 가능성 큼.~~ **해소됨** — no-grad 도입으로 `evalIters=4` 복원 (위 "no-grad 도입 기록" 참조). 향후 오버나잇 재실행 시 곡선 노이즈 감소 기대.
 5. **데이터 규모 대비 under-trained**: 1.65M 토큰을 1500 iter × 효과배치 8 × block 48 = 576K 토큰 노출. 1회도 다 보지 못함 (1 epoch ≈ 3400 iter 필요).
 
 ## 다음 실험 아이디어 (선행 조건 포함)
