@@ -32,9 +32,9 @@ fun main() {
         learningRateDecayRatio = 1.0f,
         minimumLearningRate = 3e-5f,
         decayLr = true,
-        // 로깅/평가 (evalIters=1 — estimateLoss 병렬도 = 2(train+val), 8GB 힙 한계)
+        // 로깅/평가 (no-grad로 eval 메모리 안전해져 evalIters=4로 복원 — val loss 노이즈 감소 목적)
         evalIntervalRatio = 0.05f,
-        evalIters = 1,
+        evalIters = 4,
         logInterval = 10,
         alwaysSaveCheckpoint = true,
     )

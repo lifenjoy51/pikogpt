@@ -1,5 +1,6 @@
 package sample
 
+import GradContext
 import Value
 import data.MetaInfo
 import data.SimpleBPE.Companion.UNKNOWN_TOKEN
@@ -272,7 +273,7 @@ class Sampler(private val samplingConfiguration: SampleConfig) {
         maxNewTokens: Int,
         temperature: Float,
         topKSize: Int
-    ): List<Int> {
+    ): List<Int> = GradContext.noGrad {
         val generatedSequence = contextTokenIds.toMutableList()
         var currentContext = contextTokenIds.toIntArray()
 
@@ -350,7 +351,7 @@ class Sampler(private val samplingConfiguration: SampleConfig) {
             currentContext = currentContext + selectedToken
         }
 
-        return generatedSequence
+        generatedSequence
     }
 
     /**

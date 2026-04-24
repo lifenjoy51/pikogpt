@@ -4,6 +4,41 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 
 /**
+ * 그래디언트 기록 컨텍스트.
+ *
+ * PyTorch의 `torch.no_grad()`와 동일한 개념입니다. `enabled=true`일 때 `Value` 연산은
+ * 계산 그래프(부모 참조 + backward 클로저)를 구축합니다. `GradContext.noGrad { ... }`
+ * 블록 안에서는 `enabled=false`가 되어 그래프 구축을 건너뛰고 스칼라 값만 계산합니다.
+ *
+ * 평가/추론 경로에서 불필요한 그래프 할당과 GC 압력을 제거하기 위해 사용합니다.
+ *
+ * 스레드별 상태는 `ThreadLocal`로 분리되어 있어 `Dispatchers.Default` 같은 멀티 스레드
+ * 디스패처에서 여러 코루틴이 동시에 사용해도 서로의 플래그를 침범하지 않습니다.
+ * 다만 `noGrad` 블록 내부에서 `suspend` 함수를 호출해 스레드가 바뀌는 경우까지 보호하지는
+ * 않으므로, 블록 안에서는 non-suspending 동기 계산만 수행한다고 가정합니다.
+ */
+object GradContext {
+    private val enabledPerThread = ThreadLocal.withInitial { true }
+
+    /** 현재 스레드에서 그래디언트 추적이 활성화되어 있는지. */
+    val enabled: Boolean get() = enabledPerThread.get()
+
+    /**
+     * 주어진 블록을 그래디언트 추적이 꺼진 상태로 실행합니다.
+     * 블록이 예외로 종료되어도 이전 상태로 복원됩니다.
+     */
+    fun <T> noGrad(block: () -> T): T {
+        val previous = enabledPerThread.get()
+        enabledPerThread.set(false)
+        try {
+            return block()
+        } finally {
+            enabledPerThread.set(previous)
+        }
+    }
+}
+
+/**
  * 자동 미분을 지원하는 스칼라 값 클래스
  *
  * 이 클래스는 미니 그래드 엔진의 핵심으로, 모든 수치 계산에 대해 자동으로 그래디언트를 추적합니다.
@@ -47,11 +82,13 @@ class Value(
      */
     operator fun plus(rightOperand: Value): Value {
         val resultValue = Value(this.scalarValue + rightOperand.scalarValue)
-        resultValue._parentNodes = setOf(this, rightOperand)
-        resultValue.backwardFunction = {
-            // 덧셈의 로컬 그래디언트는 항상 1이므로, 출력 그래디언트를 그대로 전파
-            this.gradient += resultValue.gradient
-            rightOperand.gradient += resultValue.gradient
+        if (GradContext.enabled) {
+            resultValue._parentNodes = setOf(this, rightOperand)
+            resultValue.backwardFunction = {
+                // 덧셈의 로컬 그래디언트는 항상 1이므로, 출력 그래디언트를 그대로 전파
+                this.gradient += resultValue.gradient
+                rightOperand.gradient += resultValue.gradient
+            }
         }
         return resultValue
     }
@@ -84,11 +121,13 @@ class Value(
      */
     operator fun times(rightOperand: Value): Value {
         val resultValue = Value(this.scalarValue * rightOperand.scalarValue)
-        resultValue._parentNodes = setOf(this, rightOperand)
-        resultValue.backwardFunction = {
-            // 곱셈의 로컬 그래디언트: 각 피연산자에 대해 상대방의 값
-            this.gradient += rightOperand.scalarValue * resultValue.gradient
-            rightOperand.gradient += this.scalarValue * resultValue.gradient
+        if (GradContext.enabled) {
+            resultValue._parentNodes = setOf(this, rightOperand)
+            resultValue.backwardFunction = {
+                // 곱셈의 로컬 그래디언트: 각 피연산자에 대해 상대방의 값
+                this.gradient += rightOperand.scalarValue * resultValue.gradient
+                rightOperand.gradient += this.scalarValue * resultValue.gradient
+            }
         }
         return resultValue
     }
@@ -155,11 +194,13 @@ class Value(
      */
     operator fun div(denominator: Value): Value {
         val resultValue = Value(this.scalarValue / denominator.scalarValue)
-        resultValue._parentNodes = setOf(this, denominator)
-        resultValue.backwardFunction = {
-            // 나눗셈의 로컬 그래디언트
-            this.gradient += (1.0f / denominator.scalarValue) * resultValue.gradient
-            denominator.gradient += (-this.scalarValue / (denominator.scalarValue * denominator.scalarValue)) * resultValue.gradient
+        if (GradContext.enabled) {
+            resultValue._parentNodes = setOf(this, denominator)
+            resultValue.backwardFunction = {
+                // 나눗셈의 로컬 그래디언트
+                this.gradient += (1.0f / denominator.scalarValue) * resultValue.gradient
+                denominator.gradient += (-this.scalarValue / (denominator.scalarValue * denominator.scalarValue)) * resultValue.gradient
+            }
         }
         return resultValue
     }
@@ -191,10 +232,12 @@ class Value(
      */
     fun pow(exponent: Float): Value {
         val resultValue = Value(this.scalarValue.pow(exponent))
-        resultValue._parentNodes = setOf(this)
-        resultValue.backwardFunction = {
-            // 거듭제곱의 로컬 그래디언트: exponent * base^(exponent-1)
-            this.gradient += (exponent * this.scalarValue.pow(exponent - 1)) * resultValue.gradient
+        if (GradContext.enabled) {
+            resultValue._parentNodes = setOf(this)
+            resultValue.backwardFunction = {
+                // 거듭제곱의 로컬 그래디언트: exponent * base^(exponent-1)
+                this.gradient += (exponent * this.scalarValue.pow(exponent - 1)) * resultValue.gradient
+            }
         }
         return resultValue
     }
@@ -215,10 +258,12 @@ class Value(
      */
     fun relu(): Value {
         val activatedValue = Value(if (this.scalarValue < 0) 0.0f else this.scalarValue)
-        activatedValue._parentNodes = setOf(this)
-        activatedValue.backwardFunction = {
-            // ReLU의 로컬 그래디언트: 입력이 양수면 1, 음수면 0
-            this.gradient += (if (activatedValue.scalarValue > 0) 1.0f else 0.0f) * activatedValue.gradient
+        if (GradContext.enabled) {
+            activatedValue._parentNodes = setOf(this)
+            activatedValue.backwardFunction = {
+                // ReLU의 로컬 그래디언트: 입력이 양수면 1, 음수면 0
+                this.gradient += (if (activatedValue.scalarValue > 0) 1.0f else 0.0f) * activatedValue.gradient
+            }
         }
         return activatedValue
     }
@@ -235,10 +280,12 @@ class Value(
      */
     fun exp(): Value {
         val exponentialResult = Value(exp(this.scalarValue.toDouble()).toFloat())
-        exponentialResult._parentNodes = setOf(this)
-        exponentialResult.backwardFunction = {
-            // 지수 함수의 로컬 그래디언트: exp(x)
-            this.gradient += exponentialResult.scalarValue * exponentialResult.gradient
+        if (GradContext.enabled) {
+            exponentialResult._parentNodes = setOf(this)
+            exponentialResult.backwardFunction = {
+                // 지수 함수의 로컬 그래디언트: exp(x)
+                this.gradient += exponentialResult.scalarValue * exponentialResult.gradient
+            }
         }
         return exponentialResult
     }

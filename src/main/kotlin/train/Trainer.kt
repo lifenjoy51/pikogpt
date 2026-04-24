@@ -1,14 +1,11 @@
 package train
 
+import GradContext
 import Value
 import data.MetaInfo
 import gpt.Dropout
 import gpt.GPTConfig
 import gpt.PikoGPT
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -248,29 +245,22 @@ class Trainer(private val config: TrainConfig) {
      * 훈련/검증 손실 추정
      *
      * 여러 배치에 대해 손실을 계산하고 평균을 내어 현재 모델의 성능을 평가합니다.
-     * 병렬 처리를 사용하여 평가 속도를 향상시킵니다.
+     * 그래디언트가 필요 없는 순전파만 수행하므로 `GradContext.noGrad` 안에서 순차 실행합니다.
+     * 과거에는 병렬 `async`로 실행했으나 스칼라 autodiff 그래프가 동시에 여러 개 살아 있어
+     * 메모리 피크가 커 OOM을 유발했습니다. no-grad로 그래프 구축 자체가 사라지므로 순차 실행도 충분히 빠릅니다.
      *
      * @return Pair<훈련_손실, 검증_손실>
      */
-    private fun estimateLoss(): Pair<Double, Double> = runBlocking {
-        val trainingLossesDeferred = (0 until config.evalIters).map {
-            async(Dispatchers.Default) {
-                val (inputSequences, targetSequences) = trainingDataLoader.getBatch()
-                evaluateBatch(inputSequences, targetSequences)
-            }
+    private fun estimateLoss(): Pair<Double, Double> = GradContext.noGrad {
+        val trainingLosses = (0 until config.evalIters).map {
+            val (inputSequences, targetSequences) = trainingDataLoader.getBatch()
+            evaluateBatch(inputSequences, targetSequences)
         }
-
-        val validationLossesDeferred = (0 until config.evalIters).map {
-            async(Dispatchers.Default) {
-                val (inputSequences, targetSequences) = validationDataLoader.getBatch()
-                evaluateBatch(inputSequences, targetSequences)
-            }
+        val validationLosses = (0 until config.evalIters).map {
+            val (inputSequences, targetSequences) = validationDataLoader.getBatch()
+            evaluateBatch(inputSequences, targetSequences)
         }
-
-        val trainingLosses = trainingLossesDeferred.awaitAll()
-        val validationLosses = validationLossesDeferred.awaitAll()
-
-        return@runBlocking Pair(trainingLosses.average(), validationLosses.average())
+        Pair(trainingLosses.average(), validationLosses.average())
     }
 
     /**
@@ -279,6 +269,8 @@ class Trainer(private val config: TrainConfig) {
      * 훈련과 달리 dropout을 비활성화하고, 그래디언트 계산 없이 순전파만 수행합니다.
      * 평가 모드에서의 실제 성능을 측정하기 위해 사용됩니다.
      *
+     * 호출자가 `GradContext.noGrad`로 감싸므로 이 함수 내에서 생성되는 Value들은 그래프를 만들지 않습니다.
+     *
      * @param inputSequences 입력 토큰 시퀀스 배열
      * @param targetSequences 타겟 토큰 시퀀스 배열
      * @return 배치의 평균 손실
@@ -286,7 +278,7 @@ class Trainer(private val config: TrainConfig) {
     private fun evaluateBatch(inputSequences: Array<IntArray>, targetSequences: Array<IntArray>): Double {
         // 평가 모드 설정 (dropout 비활성화)
         gpt.Dropout.training = false
-        
+
         var totalLoss = 0.0
 
         for (batchIndex in inputSequences.indices) {
