@@ -23,14 +23,18 @@ fun matmul(a: Tensor, b: Tensor): Tensor {
     val n = b.cols
     require(b.rows == k) { "차원 불일치: A[$m, $k] · B[${b.rows}, $n]" }
 
-    val c = Tensor(intArrayOf(m, n))
+    // "ikj" 루프 순서 — inner loop에서 B와 C의 row를 연속으로 접근해 캐시 친화적.
+    // 수학적으로 "ijk"와 동일 (accumulation 순서만 다름, float 누적 차이는 미세).
+    val c = Tensor(intArrayOf(m, n))  // FloatArray 기본값 0 — += 누적용으로 그대로 사용
     for (i in 0 until m) {
-        for (j in 0 until n) {
-            var sum = 0.0f
-            for (kk in 0 until k) {
-                sum += a.data[i * k + kk] * b.data[kk * n + j]
+        val aRowOffset = i * k
+        val cRowOffset = i * n
+        for (kk in 0 until k) {
+            val aik = a.data[aRowOffset + kk]
+            val bRowOffset = kk * n
+            for (j in 0 until n) {
+                c.data[cRowOffset + j] += aik * b.data[bRowOffset + j]
             }
-            c.data[i * n + j] = sum
         }
     }
     return c

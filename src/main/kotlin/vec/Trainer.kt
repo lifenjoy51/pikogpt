@@ -74,11 +74,18 @@ class Trainer(private val config: TrainConfig) {
         println("모델 파라미터 텐서 수: ${model.parameters().size}, 총 스칼라 원소: ${model.parameters().sumOf { it.numel }}")
 
         // Worker 복제본 준비 (data-parallel). 한 iter당 seq 개수보다 많을 이유 없음.
+        // 벤치마크/튜닝 용도로 환경변수 VEC_MAX_WORKERS로 상한을 걸 수 있다.
         val totalSeqsPerIter = config.batchSize * config.gradientAccumulationSteps
         val cpuCount = Runtime.getRuntime().availableProcessors().coerceAtLeast(1)
-        val desiredWorkers = minOf(cpuCount, totalSeqsPerIter)
+        val envCap = System.getenv("VEC_MAX_WORKERS")?.toIntOrNull()?.coerceAtLeast(1)
+        val desiredWorkers = minOf(envCap ?: cpuCount, totalSeqsPerIter)
         workers = if (desiredWorkers >= 2) {
-            println("데이터 병렬 학습 활성 — worker 수 $desiredWorkers (CPU $cpuCount, seq/iter $totalSeqsPerIter)")
+            println(
+                "데이터 병렬 학습 활성 — worker 수 $desiredWorkers " +
+                    "(CPU $cpuCount, seq/iter $totalSeqsPerIter" +
+                    (if (envCap != null) ", VEC_MAX_WORKERS=$envCap" else "") +
+                    ")"
+            )
             List(desiredWorkers) { PikoGPT(buildModelConfig()) }
         } else {
             println("데이터 병렬 비활성 (worker=$desiredWorkers). 순차 경로 사용.")
