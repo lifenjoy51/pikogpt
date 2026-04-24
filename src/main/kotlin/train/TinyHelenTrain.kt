@@ -18,7 +18,9 @@ package train
  *
  * 체크포인트는 검증 손실이 개선될 때마다 `model/{paramCount}/{bestLoss*10}/`에 저장된다.
  */
-fun main() {
+fun main(args: Array<String>) {
+    // 스모크 테스트용: 인자로 maxIters override 가능 (예: runTinyHelenTrain --args="40").
+    val maxItersOverride = args.getOrNull(0)?.toIntOrNull()
     val config = TrainConfig(
         dataPath = "data/tinyhelen",
         modelDir = "model",
@@ -39,7 +41,7 @@ fun main() {
         beta1 = 0.9f,
         beta2 = 0.95f,
         // 스케줄 (레시피 A: 후반 min-LR plateau 확보)
-        maxIters = 900,
+        maxIters = maxItersOverride ?: 900,
         warmupRatio = 0.05f,
         learningRateDecayRatio = 0.85f,
         minimumLearningRate = 5e-5f,
