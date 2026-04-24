@@ -1,0 +1,196 @@
+> Task :processResources NO-SOURCE
+
+> Task :compileKotlin
+w: file:///Users/joey51/works/pikogpt/src/main/kotlin/data/DebugBPEMain.kt:9:9 Variable 'bpe' is never used
+w: file:///Users/joey51/works/pikogpt/src/main/kotlin/data/StoryGenerator.kt:288:9 Unreachable code
+
+> Task :compileJava NO-SOURCE
+> Task :classes UP-TO-DATE
+
+> Task :runStoriesBpe
+Unique words saved to: /Users/joey51/works/pikogpt/data/tinyhelen/unique_words.txt
+Total unique words: 14,897
+BPE 학습 시작 (목표 어휘 크기: 1000, 텍스트 길이: 5324486)
+예약된 특수 토큰: [<|eos|>, <|unk|>]
+총 고유 문자 수: 129
+토큰화 시작 (텍스트 길이: 5324486)
+초기 토큰 수: 5324486
+
+=== 진행 상황 리포트 ===
+1번 병합 완료
+
+반복 1: 총 쌍 3596개
+  (e +  ) -> '163363회'
+  (  + t) -> '135003회'
+  (t + h) -> '103694회'
+  (s +  ) -> '101145회'
+  (  + a) -> '95967회'
+어휘 크기: 132/1000 (13%)
+현재 토큰 수: 5161123
+소요 시간: 0.796s
+평균 병합 속도: 1.26 병합/초
+
+=== 진행 상황 리포트 ===
+101번 병합 완료
+
+반복 101: 총 쌍 12905개
+  (l +  ) -> '7725회'
+  (i + t ) -> '7290회'
+  (n +  ) -> '7120회'
+  (o + t ) -> '6958회'
+  (- +  ) -> '6902회'
+어휘 크기: 232/1000 (23%)
+현재 토큰 수: 3105395
+소요 시간: 37.075s
+평균 병합 속도: 2.72 병합/초
+
+=== 진행 상황 리포트 ===
+201번 병합 완료
+
+반복 201: 총 쌍 22611개
+  (Th + e ) -> '3506회'
+  (an + t ) -> '3478회'
+  (e  + b) -> '3436회'
+  (A +  ) -> '3334회'
+  (r + e) -> '3253회'
+어휘 크기: 332/1000 (33%)
+현재 토큰 수: 2645495
+소요 시간: 68.248s
+평균 병합 속도: 2.95 병합/초
+
+=== 진행 상황 리포트 ===
+301번 병합 완료
+
+반복 301: 총 쌍 32668개
+  ( c + ountr) -> '3076회'
+  (l + e ) -> '2292회'
+  (b + y ) -> '2262회'
+  (d + s ) -> '2225회'
+  (differ + ent ) -> '2220회'
+어휘 크기: 432/1000 (43%)
+현재 토큰 수: 2389692
+소요 시간: 98.531s
+평균 병합 속도: 3.05 병합/초
+
+=== 진행 상황 리포트 ===
+401번 병합 완료
+
+반복 401: 총 쌍 42716개
+  (th + ings ) -> '1846회'
+  (import + ant ) -> '1796회'
+  (t + , ) -> '1647회'
+  (a + d ) -> '1554회'
+  (new +  ) -> '1529회'
+어휘 크기: 532/1000 (53%)
+현재 토큰 수: 2221367
+소요 시간: 128.93s
+평균 병합 속도: 3.11 병합/초
+
+=== 진행 상황 리포트 ===
+501번 병합 완료
+
+반복 501: 총 쌍 51999개
+  (speci + al ) -> '1403회'
+  (beca + use ) -> '1269회'
+  ( countr + y) -> '1250회'
+  (e  + c) -> '1217회'
+  (ma + king ) -> '1214회'
+어휘 크기: 632/1000 (63%)
+현재 토큰 수: 2100642
+소요 시간: 157.926s
+평균 병합 속도: 3.17 병합/초
+
+=== 진행 상황 리포트 ===
+601번 병합 완료
+
+반복 601: 총 쌍 60784개
+  ( countr + y) -> '1250회'
+  (ma + king ) -> '1214회'
+  (from +  th) -> '1037회'
+  (Sec + tion ) -> '1012회'
+  (some + thing ) -> '960회'
+어휘 크기: 732/1000 (73%)
+현재 토큰 수: 2008589
+소요 시간: 184.586s
+평균 병합 속도: 3.26 병합/초
+
+=== 진행 상황 리포트 ===
+701번 병합 완료
+
+반복 701: 총 쌍 68421개
+  (Sec + tion ) -> '1012회'
+  (some + thing ) -> '960회'
+  (did + n't ) -> '943회'
+  (with +  th) -> '943회'
+  (wh + en th) -> '937회'
+어휘 크기: 832/1000 (83%)
+현재 토큰 수: 1935954
+소요 시간: 209.932s
+평균 병합 속도: 3.34 병합/초
+
+=== 진행 상황 리포트 ===
+801번 병합 완료
+
+반복 801: 총 쌍 75641개
+  (bet + ter ) -> '866회'
+  (chang + e ) -> '842회'
+  (underst + and ) -> '834회'
+  (c + alled ) -> '827회'
+  (friend + s ) -> '809회'
+어휘 크기: 932/1000 (93%)
+현재 토큰 수: 1872678
+소요 시간: 235.335s
+평균 병합 속도: 3.40 병합/초
+
+=== BPE 학습 완료 ===
+최종 어휘 크기: 1000/1000
+실제 병합 횟수: 869
+최종 토큰 수: 1834850
+압축률: 34.46% (원본 문자 수 대비)
+총 소요 시간: 252.318s
+평균 병합 속도: 3.44 병합/초
+
+최종 어휘 구성:
+  특수 토큰: 2개
+  병합된 토큰: 869개
+
+가장 긴 토큰 상위 10개:
+  'understand ' (길이: 11)
+  'different ' (길이: 10)
+  'important ' (길이: 10)
+  'something ' (길이: 10)
+  'special ' (길이: 8)
+  'because ' (길이: 8)
+  ' country' (길이: 8)
+  'Section ' (길이: 8)
+  'friends ' (길이: 8)
+  'people ' (길이: 7)
+DEBUG: 학습 완료 후 merges 개수: 869
+토큰화 시작 (텍스트 길이: 5324486)
+DEBUG: encode 시작 - merges 개수: 869, 초기 토큰 수: 5324486
+DEBUG: 병합 진행 0/869 - 토큰 수: 5324486 -> 5161123
+DEBUG: 병합 진행 100/869 - 토큰 수: 3111754 -> 3105395
+DEBUG: 병합 진행 200/869 - 토큰 수: 2649001 -> 2645495
+DEBUG: 병합 진행 300/869 - 토큰 수: 2392768 -> 2389692
+DEBUG: 병합 진행 400/869 - 토큰 수: 2222799 -> 2221367
+DEBUG: 병합 진행 500/869 - 토큰 수: 2101778 -> 2100642
+DEBUG: 병합 진행 600/869 - 토큰 수: 2009374 -> 2008589
+DEBUG: 병합 진행 700/869 - 토큰 수: 1936582 -> 1935954
+DEBUG: 병합 진행 800/869 - 토큰 수: 1873305 -> 1872678
+DEBUG: encode 병합 완료 - 최종 토큰 수: 1834850
+Total tokens: 1,834,850
+Train tokens: 1,651,365
+Val tokens: 183,485
+data size: 1,651,365
+data size: 183,485
+Vocab size: 1000
+Data (first 10): [709, 754, 202, 71, 164, 298, 134, 157, 56, 226]
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.8/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 4m 50s
+2 actionable tasks: 2 executed

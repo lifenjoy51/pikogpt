@@ -1,0 +1,328 @@
+=== #오후 START OVERNIGHT ===
+=== #오후 TRAIN BEGIN ===
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.8/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :compileKotlin UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+
+> Task :runTinyHelenTrain
+1. 임베딩 레이어 파라미터: 25,536
+2. 단일 트랜스포머 블록 파라미터: 7,224
+   => 총 트랜스포머 블록 파라미터 (3개): 21,672
+3. 최종 LayerNorm 파라미터: 48
+4. Language Model Head 파라미터: 24,000
+총 파라미터 수: 71,256
+=== PikoGPT 훈련 시작 ===
+설정: TrainConfig(dataPath=data/tinyhelen, modelDir=model, evalIntervalRatio=0.05, logInterval=10, evalIters=4, evalOnly=false, alwaysSaveCheckpoint=true, initFrom=scratch, modelCheckpointDir=null, dataset=stories, gradientAccumulationSteps=4, batchSize=2, blockSize=64, embeddingDimension=24, numberOfLayers=3, numberOfHeads=3, bias=true, dropout=0.1, learningRate=3.0E-4, maxIters=2000, weightDecay=0.05, beta1=0.9, beta2=0.95, gradClip=1.0, decayLr=true, warmupRatio=0.03, learningRateDecayRatio=1.0, minimumLearningRate=3.0E-5)
+베이스라인 손실: 6.9078 (0% 진행률 기준)
+새 모델 초기화
+모델 파라미터 수: 71256
+데이터 로드 완료: 1651365 토큰
+데이터 로드 완료: 183485 토큰
+Exception in thread "main" java.lang.OutOfMemoryError: Java heap space
+	at java.base/java.util.LinkedHashMap.newNode(LinkedHashMap.java:257)
+	at java.base/java.util.HashMap.putVal(HashMap.java:629)
+	at java.base/java.util.HashMap.put(HashMap.java:610)
+	at java.base/java.util.HashSet.add(HashSet.java:221)
+	at kotlin.collections.ArraysKt___ArraysKt.toCollection(_Arrays.kt:9523)
+	at kotlin.collections.ArraysKt___ArraysKt.toSet(_Arrays.kt:9858)
+	at kotlin.collections.SetsKt__SetsKt.setOf(Sets.kt:44)
+	at Value.plus(Value.kt:50)
+	at gpt.Linear.forward(Linear.kt:63)
+	at gpt.PikoGPT.forward(PikoGPT.kt:73)
+	at train.Trainer.evaluateBatch(Trainer.kt:293)
+	at train.Trainer.access$evaluateBatch(Trainer.kt:34)
+	at train.Trainer$estimateLoss$1$trainingLossesDeferred$1$1.invokeSuspend(Trainer.kt:259)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:108)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:584)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:793)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:697)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+> Task :runTinyHelenTrain FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':runTinyHelenTrain'.
+> Process 'command '/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home/bin/java'' finished with non-zero exit value 1
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.8/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 4m 57s
+2 actionable tasks: 1 executed, 1 up-to-date
+=== #오후 TRAIN END (exit=1) ===
+=== #오후 SAMPLE BEGIN ===
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.8/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :compileKotlin UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+
+> Task :runTinyHelenSample
+=== 샘플링 대상 체크포인트: /Users/joey51/works/pikogpt/model/39360/68 ===
+# 모델 로드 완료 #id:11f7 (iteration: 30, val loss: 6.896084271371365)
+# 텍스트 생성 시작 #id:11f7
+# 프롬프트 처리 완료 #id:11f7 (입력 길이: 16자, 토큰 수: 7개)
+# 샘플 생성 시작 #id:11f7 (샘플 1/2)
+# 샘플 생성 시작 #id:11f7 (샘플 2/2)
+Step 0:
+Step 0:
+  Top-5 tokens:
+  Top-5 tokens:
+    ID:262 ' can' prob:0.0267
+    ID:262 ' can' prob:0.0264
+    ID:809 'oot' prob:0.0260
+    ID:546 'man' prob:0.0260
+    ID:563 ' duck' prob:0.0260
+    ID:809 'oot' prob:0.0260
+    ID:724 'ex' prob:0.0260
+    ID:115 's. the' prob:0.0259
+  Full-width space (ID:1) probability: 0.0000
+    ID:802 's long' prob:0.0259
+    ID:546 'man' prob:0.0259
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'unk|>nce upon a time'
+  Current context: 'unk|>nce upon a time'
+  Selected: ID:563 ' duck' prob:0.0257
+
+  Selected: ID:949 ' music' prob:0.0251
+
+Step 1:
+  Top-5 tokens:
+    ID:421 'uil' prob:0.0268
+Step 1:
+  Top-5 tokens:
+    ID:611 'ird ' prob:0.0276
+    ID:751 'uzz' prob:0.0263
+    ID:662 ' insid' prob:0.0274
+    ID:42 's ' prob:0.0258
+    ID:443 's read' prob:0.0268
+    ID:489 'oft ' prob:0.0258
+    ID:887 'thi' prob:0.0256
+    ID:665 'ros' prob:0.0261
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'ce upon a time music'
+  Selected: ID:42 's ' prob:0.0258
+
+    ID:82 'or' prob:0.0260
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'nce upon a time duck'
+  Selected: ID:599 'ing f' prob:0.0244
+
+Step 2:
+  Top-5 tokens:
+    ID:286 'good ' prob:0.0267
+    ID:28 'n' prob:0.0267
+    ID:560 ' lik' prob:0.0265
+    ID:322 'a little' prob:0.0261
+    ID:516 ' sit' prob:0.0259
+  Full-width space (ID:1) probability: 0.0000
+  Current context: ' upon a time musics '
+  Selected: ID:344 'ood' prob:0.0251
+
+Step 2:
+  Top-5 tokens:
+    ID:436 's n' prob:0.0266
+    ID:292 'looks ' prob:0.0262
+    ID:483 'amil' prob:0.0258
+    ID:983 'ongu' prob:0.0257
+    ID:915 'be' prob:0.0257
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'pon a time ducking f'
+  Selected: ID:554 'run' prob:0.0248
+
+Step 3:
+  Top-5 tokens:
+    ID:242 's are' prob:0.0285
+    ID:681 ' stick' prob:0.0269
+    ID:74 'ir' prob:0.0268
+    ID:666 'tall' prob:0.0264
+    ID:698 ' pla' prob:0.0261
+  Full-width space (ID:1) probability: 0.0000
+  Current context: ' a time ducking frun'
+Step 3:
+  Top-5 tokens:
+  Selected: ID:207 'y. it' prob:0.0242
+
+    ID:258 'leep' prob:0.0267
+    ID:684 'laugh' prob:0.0265
+    ID:961 ' picture' prob:0.0260
+    ID:681 ' stick' prob:0.0259
+    ID:137 's w' prob:0.0259
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'on a time musics ood'
+  Selected: ID:237 'ak' prob:0.0253
+
+Step 4:
+  Top-5 tokens:
+    ID:421 'uil' prob:0.0266
+    ID:90 'ma' prob:0.0263
+    ID:94 'and ' prob:0.0260
+    ID:27 'm' prob:0.0259
+    ID:286 'good ' prob:0.0258
+  Full-width space (ID:1) probability: 0.0000
+  Current context: ' a time musics oodak'
+  Selected: ID:191 'ves ' prob:0.0257
+
+Step 4:
+  Top-5 tokens:
+    ID:607 ' hold' prob:0.0267
+    ID:137 's w' prob:0.0265
+    ID:396 'ull' prob:0.0261
+    ID:292 'looks ' prob:0.0260
+    ID:917 'illow' prob:0.0259
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'me ducking fruny. it'
+  Selected: ID:182 'fu' prob:0.0245
+
+Step 5:
+  Top-5 tokens:
+    ID:224 's g' prob:0.0267
+    ID:814 'ooth' prob:0.0265
+    ID:42 's ' prob:0.0264
+    ID:305 'ot' prob:0.0263
+    ID:6 ''' prob:0.0260
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'ime musics oodakves '
+  Selected: ID:814 'ooth' prob:0.0265
+
+Step 5:
+  Top-5 tokens:
+    ID:751 'uzz' prob:0.0273
+    ID:60 '. it' prob:0.0265
+    ID:908 'er. the' prob:0.0264
+    ID:421 'uil' prob:0.0261
+    ID:440 'momm' prob:0.0259
+  Full-width space (ID:1) probability: 0.0000
+  Current context: ' ducking fruny. itfu'
+  Selected: ID:958 'full' prob:0.0258
+
+Step 6:
+  Top-5 tokens:
+    ID:305 'ot' prob:0.0284
+    ID:367 'ju' prob:0.0269
+    ID:814 'ooth' prob:0.0259
+    ID:548 ' sleep' prob:0.0258
+    ID:684 'laugh' prob:0.0256
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'musics oodakves ooth'
+  Selected: ID:82 'or' prob:0.0243
+
+Step 6:
+  Top-5 tokens:
+    ID:367 'ju' prob:0.0273
+    ID:396 'ull' prob:0.0264
+    ID:78 'es ' prob:0.0264
+    ID:305 'ot' prob:0.0263
+    ID:249 'ug' prob:0.0259
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'king fruny. itfufull'
+  Selected: ID:516 ' sit' prob:0.0245
+
+Step 7:
+  Top-5 tokens:
+    ID:447 'oom' prob:0.0284
+    ID:516 ' sit' prob:0.0265
+    ID:771 ' drink' prob:0.0262
+    ID:985 'iggle' prob:0.0259
+    ID:700 's fun' prob:0.0258
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'sics oodakves oothor'
+  Selected: ID:322 'a little' prob:0.0247
+
+Step 7:
+  Top-5 tokens:
+    ID:771 ' drink' prob:0.0270
+    ID:794 ' sha' prob:0.0268
+    ID:553 'y.\na ' prob:0.0266
+    ID:447 'oom' prob:0.0265
+    ID:273 'ird' prob:0.0264
+  Full-width space (ID:1) probability: 0.0000
+  Current context: ' fruny. itfufull sit'
+  Selected: ID:553 'y.
+a ' prob:0.0266
+
+Step 8:
+  Top-5 tokens:
+    ID:242 's are' prob:0.0277
+    ID:814 'ooth' prob:0.0267
+    ID:742 'hell' prob:0.0266
+    ID:958 'full' prob:0.0260
+    ID:983 'ongu' prob:0.0259
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'akves oothora little'
+  Selected: ID:817 'jo' prob:0.0255
+
+Step 8:
+  Top-5 tokens:
+    ID:242 's are' prob:0.0274
+    ID:945 'very fast' prob:0.0273
+    ID:814 'ooth' prob:0.0271
+    ID:698 ' pla' prob:0.0268
+    ID:478 'y bear' prob:0.0262
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'y. itfufull sity.
+a '
+  Selected: ID:836 ' hand' prob:0.0243
+
+Step 9:
+  Top-5 tokens:
+    ID:706 ' kit' prob:0.0281
+    ID:662 ' insid' prob:0.0263
+    ID:123 ' to' prob:0.0263
+    ID:322 'a little' prob:0.0261
+    ID:60 '. it' prob:0.0261
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'ves oothora littlejo'
+  Selected: ID:854 ' from' prob:0.0253
+
+Step 9:
+  Top-5 tokens:
+    ID:537 ' blue' prob:0.0269
+    ID:516 ' sit' prob:0.0268
+    ID:289 'ho' prob:0.0266
+    ID:706 ' kit' prob:0.0263
+    ID:868 'let' prob:0.0261
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'fufull sity.
+a  hand'
+  Selected: ID:575 'y g' prob:0.0243
+
+
+> Task :runTinyHelenSample FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':runTinyHelenSample'.
+> Process 'command '/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home/bin/java'' finished with non-zero exit value 143
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.8/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 14s
+2 actionable tasks: 1 executed, 1 up-to-date

@@ -1,0 +1,1409 @@
+=== #오후 START OVERNIGHT ===
+=== #오후 TRAIN BEGIN ===
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.8/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :compileKotlin UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+
+> Task :runTinyHelenTrain
+1. 임베딩 레이어 파라미터: 25,152
+2. 단일 트랜스포머 블록 파라미터: 7,224
+   => 총 트랜스포머 블록 파라미터 (2개): 14,448
+3. 최종 LayerNorm 파라미터: 48
+4. Language Model Head 파라미터: 24,000
+총 파라미터 수: 63,648
+=== PikoGPT 훈련 시작 ===
+설정: TrainConfig(dataPath=data/tinyhelen, modelDir=model, evalIntervalRatio=0.05, logInterval=10, evalIters=1, evalOnly=false, alwaysSaveCheckpoint=true, initFrom=scratch, modelCheckpointDir=null, dataset=stories, gradientAccumulationSteps=4, batchSize=2, blockSize=48, embeddingDimension=24, numberOfLayers=2, numberOfHeads=3, bias=true, dropout=0.1, learningRate=3.0E-4, maxIters=1500, weightDecay=0.05, beta1=0.9, beta2=0.95, gradClip=1.0, decayLr=true, warmupRatio=0.03, learningRateDecayRatio=1.0, minimumLearningRate=3.0E-5)
+베이스라인 손실: 6.9078 (0% 진행률 기준)
+새 모델 초기화
+모델 파라미터 수: 63648
+데이터 로드 완료: 1651365 토큰
+데이터 로드 완료: 183485 토큰
+스텝 0: 훈련 6.91 (0.0%) ░░░░░ | 검증 6.91 (0.0%) ░░░░░ | 평균 6.909114311138788
+반복 0: 손실 6.92 (0.0%) ░░░░░, elapsed 23s.
+반복 10: 손실 6.91 (0.0%) ░░░░░, elapsed 182s.
+반복 20: 손실 6.91 (0.0%) ░░░░░, elapsed 342s.
+반복 30: 손실 6.90 (0.1%) ░░░░░, elapsed 507s.
+반복 40: 손실 6.90 (0.0%) ░░░░░, elapsed 672s.
+반복 50: 손실 6.92 (0.0%) ░░░░░, elapsed 832s.
+반복 60: 손실 6.93 (0.0%) ░░░░░, elapsed 995s.
+반복 70: 손실 6.92 (0.0%) ░░░░░, elapsed 1157s.
+스텝 75: 훈련 6.91 (0.0%) ░░░░░ | 검증 6.90 (0.1%) ░░░░░ | 평균 6.90831642349561
+반복 80: 손실 6.92 (0.0%) ░░░░░, elapsed 1322s.
+반복 90: 손실 6.91 (0.0%) ░░░░░, elapsed 1488s.
+반복 100: 손실 6.89 (0.3%) ░░░░░, elapsed 1652s.
+반복 110: 손실 6.86 (0.7%) ░░░░░, elapsed 1815s.
+반복 120: 손실 6.83 (1.2%) ░░░░░, elapsed 1976s.
+반복 130: 손실 6.79 (1.7%) ░░░░░, elapsed 2139s.
+반복 140: 손실 6.76 (2.1%) ░░░░░, elapsed 2302s.
+스텝 150: 훈련 6.72 (2.7%) ░░░░░ | 검증 6.69 (3.1%) ░░░░░ | 평균 6.706461446980635
+체크포인트 저장 중...
+meta.json 복사 완료
+체크포인트 저장 완료: /Users/joey51/works/pikogpt/model/63648/67/checkpoint.json
+반복 150: 손실 6.73 (2.5%) ░░░░░, elapsed 2467s.
+반복 160: 손실 6.71 (2.8%) ░░░░░, elapsed 2627s.
+반복 170: 손실 6.69 (3.1%) ░░░░░, elapsed 2786s.
+반복 180: 손실 6.67 (3.5%) ░░░░░, elapsed 2949s.
+반복 190: 손실 6.65 (3.7%) ░░░░░, elapsed 3111s.
+반복 200: 손실 6.63 (4.0%) ░░░░░, elapsed 3274s.
+반복 210: 손실 6.61 (4.2%) ░░░░░, elapsed 3435s.
+반복 220: 손실 6.60 (4.5%) ░░░░░, elapsed 3597s.
+스텝 225: 훈련 6.57 (4.9%) ░░░░░ | 검증 6.66 (3.6%) ░░░░░ | 평균 6.614672213792801
+체크포인트 저장 중...
+meta.json 복사 완료
+체크포인트 저장 완료: /Users/joey51/works/pikogpt/model/63648/66/checkpoint.json
+반복 230: 손실 6.58 (4.7%) ░░░░░, elapsed 3758s.
+반복 240: 손실 6.57 (4.9%) ░░░░░, elapsed 3921s.
+반복 250: 손실 6.55 (5.2%) ░░░░░, elapsed 4082s.
+반복 260: 손실 6.53 (5.4%) ░░░░░, elapsed 4243s.
+반복 270: 손실 6.51 (5.7%) ░░░░░, elapsed 4404s.
+반복 280: 손실 6.50 (5.9%) ░░░░░, elapsed 4564s.
+반복 290: 손실 6.48 (6.2%) ░░░░░, elapsed 4722s.
+스텝 300: 훈련 6.40 (7.4%) ░░░░░ | 검증 6.62 (4.2%) ░░░░░ | 평균 6.507692555586496
+체크포인트 저장 중...
+meta.json 복사 완료
+체크포인트 저장 완료: /Users/joey51/works/pikogpt/model/63648/65/checkpoint.json
+반복 300: 손실 6.47 (6.4%) ░░░░░, elapsed 4884s.
+반복 310: 손실 6.45 (6.6%) ░░░░░, elapsed 5043s.
+반복 320: 손실 6.44 (6.7%) ░░░░░, elapsed 5201s.
+반복 330: 손실 6.43 (6.9%) ░░░░░, elapsed 5365s.
+반복 340: 손실 6.42 (7.1%) ░░░░░, elapsed 5522s.
+반복 350: 손실 6.41 (7.2%) ░░░░░, elapsed 5683s.
+반복 360: 손실 6.40 (7.3%) ░░░░░, elapsed 5840s.
+반복 370: 손실 6.40 (7.3%) ░░░░░, elapsed 6003s.
+스텝 375: 훈련 6.44 (6.7%) ░░░░░ | 검증 6.60 (4.5%) ░░░░░ | 평균 6.519681466122469
+반복 380: 손실 6.39 (7.5%) ░░░░░, elapsed 6166s.
+반복 390: 손실 6.37 (7.7%) ░░░░░, elapsed 6329s.
+반복 400: 손실 6.36 (7.9%) ░░░░░, elapsed 6489s.
+반복 410: 손실 6.36 (8.0%) ░░░░░, elapsed 6654s.
+반복 420: 손실 6.35 (8.1%) ░░░░░, elapsed 6814s.
+반복 430: 손실 6.36 (7.9%) ░░░░░, elapsed 6969s.
+반복 440: 손실 6.34 (8.3%) ░░░░░, elapsed 7123s.
+스텝 450: 훈련 6.42 (7.0%) ░░░░░ | 검증 6.67 (3.5%) ░░░░░ | 평균 6.545073886712392
+반복 450: 손실 6.33 (8.3%) ░░░░░, elapsed 7278s.
+반복 460: 손실 6.34 (8.3%) ░░░░░, elapsed 7435s.
+반복 470: 손실 6.33 (8.3%) ░░░░░, elapsed 7598s.
+반복 480: 손실 6.31 (8.6%) ░░░░░, elapsed 7753s.
+반복 490: 손실 6.31 (8.6%) ░░░░░, elapsed 7913s.
+반복 500: 손실 6.30 (8.7%) ░░░░░, elapsed 8070s.
+반복 510: 손실 6.33 (8.4%) ░░░░░, elapsed 8223s.
+반복 520: 손실 6.32 (8.4%) ░░░░░, elapsed 8377s.
+스텝 525: 훈련 6.21 (10.1%) ░░░░░ | 검증 6.31 (8.7%) ░░░░░ | 평균 6.259844886759917
+체크포인트 저장 중...
+meta.json 복사 완료
+체크포인트 저장 완료: /Users/joey51/works/pikogpt/model/63648/62/checkpoint.json
+반복 530: 손실 6.31 (8.7%) ░░░░░, elapsed 8540s.
+반복 540: 손실 6.31 (8.7%) ░░░░░, elapsed 8703s.
+반복 550: 손실 6.31 (8.7%) ░░░░░, elapsed 8864s.
+반복 560: 손실 6.29 (8.9%) ░░░░░, elapsed 9027s.
+반복 570: 손실 6.28 (9.0%) ░░░░░, elapsed 9188s.
+반복 580: 손실 6.28 (9.1%) ░░░░░, elapsed 9350s.
+반복 590: 손실 6.30 (8.8%) ░░░░░, elapsed 9509s.
+스텝 600: 훈련 6.27 (9.2%) ░░░░░ | 검증 6.57 (4.8%) ░░░░░ | 평균 6.4210944796601925
+반복 600: 손실 6.29 (8.9%) ░░░░░, elapsed 9670s.
+반복 610: 손실 6.29 (9.0%) ░░░░░, elapsed 9831s.
+반복 620: 손실 6.28 (9.1%) ░░░░░, elapsed 9994s.
+반복 630: 손실 6.28 (9.0%) ░░░░░, elapsed 10147s.
+반복 640: 손실 6.29 (8.9%) ░░░░░, elapsed 10306s.
+반복 650: 손실 6.28 (9.1%) ░░░░░, elapsed 10464s.
+반복 660: 손실 6.26 (9.3%) ░░░░░, elapsed 10620s.
+반복 670: 손실 6.26 (9.4%) ░░░░░, elapsed 10774s.
+스텝 675: 훈련 6.34 (8.2%) ░░░░░ | 검증 6.36 (8.0%) ░░░░░ | 평균 6.349984968701999
+반복 680: 손실 6.28 (9.1%) ░░░░░, elapsed 10927s.
+반복 690: 손실 6.27 (9.2%) ░░░░░, elapsed 11086s.
+반복 700: 손실 6.26 (9.4%) ░░░░░, elapsed 11247s.
+반복 710: 손실 6.27 (9.2%) ░░░░░, elapsed 11409s.
+반복 720: 손실 6.29 (8.9%) ░░░░░, elapsed 11567s.
+반복 730: 손실 6.26 (9.4%) ░░░░░, elapsed 11726s.
+반복 740: 손실 6.25 (9.5%) ░░░░░, elapsed 11887s.
+스텝 750: 훈련 6.15 (11.0%) ░░░░░ | 검증 6.46 (6.5%) ░░░░░ | 평균 6.303413306673368
+반복 750: 손실 6.24 (9.6%) ░░░░░, elapsed 12052s.
+반복 760: 손실 6.26 (9.4%) ░░░░░, elapsed 12213s.
+반복 770: 손실 6.25 (9.5%) ░░░░░, elapsed 12373s.
+반복 780: 손실 6.26 (9.4%) ░░░░░, elapsed 12530s.
+반복 790: 손실 6.25 (9.5%) ░░░░░, elapsed 12690s.
+반복 800: 손실 6.26 (9.4%) ░░░░░, elapsed 12850s.
+반복 810: 손실 6.25 (9.5%) ░░░░░, elapsed 13010s.
+반복 820: 손실 6.24 (9.7%) ░░░░░, elapsed 13171s.
+스텝 825: 훈련 6.36 (7.9%) ░░░░░ | 검증 6.59 (4.5%) ░░░░░ | 평균 6.478253964334726
+반복 830: 손실 6.24 (9.7%) ░░░░░, elapsed 13336s.
+반복 840: 손실 6.24 (9.7%) ░░░░░, elapsed 13498s.
+반복 850: 손실 6.25 (9.6%) ░░░░░, elapsed 13660s.
+반복 860: 손실 6.24 (9.6%) ░░░░░, elapsed 13818s.
+반복 870: 손실 6.25 (9.5%) ░░░░░, elapsed 13981s.
+반복 880: 손실 6.26 (9.4%) ░░░░░, elapsed 14142s.
+반복 890: 손실 6.24 (9.6%) ░░░░░, elapsed 14300s.
+스텝 900: 훈련 6.50 (6.0%) ░░░░░ | 검증 6.60 (4.5%) ░░░░░ | 평균 6.545834338913361
+반복 900: 손실 6.25 (9.5%) ░░░░░, elapsed 14460s.
+반복 910: 손실 6.25 (9.5%) ░░░░░, elapsed 14619s.
+반복 920: 손실 6.23 (9.8%) ░░░░░, elapsed 14782s.
+반복 930: 손실 6.23 (9.9%) ░░░░░, elapsed 14935s.
+반복 940: 손실 6.24 (9.7%) ░░░░░, elapsed 15092s.
+반복 950: 손실 6.21 (10.1%) ░░░░░, elapsed 15253s.
+반복 960: 손실 6.20 (10.2%) ░░░░░, elapsed 15412s.
+반복 970: 손실 6.22 (10.0%) ░░░░░, elapsed 15571s.
+스텝 975: 훈련 6.44 (6.7%) ░░░░░ | 검증 6.53 (5.4%) ░░░░░ | 평균 6.48876695955793
+반복 980: 손실 6.23 (9.8%) ░░░░░, elapsed 15732s.
+반복 990: 손실 6.22 (9.9%) ░░░░░, elapsed 15892s.
+반복 1000: 손실 6.24 (9.7%) ░░░░░, elapsed 16055s.
+반복 1010: 손실 6.24 (9.6%) ░░░░░, elapsed 16210s.
+반복 1020: 손실 6.24 (9.6%) ░░░░░, elapsed 16364s.
+반복 1030: 손실 6.24 (9.7%) ░░░░░, elapsed 16523s.
+반복 1040: 손실 6.24 (9.7%) ░░░░░, elapsed 16686s.
+스텝 1050: 훈련 6.33 (8.3%) ░░░░░ | 검증 6.40 (7.4%) ░░░░░ | 평균 6.364146515727043
+반복 1050: 손실 6.23 (9.8%) ░░░░░, elapsed 16845s.
+반복 1060: 손실 6.24 (9.6%) ░░░░░, elapsed 17005s.
+반복 1070: 손실 6.26 (9.4%) ░░░░░, elapsed 17169s.
+반복 1080: 손실 6.22 (10.0%) ░░░░░, elapsed 17327s.
+반복 1090: 손실 6.22 (10.0%) ░░░░░, elapsed 17489s.
+반복 1100: 손실 6.23 (9.8%) ░░░░░, elapsed 17653s.
+반복 1110: 손실 6.23 (9.8%) ░░░░░, elapsed 17813s.
+반복 1120: 손실 6.23 (9.8%) ░░░░░, elapsed 17972s.
+스텝 1125: 훈련 6.05 (12.4%) ░░░░░ | 검증 6.59 (4.6%) ░░░░░ | 평균 6.322902328024307
+반복 1130: 손실 6.25 (9.5%) ░░░░░, elapsed 18136s.
+반복 1140: 손실 6.23 (9.7%) ░░░░░, elapsed 18297s.
+반복 1150: 손실 6.23 (9.7%) ░░░░░, elapsed 18459s.
+반복 1160: 손실 6.23 (9.9%) ░░░░░, elapsed 18618s.
+반복 1170: 손실 6.22 (10.0%) ░░░░░, elapsed 18780s.
+반복 1180: 손실 6.24 (9.6%) ░░░░░, elapsed 18939s.
+반복 1190: 손실 6.24 (9.6%) ░░░░░, elapsed 19101s.
+스텝 1200: 훈련 6.14 (11.1%) ░░░░░ | 검증 6.32 (8.5%) ░░░░░ | 평균 6.230866764982541
+체크포인트 저장 중...
+meta.json 복사 완료
+체크포인트 저장 완료: /Users/joey51/works/pikogpt/model/63648/62/checkpoint.json
+반복 1200: 손실 6.25 (9.5%) ░░░░░, elapsed 19258s.
+반복 1210: 손실 6.24 (9.6%) ░░░░░, elapsed 19418s.
+반복 1220: 손실 6.25 (9.5%) ░░░░░, elapsed 19579s.
+반복 1230: 손실 6.24 (9.6%) ░░░░░, elapsed 19742s.
+반복 1240: 손실 6.25 (9.5%) ░░░░░, elapsed 19903s.
+반복 1250: 손실 6.26 (9.4%) ░░░░░, elapsed 20055s.
+반복 1260: 손실 6.24 (9.7%) ░░░░░, elapsed 20208s.
+반복 1270: 손실 6.21 (10.2%) ░░░░░, elapsed 20366s.
+스텝 1275: 훈련 6.17 (10.7%) ░░░░░ | 검증 6.40 (7.3%) ░░░░░ | 평균 6.285124900440374
+반복 1280: 손실 6.24 (9.6%) ░░░░░, elapsed 20532s.
+반복 1290: 손실 6.25 (9.5%) ░░░░░, elapsed 20692s.
+반복 1300: 손실 6.27 (9.2%) ░░░░░, elapsed 20853s.
+반복 1310: 손실 6.25 (9.5%) ░░░░░, elapsed 21008s.
+반복 1320: 손실 6.25 (9.5%) ░░░░░, elapsed 21166s.
+반복 1330: 손실 6.25 (9.5%) ░░░░░, elapsed 21325s.
+반복 1340: 손실 6.23 (9.8%) ░░░░░, elapsed 21483s.
+스텝 1350: 훈련 6.05 (12.4%) ░░░░░ | 검증 6.64 (3.8%) ░░░░░ | 평균 6.349414944648743
+반복 1350: 손실 6.24 (9.6%) ░░░░░, elapsed 21644s.
+반복 1360: 손실 6.23 (9.7%) ░░░░░, elapsed 21807s.
+반복 1370: 손실 6.24 (9.7%) ░░░░░, elapsed 21967s.
+반복 1380: 손실 6.23 (9.7%) ░░░░░, elapsed 22124s.
+반복 1390: 손실 6.24 (9.6%) ░░░░░, elapsed 22281s.
+반복 1400: 손실 6.25 (9.6%) ░░░░░, elapsed 22441s.
+반복 1410: 손실 6.25 (9.5%) ░░░░░, elapsed 22603s.
+반복 1420: 손실 6.25 (9.5%) ░░░░░, elapsed 22761s.
+스텝 1425: 훈련 6.17 (10.7%) ░░░░░ | 검증 6.55 (5.2%) ░░░░░ | 평균 6.3584046090642605
+반복 1430: 손실 6.23 (9.8%) ░░░░░, elapsed 22922s.
+반복 1440: 손실 6.25 (9.6%) ░░░░░, elapsed 23080s.
+반복 1450: 손실 6.25 (9.5%) ░░░░░, elapsed 23239s.
+반복 1460: 손실 6.27 (9.2%) ░░░░░, elapsed 23399s.
+반복 1470: 손실 6.26 (9.4%) ░░░░░, elapsed 23558s.
+반복 1480: 손실 6.25 (9.6%) ░░░░░, elapsed 23720s.
+반복 1490: 손실 6.24 (9.7%) ░░░░░, elapsed 23879s.
+스텝 1500: 훈련 6.25 (9.5%) ░░░░░ | 검증 6.37 (7.8%) ░░░░░ | 평균 6.311664330462614
+반복 1500: 손실 6.24 (9.7%) ░░░░░, elapsed 24038s.
+
+훈련 완료!
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.8/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 6h 40m 43s
+2 actionable tasks: 1 executed, 1 up-to-date
+=== #오후 TRAIN END (exit=0) ===
+=== #오후 SAMPLE BEGIN ===
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.8/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :compileKotlin UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+
+> Task :runTinyHelenSample
+=== 샘플링 대상 체크포인트: /Users/joey51/works/pikogpt/model/63648/62 ===
+# 모델 로드 완료 #id:1668 (iteration: 1200, val loss: 6.230866764982541)
+# 텍스트 생성 시작 #id:1668
+# 프롬프트 처리 완료 #id:1668 (입력 길이: 16자, 토큰 수: 7개)
+# 샘플 생성 시작 #id:1668 (샘플 1/2)
+# 샘플 생성 시작 #id:1668 (샘플 2/2)
+Step 0:
+Step 0:
+  Top-5 tokens:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0832
+    ID:131 'e ' prob:0.0840
+    ID:150 'and ' prob:0.0654
+    ID:150 'and ' prob:0.0645
+    ID:157 'to ' prob:0.0516
+    ID:157 'to ' prob:0.0521
+    ID:154 'a ' prob:0.0413
+    ID:154 'a ' prob:0.0405
+    ID:5 ' ' prob:0.0374
+    ID:5 ' ' prob:0.0391
+  Full-width space (ID:1) probability: 0.0000
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'Once upon a time'
+  Current context: 'Once upon a time'
+  Selected: ID:83 'n' prob:0.0140
+
+  Selected: ID:72 'c' prob:0.0185
+
+Step 1:
+Step 1:
+  Top-5 tokens:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0875
+    ID:131 'e ' prob:0.0837
+    ID:150 'and ' prob:0.0649
+    ID:150 'and ' prob:0.0641
+    ID:157 'to ' prob:0.0519
+    ID:157 'to ' prob:0.0517
+    ID:154 'a ' prob:0.0420
+    ID:154 'a ' prob:0.0437
+    ID:5 ' ' prob:0.0388
+    ID:5 ' ' prob:0.0395
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'Once upon a timec'
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'Once upon a timen'
+  Selected: ID:72 'c' prob:0.0195
+
+  Selected: ID:134 's ' prob:0.0337
+
+Step 2:
+Step 2:
+  Top-5 tokens:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0886
+    ID:131 'e ' prob:0.0871
+    ID:150 'and ' prob:0.0632
+    ID:150 'and ' prob:0.0653
+    ID:157 'to ' prob:0.0536
+    ID:157 'to ' prob:0.0544
+    ID:154 'a ' prob:0.0431
+    ID:154 'a ' prob:0.0428
+    ID:5 ' ' prob:0.0390
+    ID:5 ' ' prob:0.0384
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'Once upon a timecc'
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'Once upon a timens '
+  Selected: ID:5 ' ' prob:0.0390
+
+  Selected: ID:176 'the ' prob:0.0232
+
+Step 3:
+Step 3:
+  Top-5 tokens:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0854
+    ID:150 'and ' prob:0.0626
+    ID:157 'to ' prob:0.0512
+    ID:154 'a ' prob:0.0420
+    ID:5 ' ' prob:0.0389
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'e upon a timens the '
+    ID:131 'e ' prob:0.0893
+  Selected: ID:159 'is ' prob:0.0353
+
+    ID:150 'and ' prob:0.0621
+    ID:157 'to ' prob:0.0524
+    ID:154 'a ' prob:0.0418
+    ID:5 ' ' prob:0.0386
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'Once upon a timecc '
+  Selected: ID:151 '. ' prob:0.0181
+
+Step 4:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0837
+    ID:150 'and ' prob:0.0626
+    ID:157 'to ' prob:0.0516
+    ID:154 'a ' prob:0.0443
+    ID:5 ' ' prob:0.0375
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'pon a timens the is '
+  Selected: ID:154 'a ' prob:0.0443
+
+Step 4:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0837
+    ID:150 'and ' prob:0.0621
+    ID:157 'to ' prob:0.0526
+    ID:154 'a ' prob:0.0411
+    ID:5 ' ' prob:0.0385
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'nce upon a timecc . '
+  Selected: ID:81 'l' prob:0.0177
+
+Step 5:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0886
+    ID:150 'and ' prob:0.0652
+    ID:157 'to ' prob:0.0519
+    ID:154 'a ' prob:0.0423
+    ID:5 ' ' prob:0.0388
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'ce upon a timecc . l'
+  Selected: ID:81 'l' prob:0.0169
+
+Step 5:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0848
+    ID:150 'and ' prob:0.0639
+    ID:157 'to ' prob:0.0547
+    ID:154 'a ' prob:0.0417
+    ID:5 ' ' prob:0.0376
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'n a timens the is a '
+  Selected: ID:87 'r' prob:0.0192
+
+Step 6:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0856
+    ID:150 'and ' prob:0.0610
+    ID:157 'to ' prob:0.0531
+    ID:154 'a ' prob:0.0396
+    ID:5 ' ' prob:0.0386
+  Full-width space (ID:1) probability: 0.0000
+  Current context: ' a timens the is a r'
+  Selected: ID:5 ' ' prob:0.0386
+
+Step 6:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0870
+    ID:150 'and ' prob:0.0652
+    ID:157 'to ' prob:0.0516
+    ID:154 'a ' prob:0.0430
+    ID:5 ' ' prob:0.0387
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'e upon a timecc . ll'
+  Selected: ID:151 '. ' prob:0.0185
+
+Step 7:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0836
+    ID:150 'and ' prob:0.0645
+    ID:157 'to ' prob:0.0521
+    ID:154 'a ' prob:0.0393
+    ID:5 ' ' prob:0.0386
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'a timens the is a r '
+  Selected: ID:83 'n' prob:0.0142
+
+Step 7:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0802
+    ID:150 'and ' prob:0.0616
+    ID:157 'to ' prob:0.0531
+    ID:154 'a ' prob:0.0424
+    ID:5 ' ' prob:0.0384
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'upon a timecc . ll. '
+  Selected: ID:72 'c' prob:0.0196
+
+Step 8:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0873
+    ID:150 'and ' prob:0.0614
+    ID:157 'to ' prob:0.0517
+    ID:154 'a ' prob:0.0434
+    ID:5 ' ' prob:0.0392
+  Full-width space (ID:1) probability: 0.0000
+  Current context: ' timens the is a r n'
+  Selected: ID:89 't' prob:0.0196
+
+Step 8:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0841
+    ID:150 'and ' prob:0.0632
+    ID:157 'to ' prob:0.0552
+    ID:154 'a ' prob:0.0434
+    ID:5 ' ' prob:0.0379
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'pon a timecc . ll. c'
+  Selected: ID:193 'of ' prob:0.0232
+
+Step 9:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0859
+    ID:150 'and ' prob:0.0603
+    ID:157 'to ' prob:0.0526
+    ID:154 'a ' prob:0.0403
+    ID:5 ' ' prob:0.0382
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'timens the is a r nt'
+  Selected: ID:154 'a ' prob:0.0403
+
+Step 9:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0823
+    ID:150 'and ' prob:0.0636
+    ID:157 'to ' prob:0.0521
+    ID:154 'a ' prob:0.0446
+    ID:5 ' ' prob:0.0398
+  Full-width space (ID:1) probability: 0.0000
+  Current context: ' a timecc . ll. cof '
+  Selected: ID:157 'to ' prob:0.0521
+
+# 샘플 생성 완료 #id:1668 (샘플 1, 생성된 토큰 수: 80개) 생성됨: Once upon a timecc . ll. cof to ed , y to to a thand  thand isis e a , nes are are s at esee to  th, s n the a e ed is and are ing sse , is s in a, an fpare dof t  diand a ed an  s y  ee c
+# 샘플 생성 완료 #id:1668 (샘플 2, 생성된 토큰 수: 80개) 생성됨: Once upon a timens the is a r nta to sto . is , a s  s s pand ing a of tis y into ing lps and sdand e is it and e the res t pand is s in pe are y ed init s lldof : incto eses ing ninat of is ed b
+# 텍스트 생성 완료 #id:1668 (총 2개 샘플 생성)
+
+=== Prompt: Once upon a time ===
+[샘플 1]
+Once upon a timecc . ll. cof to ed , y to to a thand  thand isis e a , nes are are s at esee to  th, s n the a e ed is and are ing sse , is s in a, an fpare dof t  diand a ed an  s y  ee c
+[샘플 2]
+Once upon a timens the is a r nta to sto . is , a s  s s pand ing a of tis y into ing lps and sdand e is it and e the res t pand is s in pe are y ed init s lldof : incto eses ing ninat of is ed b
+# 텍스트 생성 시작 #id:1668
+# 프롬프트 처리 완료 #id:1668 (입력 길이: 15자, 토큰 수: 6개)
+# 샘플 생성 시작 #id:1668 (샘플 2/2)
+# 샘플 생성 시작 #id:1668 (샘플 1/2)
+Step 0:
+Step 0:
+  Top-5 tokens:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0872
+    ID:131 'e ' prob:0.0857
+    ID:150 'and ' prob:0.0638
+    ID:150 'and ' prob:0.0628
+    ID:157 'to ' prob:0.0524
+    ID:157 'to ' prob:0.0524
+    ID:154 'a ' prob:0.0430
+    ID:5 ' ' prob:0.0390
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'The little girl'
+  Selected: ID:157 'to ' prob:0.0524
+
+    ID:154 'a ' prob:0.0437
+    ID:5 ' ' prob:0.0399
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'The little girl'
+  Selected: ID:232 'it ' prob:0.0138
+
+Step 1:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0857
+    ID:150 'and ' prob:0.0651
+    ID:157 'to ' prob:0.0528
+    ID:154 'a ' prob:0.0414
+    ID:5 ' ' prob:0.0387
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'The little girlto '
+  Selected: ID:73 'd' prob:0.0247
+
+Step 1:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0873
+    ID:150 'and ' prob:0.0638
+    ID:157 'to ' prob:0.0533
+    ID:154 'a ' prob:0.0411
+    ID:5 ' ' prob:0.0386
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'The little girlit '
+  Selected: ID:192 'an ' prob:0.0138
+
+Step 2:
+  Top-5 tokens:
+Step 2:
+    ID:131 'e ' prob:0.0877
+  Top-5 tokens:
+    ID:150 'and ' prob:0.0661
+    ID:157 'to ' prob:0.0538
+    ID:154 'a ' prob:0.0409
+    ID:5 ' ' prob:0.0380
+  Full-width space (ID:1) probability: 0.0000
+    ID:131 'e ' prob:0.0802
+  Current context: 'The little girlto d'
+    ID:150 'and ' prob:0.0647
+  Selected: ID:150 'and ' prob:0.0661
+    ID:157 'to ' prob:0.0545
+
+    ID:154 'a ' prob:0.0421
+    ID:5 ' ' prob:0.0376
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'he little girlit an '
+  Selected: ID:73 'd' prob:0.0241
+
+Step 3:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0819
+    ID:150 'and ' prob:0.0625
+    ID:157 'to ' prob:0.0538
+    ID:154 'a ' prob:0.0424
+    ID:5 ' ' prob:0.0372
+  Full-width space (ID:1) probability: 0.0000
+  Current context: ' little girlto dand '
+  Selected: ID:74 'e' prob:0.0250
+
+Step 3:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0799
+    ID:150 'and ' prob:0.0648
+    ID:157 'to ' prob:0.0493
+    ID:154 'a ' prob:0.0430
+    ID:5 ' ' prob:0.0402
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'e little girlit an d'
+  Selected: ID:214 'are ' prob:0.0158
+
+Step 4:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0874
+    ID:150 'and ' prob:0.0631
+    ID:157 'to ' prob:0.0510
+    ID:154 'a ' prob:0.0421
+    ID:5 ' ' prob:0.0386
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'little girlto dand e'
+  Selected: ID:75 'f' prob:0.0199
+
+Step 4:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0863
+    ID:150 'and ' prob:0.0654
+    ID:157 'to ' prob:0.0535
+    ID:154 'a ' prob:0.0425
+    ID:5 ' ' prob:0.0390
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'ttle girlit an dare '
+  Selected: ID:167 'ed ' prob:0.0179
+
+Step 5:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0847
+    ID:150 'and ' prob:0.0618
+    ID:157 'to ' prob:0.0503
+    ID:154 'a ' prob:0.0399
+    ID:5 ' ' prob:0.0387
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'ittle girlto dand ef'
+  Selected: ID:82 'm' prob:0.0163
+
+Step 5:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0831
+    ID:150 'and ' prob:0.0637
+    ID:157 'to ' prob:0.0532
+    ID:154 'a ' prob:0.0419
+    ID:5 ' ' prob:0.0383
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'e girlit an dare ed '
+  Selected: ID:5 ' ' prob:0.0383
+
+Step 6:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0847
+    ID:150 'and ' prob:0.0652
+    ID:157 'to ' prob:0.0516
+    ID:154 'a ' prob:0.0421
+    ID:5 ' ' prob:0.0388
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'ttle girlto dand efm'
+  Selected: ID:134 's ' prob:0.0367
+
+Step 6:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0870
+    ID:150 'and ' prob:0.0679
+    ID:157 'to ' prob:0.0521
+    ID:154 'a ' prob:0.0425
+    ID:5 ' ' prob:0.0379
+  Full-width space (ID:1) probability: 0.0000
+  Current context: ' girlit an dare ed  '
+  Selected: ID:173 'es ' prob:0.0233
+
+Step 7:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0821
+    ID:150 'and ' prob:0.0642
+    ID:157 'to ' prob:0.0525
+    ID:154 'a ' prob:0.0430
+    ID:5 ' ' prob:0.0389
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'le girlto dand efms '
+  Selected: ID:157 'to ' prob:0.0525
+
+Step 7:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0870
+    ID:150 'and ' prob:0.0641
+    ID:157 'to ' prob:0.0528
+    ID:154 'a ' prob:0.0433
+    ID:5 ' ' prob:0.0400
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'rlit an dare ed  es '
+  Selected: ID:147 ', ' prob:0.0330
+
+Step 8:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0803
+    ID:150 'and ' prob:0.0628
+    ID:157 'to ' prob:0.0557
+    ID:154 'a ' prob:0.0400
+    ID:5 ' ' prob:0.0380
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'girlto dand efms to '
+  Selected: ID:134 's ' prob:0.0362
+
+Step 8:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0890
+    ID:150 'and ' prob:0.0633
+    ID:157 'to ' prob:0.0557
+    ID:154 'a ' prob:0.0415
+    ID:5 ' ' prob:0.0377
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'it an dare ed  es , '
+  Selected: ID:131 'e ' prob:0.0890
+
+Step 9:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0871
+    ID:150 'and ' prob:0.0630
+    ID:157 'to ' prob:0.0551
+    ID:154 'a ' prob:0.0422
+    ID:5 ' ' prob:0.0384
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'rlto dand efms to s '
+  Selected: ID:83 'n' prob:0.0138
+
+Step 9:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0872
+    ID:150 'and ' prob:0.0637
+    ID:157 'to ' prob:0.0505
+    ID:154 'a ' prob:0.0420
+    ID:5 ' ' prob:0.0392
+  Full-width space (ID:1) probability: 0.0000
+  Current context: ' an dare ed  es , e '
+  Selected: ID:81 'l' prob:0.0174
+
+# 샘플 생성 완료 #id:1668 (샘플 2, 생성된 토큰 수: 80개) 생성됨: The little girlit an dare ed  es , e lt ing s ns it a e rle a ping and e . it and and e sfit it a at ed fce bto e e is s es are s at to trere e about are inat es s and in the is sto ing are fit din e npthe 
+# 샘플 생성 완료 #id:1668 (샘플 1, 생성된 토큰 수: 80개) 생성됨: The little girlto dand efms to s nrke e: y and to a and mis to babout at mfa ing a e s is an k thfae p. t s ed ing pabout  thed pia cs is tfis e e . land , rs e : es inthe ing . and and and ae and 
+# 텍스트 생성 완료 #id:1668 (총 2개 샘플 생성)
+
+=== Prompt: The little girl ===
+[샘플 1]
+The little girlto dand efms to s nrke e: y and to a and mis to babout at mfa ing a e s is an k thfae p. t s ed ing pabout  thed pia cs is tfis e e . land , rs e : es inthe ing . and and and ae and 
+[샘플 2]
+The little girlit an dare ed  es , e lt ing s ns it a e rle a ping and e . it and and e sfit it a at ed fce bto e e is s es are s at to trere e about are inat es s and in the is sto ing are fit din e npthe 
+# 텍스트 생성 시작 #id:1668
+# 프롬프트 처리 완료 #id:1668 (입력 길이: 14자, 토큰 수: 5개)
+# 샘플 생성 시작 #id:1668 (샘플 1/2)
+# 샘플 생성 시작 #id:1668 (샘플 2/2)
+Step 0:
+  Top-5 tokens:
+Step 0:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0836
+    ID:131 'e ' prob:0.0830
+    ID:150 'and ' prob:0.0674
+    ID:150 'and ' prob:0.0667
+    ID:157 'to ' prob:0.0501
+    ID:157 'to ' prob:0.0469
+    ID:154 'a ' prob:0.0423
+    ID:154 'a ' prob:0.0434
+    ID:5 ' ' prob:0.0378
+    ID:5 ' ' prob:0.0385
+  Full-width space (ID:1) probability: 0.0000
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'In the morning'
+  Current context: 'In the morning'
+  Selected: ID:131 'e ' prob:0.0836
+
+  Selected: ID:131 'e ' prob:0.0830
+
+Step 1:
+  Top-5 tokens:
+Step 1:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0850
+    ID:131 'e ' prob:0.0885
+    ID:150 'and ' prob:0.0665
+    ID:150 'and ' prob:0.0658
+    ID:157 'to ' prob:0.0505
+    ID:157 'to ' prob:0.0521
+    ID:154 'a ' prob:0.0390
+    ID:154 'a ' prob:0.0416
+    ID:5 ' ' prob:0.0388
+    ID:5 ' ' prob:0.0389
+  Full-width space (ID:1) probability: 0.0000
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'In the morninge '
+  Current context: 'In the morninge '
+  Selected: ID:85 'p' prob:0.0161
+
+  Selected: ID:81 'l' prob:0.0177
+
+Step 2:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0818
+    ID:150 'and ' prob:0.0633
+    ID:157 'to ' prob:0.0480
+    ID:154 'a ' prob:0.0418
+    ID:5 ' ' prob:0.0393
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'In the morninge l'
+  Selected: ID:157 'to ' prob:0.0480
+
+Step 2:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0877
+    ID:150 'and ' prob:0.0666
+    ID:157 'to ' prob:0.0512
+    ID:154 'a ' prob:0.0416
+    ID:5 ' ' prob:0.0387
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'In the morninge p'
+  Selected: ID:74 'e' prob:0.0261
+
+Step 3:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0845
+    ID:150 'and ' prob:0.0617
+    ID:157 'to ' prob:0.0534
+    ID:154 'a ' prob:0.0425
+    ID:5 ' ' prob:0.0394
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'In the morninge lto '
+  Selected: ID:149 'ing ' prob:0.0271
+
+Step 3:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0858
+    ID:150 'and ' prob:0.0600
+    ID:157 'to ' prob:0.0551
+    ID:154 'a ' prob:0.0424
+    ID:5 ' ' prob:0.0388
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'In the morninge pe'
+  Selected: ID:71 'b' prob:0.0181
+
+Step 4:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0844
+    ID:150 'and ' prob:0.0632
+    ID:157 'to ' prob:0.0541
+    ID:154 'a ' prob:0.0438
+    ID:5 ' ' prob:0.0381
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'he morninge lto ing '
+  Selected: ID:87 'r' prob:0.0189
+
+Step 4:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0839
+    ID:150 'and ' prob:0.0644
+    ID:157 'to ' prob:0.0529
+    ID:154 'a ' prob:0.0433
+    ID:5 ' ' prob:0.0389
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'In the morninge peb'
+  Selected: ID:149 'ing ' prob:0.0256
+
+Step 5:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0860
+    ID:150 'and ' prob:0.0633
+    ID:157 'to ' prob:0.0516
+    ID:154 'a ' prob:0.0423
+    ID:5 ' ' prob:0.0394
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'e morninge lto ing r'
+  Selected: ID:193 'of ' prob:0.0234
+
+Step 5:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0796
+    ID:150 'and ' prob:0.0640
+    ID:157 'to ' prob:0.0540
+    ID:154 'a ' prob:0.0452
+    ID:5 ' ' prob:0.0378
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'the morninge pebing '
+  Selected: ID:134 's ' prob:0.0350
+
+Step 6:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0835
+    ID:150 'and ' prob:0.0604
+    ID:157 'to ' prob:0.0553
+    ID:154 'a ' prob:0.0432
+    ID:5 ' ' prob:0.0366
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'orninge lto ing rof '
+  Selected: ID:232 'it ' prob:0.0141
+
+Step 6:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0854
+    ID:150 'and ' prob:0.0636
+    ID:157 'to ' prob:0.0550
+    ID:154 'a ' prob:0.0414
+    ID:5 ' ' prob:0.0384
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'e morninge pebing s '
+  Selected: ID:72 'c' prob:0.0178
+
+Step 7:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0824
+    ID:150 'and ' prob:0.0632
+    ID:157 'to ' prob:0.0538
+    ID:154 'a ' prob:0.0420
+    ID:5 ' ' prob:0.0390
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'inge lto ing rof it '
+  Selected: ID:88 's' prob:0.0349
+
+Step 7:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0852
+    ID:150 'and ' prob:0.0644
+    ID:157 'to ' prob:0.0534
+    ID:154 'a ' prob:0.0421
+    ID:5 ' ' prob:0.0390
+  Full-width space (ID:1) probability: 0.0000
+  Current context: ' morninge pebing s c'
+  Selected: ID:143 'y ' prob:0.0281
+
+Step 8:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0838
+    ID:150 'and ' prob:0.0638
+    ID:157 'to ' prob:0.0517
+    ID:154 'a ' prob:0.0424
+    ID:5 ' ' prob:0.0393
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'nge lto ing rof it s'
+  Selected: ID:154 'a ' prob:0.0424
+
+Step 8:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0834
+    ID:150 'and ' prob:0.0660
+    ID:157 'to ' prob:0.0521
+    ID:154 'a ' prob:0.0409
+    ID:5 ' ' prob:0.0388
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'orninge pebing s cy '
+  Selected: ID:185 'in ' prob:0.0248
+
+Step 9:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0858
+    ID:150 'and ' prob:0.0634
+    ID:157 'to ' prob:0.0520
+    ID:154 'a ' prob:0.0427
+    ID:5 ' ' prob:0.0390
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'e lto ing rof it sa '
+  Selected: ID:193 'of ' prob:0.0233
+
+Step 9:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0849
+    ID:150 'and ' prob:0.0628
+    ID:157 'to ' prob:0.0508
+    ID:154 'a ' prob:0.0444
+    ID:5 ' ' prob:0.0395
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'inge pebing s cy in '
+  Selected: ID:87 'r' prob:0.0188
+
+# 샘플 생성 완료 #id:1668 (샘플 1, 생성된 토큰 수: 80개) 생성됨: In the morninge lto ing rof it sa of dinand an es pes e sat et and y es and ing  ee are mesa . r s and a ka e and sto the ed ms in. tis eit and ing  e a e pand es rbe dof sing ed  and ed in . the m
+# 샘플 생성 완료 #id:1668 (샘플 2, 생성된 토큰 수: 80개) 생성됨: In the morninge pebing s cy in rs to neand to rand is e to lprof e d, an t s  th and e esed  s  is dese tof y d ththe ttebe e iy is lin rand c sat e e sto se pthe and and : fe 
+# 텍스트 생성 완료 #id:1668 (총 2개 샘플 생성)
+
+=== Prompt: In the morning ===
+[샘플 1]
+In the morninge lto ing rof it sa of dinand an es pes e sat et and y es and ing  ee are mesa . r s and a ka e and sto the ed ms in. tis eit and ing  e a e pand es rbe dof sing ed  and ed in . the m
+[샘플 2]
+In the morninge pebing s cy in rs to neand to rand is e to lprof e d, an t s  th and e esed  s  is dese tof y d ththe ttebe e iy is lin rand c sat e e sto se pthe and and : fe 
+# 텍스트 생성 시작 #id:1668
+# 프롬프트 처리 완료 #id:1668 (입력 길이: 18자, 토큰 수: 8개)
+# 샘플 생성 시작 #id:1668 (샘플 1/2)
+# 샘플 생성 시작 #id:1668 (샘플 2/2)
+Step 0:
+  Top-5 tokens:
+Step 0:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0876
+    ID:131 'e ' prob:0.0845
+    ID:150 'and ' prob:0.0654
+    ID:157 'to ' prob:0.0536
+    ID:154 'a ' prob:0.0422
+    ID:5 ' ' prob:0.0386
+    ID:150 'and ' prob:0.0637
+  Full-width space (ID:1) probability: 0.0000
+    ID:157 'to ' prob:0.0527
+  Current context: 'He opened the book'
+    ID:154 'a ' prob:0.0431
+  Selected: ID:149 'ing ' prob:0.0259
+
+    ID:5 ' ' prob:0.0392
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'He opened the book'
+  Selected: ID:89 't' prob:0.0188
+
+Step 1:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0843
+    ID:150 'and ' prob:0.0602
+    ID:157 'to ' prob:0.0540
+    ID:154 'a ' prob:0.0442
+    ID:5 ' ' prob:0.0388
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'He opened the bookt'
+  Selected: ID:88 's' prob:0.0352
+
+Step 1:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0863
+    ID:150 'and ' prob:0.0622
+    ID:157 'to ' prob:0.0546
+    ID:154 'a ' prob:0.0424
+    ID:5 ' ' prob:0.0374
+  Full-width space (ID:1) probability: 0.0000
+  Current context: ' opened the booking '
+  Selected: ID:78 'i' prob:0.0150
+
+Step 2:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0862
+    ID:150 'and ' prob:0.0656
+    ID:157 'to ' prob:0.0513
+    ID:154 'a ' prob:0.0421
+    ID:5 ' ' prob:0.0384
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'opened the booking i'
+  Selected: ID:157 'to ' prob:0.0513
+
+Step 2:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0815
+    ID:150 'and ' prob:0.0618
+    ID:157 'to ' prob:0.0561
+    ID:154 'a ' prob:0.0423
+    ID:5 ' ' prob:0.0378
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'He opened the bookts'
+  Selected: ID:88 's' prob:0.0360
+
+Step 3:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0848
+    ID:150 'and ' prob:0.0622
+    ID:157 'to ' prob:0.0502
+    ID:154 'a ' prob:0.0413
+    ID:5 ' ' prob:0.0410
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'e opened the booktss'
+  Selected: ID:150 'and ' prob:0.0622
+
+Step 3:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0828
+    ID:150 'and ' prob:0.0608
+    ID:157 'to ' prob:0.0525
+    ID:154 'a ' prob:0.0418
+    ID:5 ' ' prob:0.0394
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'ned the booking ito '
+  Selected: ID:131 'e ' prob:0.0828
+
+Step 4:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0803
+    ID:150 'and ' prob:0.0611
+    ID:157 'to ' prob:0.0518
+    ID:154 'a ' prob:0.0427
+    ID:5 ' ' prob:0.0400
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'd the booking ito e '
+  Selected: ID:83 'n' prob:0.0145
+
+Step 4:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0825
+    ID:150 'and ' prob:0.0631
+    ID:157 'to ' prob:0.0522
+    ID:154 'a ' prob:0.0426
+    ID:5 ' ' prob:0.0385
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'ened the booktssand '
+  Selected: ID:71 'b' prob:0.0178
+
+Step 5:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0814
+    ID:150 'and ' prob:0.0676
+    ID:157 'to ' prob:0.0537
+    ID:154 'a ' prob:0.0405
+    ID:5 ' ' prob:0.0389
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'ned the booktssand b'
+  Selected: ID:159 'is ' prob:0.0362
+
+Step 5:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0854
+    ID:150 'and ' prob:0.0642
+    ID:157 'to ' prob:0.0541
+    ID:154 'a ' prob:0.0404
+    ID:5 ' ' prob:0.0380
+  Full-width space (ID:1) probability: 0.0000
+  Current context: ' the booking ito e n'
+  Selected: ID:219 'about ' prob:0.0139
+
+Step 6:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0849
+    ID:150 'and ' prob:0.0632
+    ID:157 'to ' prob:0.0530
+    ID:154 'a ' prob:0.0438
+    ID:5 ' ' prob:0.0385
+  Full-width space (ID:1) probability: 0.0000
+  Current context: ' the booktssand bis '
+  Selected: ID:151 '. ' prob:0.0189
+
+Step 6:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0843
+    ID:150 'and ' prob:0.0635
+    ID:157 'to ' prob:0.0523
+    ID:154 'a ' prob:0.0423
+    ID:5 ' ' prob:0.0394
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'ooking ito e nabout '
+  Selected: ID:150 'and ' prob:0.0635
+
+Step 7:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0796
+    ID:150 'and ' prob:0.0628
+    ID:157 'to ' prob:0.0501
+    ID:154 'a ' prob:0.0428
+    ID:5 ' ' prob:0.0398
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'ng ito e nabout and '
+  Selected: ID:135 't ' prob:0.0185
+
+Step 7:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0796
+    ID:150 'and ' prob:0.0632
+    ID:157 'to ' prob:0.0522
+    ID:154 'a ' prob:0.0422
+    ID:5 ' ' prob:0.0384
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'he booktssand bis . '
+  Selected: ID:149 'ing ' prob:0.0257
+
+Step 8:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0850
+    ID:150 'and ' prob:0.0637
+    ID:157 'to ' prob:0.0522
+    ID:154 'a ' prob:0.0431
+    ID:5 ' ' prob:0.0395
+  Full-width space (ID:1) probability: 0.0000
+  Current context: ' ito e nabout and t '
+  Selected: ID:154 'a ' prob:0.0431
+
+Step 8:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0797
+    ID:150 'and ' prob:0.0635
+    ID:157 'to ' prob:0.0525
+    ID:154 'a ' prob:0.0418
+    ID:5 ' ' prob:0.0397
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'ooktssand bis . ing '
+  Selected: ID:147 ', ' prob:0.0330
+
+Step 9:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0886
+    ID:150 'and ' prob:0.0649
+    ID:157 'to ' prob:0.0497
+    ID:154 'a ' prob:0.0440
+    ID:5 ' ' prob:0.0392
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'to e nabout and t a '
+  Selected: ID:157 'to ' prob:0.0497
+
+Step 9:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0862
+    ID:150 'and ' prob:0.0623
+    ID:157 'to ' prob:0.0523
+    ID:154 'a ' prob:0.0416
+    ID:5 ' ' prob:0.0384
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'ktssand bis . ing , '
+  Selected: ID:78 'i' prob:0.0147
+
+# 샘플 생성 완료 #id:1668 (샘플 1, 생성된 토큰 수: 80개) 생성됨: He opened the booking ito e nabout and t a to fla pis tn thesand , ,  ing ing ms of s to and to e : n thaare an besof sthe y the . about dof es , a dto tland is cing at to bto sddes y rand to pis  theis the and 
+# 샘플 생성 완료 #id:1668 (샘플 2, 생성된 토큰 수: 80개) 생성됨: He opened the booktssand bis . ing , ie and , inand at in about and to ea a the csin  kto y reiis e and at is to es and rand sof lin e at in  and es and y e  thing to are es y py s ta in are fare are  and pthe ind
+# 텍스트 생성 완료 #id:1668 (총 2개 샘플 생성)
+
+=== Prompt: He opened the book ===
+[샘플 1]
+He opened the booking ito e nabout and t a to fla pis tn thesand , ,  ing ing ms of s to and to e : n thaare an besof sthe y the . about dof es , a dto tland is cing at to bto sddes y rand to pis  theis the and 
+[샘플 2]
+He opened the booktssand bis . ing , ie and , inand at in about and to ea a the csin  kto y reiis e and at is to es and rand sof lin e at in  and es and y e  thing to are es y py s ta in are fare are  and pthe ind
+# 텍스트 생성 시작 #id:1668
+# 프롬프트 처리 완료 #id:1668 (입력 길이: 9자, 토큰 수: 5개)
+# 샘플 생성 시작 #id:1668 (샘플 1/2)
+# 샘플 생성 시작 #id:1668 (샘플 2/2)
+Step 0:
+  Top-5 tokens:
+Step 0:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0844
+    ID:131 'e ' prob:0.0846
+    ID:150 'and ' prob:0.0623
+    ID:150 'and ' prob:0.0638
+    ID:157 'to ' prob:0.0540
+    ID:157 'to ' prob:0.0539
+    ID:154 'a ' prob:0.0434
+    ID:154 'a ' prob:0.0404
+    ID:5 ' ' prob:0.0378
+    ID:5 ' ' prob:0.0384
+  Full-width space (ID:1) probability: 0.0000
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'She said,'
+  Current context: 'She said,'
+  Selected: ID:81 'l' prob:0.0171
+
+  Selected: ID:167 'ed ' prob:0.0184
+
+Step 1:
+  Top-5 tokens:
+Step 1:
+    ID:131 'e ' prob:0.0832
+    ID:150 'and ' prob:0.0638
+  Top-5 tokens:
+    ID:157 'to ' prob:0.0530
+    ID:154 'a ' prob:0.0442
+    ID:131 'e ' prob:0.0796
+    ID:5 ' ' prob:0.0377
+    ID:150 'and ' prob:0.0625
+  Full-width space (ID:1) probability: 0.0000
+    ID:157 'to ' prob:0.0502
+  Current context: 'She said,ed '
+    ID:154 'a ' prob:0.0450
+  Selected: ID:157 'to ' prob:0.0530
+
+    ID:5 ' ' prob:0.0399
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'She said,l'
+  Selected: ID:82 'm' prob:0.0174
+
+Step 2:
+Step 2:
+  Top-5 tokens:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0845
+    ID:131 'e ' prob:0.0854
+    ID:150 'and ' prob:0.0639
+    ID:157 'to ' prob:0.0541
+    ID:150 'and ' prob:0.0633
+    ID:154 'a ' prob:0.0411
+    ID:157 'to ' prob:0.0542
+    ID:5 ' ' prob:0.0395
+    ID:154 'a ' prob:0.0396
+  Full-width space (ID:1) probability: 0.0000
+    ID:5 ' ' prob:0.0393
+  Current context: 'She said,lm'
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'She said,ed to '
+  Selected: ID:133 'in' prob:0.0157
+
+  Selected: ID:74 'e' prob:0.0239
+
+Step 3:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0865
+    ID:150 'and ' prob:0.0606
+    ID:157 'to ' prob:0.0530
+    ID:154 'a ' prob:0.0441
+    ID:5 ' ' prob:0.0381
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'She said,lme'
+  Selected: ID:154 'a ' prob:0.0441
+
+Step 3:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0869
+    ID:150 'and ' prob:0.0627
+    ID:157 'to ' prob:0.0519
+    ID:154 'a ' prob:0.0429
+    ID:5 ' ' prob:0.0388
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'She said,ed to in'
+  Selected: ID:219 'about ' prob:0.0134
+
+Step 4:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0768
+    ID:150 'and ' prob:0.0621
+    ID:157 'to ' prob:0.0530
+    ID:154 'a ' prob:0.0423
+    ID:5 ' ' prob:0.0377
+  Full-width space (ID:1) probability: 0.0000
+  Current context: ' said,ed to inabout '
+  Selected: ID:193 'of ' prob:0.0224
+
+Step 4:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0835
+    ID:150 'and ' prob:0.0664
+    ID:157 'to ' prob:0.0530
+    ID:154 'a ' prob:0.0440
+    ID:5 ' ' prob:0.0380
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'She said,lmea '
+  Selected: ID:219 'about ' prob:0.0137
+
+Step 5:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0871
+    ID:150 'and ' prob:0.0622
+    ID:157 'to ' prob:0.0538
+    ID:154 'a ' prob:0.0438
+    ID:5 ' ' prob:0.0384
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'id,ed to inabout of '
+  Selected: ID:5 ' ' prob:0.0384
+
+Step 5:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0856
+    ID:150 'and ' prob:0.0615
+    ID:157 'to ' prob:0.0554
+    ID:154 'a ' prob:0.0420
+    ID:5 ' ' prob:0.0383
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'She said,lmea about '
+  Selected: ID:134 's ' prob:0.0349
+
+Step 6:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0823
+    ID:150 'and ' prob:0.0689
+    ID:157 'to ' prob:0.0524
+    ID:154 'a ' prob:0.0408
+    ID:5 ' ' prob:0.0379
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'd,ed to inabout of  '
+  Selected: ID:75 'f' prob:0.0193
+
+Step 6:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0859
+    ID:150 'and ' prob:0.0655
+    ID:157 'to ' prob:0.0516
+    ID:154 'a ' prob:0.0424
+    ID:5 ' ' prob:0.0392
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'e said,lmea about s '
+  Selected: ID:131 'e ' prob:0.0859
+
+Step 7:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0870
+    ID:150 'and ' prob:0.0620
+    ID:157 'to ' prob:0.0526
+    ID:154 'a ' prob:0.0433
+    ID:5 ' ' prob:0.0377
+  Full-width space (ID:1) probability: 0.0000
+  Current context: ',ed to inabout of  f'
+  Selected: ID:157 'to ' prob:0.0526
+
+Step 7:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0888
+    ID:150 'and ' prob:0.0643
+    ID:157 'to ' prob:0.0505
+    ID:154 'a ' prob:0.0422
+    ID:5 ' ' prob:0.0389
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'said,lmea about s e '
+  Selected: ID:192 'an ' prob:0.0138
+
+Step 8:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0851
+    ID:150 'and ' prob:0.0633
+    ID:157 'to ' prob:0.0517
+    ID:154 'a ' prob:0.0429
+    ID:5 ' ' prob:0.0391
+  Full-width space (ID:1) probability: 0.0000
+  Current context: ' to inabout of  fto '
+  Selected: ID:75 'f' prob:0.0191
+
+Step 8:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0881
+    ID:150 'and ' prob:0.0671
+    ID:157 'to ' prob:0.0514
+    ID:154 'a ' prob:0.0430
+    ID:5 ' ' prob:0.0387
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'd,lmea about s e an '
+  Selected: ID:131 'e ' prob:0.0881
+
+Step 9:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0812
+    ID:150 'and ' prob:0.0665
+    ID:157 'to ' prob:0.0536
+    ID:154 'a ' prob:0.0408
+    ID:5 ' ' prob:0.0391
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'lmea about s e an e '
+  Selected: ID:154 'a ' prob:0.0408
+
+Step 9:
+  Top-5 tokens:
+    ID:131 'e ' prob:0.0882
+    ID:150 'and ' prob:0.0622
+    ID:157 'to ' prob:0.0536
+    ID:154 'a ' prob:0.0429
+    ID:5 ' ' prob:0.0392
+  Full-width space (ID:1) probability: 0.0000
+  Current context: 'to inabout of  fto f'
+  Selected: ID:5 ' ' prob:0.0392
+
+# 샘플 생성 완료 #id:1668 (샘플 1, 생성된 토큰 수: 80개) 생성됨: She said,lmea about s e an e a rto an  fe of y sare are bf. lto , e ese the of of s ct to fand scto e tsof fde e are es the at es . a a s and fs s. e in  thand a to of and kto   e the and 
+# 샘플 생성 완료 #id:1668 (샘플 2, 생성된 토큰 수: 80개) 생성됨: She said,ed to inabout of  fto f ed eat bto esare y the to es in a e the is of s min  thes s . is ing inpa e at to iny to  pof t , es fea athe  thninof is it for ing ting t eabout to c, li, mto ns
+# 텍스트 생성 완료 #id:1668 (총 2개 샘플 생성)
+
+=== Prompt: She said, ===
+[샘플 1]
+She said,lmea about s e an e a rto an  fe of y sare are bf. lto , e ese the of of s ct to fand scto e tsof fde e are es the at es . a a s and fs s. e in  thand a to of and kto   e the and 
+[샘플 2]
+She said,ed to inabout of  fto f ed eat bto esare y the to es in a e the is of s min  thes s . is ing inpa e at to iny to  pof t , es fea athe  thninof is it for ing ting t eabout to c, li, mto ns
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.8/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 5m 16s
+2 actionable tasks: 1 executed, 1 up-to-date
+=== #오후 SAMPLE END (exit=0) ===
+=== #오후 OVERNIGHT DONE (train=0 sample=0) ===
