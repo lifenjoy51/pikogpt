@@ -3,12 +3,15 @@ package data
 import kotlinx.serialization.Serializable
 
 /**
- * 어휘 사전 메타데이터 클래스
+ * 어휘 사전 메타데이터.
  *
- * 모델이 사용하는 어휘 사전의 모든 매핑 정보를 저장합니다.
- * 텍스트와 토큰 ID 간의 양방향 변환을 위한 필수 정보를 포함합니다.
+ * 모델과 함께 저장되어 Sampler가 **학습 시와 동일한 토큰화**를 재생할 수 있게 한다.
+ * - 어휘 (vocabSize + stringToIndex + indexToString): 기본 매핑
+ * - merges: BPE 병합 규칙. 순서대로 적용.
+ * - lowercase / useWordPreTokenize: 학습 시 사용한 전처리 플래그.
  *
- * JSON 직렬화가 가능하도록 설계되어 체크포인트와 함께 저장됩니다.
+ * 새 필드는 기본값이 있어 구버전 체크포인트 (merges 없는 meta.json)도 그대로 파싱된다.
+ * 그 경우 Sampler는 그리디 longest-match로 폴백한다.
  */
 @Serializable
 data class MetaInfo(
@@ -19,7 +22,22 @@ data class MetaInfo(
     val indexToString: Map<Int, String>,
 
     /** 문자열에서 토큰 ID로의 매핑 (토큰 → 인덱스) */
-    val stringToIndex: Map<String, Int>
+    val stringToIndex: Map<String, Int>,
+
+    /**
+     * BPE 병합 규칙 (new; 없으면 빈 리스트).
+     * 각 원소는 `[first, second]`로 직렬화되며 학습된 순서 그대로 유지된다.
+     */
+    val merges: List<List<String>> = emptyList(),
+
+    /** 학습 시 소문자 정규화를 적용했는지. Sampler가 동일한 전처리를 재생하려면 필요. */
+    val lowercase: Boolean = false,
+
+    /** 학습 시 단어 pre-tokenize(GPT-2 스타일)를 사용했는지. */
+    val useWordPreTokenize: Boolean = false,
+
+    /** BPE 학습 시 기본 특수 토큰 이외에 추가된 특수 토큰들. */
+    val specialTokens: List<String> = listOf("<|eos|>", "<|unk|>"),
 ) {
     // 호환성을 위한 별칭 속성들
     val vocabSize: Int get() = vocabularySize

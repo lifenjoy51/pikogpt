@@ -3,6 +3,7 @@ package sample
 import GradContext
 import Value
 import data.MetaInfo
+import data.SimpleBPE
 import data.SimpleBPE.Companion.UNKNOWN_TOKEN
 import gpt.PikoGPT
 import kotlinx.coroutines.Dispatchers
@@ -188,25 +189,40 @@ class Sampler(private val samplingConfiguration: SampleConfig) {
     }
 
     /**
-     * 토큰화 인코딩/디코딩 설정
+     * 토큰화 인코딩/디코딩 설정.
      *
-     * meta.json 파일에서 어휘 매핑 정보를 로드하여 인코더와 디코더 함수를 설정합니다.
-     * 이 함수들은 텍스트와 토큰 ID 간의 상호 변환에 사용됩니다.
+     * `meta.json`에 **BPE merges가 포함되어 있으면** 학습 때와 완전히 동일한
+     * `SimpleBPE.encode` 경로를 복원해 사용한다. merges가 비어 있으면
+     * (구버전 체크포인트) 그리디 최장매칭으로 폴백.
      */
     private fun setupTokenization() {
-        // 어휘 메타데이터 파일 로드
         val metadataFile = File("${samplingConfiguration.modelDir}/meta.json")
         val jsonParser = Json { ignoreUnknownKeys = true }
         vocabularyMetadata = jsonParser.decodeFromString<MetaInfo>(metadataFile.readText())
 
-        // 인코더 함수: 문자열 → 토큰 ID 리스트 (그리디 최장매칭)
-        textToTokenEncoder = { inputText ->
-            greedyTokenize(inputText, vocabularyMetadata.stoi)
+        if (vocabularyMetadata.merges.isNotEmpty()) {
+            // BPE 복원 — 학습 시와 동일한 플래그로 인스턴스 생성 후 stoi + merges 주입
+            val bpe = SimpleBPE(
+                maxVocabSize = vocabularyMetadata.vocabSize,
+                specialTokens = vocabularyMetadata.specialTokens,
+                lowercase = vocabularyMetadata.lowercase,
+                useWordPreTokenize = vocabularyMetadata.useWordPreTokenize,
+                standardBpeScoring = true,
+                verbose = false,
+            )
+            val mergePairs = vocabularyMetadata.merges.map { it[0] to it[1] }
+            bpe.restore(vocabularyMetadata.stoi, mergePairs)
+            textToTokenEncoder = { inputText -> bpe.encode(inputText) }
+        } else {
+            // 구버전 meta.json → 그리디 폴백
+            textToTokenEncoder = { inputText ->
+                greedyTokenize(inputText, vocabularyMetadata.stoi)
+            }
         }
 
-        // 디코더 함수: 토큰 ID 리스트 → 문자열
+        // 디코더: 토큰 ID 리스트 → 문자열 (0 = EOS 제외)
         tokenToTextDecoder = { tokenIdList ->
-            tokenIdList.filter { it > 0 } // 0은 EOS 토큰이므로 제외
+            tokenIdList.filter { it > 0 }
                 .joinToString("") { tokenId ->
                     vocabularyMetadata.itos[tokenId] ?: ""
                 }
