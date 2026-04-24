@@ -38,8 +38,8 @@ class CrossEntropyTest {
 
         // 분석 backward (loss는 이미 스칼라, upstream grad = 1)
         val res = crossEntropyForward(logits, targets)
-        crossEntropyBackward(logits, targets, res.softmax)
+        val gLogits = crossEntropyBackward(logits, targets, res.softmax)
 
-        assertClose(logits.grad!!, numericDLogits, message = "cross-entropy backward")
+        assertClose(gLogits.data, numericDLogits, message = "cross-entropy backward")
     }
 }

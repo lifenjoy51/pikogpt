@@ -63,22 +63,29 @@ fun crossEntropyForward(logits: Tensor, targets: IntArray): CrossEntropyResult {
 }
 
 /**
- * Cross-entropy backward. logits.grad에 누적.
+ * Cross-entropy backward. `logits`에 대한 기울기를 **새 Tensor로 반환**한다.
  *
- *   dLogits[i, j] = (softmax[i, j] - 1_{j==target_i}) / N
+ *   dLogits[i, j] = upstreamGrad * ( softmax[i, j] - 1_{j==target_i} ) / N
  *
- * upstream 스칼라 loss의 기울기는 항상 1이라는 규약을 가정한다(총 loss가 스칼라이므로).
- * 더 큰 그래프의 일부로 쓰려면 상위 loss의 계수를 곱하는 로직을 추가할 수 있다.
+ * - `upstreamGrad`: 상위 그래프에서 내려오는 loss의 스칼라 기울기. 단일 loss를 backward할 때는 1.
+ *   gradient accumulation / batch 평균 등을 처리하려면 외부에서 1/(A*B) 같은 스케일을 넘겨주면 된다.
+ * - 반환 Tensor의 shape는 logits와 동일. 호출자가 이 Tensor를 그대로 model.backward()에 전달.
  */
-fun crossEntropyBackward(logits: Tensor, targets: IntArray, softmaxOut: Tensor) {
+fun crossEntropyBackward(
+    logits: Tensor,
+    targets: IntArray,
+    softmaxOut: Tensor,
+    upstreamGrad: Float = 1.0f,
+): Tensor {
     val n = logits.rows
     val v = logits.cols
-    val g = logits.gradOrAlloc()
-    val invN = 1.0f / n
+    val gLogits = Tensor(logits.shape.copyOf())
+    val factor = upstreamGrad / n
     for (i in 0 until n) {
         for (j in 0 until v) {
-            g[i * v + j] += softmaxOut.data[i * v + j] * invN
+            gLogits.data[i * v + j] = softmaxOut.data[i * v + j] * factor
         }
-        g[i * v + targets[i]] -= invN
+        gLogits.data[i * v + targets[i]] -= factor
     }
+    return gLogits
 }
