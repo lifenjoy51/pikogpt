@@ -149,6 +149,13 @@ tasks.register<JavaExec>("runConvMixA510M773B128TrainVec") {
     jvmArgs = listOf("-Xmx6g")
 }
 
+tasks.register<JavaExec>("runConvMixCleanA510M773TrainVec") {
+    description = "Run ConvMixCleanA510M773TrainVec (clean 데이터 + 773k tied 모델, 12k iter)"
+    mainClass.set("train.ConvMixCleanA510M773TrainVecKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx6g")
+}
+
 tasks.register<JavaExec>("runSampler") {
     description = "Run SamplerMain (샘플링)"
     mainClass.set("sample.SamplerMainKt")
