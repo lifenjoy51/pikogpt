@@ -119,10 +119,10 @@ fun main(args: Array<String>) {
             }
         }
 
-        // 사용자 turn을 history에 추가: "<user>"<|turn|>
-        // 학습 데이터 형식 매칭: 따옴표로 둘러싸고 turn 토큰으로 끝
-        val userTurnText = "\"$line\""
-        val userTurnIds = sampler.encodeText(userTurnText).toMutableList()
+        // 사용자 turn을 history에 추가: <user text><|turn|>
+        // 학습 데이터(conv-mix-turn-noq 계열)가 따옴표 제거된 형식이라 quote wrap 안 함.
+        // 따옴표 wrap 했던 이전 버전은 distribution shift로 모델 응답이 망가졌음.
+        val userTurnIds = sampler.encodeText(line).toMutableList()
         if (turnId != null) userTurnIds += turnId
         history += userTurnIds
 
