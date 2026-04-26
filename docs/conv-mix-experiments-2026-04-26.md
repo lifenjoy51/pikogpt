@@ -16,7 +16,8 @@
 | a510 432k | + age-10 추가 (untied) | 18.9M | 432k | 16000 | 3.08 | 3.06 | 21.3 | 데이터 2× — 모델 부족 신호 |
 | **a510 773k tied** | a510 데이터 | 18.9M | **773k** | 12000 | 2.89 | 2.89 | 18.0 | 모델 1.8× + tied |
 | (a510 773k b128) | block 128 | 18.9M | 779k | 8000(중단) | — | — | — | 큰 모델 + 긴 context (실험 중단) |
-| **clean-a510 773k tied** | + emphasis 마커 정리 | 18.9M | **773k** | 12000 | **2.87** | **2.87** | **17.6** | **베스트** |
+| clean-a510 773k tied | + emphasis 마커 정리 | 18.9M | **773k** | 12000 | 2.87 | 2.87 | 17.6 | GELU 베이스 |
+| **clean-a510 773k SwiGLU** | + Llama 스타일 SwiGLU MLP | 18.9M | **774k** | 12000 | **2.81** | **2.81** | **16.6** | **베스트** (params ≈ 동일) |
 
 ## 핵심 인사이트
 
@@ -43,6 +44,12 @@
 ### 5. 데이터 정제 영향
 - 본문 안 emphasis (`**Child**` 콜론 없음) 3,474개 누락된 채 학습 → 응답에 마커 그대로 출력
 - 정규식 보강 (콜론 무관 매칭, emphasis는 안 텍스트만 보존) 후 재학습 → val 2.89 → **2.87** + 출력 깨끗
+
+### 6. SwiGLU MLP — 같은 params로 6% perplexity 개선
+- Llama 표준: `MLP(x) = down(SiLU(gate(x)) ⊙ up(x))`. hidden = ⌈8/3 × dim⌉ = 256 (vs GELU 384) — params는 거의 동일 (774k vs 773k)
+- val 2.87 → **2.81**, perplexity 17.6 → **16.6**
+- 응답 quality도 명확히 향상: multi-clause, 조건/이유 절, listener question, 부모-아이 톤 분리
+- **activation 한 줄 변경으로 가장 큰 ROI** — 검증된 modern transformer 권장사항
 
 ## 데이터 처리 파이프라인 (clean-a510 기준)
 

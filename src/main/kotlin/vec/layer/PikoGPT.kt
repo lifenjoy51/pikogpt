@@ -33,7 +33,7 @@ class PikoGPT(val config: GPTConfig) {
     val positionEmbedding = EmbeddingTable(config.blockSize, config.nEmbd)
     val embeddingDropout = Dropout(config.dropoutProbability)
     val blocks: Array<TransformerBlock> = Array(config.nLayer) {
-        TransformerBlock(config.nEmbd, config.nHead, config.bias, config.dropoutProbability)
+        TransformerBlock(config.nEmbd, config.nHead, config.bias, config.dropoutProbability, config.mlpActivation)
     }
     val finalLayerNorm = LayerNorm(config.nEmbd, config.bias)
 

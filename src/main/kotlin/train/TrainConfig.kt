@@ -75,6 +75,8 @@ data class TrainConfig(
     val labelSmoothing: Float = 0.0f,
     /** Weight tying — token_embedding과 lm_head 공유 (vec 백엔드만 적용). vocab×dim 절약 + 학습 신호 강화. 기본 true. */
     val tieWeights: Boolean = true,
+    /** MLP activation — `"gelu"`(default, GPT-2 스타일) 또는 `"swiglu"`(Llama 스타일, hidden=8/3·dim). */
+    val mlpActivation: String = "gelu",
 
     // 학습률 스케줄
     /** 학습률을 스케줄에 따라 감소시킬지 여부 */
