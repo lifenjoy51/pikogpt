@@ -137,13 +137,14 @@ class SimpleBPETest {
 
     @Test
     fun testMinimalVocabSize() {
-        val bpe = SimpleBPE(maxVocabSize = 5)
+        // 기본 special 토큰 4개(eos, unk, bos, turn) + 'a', 'b' = 최소 6
+        val bpe = SimpleBPE(maxVocabSize = 8)
         val text = "ab"
 
         bpe.train(text)
 
-        assertTrue(bpe.getVocabSize() <= 5)
-        assertTrue(bpe.getVocabSize() >= 2) // At least special tokens
+        assertTrue(bpe.getVocabSize() <= 8)
+        assertTrue(bpe.getVocabSize() >= 4) // At least the 4 special tokens
     }
 
     @Test

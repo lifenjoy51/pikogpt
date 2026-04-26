@@ -4,19 +4,24 @@ package train
  * TinyHelen **conversation-only** 코퍼스 학습 — 벡터 백엔드 엔트리.
  *
  * 100M leaner의 conversation 카테고리 단독(191 train / 9 val docs, ~831k train tok).
- * 같은 1M 아키텍처(layers 4·dim 128·heads 4·block 64)로 textbook run과 비교.
  *
- * `TinyHelenTrainTextbookVec`와 다르게 대화 데이터 특성에 맞춰 하이퍼파라미터 조정.
- * **v2**: 1차 run에서 step 3600에 이미 gap 1.47의 과적합 관찰 → regularization 강화:
- *   - batch × accum = 2 × 32 = 64  (반복 패턴 noise 평활화)
- *   - LR 3e-4 / min 3e-5           (v1 5e-4 → 3e-4, textbook 값으로 되돌려 공격성 완화)
- *   - weightDecay 0.1              (v1 0.02 → 0.1, overfit 억제의 1차 수단)
- *   - labelSmoothing 0.1           (target onehot → 0.9·onehot + 0.1·uniform, overconfidence 완화)
- *   - gradClip 2.0                 (유지 — 후반 grad-norm 여유)
- *   - maxIters 12000               (Chinchilla ×2.32, overfit 전·후 궤적 관찰)
+ * **v4**: v3(1M, layers 4·dim 128)에서 best avg 3.30에 도달했으나 샘플 품질이 여전히
+ * 표면적 패턴 수준 → **모델 크기 2× 확대**:
+ *   - layers 4 → **6**
+ *   - dim 128 → **160** (heads 4, head dim 40)
+ *   - 파라미터 수: 1,057,536 → **2,186,240** (≈2.07×)
  *
- * 체크포인트 경로는 `config.dataPath`의 마지막 segment에 의해 자동 격리:
- *   `model/tinyhelen-conversation/vec/1057536/<lossInt>/`
+ * Regularization은 v3 전량 유지 (과적합 여전히 우려):
+ *   - batch × accum = 2 × 32 = 64
+ *   - LR 3e-4 / min 3e-5
+ *   - weightDecay 0.1
+ *   - labelSmoothing 0.1
+ *   - dropout 0.1
+ *   - gradClip 2.0
+ *   - maxIters 12000 (2× 모델에서 Chinchilla ×1.12 = 토큰당 28.5x)
+ *
+ * 체크포인트 경로는 파라미터 수 변경으로 v3과 자동 격리:
+ *   `model/tinyhelen-conversation/vec/2186240/<lossInt>/`
  *
  * CLI 인자 규약은 동일 — 숫자=maxIters override, `"resume"`=이어하기.
  */
@@ -31,11 +36,11 @@ fun main(args: Array<String>) {
         gradientAccumulationSteps = 32,
         batchSize = 2,
         blockSize = 64,
-        // 모델 (≈1M params, textbook과 동일)
-        numberOfLayers = 4,
+        // 모델 v4 (≈2.19M params, v3 1M의 2.07×)
+        numberOfLayers = 6,
         numberOfHeads = 4,
-        embeddingDimension = 128,
-        dropout = 0.0f,
+        embeddingDimension = 160,
+        dropout = 0.1f,
         bias = true,
         // 옵티마이저 — v2 regularization 강화
         learningRate = 3e-4f,

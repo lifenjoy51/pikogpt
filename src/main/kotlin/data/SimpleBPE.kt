@@ -19,7 +19,7 @@ package data
  */
 class SimpleBPE(
     private val maxVocabSize: Int,
-    private val specialTokens: List<String> = listOf("<|eos|>", UNKNOWN_TOKEN, BOS_TOKEN),
+    private val specialTokens: List<String> = listOf(EOS_TOKEN, UNKNOWN_TOKEN, BOS_TOKEN, TURN_TOKEN),
     private val lowercase: Boolean = false,
     private val useWordPreTokenize: Boolean = false,
     private val standardBpeScoring: Boolean = true,
@@ -297,5 +297,10 @@ class SimpleBPE(
 
         /** 문서/샘플 끝을 표시하는 특수 토큰. 기본 배치에서 id 0 — Sampler의 stop 조건으로 사용. */
         const val EOS_TOKEN = "<|eos|>"
+
+        /** 대화 turn 경계를 표시하는 특수 토큰. 기본 배치에서 id 3 — 발화 사이마다 삽입해
+         *  모델이 turn-taking 구조를 학습하게 한다. Sampler에서 single-turn 응답을 받으려면
+         *  이 토큰에서 stop. */
+        const val TURN_TOKEN = "<|turn|>"
     }
 }

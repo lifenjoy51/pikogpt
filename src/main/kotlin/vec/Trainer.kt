@@ -51,16 +51,17 @@ class Trainer(private val config: TrainConfig) {
      */
     private lateinit var workers: List<PikoGPT>
 
-    private val datasetSize: String by lazy {
-        config.calculateTotalParameters(vocabularySize).toString()
-    }
-
     /** `config.dataPath`의 마지막 segment. 데이터셋별로 체크포인트 트리를 분리하는 키. */
     private val datasetName: String by lazy {
         config.dataPath.trimEnd('/').substringAfterLast('/')
     }
 
-    private val modelPath: String by lazy { "${config.modelDir}/$datasetName/vec/$datasetSize" }
+    /**
+     * 모델 실제 파라미터 합 — `model.parameters().sumOf { numel }`. tied weight 등으로
+     * `TrainConfig.calculateTotalParameters` 기댓값과 다를 수 있어 ckpt 경로 격리에는
+     * 실측을 쓴다. `train()`에서 모델 생성 후 채워짐.
+     */
+    private lateinit var modelPath: String
     private val baselineLoss: Double by lazy { ln(vocabularySize.toDouble()) }
     private var bestLoss: Double = 0.0
     private var iterationNumber: Int = 0
@@ -76,10 +77,11 @@ class Trainer(private val config: TrainConfig) {
         bestLoss = baselineLoss
         println("베이스라인 손실: ${"%.4f".format(baselineLoss)} (vocab=$vocabularySize)")
 
-        Path(modelPath).toFile().mkdirs()
-
         model = PikoGPT(buildModelConfig())
-        println("모델 파라미터 텐서 수: ${model.parameters().size}, 총 스칼라 원소: ${model.parameters().sumOf { it.numel }}")
+        val actualParamCount = model.parameters().sumOf { it.numel }
+        println("모델 파라미터 텐서 수: ${model.parameters().size}, 총 스칼라 원소: $actualParamCount")
+        modelPath = "${config.modelDir}/$datasetName/vec/$actualParamCount"
+        Path(modelPath).toFile().mkdirs()
 
         // Worker 복제본 준비 (data-parallel). 한 iter당 seq 개수보다 많을 이유 없음.
         // 기본 상한을 **4**로 둔 이유: 12코어 머신에서 측정 결과 worker 4와 8이 같은
@@ -485,6 +487,7 @@ class Trainer(private val config: TrainConfig) {
         embeddingDimension = config.embeddingDimension,
         useBias = config.bias,
         dropoutProbability = config.dropout,
+        tieWeights = config.tieWeights,
     )
 
     private fun formatLoss(loss: Double): String {

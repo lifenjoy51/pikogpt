@@ -37,7 +37,13 @@ data class GPTConfig(
     val useBias: Boolean,
 
     /** 드롭아웃 확률 - 정규화를 위한 뉴런 제거 비율 */
-    val dropoutProbability: Float
+    val dropoutProbability: Float,
+
+    /** Weight tying — token_embedding과 lm_head가 같은 weight 행렬 공유.
+     *  vocab × dim 크기 만큼 파라미터 절약 + 임베딩 학습 신호 강화 (Press & Wolf 2017).
+     *  기본 true (대부분 LM 표준). false면 별도 lm_head 행렬을 둠.
+     *  현재는 vec 백엔드만 지원. 기존 untied ckpt와 호환 안 되니 주의. */
+    val tieWeights: Boolean = true
 ) {
     // 호환성을 위한 별칭 속성들
     val blockSize: Int get() = maxSequenceLength

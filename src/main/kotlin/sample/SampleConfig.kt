@@ -29,7 +29,11 @@ data class SampleConfig(
     val topKFilteringSize: Int = 100,
 
     /** 랜덤 시드 값 (재현 가능한 결과를 위해 사용) */
-    val randomSeed: Int = 51
+    val randomSeed: Int = 51,
+
+    /** 생성을 중단할 토큰 id 목록 (기본: EOS=0만). 대화 데이터에서는 `<|turn|>` id도 추가하면
+     *  single-turn 응답을 받을 수 있다. SamplePromptsFromFile이 meta.json을 보고 자동 설정. */
+    val stopTokenIds: List<Int> = listOf(0)
 ) {
     // 호환성을 위한 별칭 속성들
     val initFrom: String get() = modelInitializationMode

@@ -2,6 +2,9 @@ package vec.layer
 
 import gpt.GPTConfig
 import vec.Tensor
+import vec.ops.matmul
+import vec.ops.matmulBackward
+import vec.transpose2D
 
 /**
  * 벡터화 백엔드의 PikoGPT.
@@ -12,10 +15,18 @@ import vec.Tensor
  *       → embedding dropout (표준 GPT-2 스타일)
  *       → stacked TransformerBlock(H, C)
  *       → final LayerNorm
- *       → lmHead (Linear C → V)
+ *       → lmHead (Linear C → V) — `config.tieWeights=true`면 tokEmb 가중치 재사용
  *       → logits[T, V]
  *
  *   Backward: 위의 정확한 역순. Embedding은 scatter만 하고 입력 grad는 반환 안 함.
+ *
+ * **Weight tying** (config.tieWeights=true):
+ *   token_embedding.weight를 lm_head 가중치로 재사용. lm_head는 별도 Linear를 만들지
+ *   않고 forward에서 `matmul(x, tokenEmbedding.weight^T)`를 직접 계산한다.
+ *   - 파라미터 절약: vocab × dim (작은 모델일수록 비중 큼)
+ *   - 임베딩이 forward(lookup) + backward(matmul) 두 경로에서 grad 받음 → 학습 신호 강화
+ *   - GPT-2/GPT-3/Llama 등 거의 모든 production LM의 표준 관행
+ *   - 기존 untied ckpt와 직렬화 호환 안 됨 (param 수 다름).
  */
 class PikoGPT(val config: GPTConfig) {
     val tokenEmbedding = EmbeddingTable(config.vocabSize, config.nEmbd)
@@ -25,11 +36,16 @@ class PikoGPT(val config: GPTConfig) {
         TransformerBlock(config.nEmbd, config.nHead, config.bias, config.dropoutProbability)
     }
     val finalLayerNorm = LayerNorm(config.nEmbd, config.bias)
-    val lmHead = Linear(config.nEmbd, config.vocabSize, useBias = false)
 
-    // backward에서 재사용할 토큰/위치 id (embedding backward가 필요)
+    /** untied 모드일 때만 별도 lm_head Linear. tied 모드면 null이고 forward에서 직접 계산. */
+    val lmHead: Linear? =
+        if (config.tieWeights) null
+        else Linear(config.nEmbd, config.vocabSize, useBias = false)
+
+    // backward에서 재사용할 토큰/위치 id + lmHead 입력 (tied 경로용)
     private var cachedTokenIds: IntArray? = null
     private var cachedPositionIds: IntArray? = null
+    private var cachedHeadInput: Tensor? = null
 
     fun forward(tokenIds: IntArray): Tensor {
         val t = tokenIds.size
@@ -50,9 +66,15 @@ class PikoGPT(val config: GPTConfig) {
             x = block.forward(x)
         }
 
-        // 3) 최종 LayerNorm → lmHead
+        // 3) 최종 LayerNorm → lm_head
         x = finalLayerNorm.forward(x)
-        return lmHead.forward(x)                                   // [T, V]
+        return if (lmHead != null) {
+            lmHead.forward(x)                                      // untied
+        } else {
+            // Tied: logits = x · tokEmb.weight^T  (x[T,C] · [C,V] = [T,V])
+            cachedHeadInput = x
+            matmul(x, tokenEmbedding.weight.transpose2D())         // [T, V]
+        }
     }
 
     /**
@@ -60,8 +82,37 @@ class PikoGPT(val config: GPTConfig) {
      * 파라미터 grad만 누적하고 별도 반환값은 없다 (입력은 정수 토큰이라 grad 없음).
      */
     fun backward(gLogits: Tensor) {
-        // 역순으로 체인 룰
-        val dAfterLn = lmHead.backward(gLogits)                    // [T, C]
+        // 역순으로 체인 룰. lm_head 단계에서 tied vs untied 분기.
+        val dAfterLn = if (lmHead != null) {
+            lmHead.backward(gLogits)                               // [T, C]
+        } else {
+            // tied lm_head backward:
+            //   forward: y = x · W^T (W = tokenEmbedding.weight, shape [V, C])
+            //   ∂L/∂x = gLogits · W              (shape [T, C])
+            //   ∂L/∂W += gLogits^T · x           (shape [V, C])
+            // tokenEmbedding.weight.grad에 추가 누적 — 이후 token lookup backward의
+            //   scatter-add와 합산되어 정확히 양방향 grad 합 형태로 학습 신호 받음.
+            val x = cachedHeadInput ?: error("forward 없이 backward (tied head)")
+            val w = tokenEmbedding.weight                          // [V, C]
+            // ∂L/∂x = gLogits · W
+            val dx = matmul(gLogits, w)
+            // ∂L/∂W += gLogits^T · x   (matmulBackward는 a·b backward와 형태 다르므로 수동)
+            val wGrad = w.gradOrAlloc()
+            val v = w.rows
+            val c = w.cols
+            val n = gLogits.rows
+            for (vv in 0 until v) {
+                for (cc in 0 until c) {
+                    var sum = 0.0f
+                    for (nn in 0 until n) {
+                        sum += gLogits.data[nn * v + vv] * x.data[nn * c + cc]
+                    }
+                    wGrad[vv * c + cc] += sum
+                }
+            }
+            dx
+        }
+
         val dAfterBlocks = finalLayerNorm.backward(dAfterLn)       // [T, C]
 
         var g = dAfterBlocks
@@ -72,7 +123,9 @@ class PikoGPT(val config: GPTConfig) {
         // embedding dropout backward → tokEmb/posEmb grad
         g = embeddingDropout.backward(g)
 
-        // 임베딩 덧셈의 backward: grad가 tokEmb/posEmb에 동일하게 전달됨
+        // 임베딩 덧셈의 backward: grad가 tokEmb/posEmb에 동일하게 전달됨.
+        // tied 모드면 tokenEmbedding.weight.grad는 위 lm_head backward에서 누적됐던 값에
+        //   여기서의 scatter-add가 추가되어 양방향 grad 합으로 정확.
         tokenEmbedding.backward(g)
         positionEmbedding.backward(g)
     }
@@ -96,7 +149,7 @@ class PikoGPT(val config: GPTConfig) {
         list += positionEmbedding.parameters()
         blocks.forEach { list += it.parameters() }
         list += finalLayerNorm.parameters()
-        list += lmHead.parameters()
+        if (lmHead != null) list += lmHead.parameters()  // tied면 추가 안 함 (이미 tokenEmbedding으로 등록)
         return list
     }
 

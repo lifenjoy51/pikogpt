@@ -1,6 +1,9 @@
 package sample
 
+import data.MetaInfo
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import java.io.File
 import vec.Sampler as VecSampler
 
@@ -24,21 +27,41 @@ fun main(args: Array<String>) = runBlocking {
     println("=== 벡터 백엔드 샘플링 ckpt: ${checkpointDir.absolutePath} ===")
     println("프롬프트 수: ${prompts.size}")
 
+    // meta.json에 <|turn|>이 있으면 그 id를 stop 조건에 자동 추가 → single-turn 응답
+    val metaFile = File(checkpointDir, "meta.json")
+    val turnId: Int? = if (metaFile.exists()) {
+        val parser = Json { ignoreUnknownKeys = true }
+        val meta = parser.decodeFromString<MetaInfo>(metaFile.readText())
+        meta.stringToIndex["<|turn|>"]
+    } else null
+    val stopIds = mutableListOf(0).also { if (turnId != null) it.add(turnId) }
+    if (turnId != null) println("stop tokens: EOS=0, <|turn|>=$turnId (single-turn 응답 모드)")
+    else println("stop tokens: EOS=0")
+
     val config = SampleConfig(
         modelDirectoryPath = checkpointDir.absolutePath,
         numberOfSamples = 2,
         maximumNewTokens = 120,
         samplingTemperature = 0.8f,
         topKFilteringSize = 40,
+        stopTokenIds = stopIds,
     )
     val sampler = VecSampler(config)
 
+    // turn 토큰이 있는 모델에서는 prompt를 "사용자 turn 종료"로 보고 다음 turn(=응답)을 생성하도록
+    // prompt 끝에 <|turn|>을 자동 추가. 이렇게 안 하면 따옴표로 닫힌 prompt가 곧바로
+    // <|turn|>을 예측해 빈 응답이 나옴.
+    val appendTurn = turnId != null
+
     for (prompt in prompts) {
-        val outputs = sampler.generate(prompt)
         println("\n=== Prompt: $prompt ===")
-        outputs.forEachIndexed { i, line ->
+        val promptIdsBase = sampler.encodeText(prompt).toMutableList()
+        if (appendTurn) promptIdsBase.add(turnId!!)
+        val numSamples = config.numberOfSamples
+        for (i in 0 until numSamples) {
+            val (_, response) = sampler.continueOne(promptIdsBase.toIntArray())
             println("[샘플 ${i + 1}]")
-            println(line)
+            println(response.trim())
         }
     }
 }

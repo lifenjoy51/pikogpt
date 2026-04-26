@@ -34,7 +34,7 @@ tasks.register<JavaExec>("runStoriesBpe") {
     description = "Run StoriesBpePrep (스토리 BPE 처리)"
     mainClass.set("data.StoriesBpePrepKt")
     classpath = sourceSets.main.get().runtimeClasspath
-    jvmArgs = listOf("-Xmx4g")
+    jvmArgs = listOf("-Xmx12g")
 }
 
 tasks.register<JavaExec>("runAlphabetPrep") {
@@ -100,6 +100,48 @@ tasks.register<JavaExec>("runTinyHelenTrainConversationVec") {
     jvmArgs = listOf("-Xmx4g")
 }
 
+tasks.register<JavaExec>("runConvMixTrainVec") {
+    description = "Run ConvMixTrainVec (TinyHelen conv + TinyDialogues age-5 stripped, ~1M 파라미터)"
+    mainClass.set("train.ConvMixTrainVecKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx4g")
+}
+
+tasks.register<JavaExec>("runConvMixTurnTrainVec") {
+    description = "Run ConvMixTurnTrainVec (conv-mix + <|turn|> 토큰, 432k)"
+    mainClass.set("train.ConvMixTurnTrainVecKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx4g")
+}
+
+tasks.register<JavaExec>("runConvMixTurnNoqTrainVec") {
+    description = "Run ConvMixTurnNoqTrainVec (conv-mix-turn 따옴표 제거, 432k)"
+    mainClass.set("train.ConvMixTurnNoqTrainVecKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx4g")
+}
+
+tasks.register<JavaExec>("runConvMixTurnNoqB128TrainVec") {
+    description = "Run ConvMixTurnNoqB128TrainVec (blockSize 128, 436k params)"
+    mainClass.set("train.ConvMixTurnNoqB128TrainVecKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx4g")
+}
+
+tasks.register<JavaExec>("runConvMixA510TrainVec") {
+    description = "Run ConvMixA510TrainVec (TinyHelen + age-5 + age-10, ~18M tok, 432k)"
+    mainClass.set("train.ConvMixA510TrainVecKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx6g")
+}
+
+tasks.register<JavaExec>("runConvMixA510M773TrainVec") {
+    description = "Run ConvMixA510M773TrainVec (a510 데이터 + 773k tied 모델, 12k iter)"
+    mainClass.set("train.ConvMixA510M773TrainVecKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx6g")
+}
+
 tasks.register<JavaExec>("runSampler") {
     description = "Run SamplerMain (샘플링)"
     mainClass.set("sample.SamplerMainKt")
@@ -126,6 +168,14 @@ tasks.register<JavaExec>("runSamplePromptsFromFile") {
     mainClass.set("sample.SamplePromptsFromFileKt")
     classpath = sourceSets.main.get().runtimeClasspath
     jvmArgs = listOf("-Xmx2g")
+}
+
+tasks.register<JavaExec>("runChatVec") {
+    description = "Run ChatVec (인터랙티브 대화 REPL — ckpt 인자 필요)"
+    mainClass.set("sample.ChatVecKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx2g")
+    standardInput = System.`in`
 }
 
 tasks.register<JavaExec>("runAnalyzeTokens") {

@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>conv-mix 432k Chinchilla-aligned 학습 (2026-04-25)</title>
+<style>
+  :root {
+    --bg: #0f1115; --fg: #e6e6e6; --muted: #9aa0a6; --border: #2a2f38;
+    --accent: #2ecc71; --warn: #e6a23c; --card: #161a22;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 32px; background: var(--bg); color: var(--fg);
+    font: 14px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif; }
+  h1 { margin: 0 0 4px; font-size: 22px; }
+  h2 { font-size: 16px; margin: 24px 0 10px; }
+  .subtitle { color: var(--muted); margin-bottom: 24px; }
+  .meta-card { background: var(--card); border: 1px solid var(--border);
+    border-left: 3px solid var(--accent); border-radius: 8px; padding: 14px 16px; margin-bottom: 24px; }
+  .meta-card h2 { margin: 0 0 8px; font-size: 15px; font-weight: 600; }
+  .meta-card dl { margin: 0; display: grid; grid-template-columns: auto 1fr; column-gap: 12px; row-gap: 4px; }
+  .meta-card dt { color: var(--muted); }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; margin: 12px 0 24px; }
+  th, td { padding: 6px 10px; border-bottom: 1px solid var(--border); text-align: left; }
+  th { color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+  td.num { font-variant-numeric: tabular-nums; text-align: right; }
+  .best { color: var(--accent); font-weight: 700; }
+  .prompt { margin-bottom: 20px; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: var(--card); }
+  .prompt > header { padding: 10px 16px; background: #1c212b; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px; }
+  .tag { background: var(--accent); color: #052b13; padding: 2px 8px; border-radius: 4px;
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+  .prompt > header code { background: #0b0d12; border: 1px solid var(--border);
+    padding: 2px 8px; border-radius: 6px; font-size: 13px; color: var(--fg); }
+  .orig { padding: 10px 16px; background: #131720; border-bottom: 1px dashed var(--border);
+    font-size: 13px; color: #b8bcc2; font-style: italic; }
+  .orig .lbl, .sample .lbl { display: block; color: var(--muted); font-size: 11px;
+    margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; font-style: normal; }
+  .samples { padding: 12px 16px; display: grid; gap: 10px; }
+  .sample { white-space: pre-wrap; font-family: ui-monospace, "JetBrains Mono", Menlo, monospace;
+    font-size: 13px; line-height: 1.6; background: #0b0d12; border: 1px solid var(--border);
+    border-radius: 6px; padding: 10px 12px; color: #dcdee1; }
+  .summary, .lessons { margin-top: 16px; padding: 14px 16px; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border); }
+  .lessons { border-left: 3px solid var(--warn); }
+  .summary h2, .lessons h2 { margin: 0 0 8px; font-size: 15px; }
+  .summary ul, .lessons ul { margin: 0; padding-left: 20px; }
+  .summary li, .lessons li { margin-bottom: 6px; }
+  code.inline { background: #0b0d12; border: 1px solid var(--border); padding: 1px 6px;
+    border-radius: 4px; font-size: 12px; }
+  .note { color: var(--muted); font-size: 12px; margin-top: 24px;
+    border-top: 1px dashed var(--border); padding-top: 12px; }
+</style>
+</head>
+<body>
+
+<h1>conv-mix 432k — Chinchilla-aligned 학습</h1>
+<div class="subtitle">체크포인트: <code class="inline">model/conv-mix/vec/432128/31/</code> · best val <span class="best">3.19</span> · best avg <span class="best">3.16</span> @ step 7200 · 2026-04-25</div>
+
+<section class="meta-card">
+  <h2>실험 메타</h2>
+  <dl>
+    <dt>데이터</dt><dd>conv-mix = TinyHelen 100M conv (191 docs) + TinyDialogues age-5 (28,188 docs, <code class="inline">**Speaker**:</code> 마커 strip) — 따옴표 형식 통일</dd>
+    <dt>tokens</dt><dd>train 8.97M / val 1.50M (BPE vocab 1000)</dd>
+    <dt>모델</dt><dd>432,128 params · layers 6 · dim 64 · heads 2 · head dim 32 · block 64</dd>
+    <dt>Chinchilla 비율</dt><dd><b>20.7×</b> tokens/param (권고 20× 거의 정확)</dd>
+    <dt>학습</dt><dd>maxIters 8000 · batch 2 × accum 32 = 64 · LR 3e-4 · cosine warmup 3% / decay 95%</dd>
+    <dt>regularization</dt><dd>dropout 0.05 · wd 0.05 · labelSmoothing 0.05 · gradClip 1.0 (1M run의 절반)</dd>
+    <dt>worker</dt><dd>10 (CPU 12)</dd>
+    <dt>샘플링</dt><dd>temperature 0.8 · top-k 40 · 프롬프트당 2개 · 최대 120 토큰 · val에서 seed=42 랜덤 6 프롬프트</dd>
+  </dl>
+</section>
+
+<h2>이전 conversation run과 정량 비교</h2>
+<table>
+  <thead><tr><th>run</th><th>data</th><th>params</th><th>tok/param</th><th>best avg</th><th>best val</th><th>perplexity (val)</th><th>train-val gap</th><th>memo</th></tr></thead>
+  <tbody>
+    <tr><td>v1</td><td>tinyhelen-conv 0.83M</td><td class="num">1.06M</td><td class="num">0.79×</td><td class="num">3.34</td><td class="num">~3.50</td><td class="num">~33</td><td class="num">1.47</td><td>심각한 overfit, "just keep swimming" 17회 반복</td></tr>
+    <tr><td>v2</td><td>tinyhelen-conv 0.83M</td><td class="num">1.06M</td><td class="num">0.79×</td><td class="num">~3.5+</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td>중단, regularization만으론 부족</td></tr>
+    <tr><td>v3</td><td>tinyhelen-conv 0.83M</td><td class="num">1.06M</td><td class="num">0.79×</td><td class="num">3.30</td><td class="num">3.76</td><td class="num">43</td><td class="num">0.99</td><td>full reg(dropout+wd+LS), 12k iter</td></tr>
+    <tr><td>v4</td><td>tinyhelen-conv 0.83M</td><td class="num">2.19M</td><td class="num">0.38×</td><td class="num">3.24</td><td class="num">3.74</td><td class="num">42</td><td class="num">0.99</td><td>2× model, 데이터 부족 영향 똑같음</td></tr>
+    <tr><td><b class="best">conv-mix</b></td><td><b>conv-mix 8.97M</b></td><td class="num"><b class="best">432k</b></td><td class="num"><b class="best">20.7×</b></td><td class="num"><b class="best">3.16</b></td><td class="num"><b class="best">3.19</b></td><td class="num"><b class="best">24</b></td><td class="num"><b class="best">~0.0</b></td><td><b>1/3 모델 + 11배 데이터로 perplexity 1.8× 개선</b></td></tr>
+  </tbody>
+</table>
+
+<p style="color: var(--muted); font-size: 13px;">
+  <b>핵심</b>: v3/v4(1-2M model, 0.83M tokens, 0.4-0.8× Chinchilla) → conv-mix(432k model, 8.97M tokens, 20.7× Chinchilla). 모델 크기 대신 <b>데이터 비율</b>이 결정적. gap 0.99 → ~0.0으로 memorization 사실상 사라짐.
+</p>
+
+<h2>학습 곡선 (8000 iter, 600 iter마다 eval)</h2>
+<table>
+  <thead><tr><th>iter</th><th>train</th><th>val</th><th>avg</th><th>gap</th><th>비고</th></tr></thead>
+  <tbody>
+    <tr><td class="num">0</td><td class="num">6.93</td><td class="num">6.93</td><td class="num">6.93</td><td class="num">0.00</td><td>baseline (ln1000)</td></tr>
+    <tr><td class="num">400</td><td class="num">4.99</td><td class="num">4.97</td><td class="num">4.98</td><td class="num">-0.02</td><td>val ≈ train</td></tr>
+    <tr><td class="num">800</td><td class="num">4.41</td><td class="num">4.34</td><td class="num">4.37</td><td class="num">-0.07</td><td>val < train</td></tr>
+    <tr><td class="num">1600</td><td class="num">3.93</td><td class="num">3.84</td><td class="num">3.89</td><td class="num">-0.09</td><td>generalization 양호</td></tr>
+    <tr><td class="num">2400</td><td class="num">3.70</td><td class="num">3.62</td><td class="num">3.66</td><td class="num">-0.08</td><td></td></tr>
+    <tr><td class="num">3200</td><td class="num">3.50</td><td class="num">3.49</td><td class="num">3.50</td><td class="num">-0.01</td><td>거의 동등</td></tr>
+    <tr><td class="num">4000</td><td class="num">3.40</td><td class="num">3.42</td><td class="num">3.41</td><td class="num">+0.02</td><td>정체 시작</td></tr>
+    <tr><td class="num">4800</td><td class="num">3.33</td><td class="num">3.24</td><td class="num">3.29</td><td class="num">-0.09</td><td>v3 best 돌파</td></tr>
+    <tr><td class="num">5600</td><td class="num">3.24</td><td class="num">3.21</td><td class="num">3.23</td><td class="num">-0.03</td><td></td></tr>
+    <tr><td class="num">6800</td><td class="num">3.32</td><td class="num">3.22</td><td class="num">3.27</td><td class="num">-0.10</td><td></td></tr>
+    <tr><td class="num"><b class="best">7200</b></td><td class="num"><b>3.14</b></td><td class="num"><b class="best">3.19</b></td><td class="num"><b class="best">3.16</b></td><td class="num">+0.05</td><td><b>best ckpt</b></td></tr>
+    <tr><td class="num">8000</td><td class="num">3.17</td><td class="num">3.21</td><td class="num">3.19</td><td class="num">+0.04</td><td>final</td></tr>
+  </tbody>
+</table>
+
+<h2>샘플 (best ckpt, val 랜덤 프롬프트)</h2>
+
+<article class="prompt">
+  <header><span class="tag">prompt</span><code>Alright, everyone, please sit</code></header>
+  <div class="orig"><span class="lbl">원본 val 문서 시작부</span>Alright, everyone, please sit down at the table. It&#x27;s snack time! What are we having for snack today? Today we have applesauce and crackers. Can you find a spot and sit down so I can bring them to you? Yes!…</div>
+  <div class="samples"><div class="sample"><span class="lbl">샘플 1</span>alright, everyone, please sit on the car. can we fix the blue blocks with it? of course, we can. we can play more together!</div><div class="sample"><span class="lbl">샘플 2</span>alright, everyone, please sit here here with your booads. i have to be quiet with it later. but you can have a night! i&#x27;ll be super careful. remember to be soon, and she can have a special story!</div></div>
+</article>
+<article class="prompt">
+  <header><span class="tag">prompt</span><code>Hey, give me that</code></header>
+  <div class="orig"><span class="lbl">원본 val 문서 시작부</span>Hey, give me that sparkly marker! I saw it first and I want to make my picture pretty! But I&#x27;m using it to cover my flower to make it sparkle. You can have it when I&#x27;m done. No, you have…</div>
+  <div class="samples"><div class="sample"><span class="lbl">샘플 1</span>hey, give me that healthy. i&#x27;ll be the best spaces.&quot; &quot;yay, thanks.&quot; &quot;can we be the race with the phip?&quot; &quot;of course, we can all have a turn with your friend. after you come. let&#x27;s read some more story about a big sandwiches. the kitten is a wonderful idea.&quot;</div><div class="sample"><span class="lbl">샘플 2</span>hey, give me that! i&#x27;m the biggest! *places in the swing) what do you want to do? i&#x27;m sorry, it has a big callrot in the water, and it looks for a new places and spot in the skyes together.&quot; &quot;okay, i&#x27;ll find themself! but i want to be careful like it!&quot; &quot;i understand, but if you tiggy it is broken and yourself. he&#x27;ll make sure you can make the floor.&quot; &quot;i know you like a new thing, but if i don&#x27;t like</div></div>
+</article>
+<article class="prompt">
+  <header><span class="tag">prompt</span><code>Hey, did you find</code></header>
+  <div class="orig"><span class="lbl">원본 val 문서 시작부</span>Hey, did you find your pajamas? It&#x27;s almost time for bed. No, I can&#x27;t find them anywhere! Can you help me? Of course! Let&#x27;s look under the bed. Sometimes things like to hide there. Like monsters? No, silly, like socks…</div>
+  <div class="samples"><div class="sample"><span class="lbl">샘플 1</span>hey, did you find it?&quot; &quot;yes, it&#x27;s not too!&quot; &quot;i know you will. and the rabbit doesn&#x27;t go to ap of so much. i don&#x27;t want it to go back now! i want to see a big girl, but i understand, but you can have to play.&quot; &quot;i&#x27;m going to show you how to go! and i&#x27;ll try it now! and we can have to eat. that&#x27;s why it&#x27;s not fun with your turn&#x27;s brother. can you help me find some juice from me?&quot; &quot;but i understand, but let&#x27;s go to the park and ready, and after we can make a good friend</div><div class="sample"><span class="lbl">샘플 2</span>hey, did you find a camp? no person! it was a little one! did you think it? no, i wine? they do! but the rident was very hungry for a puppies. it was in treasure. it&#x27;s very big like a dragon whole song! did the sun go toead? yes, he could see the best. the mouse was so cool! and then, the dragon was so happy, he was scared because he was super careful, but he was not too hard! the bear was sleepy. and they couldn&#x27;t play from him with</div></div>
+</article>
+<article class="prompt">
+  <header><span class="tag">prompt</span><code>Hey, did you see</code></header>
+  <div class="orig"><span class="lbl">원본 val 문서 시작부</span>Hey, did you see the new play pen? It looks fun! Yeah! What&#x27;s a play pen? It&#x27;s like a little house where we can play with toys and not make a mess everywhere. Can we open it now? I think…</div>
+  <div class="samples"><div class="sample"><span class="lbl">샘플 1</span>hey, did you see you?&quot; &quot;what&#x27;s going to make a big dragon?&quot; &quot;oh no!!&quot; &quot;vice! i don&#x27;t like my singing.&quot; &quot;because you have to hurt it.&quot;
+&quot;o silly,&quot; said, &quot;del. &quot;hey bubbled, i was playing with it before.&quot; &quot;what&#x27;s going?&quot; &quot;very piece?&quot; &quot;did the light go to the parent?&quot; &quot;dad of the naps and person! and the child was silly.&quot; &quot;after amazy, it was very sad.&quot; &quot;it did</div><div class="sample"><span class="lbl">샘플 2</span>hey, did you see how to have yourse?&quot; &quot;we&#x27;ll be super fast and not fair!&quot; &quot;i don&#x27;t like the big pieats to be very careful!&quot; &quot;i understand you like a small one. remember to tell you how to play with a long cloud with everyone, and i&#x27;ll take a little brother!&quot;</div></div>
+</article>
+<article class="prompt">
+  <header><span class="tag">prompt</span><code>&quot;Wow, you&#x27;ve built such</code></header>
+  <div class="orig"><span class="lbl">원본 val 문서 시작부</span>&quot;Wow, you&#x27;ve built such a tall tower! Great job!&quot; &quot;It&#x27;s my castle! No one else can touch it.&quot; &quot;It&#x27;s good to build things on your own, but remember, we have to share our toys when we&#x27;re playing with others.&quot; &quot;But…</div>
+  <div class="samples"><div class="sample"><span class="lbl">샘플 1</span>&quot;wow, you&#x27;ve built such a good smile to play with a small bic forest.&quot; &quot;okay... we can see the sister and watching.&quot; &quot;okay, but i see this little dragon and your seak! it&#x27;s okay. can you guess what it will be?&quot; &quot;sollo! and when you&#x27;re hamburing! you will be so good and you can help me make you feel better.&quot;</div><div class="sample"><span class="lbl">샘플 2</span>&quot;wow, you&#x27;ve built such a big friend.&quot; &quot;it was a magic.&quot; &quot;abrircndrots to go to the sear.&quot; &quot;abrolding in the caiding all the disted.
+&quot;
+&quot;i,&quot; said, &quot;and he got a little person. it wasn&#x27;t good or&quot; he was rested to get out of the who said, &quot;why did the move all the boy?&quot; &quot;aurs are just as a tumm. they was too hard, and the little eyes it has a farm</div></div>
+</article>
+<article class="prompt">
+  <header><span class="tag">prompt</span><code>&quot;Okay, kids, let&#x27;s remember</code></header>
+  <div class="orig"><span class="lbl">원본 val 문서 시작부</span>&quot;Okay, kids, let&#x27;s remember to share our toys and be gentle with them.&quot; &quot;But Miss, Jake won&#x27;t let me play with the yellow tiger. I want to play with it!&quot; &quot;Jake, can you please share the tiger with your friend?…</div>
+  <div class="samples"><div class="sample"><span class="lbl">샘플 1</span>&quot;okay, kids, let&#x27;s remember another one, but there&#x27;s the pony of salad to see where we deted to the whole nurse will find people.&quot; &quot;are you&#x27;ve ever have for me?&quot;
+&quot;nimmy&#x27;s normost.&#x27;&quot; said&quot;
+
+nike decided con caveted, &quot;if not song.&quot;
+
+ned the animals invitysert. aiou said, &quot;ince a man is a biver. what is it for? the mix is</div><div class="sample"><span class="lbl">샘플 2</span>&quot;okay, kids, let&#x27;s remember to make sure we can make your biggestion before you finish your milst. now, let&#x27;s do that we can build together. but we can make a small red ball for it again later. let&#x27;s get ready for the spoon on the floor to the ball, and then our hand isn&#x27;t scared because it might be happy because we want to make the sun of the table.</div></div>
+</article>
+
+<section class="summary">
+  <h2>관찰</h2>
+  <ul>
+    <li><b>대화체 형식 잘 재현</b> — <code class="inline">"X." "Y."</code> 형태가 자연스럽게 등장. <code class="inline">"Wow, you've built such a good smile..."</code>처럼 자연스러운 follow-up.</li>
+    <li><b>아동 어휘 톤 학습됨</b> — "yay", "tiggy", "biggestion" 등 child-directed register 흉내. 영화 대사 그대로 인용 (v1의 "just keep swimming" 17회) 사라짐.</li>
+    <li><b>fabricated 단어 여전</b> — "biggestion", "milst", "callrot", "abrircndrots". BPE subword 합성에서 생긴 noise. 1M baseline과 같은 수준.</li>
+    <li><b>긴 거리 일관성 부족</b> — 한 turn 안에선 자연스러우나 turn 사이 의미 연결 약함. 432k 모델 capacity 한계.</li>
+    <li><b>Generalization 우수</b> — train과 val perplexity가 거의 동일 (24 vs 25). 외워서 재생하는 게 아니라 진짜 분포를 학습.</li>
+  </ul>
+</section>
+
+<section class="lessons">
+  <h2>이번 실험의 결론</h2>
+  <ul>
+    <li><b>"모델 키우기"보다 "데이터 확보"가 우선</b> — v3/v4에서 1M→2M 키워도 val 거의 안 떨어짐 (3.76→3.74). 같은 데이터에서 모델만 키우는 건 memorization만 가속.</li>
+    <li><b>Chinchilla 비율(20×) 맞추는 게 결정적</b> — conv-mix 432k는 v3 1M 대비 1/3 크기인데도 val 3.76→3.19 (0.57 ↓). perplexity 43→24 (1.8배 개선).</li>
+    <li><b>Gap이 generalization 신호</b> — v3 gap 0.99 (memorize) vs conv-mix gap ~0 (generalize). gap이 곧 데이터 부족 지표.</li>
+    <li><b>Regularization은 보조 수단</b> — dropout 0.1보다 0.05가 적절했음. 데이터 충분하면 강한 regularization 불필요. 작은 모델이라 적은 dropout으로 충분.</li>
+    <li><b>화자 마커 통일</b> — TinyDialogues의 <code class="inline">**Speaker**:</code>를 strip해서 따옴표 형식으로 통일. 두 소스가 한 분포처럼 보여 학습 안정. 그러나 명시적 turn boundary는 잃음 — turn-taking 정확도엔 약점.</li>
+  </ul>
+</section>
+
+<p class="note">자동 생성 · <code class="inline">docs/conv-mix-432k-report-2026-04-25.html</code> · 이전 리포트: <a href="conversation-sample-report-2026-04-24.html" style="color:var(--accent)">conversation v3 1M</a>, <a href="textbook-sample-report-2026-04-24.html" style="color:var(--accent)">textbook 1M</a>.</p>
+
+</body>
+</html>

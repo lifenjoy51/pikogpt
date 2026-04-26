@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>conversation-only v3 학습 샘플 리포트 (2026-04-24)</title>
+<style>
+  :root {
+    --bg: #0f1115; --fg: #e6e6e6; --muted: #9aa0a6; --border: #2a2f38;
+    --accent: #d97757; --v1: #e67e22; --v2: #3498db; --v3: #9b59b6;
+    --warn: #e6a23c; --card: #161a22;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 32px; background: var(--bg); color: var(--fg);
+    font: 14px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif; }
+  h1 { margin: 0 0 4px; font-size: 22px; }
+  h2 { font-size: 16px; margin: 24px 0 10px; }
+  .subtitle { color: var(--muted); margin-bottom: 24px; }
+  .meta-card { background: var(--card); border: 1px solid var(--border);
+    border-left: 3px solid var(--accent); border-radius: 8px; padding: 14px 16px; margin-bottom: 24px; }
+  .meta-card h2 { margin: 0 0 8px; font-size: 15px; font-weight: 600; }
+  .meta-card dl { margin: 0; display: grid; grid-template-columns: auto 1fr; column-gap: 12px; row-gap: 4px; }
+  .meta-card dt { color: var(--muted); }
+  .meta-card dd { margin: 0; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; margin: 12px 0 24px; }
+  th, td { padding: 6px 10px; border-bottom: 1px solid var(--border); text-align: left; }
+  th { color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+  tbody tr:hover { background: rgba(255,255,255,0.03); }
+  td.num { font-variant-numeric: tabular-nums; text-align: right; }
+  .v1-tag { color: var(--v1); font-weight: 600; }
+  .v2-tag { color: var(--v2); font-weight: 600; }
+  .v3-tag { color: var(--v3); font-weight: 600; }
+  .prompt { margin-bottom: 20px; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: var(--card); }
+  .prompt > header { padding: 10px 16px; background: #1c212b; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px; }
+  .tag { background: var(--accent); color: #1a0a04; padding: 2px 8px; border-radius: 4px;
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+  .prompt > header code { background: #0b0d12; border: 1px solid var(--border);
+    padding: 2px 8px; border-radius: 6px; font-size: 13px; color: var(--fg); }
+  .orig { padding: 10px 16px; background: #131720; border-bottom: 1px dashed var(--border);
+    font-size: 13px; color: #b8bcc2; font-style: italic; }
+  .orig .lbl, .sample .lbl { display: block; color: var(--muted); font-size: 11px;
+    margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; font-style: normal; }
+  .samples { padding: 12px 16px; display: grid; gap: 10px; }
+  .sample { white-space: pre-wrap; font-family: ui-monospace, "JetBrains Mono", Menlo, monospace;
+    font-size: 13px; line-height: 1.6; background: #0b0d12; border: 1px solid var(--border);
+    border-radius: 6px; padding: 10px 12px; color: #dcdee1; }
+  .summary { margin-top: 16px; padding: 14px 16px; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border); }
+  .summary h2 { margin: 0 0 8px; font-size: 15px; }
+  .summary ul { margin: 0; padding-left: 20px; }
+  .summary li { margin-bottom: 6px; }
+  .improv { margin-top: 16px; padding: 14px 16px; border-radius: 8px; background: var(--card);
+    border: 1px solid var(--border); border-left: 3px solid var(--warn); }
+  .improv h2 { margin: 0 0 10px; font-size: 15px; }
+  .improv h3 { margin: 14px 0 4px; font-size: 13px; color: var(--warn); font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.5px; }
+  .improv ul { margin: 4px 0 0; padding-left: 20px; }
+  .improv li { margin-bottom: 6px; }
+  code.inline { background: #0b0d12; border: 1px solid var(--border); padding: 1px 6px;
+    border-radius: 4px; font-size: 12px; }
+  .note { color: var(--muted); font-size: 12px; margin-top: 24px;
+    border-top: 1px dashed var(--border); padding-top: 12px; }
+</style>
+</head>
+<body>
+
+<h1>conversation-only 학습 — v3 샘플 + v1/v2/v3 비교</h1>
+<div class="subtitle">체크포인트: <code class="inline">model/tinyhelen-conversation/vec/1057536/32/</code> · best avg 3.30 (step 11400, val 3.76) · 2026-04-24</div>
+
+<section class="meta-card">
+  <h2>실험 메타</h2>
+  <dl>
+    <dt>데이터</dt><dd>TinyHelen leaner/100M conversation 카테고리 — train 191 docs / 831k tok · val 9 docs / 51k tok (공식 split)</dd>
+    <dt>모델</dt><dd>1,057,536 params (layers 4 · heads 4 · embed 128 · block 64)</dd>
+    <dt>토큰당 노출</dt><dd>Chinchilla ×2.32 (12000 iter × 2 × 32 × 64 = 49M slots)</dd>
+    <dt>worker</dt><dd>10 (CPU 12)</dd>
+    <dt>샘플링</dt><dd>temperature 0.8 · top-k 40 · 프롬프트당 2개 · 최대 120 토큰 · val에서 seed=42 랜덤 6 프롬프트</dd>
+  </dl>
+</section>
+
+<h2>v1 → v2 → v3 하이퍼파라미터 비교</h2>
+<table>
+  <thead><tr><th>항목</th><th><span class="v1-tag">v1</span></th><th><span class="v2-tag">v2</span></th><th><span class="v3-tag">v3</span> (최종)</th></tr></thead>
+  <tbody>
+    <tr><td>LR peak/min</td><td class="num">5e-4 / 5e-5</td><td class="num">3e-4 / 3e-5</td><td class="num">3e-4 / 3e-5</td></tr>
+    <tr><td>weightDecay</td><td class="num">0.02</td><td class="num">0.1</td><td class="num">0.1</td></tr>
+    <tr><td>labelSmoothing</td><td class="num">0.0</td><td class="num">0.1</td><td class="num">0.1</td></tr>
+    <tr><td>dropout</td><td class="num">0.0</td><td class="num">0.0</td><td class="num"><b>0.1</b></td></tr>
+    <tr><td>gradClip</td><td class="num">2.0</td><td class="num">2.0</td><td class="num">2.0</td></tr>
+    <tr><td>batch × accum</td><td class="num">2 × 32</td><td class="num">2 × 32</td><td class="num">2 × 32</td></tr>
+  </tbody>
+</table>
+
+<h2>Loss 궤적 비교</h2>
+<table>
+  <thead><tr><th>step</th><th>v1 avg</th><th>v1 gap</th><th>v2 avg</th><th>v2 gap</th><th>v3 avg</th><th>v3 gap</th><th>메모</th></tr></thead>
+  <tbody>
+    <tr><td class="num">600</td><td class="num">4.31</td><td class="num">0.24</td><td class="num">4.53</td><td class="num">0.15</td><td class="num">4.58</td><td class="num">0.16</td><td></td></tr>
+    <tr><td class="num">1200</td><td class="num">3.84</td><td class="num">0.45</td><td class="num">4.06</td><td class="num">0.35</td><td class="num">4.20</td><td class="num">0.31</td><td></td></tr>
+    <tr><td class="num">1800</td><td class="num">3.54</td><td class="num">0.76</td><td class="num">3.80</td><td class="num">0.47</td><td class="num">3.94</td><td class="num">0.25</td><td>v3 gap 극적 축소</td></tr>
+    <tr><td class="num">2400</td><td class="num">3.41</td><td class="num">0.98</td><td class="num">—</td><td class="num">—</td><td class="num">3.81</td><td class="num">0.45</td><td>v2 중단</td></tr>
+    <tr><td class="num">3000</td><td class="num">3.38</td><td class="num">1.25</td><td class="num">—</td><td class="num">—</td><td class="num">3.68</td><td class="num">0.59</td><td></td></tr>
+    <tr><td class="num">3600</td><td class="num">3.34 ← <b>v1 best</b></td><td class="num">1.47</td><td class="num">—</td><td class="num">—</td><td class="num">3.62</td><td class="num">0.55</td><td>v1 중단</td></tr>
+    <tr><td class="num">6000</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">3.38</td><td class="num">0.81</td><td>v3가 v1 best 따라잡음</td></tr>
+    <tr><td class="num">11400</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">3.30 ← <b>v3 best</b></td><td class="num">0.82</td><td>val 3.76 최저</td></tr>
+    <tr><td class="num">12000</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">3.34</td><td class="num">0.88</td><td>final</td></tr>
+  </tbody>
+</table>
+
+<p style="color: var(--muted); font-size: 13px;">
+  <b>핵심</b>: v1은 step 3600에서 과적합 고착(gap 1.47), v3은 같은 3600 step에서 gap 0.55로 60% 축소. 전체 12k iter 완주해 val 3.76 / avg 3.30에 도달. dropout + wd + label smoothing 조합이 실질적으로 학습 가능 iter 구간을 늘림.
+</p>
+
+<h2>v3 best ckpt 샘플</h2>
+
+<article class="prompt">
+  <header><span class="tag">prompt</span><code>There once were two</code></header>
+  <div class="orig"><span class="lbl">원본 val 문서 시작부</span>There once were two young children, Henry and Olivia. Their mother, Jessica, worked as a helper at a shop. One day, Jessica&#x27;s boss told her, &quot;Tonight is our party at your house. If it is messy like last time, you…</div>
+  <div class="samples"><div class="sample"><span class="lbl">샘플 1</span>there once were two singleeps on their best and i will show you what i will be. and i think it is, it&#x27;s just a good thing. yeah, yeah. it looks just like that. it&#x27;s a complicated place. and if you do not like these stations, like you do not live anywhere, or anyone else? i don&#x27;t want to know if i don&#x27;t know what&#x27;s wrong with you. you&#x27;ll remember about the bad group. the old group turned on the late 20th century, the company was very</div><div class="sample"><span class="lbl">샘플 2</span>there once were two husband, was made by a good helper at all the world. we were set to the phone.
+
+benjamin asked, &quot;i was not able to be investroying my day.&quot;
+
+&quot;adam&#x27;s close to himself. i did not want to leave.&quot;
+
+later, adam said gabriel, &quot;to the doorning is a big bird, and we&#x27;ll go see where my cart wasn&#x27;t a number of the night and the study is made by the people in the mistake.</div></div>
+</article>
+<article class="prompt">
+  <header><span class="tag">prompt</span><code>A mom and two</code></header>
+  <div class="orig"><span class="lbl">원본 val 문서 시작부</span>A mom and two kids lived in a town. The mom worked as a helper for people who sold houses. One day, the mom needed to go home early to her kids. But her boss said, &quot;If your home is…</div>
+  <div class="samples"><div class="sample"><span class="lbl">샘플 1</span>a mom and two people who were allowed to make more pay for its to oil company. there is a big company of a good ludio. and the same thing that makes its owners. the company uses not just are not not nice. the government can be carefully companies can buy people. they can make things products. the company is polluting.&quot; 
+
+&quot;work, that&#x27;s what businesses mean. they are not good. they are not leaving. they are not bad,&quot; said patrick. &quot;the other</div><div class="sample"><span class="lbl">샘플 2</span>a mom and two a person&#x27;s gold.&quot; &quot;all right, then.&quot; &quot;that&#x27;s it. that&#x27;s a happy place. you can get your hair! get it out! here! yay! stop! keep going! just keep going! just keep going on, child! keep going! keep swimming! keep swimming! keep swimming! keep swimming! keep swimming! keep swimming! keep swimming! keep swimming! just keep swimming! you willime! just keep swimming! keep swimming! keep swimming! keep swimming! keep swimming! keep swimming! just keep swimming! keep swimming! keep swimming! keep swimming! keep swimming</div></div>
+</article>
+<article class="prompt">
+  <header><span class="tag">prompt</span><code>There are many stories</code></header>
+  <div class="orig"><span class="lbl">원본 val 문서 시작부</span>There are many stories of fun, but let&#x27;s start with one about a mom and two kids, a house, and a hat worn by a cat. Soon we will get to that. In a valley between two hills, a city…</div>
+  <div class="samples"><div class="sample"><span class="lbl">샘플 1</span>there are many stories that we can keep us going. we will make things better. the rules are supervided that making a machine that can make business to help the earth and the traders industries. the sended the culture, even the point, we will make more share the power companies. so big companies can keep it in the rules that companies. they could control over the big ship, and looks like the environments. they left the company</div><div class="sample"><span class="lbl">샘플 2</span>there are many stories to the environment on tv stations not to end it back then to avologization. and it went up to another country, the station was landed in different people in the sicknacks. a big company decided to sail the story about the machines to make the machine that mael.
+
+but the company was to shared relations about people in the state people, the country&#x27;s country and signed the business planet</div></div>
+</article>
+<article class="prompt">
+  <header><span class="tag">prompt</span><code>&quot;Is this picture at</code></header>
+  <div class="orig"><span class="lbl">원본 val 문서 시작부</span>&quot;Is this picture at a good height for you?&quot; &quot;Or do you want it lower?&quot; &quot;Good.&quot; &quot;Alright.&quot; &quot;Early in the morning...&quot; &quot;Let me first ask the TV.&quot; &quot;Are you ready?&quot; &quot;All set?&quot; &quot;Let me hear your voice level, so it&#x27;s…</div>
+  <div class="samples"><div class="sample"><span class="lbl">샘플 1</span>&quot;is this picture at the past, they are going to be about that.&quot; &quot;open the door, i don&#x27;t have to go.&quot; &quot;i don&#x27;t want to forget.&quot; &quot;i want that to go home and get back inside. there is a loooady and that is a good idea of this inside... with the same fast.&quot; &quot;what are you doing? i don&#x27;t think i have a problem.&quot; &quot;that little helper is my feelings out like my tongue or your dear.&quot; &quot;he seems he is the only part of the world.&quot; &quot;and what new</div><div class="sample"><span class="lbl">샘플 2</span>&quot;is this picture at all the event, some people greeting the world of the phones of the future. that purpose to the a small country are taking over the world. the people, what they did not listen to the truth to the court, they made to stop making the paperality.&quot; &quot;and they laughing. as a leader of court once, they had caused many service. the pool said, &quot;theirones are bad, but the power of the pa</div></div>
+</article>
+<article class="prompt">
+  <header><span class="tag">prompt</span><code>There are many fun</code></header>
+  <div class="orig"><span class="lbl">원본 val 문서 시작부</span>There are many fun stories about kids and homes, but let&#x27;s start with one about a mom and two little ones and a house and a hat that was worn by a cat. But soon enough we will get to…</div>
+  <div class="samples"><div class="sample"><span class="lbl">샘플 1</span>there are many fun things that make up to do that the government. they believe they did not want to go to the office to the earth, there were no profit. they said the company wanted to help companies as not needed to make power and in the government. editation, but it was a good person to help with that big company and bad things. the masterial company wants it for a company&#x27;s ca city. they had to make to make more money for the company&#x27;s products. the worker said the poor</div><div class="sample"><span class="lbl">샘플 2</span>there are many fungins. they all know about something that a lot to be the powerful. they are to the government to have put them in their arms and a bad place for the information from every cy city. the responsible for some nine treatments. companies deserve the environment. some laws withines to be about energy and a milk. but people invested the world, they had 20th century by the cas</div></div>
+</article>
+<article class="prompt">
+  <header><span class="tag">prompt</span><code>A mom had two</code></header>
+  <div class="orig"><span class="lbl">원본 val 문서 시작부</span>A mom had two kids and a house. &quot;Hurry up!&quot; one kid said. &quot;We&#x27;ll miss the fun thing!&quot; The other kid asked, &quot;Any more treats?&quot; The mom said, &quot;I&#x27;ll check.&quot; The town was big enough for buying and selling stuff…</div>
+  <div class="samples"><div class="sample"><span class="lbl">샘플 1</span>a mom had two pictures. they were very happy town. they couldn&#x27;t hurt them. they laugh and they had to make money. then they wanted to get another place, but then they had paid to make money for sold. 
+
+later said, &quot;everyone of the time, the worker said they said it was certained, we wanted to during what it has been worth and deserve the bigger leader. the company also wanted to get the ne city to make the same nists to cer</div><div class="sample"><span class="lbl">샘플 2</span>a mom had two nights. this was a little lady guard. when he studies heards a few days, cameron did not know what to listen to me. we need to them.
+
+okay, i will go to go right now,&quot; emma said. &quot;i will not be back at the paster. if you want to tell them.&quot;
+
+i don&#x27;t want to help the children skister.
+
+benjamin said, &quot;she is still a good change.&quot;
+
+adam said, &quot;are you sure you want to name or my parents?&quot; benjamin replied, &quot;anyone</div></div>
+</article>
+
+<section class="summary">
+  <h2>관찰</h2>
+  <ul>
+    <li><b>대화체 구조 재현</b> — 특히 <code class="inline">"Is this picture at</code> 프롬프트에서 <code class="inline">"X." "Y."</code> 형식 정확히 유지. Turn-taking 패턴 학습됨.</li>
+    <li><b>명백한 memorization 흔적</b> — "just keep swimming!" 17회 연속 반복 (Finding Nemo 원본 그대로). Conversation 191 docs에 영화 스크립트가 통째로 들어간 결과. dropout·wd로도 이 수준 암기는 막지 못함.</li>
+    <li><b>고유명사 다수 등장</b> — benjamin, adam, gabriel, emma, cameron, patrick, henry, olivia. 소설 등장인물들이 tokenize된 채 학습됨.</li>
+    <li><b>드리프트 주제 혼합</b> — 일부 샘플이 기업/정치 담론으로 급격히 빠짐 ("oil company", "government", "environmental laws"). Conversation 코퍼스에 TV 다큐·뉴스 발췌가 섞인 듯.</li>
+    <li><b>fabricated 단어 여전</b> — "loooady", "avologization", "funginz", "polluting" 오용. 단어 경계 학습은 됐지만 유효성 확인 메커니즘 없음.</li>
+    <li><b>v1 대비 개선</b>: 같은 best avg 3.30대 도달했으나 v1은 step 3600 (과적합 고착 중), v3은 step 11400 (정상 학습 끝). <b>실질 학습 시간 3배</b>.</li>
+  </ul>
+</section>
+
+<section class="improv">
+  <h2>개선 방향</h2>
+
+  <h3>1. 데이터 측면 (최우선)</h3>
+  <ul>
+    <li><b>중복 제거 + 반복 제거</b> — "just keep swimming" 같은 반복 구절이 원본에 그대로 있음. doc 단위 중복 제거 + repetition thresholding (같은 구절이 2회 이상 반복되면 clip).</li>
+    <li><b>코퍼스 증량</b> — 100M conversation만으로는 831k tok에 불과. TinyHelen의 book(1.47MB), textbook(2.17MB)까지 합쳐 <b>다중 장르 혼합</b>해 3M+ tokens로 확장. 샘플 품질은 떨어질 수 있으나 memorization이 희석됨.</li>
+    <li><b>외부 대화 코퍼스 병합</b> — DailyDialog, OpenSubtitles, Cornell Movie-Dialogs 등. 장르 다양성으로 단일 script 암기 방지.</li>
+    <li><b>샘플러 단 repetition penalty</b> — 학습은 건드리지 않고 <code class="inline">Sampler</code>에서 최근 n토큰 내 동일 토큰 logit 페널티. "just keep swimming" 패턴 차단.</li>
+  </ul>
+
+  <h3>2. 모델·아키텍처</h3>
+  <ul>
+    <li><b>Context 확장</b> — blockSize 64 → <b>128 or 256</b>. 대화는 long-range turn dependency가 의미의 핵심. 비용 O(block²) 증가이나 attention 병렬화로 감당 가능.</li>
+    <li><b>Speaker / turn 분리 토큰</b> — 현재 <code class="inline">" "</code> 따옴표만으로 구분. <code class="inline">&lt;|speaker1|&gt;</code>, <code class="inline">&lt;|turn|&gt;</code> 같은 <b>전용 special token</b> 도입해 발화 경계를 명시적으로 학습시키면 대화 구조 더 빠르게 내재화.</li>
+    <li><b>파라미터 수 확대</b> — 1M은 표현력 명확한 한계. <b>2-3M</b> (예: layers 6 · dim 160)이면 iter당 1.5-2초로 감당 가능. 과적합은 이미 강한 regularization으로 관리 중.</li>
+    <li><b>Weight tying</b> — token embedding과 lm_head 공유. 파라미터 13%(136k) 절약 + regularization 효과.</li>
+  </ul>
+
+  <h3>3. 학습 전략</h3>
+  <ul>
+    <li><b>Document-level batch sampling</b> — 현재 <code class="inline">DataLoader</code>는 글로벌 random offset만 사용. 긴 문서는 많은 window에 포함돼 암기 가속. <b>문서 단위로 uniform 샘플링</b> 후 문서 내 offset을 잡으면 노출 균등화.</li>
+    <li><b>Curriculum learning</b> — 짧은 대화(2-3 turn) 먼저 학습 후 긴 대화로 확대. TinyHelen은 문서 길이 다양.</li>
+    <li><b>Early stopping + patience</b> — val best 후 3회 연속 미갱신이면 종료. 지금은 수동으로 best ckpt 선택 중.</li>
+    <li><b>Mixed-precision (FP16)</b> — 속도 2× + 일부 regularization 효과. Kotlin FloatArray는 이미 32bit이나 내부 matmul을 Float16 버퍼로 바꾸면 가능.</li>
+  </ul>
+
+  <h3>4. 측정·디버깅</h3>
+  <ul>
+    <li><b>다중 val set</b> — 현재 val도 같은 장르(conversation). <b>out-of-genre val</b>(예: textbook val의 일부 혼합) 추가해 "대화 암기" vs "언어 모델 일반화"를 분리 측정.</li>
+    <li><b>Token-level 샘플 analysis</b> — 생성된 문장의 n-gram이 train set의 n-gram과 겹치는 비율 자동 측정. 90%+면 암기 경고.</li>
+    <li><b>Gradient norm 장기 추적</b> — v3 run에서 grad-norm 0.86→2.33으로 꾸준히 상승. overfitting의 early warning으로 활용 가능.</li>
+    <li><b>Perplexity 외 metric</b> — BLEU/ROUGE로 샘플-원본 유사도 측정 (이걸 높이려는 게 아니라 memorization 지표로).</li>
+  </ul>
+</section>
+
+<p class="note">자동 생성 · <code class="inline">docs/conversation-sample-report-2026-04-24.html</code> · 이전 리포트: <a href="textbook-sample-report-2026-04-24.html" style="color:var(--accent)">textbook run</a>, <a href="vec-sample-compare-2026-04-24.html" style="color:var(--accent)">mixed 10k compare</a>.</p>
+
+</body>
+</html>

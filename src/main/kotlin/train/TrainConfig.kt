@@ -73,6 +73,8 @@ data class TrainConfig(
     val gradClip: Float = 1.0f,
     /** Label smoothing 계수(0.0~1.0). 0이면 비활성, 0.1이면 target 분포를 (1-0.1)·onehot + 0.1·uniform로 대체. Overconfidence 완화. 현재는 `vec` 백엔드만 사용. */
     val labelSmoothing: Float = 0.0f,
+    /** Weight tying — token_embedding과 lm_head 공유 (vec 백엔드만 적용). vocab×dim 절약 + 학습 신호 강화. 기본 true. */
+    val tieWeights: Boolean = true,
 
     // 학습률 스케줄
     /** 학습률을 스케줄에 따라 감소시킬지 여부 */

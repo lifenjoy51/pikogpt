@@ -64,12 +64,32 @@ class Sampler(private val samplingConfig: SampleConfig) {
         val initialIds = encode(prompt)
         println("# 프롬프트 '${prompt}' → 토큰 ${initialIds.size}개")
 
+        val stopSet = samplingConfig.stopTokenIds.toHashSet()
         val samples = (0 until samplingConfig.numSamples).map { _ ->
-            val generated = generateTokenSequence(initialIds).takeWhile { it != 0 }  // 0 = EOS
+            val generated = generateTokenSequence(initialIds).takeWhile { it !in stopSet }
             decode(generated)
         }
         return samples
     }
+
+    /**
+     * 누적된 prompt token id list에서 새 토큰만 생성·디코드해 반환.
+     * Chat REPL에서 이전 turn 누적 context를 그대로 받아 다음 turn만 생성하기 위한 용도.
+     *
+     * 반환값 = (새로 생성된 token id 리스트, 디코드된 문자열). stop 토큰은 포함 안 됨.
+     */
+    fun continueOne(promptIds: IntArray): Pair<List<Int>, String> {
+        val stopSet = samplingConfig.stopTokenIds.toHashSet()
+        val full = generateTokenSequence(promptIds.toList())
+        val newIds = full.drop(promptIds.size).takeWhile { it !in stopSet }
+        return newIds to decode(newIds)
+    }
+
+    /** 외부에서 텍스트 → 토큰 id 인코딩이 필요할 때 (Chat 등). */
+    fun encodeText(text: String): List<Int> = encode(text)
+
+    /** Chat용 max context 길이 — model의 blockSize와 동일. */
+    val maxContextLength: Int get() = blockSize
 
     // =========================================================================
     // 내부
