@@ -109,18 +109,66 @@ class Sampler(private val samplingConfig: SampleConfig) {
             val lastLogits = FloatArray(v)
             for (j in 0 until v) lastLogits[j] = logits.data[(t - 1) * v + j]
 
-            // temperature scaling
+            // 1) Repetition penalty — 직전 window 내 등장 토큰 logit 약화. temperature 전 단계.
+            //   표준 공식: logit > 0 → /penalty, logit < 0 → *penalty.
+            val repPen = samplingConfig.repetitionPenalty
+            if (repPen != 1.0f && repPen > 0.0f) {
+                val window = samplingConfig.repetitionWindow.coerceAtLeast(1)
+                val recent = seq.takeLast(window).toHashSet()
+                for (id in recent) {
+                    if (id in 0 until v) {
+                        val l = lastLogits[id]
+                        lastLogits[id] = if (l > 0f) l / repPen else l * repPen
+                    }
+                }
+            }
+
+            // 2) Temperature scaling
             val temp = samplingConfig.samplingTemperature
             if (temp != 1.0f && temp > 0.0f) {
                 for (j in 0 until v) lastLogits[j] /= temp
             }
 
-            // top-k 마스킹
+            // 3) Top-k 마스킹
             val topK = samplingConfig.topKFilteringSize
             if (topK in 1 until v) {
                 val kth = lastLogits.toList()
                     .sortedByDescending { it }[topK - 1]
                 for (j in 0 until v) if (lastLogits[j] < kth) lastLogits[j] = Float.NEGATIVE_INFINITY
+            }
+
+            // 4) Top-p (nucleus) 마스킹 — 정렬 후 누적 확률이 p 넘는 시점부터 cutoff.
+            //   top-k와 병행 시 둘 다 적용된 후보 안에서 다시 nucleus 적용.
+            val topP = samplingConfig.topProbabilityThreshold
+            if (topP > 0f && topP < 1.0f) {
+                // -inf 제외하고 (idx, value) 정렬 → softmax → 누적 → cutoff
+                val sortedIdx = (0 until v).sortedByDescending { lastLogits[it] }
+                // softmax temporarily on lastLogits (clone) — for cumulative thresholding
+                val maxVal = lastLogits.max()
+                if (maxVal != Float.NEGATIVE_INFINITY) {
+                    var sumExp = 0.0
+                    val exps = DoubleArray(v)
+                    for (j in 0 until v) {
+                        if (lastLogits[j] == Float.NEGATIVE_INFINITY) {
+                            exps[j] = 0.0
+                        } else {
+                            val e = kotlin.math.exp((lastLogits[j] - maxVal).toDouble())
+                            exps[j] = e
+                            sumExp += e
+                        }
+                    }
+                    if (sumExp > 0.0) {
+                        var cum = 0.0
+                        val keep = BooleanArray(v)
+                        for (idx in sortedIdx) {
+                            val p = exps[idx] / sumExp
+                            cum += p
+                            keep[idx] = true
+                            if (cum >= topP) break
+                        }
+                        for (j in 0 until v) if (!keep[j]) lastLogits[j] = Float.NEGATIVE_INFINITY
+                    }
+                }
             }
 
             // softmax + 샘플링

@@ -43,7 +43,21 @@ data class GPTConfig(
      *  vocab × dim 크기 만큼 파라미터 절약 + 임베딩 학습 신호 강화 (Press & Wolf 2017).
      *  기본 true (대부분 LM 표준). false면 별도 lm_head 행렬을 둠.
      *  현재는 vec 백엔드만 지원. 기존 untied ckpt와 호환 안 되니 주의. */
-    val tieWeights: Boolean = true
+    val tieWeights: Boolean = true,
+
+    /**
+     * MLP activation 종류 — `"gelu"`(현재 기본) 또는 `"swiglu"`(미구현, 추후 옵션).
+     * SwiGLU는 Llama 등 현대 LM에서 GELU 대비 perplexity 2-5% 개선 보고. params 약간↑(gate weight 추가).
+     * 향후 vec.layer.MLP에서 분기 구현 예정.
+     */
+    val mlpActivation: String = "gelu",
+
+    /**
+     * Position encoding 종류 — `"learned"`(현재 기본) 또는 `"rope"`(미구현, 추후 옵션).
+     * RoPE(Rotary)는 학습 가능 position embedding 제거 + 더 robust + blockSize 확장 자유.
+     * 향후 vec.layer.PikoGPT/SelfAttention에서 분기 구현 예정.
+     */
+    val positionEncoding: String = "learned"
 ) {
     // 호환성을 위한 별칭 속성들
     val blockSize: Int get() = maxSequenceLength

@@ -13,8 +13,12 @@ import java.io.InputStreamReader
  *
  * 사용:
  *   ```
- *   ./gradlew runChatVec --args="<ckpt-dir> [temperature] [topK]"
+ *   ./gradlew runChatVec --args="<ckpt-dir> [temp] [topK] [topP] [repPenalty]"
  *   ```
+ *   - temp 0.8(기본). 0.5-0.7 권장 (topic relevance ↑)
+ *   - topK 40(기본). 0이면 비활성
+ *   - topP 1.0(기본, 비활성). 0.9-0.95 권장 (top-k 위에 nucleus cutoff)
+ *   - repPenalty 1.0(기본, 비활성). 1.1-1.2 권장 (반복 차단)
  *
  * 동작:
  *   - 체크포인트 로드 후 stdin에서 한 줄씩 사용자 입력 받음
@@ -34,10 +38,12 @@ import java.io.InputStreamReader
  * single-turn stop이 의미 있음. `<|turn|>` 없는 ckpt면 EOS까지 generate.
  */
 fun main(args: Array<String>) {
-    require(args.isNotEmpty()) { "사용: <ckpt-dir> [temperature=0.8] [topK=40]" }
+    require(args.isNotEmpty()) { "사용: <ckpt-dir> [temp=0.8] [topK=40] [topP=1.0] [repPenalty=1.0]" }
     val ckptDir = File(args[0])
     val temp = args.getOrNull(1)?.toFloatOrNull() ?: 0.8f
     val topK = args.getOrNull(2)?.toIntOrNull() ?: 40
+    val topP = args.getOrNull(3)?.toFloatOrNull() ?: 1.0f
+    val repPenalty = args.getOrNull(4)?.toFloatOrNull() ?: 1.0f
     require(ckptDir.exists()) { "ckpt 경로 없음: ${ckptDir.absolutePath}" }
 
     // meta.json에서 special token id 추출
@@ -63,11 +69,13 @@ fun main(args: Array<String>) {
         maximumNewTokens = 200,
         samplingTemperature = temp,
         topKFilteringSize = topK,
+        topProbabilityThreshold = topP,
+        repetitionPenalty = repPenalty,
         stopTokenIds = stopIds,
     )
     val sampler = VecSampler(config)
     val maxCtx = sampler.maxContextLength
-    println("# blockSize = $maxCtx (이 이상 누적 시 앞쪽 자름)")
+    println("# blockSize = $maxCtx, temp=$temp, topK=$topK, topP=$topP, repPenalty=$repPenalty")
     println("# /help 로 명령어 보기. /quit 으로 종료.")
     println()
 

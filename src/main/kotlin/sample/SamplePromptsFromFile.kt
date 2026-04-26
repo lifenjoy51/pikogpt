@@ -44,6 +44,8 @@ fun main(args: Array<String>) = runBlocking {
         maximumNewTokens = 120,
         samplingTemperature = 0.8f,
         topKFilteringSize = 40,
+        topProbabilityThreshold = 0.95f,  // top-k 위에 nucleus 추가 — 보수적 다양성 컷
+        repetitionPenalty = 1.15f,         // 반복 차단 (mode collapse 완화)
         stopTokenIds = stopIds,
     )
     val sampler = VecSampler(config)
