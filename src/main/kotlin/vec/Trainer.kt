@@ -489,6 +489,7 @@ class Trainer(private val config: TrainConfig) {
         dropoutProbability = config.dropout,
         tieWeights = config.tieWeights,
         mlpActivation = config.mlpActivation,
+        positionEncoding = config.positionEncoding,
     )
 
     private fun formatLoss(loss: Double): String {

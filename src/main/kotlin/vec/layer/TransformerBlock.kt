@@ -28,9 +28,10 @@ class TransformerBlock(
     useBias: Boolean = true,
     dropoutProbability: Float = 0.0f,
     mlpActivation: String = "gelu",
+    positionEncoding: String = "learned",
 ) {
     val layerNorm1: LayerNorm = LayerNorm(embedDim, useBias)
-    val attention: SelfAttention = SelfAttention(embedDim, numHeads, useBias, dropoutProbability)
+    val attention: SelfAttention = SelfAttention(embedDim, numHeads, useBias, dropoutProbability, positionEncoding)
     val layerNorm2: LayerNorm = LayerNorm(embedDim, useBias)
     val mlp: MLP = MLP(embedDim, useBias, dropoutProbability, mlpActivation)
 

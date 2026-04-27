@@ -17,7 +17,8 @@
 | **a510 773k tied** | a510 데이터 | 18.9M | **773k** | 12000 | 2.89 | 2.89 | 18.0 | 모델 1.8× + tied |
 | (a510 773k b128) | block 128 | 18.9M | 779k | 8000(중단) | — | — | — | 큰 모델 + 긴 context (실험 중단) |
 | clean-a510 773k tied | + emphasis 마커 정리 | 18.9M | **773k** | 12000 | 2.87 | 2.87 | 17.6 | GELU 베이스 |
-| **clean-a510 773k SwiGLU** | + Llama 스타일 SwiGLU MLP | 18.9M | **774k** | 12000 | **2.81** | **2.81** | **16.6** | **베스트** (params ≈ 동일) |
+| clean-a510 773k SwiGLU | + Llama 스타일 SwiGLU MLP | 18.9M | 774k | 12000 | 2.81 | 2.81 | 16.6 | SwiGLU only |
+| **clean-a510 SwiGLU+RoPE** | + RoPE position encoding | 18.9M | **768k** | 12000 | **2.72** | **2.72** | **15.2** | **베스트** (pos emb 제거) |
 
 ## 핵심 인사이트
 
@@ -50,6 +51,14 @@
 - val 2.87 → **2.81**, perplexity 17.6 → **16.6**
 - 응답 quality도 명확히 향상: multi-clause, 조건/이유 절, listener question, 부모-아이 톤 분리
 - **activation 한 줄 변경으로 가장 큰 ROI** — 검증된 modern transformer 권장사항
+
+### 7. RoPE Position Encoding — 추가 8% perplexity 개선
+- Su et al. 2021. Q와 K projection 직후 위치별 회전 적용 → relative position 정보를 attention에 직접 주입
+- Learned position embedding 제거 → params 6,144 절약 (773k → 768k)
+- val 2.81 → **2.72**, perplexity 16.6 → **15.2**
+- **누적: GELU baseline 대비 13.6% perplexity 개선** (17.6 → 15.2), params는 더 적음
+- 응답 quality: multi-clause + reasoning + 부모 격려 패턴 더 자연 ("absolutely, you can!", "remember, being safe is...")
+- 부수 효과: blockSize 변경 시 재학습 불필요 (RoPE는 임의 길이 처리)
 
 ## 데이터 처리 파이프라인 (clean-a510 기준)
 

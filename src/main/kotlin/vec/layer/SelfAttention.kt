@@ -1,6 +1,8 @@
 package vec.layer
 
 import vec.Tensor
+import vec.ops.applyRoPE
+import vec.ops.applyRoPEBackward
 import kotlin.math.exp
 import kotlin.math.sqrt
 
@@ -38,10 +40,14 @@ class SelfAttention(
     val numHeads: Int,
     useBias: Boolean = true,
     dropoutProbability: Float = 0.0f,
+    /** "learned"(기본) | "rope" — RoPE 시 Q와 K projection 직후 위치별 회전 적용. */
+    private val positionEncoding: String = "learned",
 ) {
     init {
         require(embedDim % numHeads == 0) { "embedDim=$embedDim must be divisible by numHeads=$numHeads" }
     }
+
+    private val useRoPE: Boolean = positionEncoding.equals("rope", ignoreCase = true)
 
     val headDim: Int = embedDim / numHeads
     private val scale: Float = 1.0f / sqrt(headDim.toDouble()).toFloat()
@@ -76,6 +82,11 @@ class SelfAttention(
         val q = qProjection.forward(x)
         val k = kProjection.forward(x)
         val v = vProjection.forward(x)
+        // RoPE: Q와 K에 위치별 회전 적용 (V는 회전 안 함). in-place 수정.
+        if (useRoPE) {
+            applyRoPE(q, numHeads)
+            applyRoPE(k, numHeads)
+        }
         cachedQ = q; cachedK = k; cachedV = v
 
         // 1) softmax(scores)까지만 먼저 계산 — attention dropout이 attn_probs에 들어가야 하므로
@@ -232,6 +243,12 @@ class SelfAttention(
                     dK[j, headOffset + d] += scale * acc
                 }
             }
+        }
+
+        // RoPE backward — Q와 K에 in-place 역회전 적용 (V는 무관).
+        if (useRoPE) {
+            applyRoPEBackward(dQ, numHeads)
+            applyRoPEBackward(dK, numHeads)
         }
 
         // 3) Q/K/V 투영 backward

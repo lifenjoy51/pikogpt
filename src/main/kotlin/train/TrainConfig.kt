@@ -77,6 +77,8 @@ data class TrainConfig(
     val tieWeights: Boolean = true,
     /** MLP activation — `"gelu"`(default, GPT-2 스타일) 또는 `"swiglu"`(Llama 스타일, hidden=8/3·dim). */
     val mlpActivation: String = "gelu",
+    /** Position encoding — `"learned"`(default, GPT-2 스타일) 또는 `"rope"`(Q·K 회전 주입, position param 제거). */
+    val positionEncoding: String = "learned",
 
     // 학습률 스케줄
     /** 학습률을 스케줄에 따라 감소시킬지 여부 */

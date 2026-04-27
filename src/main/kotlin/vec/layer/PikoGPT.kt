@@ -29,11 +29,16 @@ import vec.transpose2D
  *   - 기존 untied ckpt와 직렬화 호환 안 됨 (param 수 다름).
  */
 class PikoGPT(val config: GPTConfig) {
+    /** RoPE 사용 시 학습 가능 position embedding 불필요 — Q·K 회전이 위치 정보를 주입. */
+    private val useRoPE: Boolean = config.positionEncoding.equals("rope", ignoreCase = true)
+
     val tokenEmbedding = EmbeddingTable(config.vocabSize, config.nEmbd)
-    val positionEmbedding = EmbeddingTable(config.blockSize, config.nEmbd)
+    /** learned position embedding. RoPE 모드에서는 null (parameters에서도 제외). */
+    val positionEmbedding: EmbeddingTable? =
+        if (useRoPE) null else EmbeddingTable(config.blockSize, config.nEmbd)
     val embeddingDropout = Dropout(config.dropoutProbability)
     val blocks: Array<TransformerBlock> = Array(config.nLayer) {
-        TransformerBlock(config.nEmbd, config.nHead, config.bias, config.dropoutProbability, config.mlpActivation)
+        TransformerBlock(config.nEmbd, config.nHead, config.bias, config.dropoutProbability, config.mlpActivation, config.positionEncoding)
     }
     val finalLayerNorm = LayerNorm(config.nEmbd, config.bias)
 
@@ -55,10 +60,14 @@ class PikoGPT(val config: GPTConfig) {
         cachedTokenIds = tokenIds
         cachedPositionIds = positionIds
 
-        // 1) 임베딩 덧셈 → dropout
+        // 1) 임베딩 — RoPE 모드면 token만, 아니면 token + position.
         val tokEmb = tokenEmbedding.forward(tokenIds)             // [T, C]
-        val posEmb = positionEmbedding.forward(positionIds)       // [T, C]
-        var x = addTensors(tokEmb, posEmb)                        // [T, C]
+        var x = if (positionEmbedding != null) {
+            val posEmb = positionEmbedding.forward(positionIds)   // [T, C]
+            addTensors(tokEmb, posEmb)
+        } else {
+            tokEmb
+        }
         x = embeddingDropout.forward(x)
 
         // 2) 블록 스택
@@ -120,14 +129,15 @@ class PikoGPT(val config: GPTConfig) {
             g = block.backward(g)
         }
 
-        // embedding dropout backward → tokEmb/posEmb grad
+        // embedding dropout backward → tokEmb (+ posEmb if not RoPE) grad
         g = embeddingDropout.backward(g)
 
         // 임베딩 덧셈의 backward: grad가 tokEmb/posEmb에 동일하게 전달됨.
         // tied 모드면 tokenEmbedding.weight.grad는 위 lm_head backward에서 누적됐던 값에
         //   여기서의 scatter-add가 추가되어 양방향 grad 합으로 정확.
+        // RoPE 모드면 positionEmbedding 자체가 없음.
         tokenEmbedding.backward(g)
-        positionEmbedding.backward(g)
+        positionEmbedding?.backward(g)
     }
 
     /**
@@ -146,7 +156,7 @@ class PikoGPT(val config: GPTConfig) {
     fun parameters(): List<Tensor> {
         val list = mutableListOf<Tensor>()
         list += tokenEmbedding.parameters()
-        list += positionEmbedding.parameters()
+        if (positionEmbedding != null) list += positionEmbedding.parameters()  // RoPE면 없음
         blocks.forEach { list += it.parameters() }
         list += finalLayerNorm.parameters()
         if (lmHead != null) list += lmHead.parameters()  // tied면 추가 안 함 (이미 tokenEmbedding으로 등록)
