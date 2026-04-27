@@ -28,7 +28,7 @@ suspend fun testVariousPrompts() = withContext(Dispatchers.Default) {
             modelDirectoryPath = "model/39360/$l",
             numberOfSamples = 1
         )
-        val sampler = Sampler(config)
+        val sampler = ScalarSampler(config)
 
         // 각 loss 값에 대해 모든 프롬프트를 병렬로 처리
         prompts.map { prompt ->
@@ -53,7 +53,7 @@ suspend fun test() {
         numberOfSamples = 3,
     )
 
-    val sampler = Sampler(config)
+    val sampler = ScalarSampler(config)
     val result = sampler.generateText("the cat and the dog")
     println(result)
 }
@@ -69,7 +69,7 @@ fun sampleInteractive() {
         topKFilteringSize = 50
     )
 
-    val sampler = Sampler(config)
+    val sampler = ScalarSampler(config)
 
     runBlocking {
         while (true) {

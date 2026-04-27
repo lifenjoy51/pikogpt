@@ -74,98 +74,98 @@ tasks.register<JavaExec>("runMiniTrainer") {
 
 tasks.register<JavaExec>("runTinyHelenTrain") {
     description = "Run TinyHelenTrain (TinyHelen leaner 코퍼스 overnight 학습 — 스칼라 백엔드)"
-    mainClass.set("train.TinyHelenTrainKt")
+    mainClass.set("train.experiments.TinyHelenTrainKt")
     classpath = sourceSets.main.get().runtimeClasspath
     jvmArgs = listOf("-Xmx8g")
 }
 
 tasks.register<JavaExec>("runTinyHelenTrainVec") {
     description = "Run TinyHelenTrainVec (~1M 파라미터, 벡터 백엔드)"
-    mainClass.set("train.TinyHelenTrainVecKt")
+    mainClass.set("train.experiments.TinyHelenTrainVecKt")
     classpath = sourceSets.main.get().runtimeClasspath
     jvmArgs = listOf("-Xmx4g")
 }
 
 tasks.register<JavaExec>("runTinyHelenTrainTextbookVec") {
     description = "Run TinyHelenTrainTextbookVec (textbook-only, ~1M 파라미터)"
-    mainClass.set("train.TinyHelenTrainTextbookVecKt")
+    mainClass.set("train.experiments.TinyHelenTrainTextbookVecKt")
     classpath = sourceSets.main.get().runtimeClasspath
     jvmArgs = listOf("-Xmx4g")
 }
 
 tasks.register<JavaExec>("runTinyHelenTrainConversationVec") {
     description = "Run TinyHelenTrainConversationVec (100M conversation, ~1M 파라미터, 12k iter)"
-    mainClass.set("train.TinyHelenTrainConversationVecKt")
+    mainClass.set("train.experiments.TinyHelenTrainConversationVecKt")
     classpath = sourceSets.main.get().runtimeClasspath
     jvmArgs = listOf("-Xmx4g")
 }
 
 tasks.register<JavaExec>("runConvMixTrainVec") {
     description = "Run ConvMixTrainVec (TinyHelen conv + TinyDialogues age-5 stripped, ~1M 파라미터)"
-    mainClass.set("train.ConvMixTrainVecKt")
+    mainClass.set("train.experiments.ConvMixTrainVecKt")
     classpath = sourceSets.main.get().runtimeClasspath
     jvmArgs = listOf("-Xmx4g")
 }
 
 tasks.register<JavaExec>("runConvMixTurnTrainVec") {
     description = "Run ConvMixTurnTrainVec (conv-mix + <|turn|> 토큰, 432k)"
-    mainClass.set("train.ConvMixTurnTrainVecKt")
+    mainClass.set("train.experiments.ConvMixTurnTrainVecKt")
     classpath = sourceSets.main.get().runtimeClasspath
     jvmArgs = listOf("-Xmx4g")
 }
 
 tasks.register<JavaExec>("runConvMixTurnNoqTrainVec") {
     description = "Run ConvMixTurnNoqTrainVec (conv-mix-turn 따옴표 제거, 432k)"
-    mainClass.set("train.ConvMixTurnNoqTrainVecKt")
+    mainClass.set("train.experiments.ConvMixTurnNoqTrainVecKt")
     classpath = sourceSets.main.get().runtimeClasspath
     jvmArgs = listOf("-Xmx4g")
 }
 
 tasks.register<JavaExec>("runConvMixTurnNoqB128TrainVec") {
     description = "Run ConvMixTurnNoqB128TrainVec (blockSize 128, 436k params)"
-    mainClass.set("train.ConvMixTurnNoqB128TrainVecKt")
+    mainClass.set("train.experiments.ConvMixTurnNoqB128TrainVecKt")
     classpath = sourceSets.main.get().runtimeClasspath
     jvmArgs = listOf("-Xmx4g")
 }
 
 tasks.register<JavaExec>("runConvMixA510TrainVec") {
     description = "Run ConvMixA510TrainVec (TinyHelen + age-5 + age-10, ~18M tok, 432k)"
-    mainClass.set("train.ConvMixA510TrainVecKt")
+    mainClass.set("train.experiments.ConvMixA510TrainVecKt")
     classpath = sourceSets.main.get().runtimeClasspath
     jvmArgs = listOf("-Xmx6g")
 }
 
 tasks.register<JavaExec>("runConvMixA510M773TrainVec") {
     description = "Run ConvMixA510M773TrainVec (a510 데이터 + 773k tied 모델, 12k iter)"
-    mainClass.set("train.ConvMixA510M773TrainVecKt")
+    mainClass.set("train.experiments.ConvMixA510M773TrainVecKt")
     classpath = sourceSets.main.get().runtimeClasspath
     jvmArgs = listOf("-Xmx6g")
 }
 
 tasks.register<JavaExec>("runConvMixA510M773B128TrainVec") {
     description = "Run ConvMixA510M773B128TrainVec (773k tied + blockSize 128, 8k iter)"
-    mainClass.set("train.ConvMixA510M773B128TrainVecKt")
+    mainClass.set("train.experiments.ConvMixA510M773B128TrainVecKt")
     classpath = sourceSets.main.get().runtimeClasspath
     jvmArgs = listOf("-Xmx6g")
 }
 
 tasks.register<JavaExec>("runConvMixCleanA510M773TrainVec") {
     description = "Run ConvMixCleanA510M773TrainVec (clean 데이터 + 773k tied 모델, 12k iter)"
-    mainClass.set("train.ConvMixCleanA510M773TrainVecKt")
+    mainClass.set("train.experiments.ConvMixCleanA510M773TrainVecKt")
     classpath = sourceSets.main.get().runtimeClasspath
     jvmArgs = listOf("-Xmx6g")
 }
 
 tasks.register<JavaExec>("runConvMixCleanA510M773SwiGLUTrainVec") {
     description = "Run ConvMixCleanA510M773SwiGLUTrainVec (clean + 773k tied + SwiGLU MLP)"
-    mainClass.set("train.ConvMixCleanA510M773SwiGLUTrainVecKt")
+    mainClass.set("train.experiments.ConvMixCleanA510M773SwiGLUTrainVecKt")
     classpath = sourceSets.main.get().runtimeClasspath
     jvmArgs = listOf("-Xmx6g")
 }
 
 tasks.register<JavaExec>("runConvMixCleanA510M773SwiGLURoPETrainVec") {
     description = "Run ConvMixCleanA510M773SwiGLURoPETrainVec (clean + tied + SwiGLU + RoPE)"
-    mainClass.set("train.ConvMixCleanA510M773SwiGLURoPETrainVecKt")
+    mainClass.set("train.experiments.ConvMixCleanA510M773SwiGLURoPETrainVecKt")
     classpath = sourceSets.main.get().runtimeClasspath
     jvmArgs = listOf("-Xmx6g")
 }

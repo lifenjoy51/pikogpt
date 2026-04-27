@@ -12,6 +12,6 @@ fun main() {
         numberOfHeads = 2,
         learningRate = 1.0e-4f,
     )
-    val trainer = Trainer(config)
+    val trainer = ScalarTrainer(config)
     trainer.train()
 }

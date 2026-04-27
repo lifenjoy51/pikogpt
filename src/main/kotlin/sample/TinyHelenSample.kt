@@ -33,7 +33,7 @@ fun main(args: Array<String>) = runBlocking {
             samplingTemperature = 0.8f,
             topKFilteringSize = 40,
         )
-        val sampler = Sampler(config)
+        val sampler = ScalarSampler(config)
 
         prompts.forEach { prompt ->
             val result = sampler.generateText(prompt)

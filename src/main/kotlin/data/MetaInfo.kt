@@ -38,9 +38,4 @@ data class MetaInfo(
 
     /** BPE 학습 시 사용된 특수 토큰 목록 (학습 순서 = ID 순서). 기본 배치: eos=0, unk=1, bos=2, turn=3. */
     val specialTokens: List<String> = listOf("<|eos|>", "<|unk|>", "<|bos|>", "<|turn|>"),
-) {
-    // 호환성을 위한 별칭 속성들
-    val vocabSize: Int get() = vocabularySize
-    val itos: Map<Int, String> get() = indexToString
-    val stoi: Map<String, Int> get() = stringToIndex
-}
+)

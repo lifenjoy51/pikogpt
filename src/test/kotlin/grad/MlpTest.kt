@@ -12,7 +12,7 @@ class MlpTest {
     @Test
     fun testMlp() {
         // 3개의 입력, [4, 4, 1]의 은닉층/출력층 구조
-        val model = MLP(3, listOf(4, 4, 1))
+        val model = MicrogradMLP(3, listOf(4, 4, 1))
         println("Model: $model")
         println("Number of parameters: ${model.parameters().size}")
         
@@ -56,7 +56,7 @@ class MlpTest {
     // 훈련 루프 예제
     @Test
     fun trainExample() {
-        val model = MLP(2, listOf(16, 16, 1))
+        val model = MicrogradMLP(2, listOf(16, 16, 1))
 
         // XOR 문제를 위한 데이터
         val xs = listOf(

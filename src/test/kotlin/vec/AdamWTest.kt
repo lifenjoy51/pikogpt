@@ -18,7 +18,7 @@ class AdamWTest {
         p.gradOrAlloc()[2] = 0.0f   // 0 → 변화 거의 없음 (weight decay만)
 
         val original = p.data.copyOf()
-        val adam = AdamW(
+        val adam = VecAdamW(
             parameters = listOf(p),
             learningRate = 0.1f,
             weightDecay = 0.0f,  // 이번 테스트에선 순수 gradient 방향 확인
@@ -36,7 +36,7 @@ class AdamWTest {
         // grad 없음 — step 전에 명시적으로 할당만
         p.gradOrAlloc()  // 모두 0
 
-        val adam = AdamW(
+        val adam = VecAdamW(
             parameters = listOf(p),
             learningRate = 0.1f,
             weightDecay = 0.5f,
@@ -51,7 +51,7 @@ class AdamWTest {
     @Test
     fun momentsAccumulateAcrossSteps() {
         val p = Tensor(intArrayOf(1), floatArrayOf(0.0f))
-        val adam = AdamW(
+        val adam = VecAdamW(
             parameters = listOf(p),
             learningRate = 0.01f,
             beta1 = 0.9f,

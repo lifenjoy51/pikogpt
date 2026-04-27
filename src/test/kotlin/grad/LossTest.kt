@@ -26,7 +26,7 @@ class LossTest {
         assertTrue(x.all { it.size == 2 }, "Each sample should have 2 features")
 
         // 모델 초기화
-        val model = MLP(2, listOf(16, 16, 1))
+        val model = MicrogradMLP(2, listOf(16, 16, 1))
         println("모델: $model")
         println("파라미터 수: ${model.parameters().size}")
         
@@ -35,7 +35,7 @@ class LossTest {
         assertEquals(3, model.layers.size, "Should have 3 layers")
 
         // 손실 계산기 생성
-        val lossCalculator = LossCalculator(model, x, y)
+        val lossCalculator = MicrogradLossCalculator(model, x, y)
 
         // 초기 손실 계산
         val (initialLoss, initialAcc) = lossCalculator.loss()
@@ -105,8 +105,8 @@ class LossTest {
     fun test2() {
         // 배치 학습 예제
         val (x, y) = makeMoons(60, 0.1f)
-        val model = MLP(2, listOf(16, 16, 1))
-        val lossCalculator = LossCalculator(model, x, y)
+        val model = MicrogradMLP(2, listOf(16, 16, 1))
+        val lossCalculator = MicrogradLossCalculator(model, x, y)
 
         println("배치 학습 시작...")
 

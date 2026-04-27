@@ -8,7 +8,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 /**
- * Dropout 레이어 단위 테스트.
+ * VecDropout 레이어 단위 테스트.
  *
  * 랜덤성이 있어 수치 기울기와의 비교는 곤란 (mask가 매번 새로 뽑힘). 대신:
  *  - p=0이면 identity
@@ -20,7 +20,7 @@ class DropoutTest {
 
     @Test
     fun identityWhenProbZero() {
-        val d = Dropout(0.0f)
+        val d = VecDropout(0.0f)
         val x = tensorGaussian(intArrayOf(4, 8), std = 1.0f)
         val y = d.forward(x)
         // 같은 FloatArray를 그대로 쓰는 게 계약 — shape도 동일.
@@ -32,7 +32,7 @@ class DropoutTest {
 
     @Test
     fun identityWhenEvalMode() {
-        val d = Dropout(0.5f).apply { training = false }
+        val d = VecDropout(0.5f).apply { training = false }
         val x = tensorGaussian(intArrayOf(4, 8), std = 1.0f)
         val y = d.forward(x)
         assertTrue(x.data.contentEquals(y.data), "training=false면 forward는 identity")
@@ -45,7 +45,7 @@ class DropoutTest {
     fun trainingModeAppliesInvertedScaling() {
         // x를 전부 1로 두면 y = mask 자체. 평균이 1.0f 근처여야 (inverted dropout 기대값 보존).
         val n = 10000
-        val d = Dropout(0.3f).apply { training = true }
+        val d = VecDropout(0.3f).apply { training = true }
         val x = Tensor(intArrayOf(n)).also { it.data.fill(1.0f) }
         val y = d.forward(x)
 
@@ -65,7 +65,7 @@ class DropoutTest {
         // 구조 확인: dx[i]는 gy[i] * mask[i] 이고, mask가 0인 위치에서 dx도 0, mask가 1/(1-p)면
         // dx = gy * 1/(1-p) 정확히 성립. 즉 forward y[i]==0 ⇔ backward dx[i]==0.
         val n = 2000
-        val d = Dropout(0.5f).apply { training = true }
+        val d = VecDropout(0.5f).apply { training = true }
         val x = Tensor(intArrayOf(n)).also { it.data.fill(1.0f) }
         val y = d.forward(x)
 
@@ -90,7 +90,7 @@ class DropoutTest {
     fun differentMasksAcrossForwardCalls() {
         // 두 번째 forward에서는 새 mask가 뽑혀야 함 — 같은 입력이어도 다른 출력.
         val n = 2000
-        val d = Dropout(0.5f).apply { training = true }
+        val d = VecDropout(0.5f).apply { training = true }
         val x = Tensor(intArrayOf(n)).also { it.data.fill(1.0f) }
         val y1 = d.forward(x).data.copyOf()
         val y2 = d.forward(x).data.copyOf()

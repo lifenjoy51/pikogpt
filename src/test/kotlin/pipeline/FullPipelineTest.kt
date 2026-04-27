@@ -5,8 +5,8 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import sample.SampleConfig
-import sample.Sampler
-import train.Trainer
+import sample.ScalarSampler
+import train.ScalarTrainer
 import train.TrainConfig
 import java.io.File
 import java.nio.ByteBuffer
@@ -51,7 +51,7 @@ class FullPipelineTest {
             logInterval = 10,
             dropout = 0.0f,
         )
-        Trainer(trainConfig).train()
+        ScalarTrainer(trainConfig).train()
 
         val checkpointDir = findCheckpointDir()
             ?: throw AssertionError("체크포인트 디렉토리가 생성되지 않음: ${modelDir.absolutePath}")
@@ -66,7 +66,7 @@ class FullPipelineTest {
             topKFilteringSize = 0,
             samplingTemperature = 1.0f,
         )
-        val sampler = Sampler(sampleConfig)
+        val sampler = ScalarSampler(sampleConfig)
         val result = runBlocking { sampler.generateText("a") }
 
         assertTrue(result.results.isNotEmpty(), "Sampler 결과 없음")

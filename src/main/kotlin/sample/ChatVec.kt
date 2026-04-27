@@ -3,7 +3,7 @@ package sample
 import data.MetaInfo
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import vec.Sampler as VecSampler
+import vec.VecSampler
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader

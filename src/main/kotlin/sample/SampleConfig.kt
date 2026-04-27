@@ -52,13 +52,4 @@ data class SampleConfig(
 
     /** Repetition penalty 적용 시 거슬러 보는 최근 토큰 수. */
     val repetitionWindow: Int = 64
-) {
-    // 호환성을 위한 별칭 속성들
-    val initFrom: String get() = modelInitializationMode
-    val modelDir: String get() = modelDirectoryPath
-    val numSamples: Int get() = numberOfSamples
-    val maxNewTokens: Int get() = maximumNewTokens
-    val temperature: Float get() = samplingTemperature
-    val topK: Int get() = topKFilteringSize
-    val seed: Int get() = randomSeed
-}
+)

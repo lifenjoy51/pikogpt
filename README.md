@@ -30,22 +30,23 @@ PikoGPT는 다음과 같은 주요 모듈로 구성됩니다.
 
 ### 1. GPT 모델 (`gpt` 패키지)
 
-*   **`PikoGPT.kt`**: 전체 GPT 모델의 메인 클래스입니다. 토큰 임베딩, 위치 임베딩, 여러 개의 `TransformerBlock` 및 최종 언어 모델 헤드(`lmHead`)를 포함합니다.
-*   **`TransformerBlock.kt`**: GPT 모델의 핵심 빌딩 블록입니다. `SimpleSelfAttention`과 `MLP` 레이어를 포함하며, 잔여 연결(Residual Connection)과 Layer Normalization을 적용합니다.
-*   **`SimpleSelfAttention.kt`**: Multi-Head Self-Attention 메커니즘을 단순화하여 구현합니다. Query, Key, Value 프로젝션 및 인과 마스킹(Causal Masking)을 처리합니다.
-*   **`Linear.kt`**: 신경망의 기본 선형 변환(완전 연결) 레이어입니다. 가중치와 편향을 관리하고 순전파를 수행합니다.
-*   **`MLP.kt`**: Transformer 블록 내의 Feed-Forward Network를 구현합니다. 확장-GELU 활성화-수축 구조를 가집니다.
-*   **`LayerNorm.kt`**: Layer Normalization을 구현하여 신경망 훈련의 안정성을 높입니다.
-*   **`Dropout.kt`**: 과적합 방지를 위한 Dropout 정규화 기법을 구현합니다.
+*   **`ScalarPikoGPT.kt`**: 전체 GPT 모델의 메인 클래스입니다 (스칼라 백엔드). 토큰 임베딩, 위치 임베딩, 여러 개의 `ScalarTransformerBlock` 및 최종 언어 모델 헤드(`lmHead`)를 포함합니다. 벡터 백엔드는 `vec/layer/VecPikoGPT.kt` 참조.
+*   **`ScalarTransformerBlock.kt`**: GPT 모델의 핵심 빌딩 블록입니다. `ScalarCausalSelfAttention`과 `ScalarFeedForward` 레이어를 포함하며, 잔여 연결(Residual Connection)과 Layer Normalization을 적용합니다.
+*   **`ScalarCausalSelfAttention.kt`**: Multi-Head Causal Self-Attention 메커니즘을 구현합니다. Query, Key, Value 프로젝션 및 인과 마스킹(Causal Masking)을 처리합니다.
+*   **`ScalarLinear.kt`**: 신경망의 기본 선형 변환(완전 연결) 레이어입니다.
+*   **`ScalarFeedForward.kt`**: Transformer 블록 내의 Feed-Forward Network를 구현합니다. 확장-GELU 활성화-수축 구조.
+*   **`ScalarLayerNorm.kt`**: Layer Normalization 구현.
+*   **`ScalarDropout.kt`**: Dropout 정규화 기법 구현.
 
 ### 2. 훈련 (`train` 패키지)
 
-*   **`Trainer.kt`**: 모델 훈련의 전체 과정을 관리하는 메인 클래스입니다. 학습률 스케줄링, 그래디언트 클리핑, 평가 및 체크포인트 저장 로직을 포함합니다.
-*   **`AdamW.kt`**: AdamW 옵티마이저를 구현하여 모델 파라미터를 효율적으로 업데이트합니다.
-*   **`DataLoader.kt`**: 훈련 및 검증 데이터를 로드하고 미니배치를 생성합니다.
-*   **`TrainConfig.kt`**: 훈련 과정에 필요한 모든 하이퍼파라미터(배치 크기, 학습률, 모델 크기 등)를 정의합니다.
-*   **`Checkpoint.kt`**: 모델의 가중치, 옵티마이저 상태, 훈련 설정 등을 저장하고 로드하기 위한 데이터 구조입니다.
-*   **`States.kt`**: 모델의 다양한 레이어(Attention, Block, FeedForward, Linear, LayerNorm)의 상태를 직렬화 가능한 형태로 정의합니다.
+*   **`ScalarTrainer.kt`**: 스칼라 백엔드 학습 루프. 학습률 스케줄링, 그래디언트 클리핑, 평가 및 체크포인트 저장 로직 포함. 벡터 백엔드는 `vec/VecTrainer.kt`.
+*   **`ScalarAdamW.kt`**: AdamW 옵티마이저(`Value` 단위) 스칼라 백엔드. 벡터 백엔드는 `vec/VecAdamW.kt`.
+*   **`DataLoader.kt`**: 훈련 및 검증 데이터를 로드하고 미니배치를 생성합니다. 두 백엔드 공유.
+*   **`TrainConfig.kt`**: 훈련 과정에 필요한 모든 하이퍼파라미터를 정의합니다.
+*   **`ScalarCheckpoint.kt`**: 스칼라 백엔드 체크포인트. 벡터 백엔드는 `vec/VecCheckpoint.kt` (가중치는 `model_weights.bin` 별도 저장).
+*   **`States.kt`**: 모델의 다양한 레이어 상태를 직렬화 가능한 형태로 정의합니다.
+*   **`experiments/`**: 14개 실험 진입점 (`ConvMix*`, `TinyHelen*`) 모음. 각각 `fun main()` + `JavaExec` gradle 태스크로 실행. 코어 학습 로직과 분리.
 
 ### 3. 데이터 처리 (`data` 패키지)
 
@@ -58,7 +59,7 @@ PikoGPT는 다음과 같은 주요 모듈로 구성됩니다.
 
 *   **`Value.kt`**: 자동 미분 엔진의 핵심 클래스입니다. 모든 스칼라 값에 대한 연산을 오버로딩하여 계산 그래프를 구축하고 역전파를 통해 그래디언트를 계산합니다.
 *   **`RandomGaussian.kt`**: 표준 정규 분포를 따르는 난수를 생성하는 유틸리티입니다.
-*   **`Funtions.kt`**: `sumOf`와 같은 유용한 확장 함수들을 포함합니다.
+*   **`util/FloatExtensions.kt`**: `sumOf`와 같은 Float 타입 확장 함수들을 포함합니다.
 
 ## 시작하기
 
@@ -88,19 +89,19 @@ PikoGPT 프로젝트의 일반적인 실행 순서는 다음과 같습니다.
     ./gradlew run --args="prepare_data data/1k"
     ```
 
-2.  **모델 훈련 (`Trainer.kt`)**
+2.  **모델 훈련 (`ScalarTrainer.kt` / `VecTrainer.kt`)**
     *   준비된 데이터를 사용하여 GPT 모델을 훈련합니다.
-    *   `train/Trainer.kt` 클래스가 훈련 루프, 옵티마이저(`AdamW.kt`), 데이터 로더(`DataLoader.kt`), 체크포인트 저장(`Checkpoint.kt`) 등을 관리합니다.
+    *   `train/ScalarTrainer.kt` (스칼라) 또는 `vec/VecTrainer.kt` (벡터) 클래스가 훈련 루프, 옵티마이저(`ScalarAdamW`/`VecAdamW`), 데이터 로더(`DataLoader.kt`), 체크포인트 저장 등을 관리합니다.
     *   훈련 설정은 `train/TrainConfig.kt`에서 정의됩니다.
-    *   훈련 실행 시 `Trainer` 클래스의 `train()` 메서드가 호출됩니다.
+    *   `train()` 메서드를 호출해 훈련을 시작합니다.
     ```bash
     ./gradlew run --args="train"
     ```
 
-3.  **텍스트 생성 (`Sampler.kt`)**
+3.  **텍스트 생성 (`ScalarSampler.kt` / `VecSampler.kt`)**
     *   훈련된 모델을 로드하여 새로운 텍스트를 생성합니다.
-    *   `sample/Sampler.kt` 클래스가 모델 로드, 토큰화 설정, 샘플링 전략(온도, Top-K) 적용 및 텍스트 생성을 담당합니다.
-    *   `Sampler` 클래스의 `generateText()` 또는 `sample()` 메서드를 통해 텍스트 생성을 시작할 수 있습니다.
+    *   `sample/ScalarSampler.kt` (스칼라) 또는 `vec/VecSampler.kt` (벡터) 클래스가 모델 로드, 토큰화 설정, 샘플링 전략(온도, Top-K) 적용 및 텍스트 생성을 담당합니다.
+    *   `generateText()` (스칼라) 또는 `generate()` / `continueOne()` (벡터) 메서드로 텍스트 생성을 시작합니다.
     ```bash
     ./gradlew run --args="sample"
     ```

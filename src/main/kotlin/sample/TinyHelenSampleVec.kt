@@ -2,7 +2,7 @@ package sample
 
 import kotlinx.coroutines.runBlocking
 import java.io.File
-import vec.Sampler as VecSampler
+import vec.VecSampler
 
 /**
  * TinyHelen 벡터 체크포인트 자동 샘플링.

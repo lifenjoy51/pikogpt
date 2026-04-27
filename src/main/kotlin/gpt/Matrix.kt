@@ -99,7 +99,7 @@ open class Matrix(protected val data: Array<Array<Value>>) {
      * 임베딩 테이블로 변환 (임베딩 테이블 관점으로 해석할 때 사용)
      * @return 임베딩 테이블 객체
      */
-    fun toEmbeddingTable(): EmbeddingTable = EmbeddingTable.fromArray(data)
+    fun toEmbeddingTable(): ScalarEmbeddingTable = ScalarEmbeddingTable.fromArray(data)
     
     companion object {
         /**

@@ -20,7 +20,7 @@ class LayersGradTest {
 
     @Test
     fun linearBackward() {
-        val layer = Linear(4, 3, useBias = true)
+        val layer = VecLinear(4, 3, useBias = true)
         val x = tensorGaussian(intArrayOf(2, 4), std = 0.5f)
         val w = tensorGaussian(intArrayOf(2, 3), std = 1.0f)
 
@@ -28,12 +28,12 @@ class LayersGradTest {
 
         layer.forward(x)  // 캐시 준비
         val analyticDX = layer.backward(Tensor(intArrayOf(2, 3), w.data.copyOf()))
-        assertClose(analyticDX.data, numericDX, message = "Linear dx")
+        assertClose(analyticDX.data, numericDX, message = "VecLinear dx")
     }
 
     @Test
     fun layerNormBackward() {
-        val layer = LayerNorm(5)
+        val layer = VecLayerNorm(5)
         val x = tensorGaussian(intArrayOf(3, 5), std = 1.0f)
         val w = tensorGaussian(intArrayOf(3, 5), std = 1.0f)
 
@@ -41,12 +41,12 @@ class LayersGradTest {
 
         layer.forward(x)
         val analyticDX = layer.backward(Tensor(intArrayOf(3, 5), w.data.copyOf()))
-        assertClose(analyticDX.data, numericDX, message = "LayerNorm dx")
+        assertClose(analyticDX.data, numericDX, message = "VecLayerNorm dx")
     }
 
     @Test
     fun mlpBackward() {
-        val layer = MLP(embedDim = 4)
+        val layer = VecMLP(embedDim = 4)
         val x = tensorGaussian(intArrayOf(2, 4), std = 0.3f)
         val w = tensorGaussian(intArrayOf(2, 4), std = 1.0f)
 
@@ -54,12 +54,12 @@ class LayersGradTest {
 
         layer.forward(x)
         val analyticDX = layer.backward(Tensor(intArrayOf(2, 4), w.data.copyOf()))
-        assertClose(analyticDX.data, numericDX, absTol = 3e-3f, message = "MLP dx")
+        assertClose(analyticDX.data, numericDX, absTol = 3e-3f, message = "VecMLP dx")
     }
 
     @Test
     fun selfAttentionBackward() {
-        val layer = SelfAttention(embedDim = 6, numHeads = 2)
+        val layer = VecSelfAttention(embedDim = 6, numHeads = 2)
         val x = tensorGaussian(intArrayOf(3, 6), std = 0.3f)
         val w = tensorGaussian(intArrayOf(3, 6), std = 1.0f)
 
@@ -67,12 +67,12 @@ class LayersGradTest {
 
         layer.forward(x)
         val analyticDX = layer.backward(Tensor(intArrayOf(3, 6), w.data.copyOf()))
-        assertClose(analyticDX.data, numericDX, absTol = 3e-3f, message = "SelfAttention dx")
+        assertClose(analyticDX.data, numericDX, absTol = 3e-3f, message = "VecSelfAttention dx")
     }
 
     @Test
     fun transformerBlockBackward() {
-        val layer = TransformerBlock(embedDim = 6, numHeads = 2)
+        val layer = VecTransformerBlock(embedDim = 6, numHeads = 2)
         val x = tensorGaussian(intArrayOf(3, 6), std = 0.3f)
         val w = tensorGaussian(intArrayOf(3, 6), std = 1.0f)
 
@@ -94,7 +94,7 @@ class LayersGradTest {
             useBias = true,
             dropoutProbability = 0.0f,  // 벡터 경로에는 dropout 미구현 (MVP)
         )
-        val model = PikoGPT(config)
+        val model = VecPikoGPT(config)
         val tokens = intArrayOf(1, 3, 5, 2)
         val logits = model.forward(tokens)
         assertTrue(logits.rows == 4 && logits.cols == 10, "logits shape [T=4, V=10] 기대")

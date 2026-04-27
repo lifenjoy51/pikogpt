@@ -22,7 +22,7 @@ val config = TrainConfig(
 )
 
 fun train() {
-    val trainer = Trainer(config)
+    val trainer = ScalarTrainer(config)
     trainer.train()
 }
 
@@ -39,7 +39,7 @@ fun resume(){
         embeddingDimension = 24,
         learningRate = 5.0e-5f,
     )
-    val trainer = Trainer(config)
+    val trainer = ScalarTrainer(config)
     trainer.train()
 
 }

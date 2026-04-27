@@ -5,7 +5,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import java.io.File
-import vec.Sampler as VecSampler
+import vec.VecSampler
 
 /**
  * 벡터 체크포인트 + 프롬프트 파일로 커스텀 샘플링.

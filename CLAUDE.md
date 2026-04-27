@@ -72,40 +72,44 @@ The codebase has **two parallel autodiff backends** with deliberately different 
 이 아래 "Core components" 섹션은 두 백엔드의 파일 트리를 각각 설명한다.
 
 ### 공유 정의
-- `grad/` — a micrograd-style scalar MLP (Neuron → Layer → MLP → LossCalculator). 스칼라 autodiff의
-  가장 단순한 예. `MlpTest` / `LossTest`로 autodiff 자체의 건강성을 검증.
+- `grad/` — a micrograd-style scalar MLP (`MicrogradNeuron` → `MicrogradLayer` → `MicrogradMLP` → `MicrogradLossCalculator`). 스칼라 autodiff의 가장 단순한 예. `MlpTest` / `LossTest`로 autodiff 자체의 건강성을 검증.
+
+### 백엔드 명명 규칙
+
+두 백엔드가 같은 패키지 트리에 공존하므로 **모든 동명 클래스에 `Vec`/`Scalar` 접두사**를 붙여 코드만 봐도 어느 백엔드인지 분명하게 한다. 패키지 명시 없이 클래스명만으로 구분 가능. 예: `VecTrainer` vs `ScalarTrainer`, `VecSampler` vs `ScalarSampler`, `VecAdamW` vs `ScalarAdamW`, `VecPikoGPT` vs `ScalarPikoGPT`. micrograd 출처 클래스는 `Micrograd*` 접두사. `Tensor`(vec)와 `Value`(scalar)는 충돌 없어 그대로.
 
 ### Core components
 
-1. **Autodiff / utilities (root package)**
+1. **Autodiff / utilities (root + util package)**
    - `Value.kt` — scalar autodiff; overloads `+ - * /`, `pow`, `ReLU`, `GELU`, `sigmoid`, and implements `backward()` via a reverse-topological traversal.
    - `RandomGaussian.kt` — standard normal sampler for weight init.
-   - `Functions.kt` — extension helpers (e.g. `sumOf`). (Note: renamed from `Funtions.kt` in commit `50a69e0`; README may still reference the old name.)
+   - `util/FloatExtensions.kt` — Float용 `sumOf` 확장 (stdlib는 Double/Int/Long만 지원).
 
 2. **micrograd-style MLP (`src/main/kotlin/grad/`)**
-   - `Neuron.kt`, `Layer.kt`, `MLP.kt`, `LossCalculator.kt`
-   - CAUTION: there is a *second* `MLP.kt` under `gpt/` that is the Transformer FFN — they are different classes.
+   - `MicrogradNeuron.kt`, `MicrogradLayer.kt`, `MicrogradMLP.kt`, `MicrogradLossCalculator.kt`
+   - 클래스명에 `Micrograd` 접두사를 붙여 GPT의 `ScalarFeedForward`(transformer FFN)와 혼동 차단.
 
-3. **GPT model (`src/main/kotlin/gpt/`)**
-   - `PikoGPT.kt` — top-level model (token + position embeddings, stacked `TransformerBlock`s, lm head).
-   - `GPTConfig.kt` — layers, heads, embedding size, block size, dropout.
-   - `TransformerBlock.kt` — LN → attention → residual → LN → MLP → residual.
-   - `SimpleSelfAttention.kt` — causal multi-head attention (Q/K/V projections + masking).
-   - `MLP.kt` — Transformer feed-forward (expand → GELU → contract). **This is the FFN; not to be confused with `grad/MLP.kt`.**
-   - `LayerNorm.kt`, `Dropout.kt`, `Linear.kt`, `EmbeddingTable.kt`, `Sequence.kt`, `Logits.kt`
-   - `Matrix.kt` — type-safe matrix abstractions (introduced in commit `61b5aa4`); the shape-safety foundation used across the GPT stack.
+3. **GPT model (`src/main/kotlin/gpt/`)** — 스칼라 백엔드
+   - `ScalarPikoGPT.kt` — top-level model (token + position embeddings, stacked `ScalarTransformerBlock`s, lm head).
+   - `GPTConfig.kt` — layers, heads, embedding size, block size, dropout. 두 백엔드 공유. (long-name canonical: `embeddingDimension`, `numberOfLayers`, `maxSequenceLength`, ...)
+   - `ScalarTransformerBlock.kt` — LN → attention → residual → LN → FFN → residual.
+   - `ScalarCausalSelfAttention.kt` — causal multi-head attention (Q/K/V projections + masking).
+   - `ScalarFeedForward.kt` — Transformer feed-forward (expand → GELU → contract).
+   - `ScalarLayerNorm.kt`, `ScalarDropout.kt`, `ScalarLinear.kt`, `ScalarEmbeddingTable.kt`, `Sequence.kt`, `Logits.kt`
+   - `Matrix.kt` — type-safe matrix abstractions; the shape-safety foundation used across the GPT stack.
 
 4. **Training (`src/main/kotlin/train/`)**
-   - `Trainer.kt` — main loop: LR schedule, grad clipping, eval, checkpointing.
-   - `AdamW.kt` — optimizer.
-   - `DataLoader.kt` — minibatch sampling over `train.bin` / `val.bin`.
+   - `ScalarTrainer.kt` — 스칼라 백엔드 학습 루프: LR schedule, grad clipping, eval, checkpointing.
+   - `ScalarAdamW.kt` — 스칼라 백엔드 옵티마이저 (`Value` 단위).
+   - `DataLoader.kt` — minibatch sampling over `train.bin` / `val.bin`. 두 백엔드 공유.
    - `TrainConfig.kt` — hyperparameters + data/model paths.
-   - `Checkpoint.kt` — serializable wrapper (iteration, best loss, model args, optimizer state).
-   - `States.kt` — per-layer serializable state DTOs (Attention, Block, FeedForward, Linear, LayerNorm) used by `Checkpoint`.
+   - `ScalarCheckpoint.kt` — serializable wrapper (iteration, best loss, model args, optimizer state).
+   - `States.kt` — per-layer serializable state DTOs used by `ScalarCheckpoint`.
+   - `experiments/` — 14개 실험 진입점 (`ConvMix*TrainVec.kt`, `TinyHelenTrain*.kt` — SwiGLU/RoPE 변형 포함). 코어 학습 로직과 분리.
 
 5. **Sampling (`src/main/kotlin/sample/`)**
-   - `Sampler.kt` — loads a checkpoint and generates text with temperature / top-k.
-   - `SampleConfig.kt` — sampling parameters.
+   - `ScalarSampler.kt` — 스칼라 백엔드. 체크포인트 로드 + 텍스트 생성 (temperature / top-k).
+   - `SampleConfig.kt` — sampling parameters (long-name canonical: `modelDirectoryPath`, `numberOfSamples`, ...).
 
 6. **Data processing (`src/main/kotlin/data/`)**
    - `SimpleBPE.kt` — BPE train + encode/decode. 플래그: `lowercase`, `useWordPreTokenize` (GPT-2 스타일 regex 사전 분할), `standardBpeScoring`(빈도 기준 merge), `verbose`. 학습된 상태를 `getMerges()`로 내보내고 `restore(stoi, merges)`로 복원 — Sampler가 학습과 **정확히 같은 토큰화를 재생**.
@@ -116,11 +120,12 @@ The codebase has **two parallel autodiff backends** with deliberately different 
 
 7. **Vector backend (`src/main/kotlin/vec/`)**
    - `Tensor.kt` — `shape: IntArray`, `data: FloatArray`, lazy `grad: FloatArray?`. 계산 그래프 없음.
-   - `ops/` — 6개 원자 연산. 각 파일에 forward + backward + 수식 주석이 함께.
-     `MatMul.kt`, `Softmax.kt`, `GELU.kt`, `LayerNormOp.kt`, `CrossEntropy.kt`.
-   - `layer/` — 7개 레이어가 각자 `forward(x): Tensor`와 `backward(gy): Tensor`를 노출.
-     `Linear`, `LayerNorm`, `MLP`, `SelfAttention`(multi-head causal), `TransformerBlock`(pre-LN), `EmbeddingTable`, `PikoGPT`.
-   - `AdamW.kt`, `Trainer.kt`, `Sampler.kt`, `VCheckpoint.kt` — 파라미터별 FloatArray 기반의 옵티마이저 + 학습 루프(스칼라 Trainer와 같은 skeleton, 수식만 재구현) + 샘플러. 체크포인트는 `model/vec/{paramCount}/{loss*10}/` 에 저장 (스칼라 트리와 네임스페이스 분리).
+   - `ops/` — 원자 연산. 각 파일에 forward + backward + 수식 주석이 함께.
+     `MatMul.kt`, `Softmax.kt`, `GELU.kt`, `SiLU.kt`(SwiGLU용), `LayerNormOp.kt`, `CrossEntropy.kt`, `RoPE.kt`(rotary position embedding).
+   - `layer/` — 7개 레이어가 각자 `forward(x): Tensor`와 `backward(gy): Tensor`를 노출. 모두 `Vec` 접두사:
+     `VecLinear`, `VecLayerNorm`, `VecMLP`(GELU/SwiGLU 분기), `VecSelfAttention`(multi-head causal + RoPE 옵션), `VecTransformerBlock`(pre-LN), `VecEmbeddingTable`, `VecPikoGPT`(RoPE 모드면 position embedding 제외).
+   - `VecAdamW.kt`, `VecTrainer.kt`, `VecSampler.kt`, `VecCheckpoint.kt` — 파라미터별 FloatArray 기반의 옵티마이저 + 학습 루프 + 샘플러. 체크포인트는 `model/<dataset>/vec/<paramCount>/v0001/`(zero-pad 4자리 버전 번호)에 저장. 레거시 `bestLoss*10` 정수 디렉터리도 loader가 함께 인식.
+   - `Parallel.kt` — 데이터 병렬 학습 helper.
    - 테스트: `src/test/kotlin/vec/` — 각 op의 수치(유한차분) gradient 검사 + 레이어 단위 dx 검증 + `VFullPipelineTest`(합성 vocab end-to-end) + `AdamWTest`.
 
 ### Design patterns
@@ -134,7 +139,7 @@ The codebase has **two parallel autodiff backends** with deliberately different 
 
 1. **Data preparation** — `StoriesBpePrep.kt` (or `AlphabetPrep.kt`) tokenizes text into `data/[dataset]/train.bin` + `val.bin` + `meta.json`. `./gradlew runStoriesBpe` / `runAlphabetPrep`.
 2. **Training** — `./gradlew runTrainer` (스모크 50 iter 프리셋, `train.TrainerMain`)이나 `runMiniTrainer`. 체크포인트는 최적 검증 손실이 갱신될 때마다 저장된다.
-3. **Checkpoint layout** — `Trainer`는 `${config.modelDir}/${datasetSize}/${(bestLoss*10).toInt()}/` 경로에 `checkpoint.json`, `model_weights.bin`, `meta.json`을 쓴다.
+3. **Checkpoint layout** — 벡터 백엔드(`VecTrainer`)는 `${config.modelDir}/${datasetName}/vec/${paramCount}/v0001/` (4자리 zero-pad 버전 번호) 경로에 `checkpoint.json`, `model_weights.bin`, `meta.json`, `optimizer_state.bin`을 쓴다. 매 저장마다 +1. 레거시 `bestLoss*10` 정수 디렉터리는 보존되며 loader가 인식.
 4. **Sampling** — `./gradlew runSampler`로 체크포인트 디렉토리를 로드해 텍스트 생성 (`sample.SamplerMain`).
 
 ## Data Layout
@@ -153,7 +158,7 @@ model/                        # 모든 체크포인트 루트 (gitignored)
 └── [datasetName]/            # config.dataPath 마지막 segment (예: tinyhelen, tinyhelen-textbook)
     └── vec/                  # 백엔드 구분 (스칼라는 직접 파라미터 수부터; 곧 통일 예정)
         └── [paramCount]/     # 예: 1057536
-            └── [bestLoss*10]/ # 예: val best 3.44 → "34"
+            └── v0001/        # 4자리 zero-pad 버전 (매 저장마다 +1). 레거시 "28" 같은 bestLoss*10도 인식.
                 ├── checkpoint.json   # iteration, best loss, model args
                 ├── meta.json         # copied from the data dir
                 ├── model_weights.bin # serialized weights (vec: big-endian float32)
@@ -164,11 +169,13 @@ model/                        # 모든 체크포인트 루트 (gitignored)
 
 - `Value.kt` — autodiff foundation.
 - `gpt/Matrix.kt` — shape-safe matrix layer underpinning the GPT stack.
-- `gpt/PikoGPT.kt`, `gpt/GPTConfig.kt` — model architecture + config.
-- `gpt/TransformerBlock.kt`, `gpt/SimpleSelfAttention.kt`, `gpt/MLP.kt` — block internals.
-- `train/Trainer.kt`, `train/TrainConfig.kt`, `train/AdamW.kt` — training loop + hyperparams + optimizer.
-- `train/Checkpoint.kt`, `train/States.kt` — checkpoint / per-layer serialization format.
-- `sample/Sampler.kt` — generation path.
+- `gpt/ScalarPikoGPT.kt`, `gpt/GPTConfig.kt` — 스칼라 백엔드 모델 아키텍처 + config.
+- `gpt/ScalarTransformerBlock.kt`, `gpt/ScalarCausalSelfAttention.kt`, `gpt/ScalarFeedForward.kt` — block internals (scalar).
+- `vec/layer/VecPikoGPT.kt`, `vec/VecTrainer.kt` — 벡터 백엔드 모델 + 학습 루프 (실전 성능, SwiGLU/RoPE 지원).
+- `train/ScalarTrainer.kt`, `train/TrainConfig.kt`, `train/ScalarAdamW.kt` — 스칼라 학습 루프 + hyperparams + optimizer.
+- `train/ScalarCheckpoint.kt`, `train/States.kt` — checkpoint / per-layer serialization format.
+- `train/experiments/` — ConvMix*, TinyHelen* 실험 진입점 14개 (별도 서브패키지).
+- `sample/ScalarSampler.kt`, `sample/ChatVec.kt` — generation paths (scalar / vec).
 - `data/SimpleBPE.kt`, `data/StoriesBpePrep.kt` — tokenizer + pipeline.
 
 ## External Dependency

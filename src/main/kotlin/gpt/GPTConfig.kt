@@ -58,13 +58,4 @@ data class GPTConfig(
      * 향후 vec.layer.PikoGPT/SelfAttention에서 분기 구현 예정.
      */
     val positionEncoding: String = "learned"
-) {
-    // 호환성을 위한 별칭 속성들
-    val blockSize: Int get() = maxSequenceLength
-    val vocabSize: Int get() = vocabularySize
-    val nLayer: Int get() = numberOfLayers
-    val nHead: Int get() = numberOfAttentionHeads
-    val nEmbd: Int get() = embeddingDimension
-    val bias: Boolean get() = useBias
-    val dropout: Float get() = dropoutProbability
-}
+)

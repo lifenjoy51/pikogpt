@@ -16,7 +16,7 @@ class GptTest {
             dropoutProbability = 0.1f
         )
 
-        val model = PikoGPT(config)
+        val model = ScalarPikoGPT(config)
         println("모델 생성 완료!")
         println("파라미터 수: ${model.parameters().size}")
 

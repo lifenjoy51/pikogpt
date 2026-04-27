@@ -48,7 +48,7 @@ class VFullPipelineTest {
             logInterval = 10,
             dropout = 0.0f,
         )
-        Trainer(trainConfig).train()
+        VecTrainer(trainConfig).train()
 
         // 체크포인트 찾기 — 벡터 루트는 modelDir/{datasetName}/vec/{params}/{loss*10}/
         // datasetName = dataPath 마지막 segment (이 테스트에선 tmp "data" dir).
@@ -71,7 +71,7 @@ class VFullPipelineTest {
             samplingTemperature = 1.0f,
             topKFilteringSize = 0,
         )
-        val sampler = Sampler(sampleConfig)
+        val sampler = VecSampler(sampleConfig)
         val outputs = sampler.generate("a")
 
         assertTrue(outputs.isNotEmpty(), "Sampler 생성 결과가 비어 있음")
