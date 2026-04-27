@@ -43,7 +43,11 @@ bin/
 .DS_Store
 
 ### PikoGPT-specific ###
-model/
+# model/ 전체는 무시하되, 최고 성능 모델 한 묶음만 model/best/ 고정 경로로 git 추적.
+# 부모 디렉터리가 무시되면 자식 negation이 안 먹으므로 model/* 형태로.
+model/*
+!model/best/
+!model/best/**
 package-lock.json
 .claude/
 
