@@ -1,4 +1,9 @@
 ### data
+# data/ 전체는 무시하되, 현재 git에 tracked된 파일만 예외.
+# 부모 디렉터리가 무시되면 자식 negation이 안 먹으므로 data/* 형태로.
+data/*
+!data/train.txt.gz
+!data/val.txt.gz
 
 ### gradle
 .gradle
@@ -50,17 +55,6 @@ model/*
 !model/best/**
 package-lock.json
 .claude/
-
-# 새 dataset의 derived 산출물은 git 부풀림 방지를 위해 차단.
-# train.txt + val.txt + meta.json만 commit (재실행으로 .bin 재생성 가능).
-# 기존 tracked 파일(data/tinyhelen-* 의 .bin 등)은 history에 남으므로 영향 없음.
-data/conv-mix*/train.bin
-data/conv-mix*/val.bin
-data/conv-mix*/unique_words.txt
-data/tinydialogues-age5/train.bin
-data/tinydialogues-age5/val.bin
-data/tinydialogues-age5/unique_words.txt
-data/tinydialogues-age5/meta.json
 
 run-stories-bpe.kt
 # 학습/추론 실행 로그 — 이미 tracked된 히스토리 파일(overnight.log 등)은 계속 유지,
