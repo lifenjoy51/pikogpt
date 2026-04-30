@@ -35,6 +35,10 @@ data class TrainConfig(
     val replayDataPath: String? = null,
     /** Replay 비율 (0.0~1.0). 미니배치 시퀀스마다 Bernoulli(p=replayRatio)로 replay 데이터에서 추출. 0이면 비활성. */
     val replayRatio: Float = 0.0f,
+    /** **두 번째** replay용 train.bin 경로 (multi-replay, 예: 3-stage curriculum 마지막 단계에서 dict + wiki 별도 path). null이면 비활성. */
+    val replayDataPath2: String? = null,
+    /** 두 번째 replay 비율. `replayRatio + replayRatio2` 합이 1.0 이하여야 함. 0이면 비활성. */
+    val replayRatio2: Float = 0.0f,
 
     // 데이터
     /** 사용할 데이터셋의 이름 (e.g., "base", "it") */

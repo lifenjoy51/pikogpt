@@ -198,6 +198,27 @@ tasks.register<JavaExec>("runTwoStageITV2TrainVec") {
     jvmArgs = listOf("-Xmx6g")
 }
 
+tasks.register<JavaExec>("runThreeStageDictTrainV4Vec") {
+    description = "Run ThreeStageDictTrainV4Vec (Stage 1: dict scratch pretrain, ~2.5k iter, 12 epoch)"
+    mainClass.set("train.experiments.ThreeStageDictTrainV4VecKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx6g")
+}
+
+tasks.register<JavaExec>("runThreeStageWikiTrainV4Vec") {
+    description = "Run ThreeStageWikiTrainV4Vec (Stage 2: wiki finetune from dict ckpt + 30% dict replay)"
+    mainClass.set("train.experiments.ThreeStageWikiTrainV4VecKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx6g")
+}
+
+tasks.register<JavaExec>("runThreeStageConvTrainV4Vec") {
+    description = "Run ThreeStageConvTrainV4Vec (Stage 3: conv finetune from wiki ckpt + multi-replay 15% dict + 15% wiki)"
+    mainClass.set("train.experiments.ThreeStageConvTrainV4VecKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx6g")
+}
+
 tasks.register<JavaExec>("runEncodeWithExistingMeta") {
     description = "Run EncodeWithExistingMeta (공유 meta.json으로 다른 디렉터리 인코딩)"
     mainClass.set("data.EncodeWithExistingMetaKt")

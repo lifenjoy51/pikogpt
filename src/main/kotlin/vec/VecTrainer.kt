@@ -13,6 +13,7 @@ import train.BatchSource
 import train.DataLoader
 import train.MixedDataLoader
 import train.TrainConfig
+import train.TripleDataLoader
 import vec.layer.VecPikoGPT
 import vec.ops.crossEntropyBackward
 import vec.ops.crossEntropyForward
@@ -110,19 +111,39 @@ class VecTrainer(private val config: TrainConfig) {
             emptyList()
         }
 
-        // replayDataPath가 지정되면 MixedDataLoader로 두 코퍼스를 mix해서 IT(finetune) 단계의 BASE replay를 구현.
-        // 그 외 단일 코퍼스 학습은 기존 DataLoader 그대로.
-        trainLoader = if (config.replayDataPath != null && config.replayRatio > 0.0f) {
-            println("Mixed train loader 활성: primary=${config.dataPath}/train.bin, replay=${config.replayDataPath}, ratio=${config.replayRatio}")
-            MixedDataLoader(
-                primaryPath = "${config.dataPath}/train.bin",
-                replayPath = config.replayDataPath,
-                replayRatio = config.replayRatio,
-                batchSize = config.batchSize,
-                blockSize = config.blockSize,
-            )
-        } else {
-            DataLoader("${config.dataPath}/train.bin", config.batchSize, config.blockSize)
+        // replay 경로가 지정되면 두 코퍼스(MixedDataLoader) 또는 세 코퍼스(TripleDataLoader)로 mix.
+        // - replayDataPath만: IT(finetune) 단계의 BASE replay (2-way)
+        // - replayDataPath + replayDataPath2: 3-stage curriculum 마지막 단계 multi-replay (3-way)
+        val hasReplay1 = config.replayDataPath != null && config.replayRatio > 0.0f
+        val hasReplay2 = config.replayDataPath2 != null && config.replayRatio2 > 0.0f
+        trainLoader = when {
+            hasReplay1 && hasReplay2 -> {
+                println(
+                    "Triple train loader 활성: primary=${config.dataPath}/train.bin, " +
+                        "replay1=${config.replayDataPath} (ratio=${config.replayRatio}), " +
+                        "replay2=${config.replayDataPath2} (ratio=${config.replayRatio2})"
+                )
+                TripleDataLoader(
+                    primaryPath = "${config.dataPath}/train.bin",
+                    replay1Path = config.replayDataPath!!,
+                    replay2Path = config.replayDataPath2!!,
+                    replay1Ratio = config.replayRatio,
+                    replay2Ratio = config.replayRatio2,
+                    batchSize = config.batchSize,
+                    blockSize = config.blockSize,
+                )
+            }
+            hasReplay1 -> {
+                println("Mixed train loader 활성: primary=${config.dataPath}/train.bin, replay=${config.replayDataPath}, ratio=${config.replayRatio}")
+                MixedDataLoader(
+                    primaryPath = "${config.dataPath}/train.bin",
+                    replayPath = config.replayDataPath!!,
+                    replayRatio = config.replayRatio,
+                    batchSize = config.batchSize,
+                    blockSize = config.blockSize,
+                )
+            }
+            else -> DataLoader("${config.dataPath}/train.bin", config.batchSize, config.blockSize)
         }
         valLoader = DataLoader("${config.dataPath}/val.bin", config.batchSize, config.blockSize)
 

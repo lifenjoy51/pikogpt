@@ -144,3 +144,69 @@ class MixedDataLoader(
         return Pair(inputSequences, targetSequences)
     }
 }
+
+/**
+ * 세 코퍼스를 시퀀스 단위로 섞어 미니배치를 만드는 로더 (multi-replay).
+ *
+ * three-stage curriculum의 마지막 단계(conv)에서 dict, wiki를 **별도 비율**로 동시 replay하기 위한 용도.
+ * dict와 wiki를 단순 합본(cat)하면 토큰량 비율(예: 1:8.7)대로 sampling되어 dict가 묻히는 문제를
+ * 해결한다. 미니배치 row마다 다음 분포로 source 추첨:
+ *   - r < replay1Ratio              → replay1 (예: dict)
+ *   - r < replay1Ratio + replay2Ratio → replay2 (예: wiki)
+ *   - 그 외                          → primary (예: conv)
+ *
+ * 세 underlying DataLoader가 각자 batchSize 분량의 batch를 만들고, row별로 골라잡아 합친다 —
+ * 호출 비용은 단일 DataLoader 대비 약 3×지만 batch=2 수준에서는 무시 가능.
+ *
+ * @param primaryPath   Stage 3 primary 데이터 .bin (예: conv)
+ * @param replay1Path   첫 번째 replay 데이터 .bin (예: dict)
+ * @param replay2Path   두 번째 replay 데이터 .bin (예: wiki)
+ * @param replay1Ratio  replay1 비율 (0.0~1.0)
+ * @param replay2Ratio  replay2 비율 (0.0~1.0). `replay1Ratio + replay2Ratio` ≤ 1.0
+ * @param batchSize     한 batch의 시퀀스 수
+ * @param blockSize     각 시퀀스 길이
+ */
+class TripleDataLoader(
+    primaryPath: String,
+    replay1Path: String,
+    replay2Path: String,
+    private val replay1Ratio: Float,
+    private val replay2Ratio: Float,
+    private val batchSize: Int,
+    private val blockSize: Int,
+) : BatchSource {
+    private val primary = DataLoader(primaryPath, batchSize, blockSize)
+    private val replay1 = DataLoader(replay1Path, batchSize, blockSize)
+    private val replay2 = DataLoader(replay2Path, batchSize, blockSize)
+
+    init {
+        require(replay1Ratio in 0.0f..1.0f) { "replay1Ratio는 0~1 범위여야 함: $replay1Ratio" }
+        require(replay2Ratio in 0.0f..1.0f) { "replay2Ratio는 0~1 범위여야 함: $replay2Ratio" }
+        require(replay1Ratio + replay2Ratio <= 1.0f) {
+            "replay1Ratio + replay2Ratio가 1.0을 초과: ${replay1Ratio + replay2Ratio}"
+        }
+    }
+
+    override fun getBatch(): Pair<Array<IntArray>, Array<IntArray>> {
+        val (pIn, pTgt) = primary.getBatch()
+        val (r1In, r1Tgt) = replay1.getBatch()
+        val (r2In, r2Tgt) = replay2.getBatch()
+        val inputSequences = Array(batchSize) { IntArray(blockSize) }
+        val targetSequences = Array(batchSize) { IntArray(blockSize) }
+        val threshold1 = replay1Ratio
+        val threshold2 = replay1Ratio + replay2Ratio
+        for (b in 0 until batchSize) {
+            val r = Random.nextFloat()
+            val src = when {
+                r < threshold1 -> Pair(r1In, r1Tgt)
+                r < threshold2 -> Pair(r2In, r2Tgt)
+                else -> Pair(pIn, pTgt)
+            }
+            for (i in 0 until blockSize) {
+                inputSequences[b][i] = src.first[b][i]
+                targetSequences[b][i] = src.second[b][i]
+            }
+        }
+        return Pair(inputSequences, targetSequences)
+    }
+}

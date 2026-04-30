@@ -346,13 +346,59 @@ data/three-stage-v4/
 
 6. **명명 it → conv**: v4는 새 시작이라 "instruction-tuning" 약어 "it" 대신 의미 명확한 "conv"(conversation)로 리네임.
 
-## 9. 후속 작업 (Stage D)
+## 9. Stage D — Kotlin 학습 entry point (구현 완료)
 
-다음 세션에서 진행:
-- `TripleDataLoader` (or multi-replay 일반화) — `train/DataLoader.kt`
-- `TrainConfig` 다중 replay 필드 — `train/TrainConfig.kt`
-- 3개 trainer entry point — `train/experiments/ThreeStage{Dict,Wiki,Conv}TrainV4Vec.kt`
-- 3개 gradle task — `build.gradle.kts`
+데이터 빌드(Stage A-C)에 이어 학습 코드까지 구현. 본 레시피는 이제 처음부터 끝까지 self-contained.
+
+### 코어 변경
+- `train/TrainConfig.kt` — `replayDataPath2: String?` / `replayRatio2: Float = 0f` 필드 추가. 기존 `replayDataPath`/`replayRatio`와 동일 시맨틱 (두 번째 replay source).
+- `train/DataLoader.kt` — `TripleDataLoader` 추가. `primary + replay1 + replay2`를 row별로 추첨:
+  - `r < replay1Ratio` → replay1 (예: dict)
+  - `r < replay1Ratio + replay2Ratio` → replay2 (예: wiki)
+  - 그 외 → primary (예: conv)
+  - `replay1Ratio + replay2Ratio ≤ 1.0` 검증.
+- `vec/VecTrainer.kt` — replay 분기 확장:
+  - `replayDataPath` & `replayDataPath2` 모두 지정 → `TripleDataLoader`
+  - `replayDataPath`만 → 기존 `MixedDataLoader`
+  - 둘 다 없음 → 기본 `DataLoader`
+
+### 신규 trainer entry point (architecture: v2와 동일 — C=96, L=6, heads=3, swiglu, RoPE, tied)
+
+| Stage | trainer | initFrom | maxIters | epoch | LR | replay |
+|---|---|---|---:|---:|---:|---|
+| 1 | `ThreeStageDictTrainV4Vec` | scratch | 2,500 | ~12 | 3e-4 | 없음 |
+| 2 | `ThreeStageWikiTrainV4Vec` | pretrain_weights ← Stage1 ckpt | 6,000 | ~3.3 | 1e-4 | dict 30% |
+| 3 | `ThreeStageConvTrainV4Vec` | pretrain_weights ← Stage2 ckpt | 8,000 | ~2.0 | 1e-4 | dict 15% + wiki 15% (multi) |
+
+token/iter = 4096 (batch=2 × accum=32 × block=64). dict 코퍼스 863K tok 기준.
+
+### 산출 ckpt 경로
+- Stage 1 → `model/dict/vec/<paramCount>/v00XX/`
+- Stage 2 → `model/wiki/vec/<paramCount>/v00XX/`
+- Stage 3 → `model/conv/vec/<paramCount>/v00XX/`
+
+### 사용법
+
+```bash
+# Stage 1 — scratch
+./gradlew runThreeStageDictTrainV4Vec
+# → 산출 ckpt 경로를 다음 stage에 인자로 넘긴다 (예: model/dict/vec/.../v0010)
+
+# Stage 2 — Stage 1 ckpt에서 이어받기
+./gradlew runThreeStageWikiTrainV4Vec --args="model/dict/vec/<paramCount>/v00XX"
+
+# Stage 3 — Stage 2 ckpt에서 이어받기
+./gradlew runThreeStageConvTrainV4Vec --args="model/wiki/vec/<paramCount>/v00XX"
+
+# 각 단계 resume / maxIters override 지원:
+#   runThreeStage*TrainV4Vec --args="resume"
+#   runThreeStage*TrainV4Vec --args="<ckpt> 8000"
+```
+
+### 후속 작업 (학습 후)
+- Stage 3 dict/wiki replay 비율 튜닝 (현재 15%/15% — 11%/19%로 ×5 oversampling 등가도 후보)
+- 단계별 ckpt 평가: 정의 패턴 출력 / 백과 ppl / 대화 ppl
+- v3 baseline (TwoStageBaseV2 → TwoStageITV2) 대비 perplexity 비교
 
 ## 10. Quick reference — 처음부터 끝까지 한 번에
 
@@ -461,6 +507,3 @@ python3 scripts/analyze_v4_low_freq.py
 | `runBpe` OOM | 12GB heap 부족 (대규모 코퍼스) | `build.gradle.kts:37` `-Xmx12g` 상향 또는 `skip-bin` 확실히 적용 |
 | `inline_wiki_docs.py` doc 수가 0 | v3 base가 `<|bos|>...<|eos|>` 형식 아님 | v3 base 형식 확인, 정규식 매칭 점검 |
 | 인코딩 토큰 수가 expected와 ≥1% 다름 | shared/meta.json이 다른 코퍼스로 학습됨 | shared/ 재합본 후 BPE 재실행 |
-- Stage 3 dict/wiki replay 비율 결정 (현재 후보: 15%/15% 또는 11%/19%)
-- 학습 + 단계별 ckpt 평가 (정의 패턴 출력 / 백과 ppl / 대화 ppl)
-- v3 baseline (TwoStageBaseTrainV3Vec → TwoStageITTrainV3Vec) 대비 비교
