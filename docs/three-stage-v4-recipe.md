@@ -7,14 +7,22 @@
 ## 0. 선결 조건
 
 ### 본 레시피의 범위
-**입력**: `data/two-stage-v3/{base,it}/{train,val}.txt` (이미 존재한다 가정 — v3 빌드는 본 레시피 범위 밖, `docs/base-v3-recipe.md` 참조)
+**입력 (원본 소스)**:
+- dict: 웹에서 직접 다운로드 (Simple English Dict + NLTK WordNet)
+- wiki: 웹에서 직접 다운로드 (simplewiki XML dump → vital articles 정제)
+- conv: 웹에서 직접 다운로드 (HuggingFace `styfeng/TinyDialogues` age-5+age-10) **또는** git에 추적 중인 보존본 `data/{train,val}.txt.gz`
+
 **출력**: `data/three-stage-v4/{dict,wiki,conv,shared}/` 완성 (학습용 `.bin` 포함)
-**책임**: dict 데이터 신규 빌드 + 모든 디렉토리 1 line=1 doc 형식 통일 + BPE + 인코딩
+
+**책임**: 3종 데이터를 원본 웹 소스부터 가져와 1 line=1 doc 형식으로 통일 + BPE + 인코딩까지. v3와 독립적으로 self-contained.
 
 ### 환경
 - **Python 3.10+** (3.11 검증). `nltk` 3.9.x — `wordnet`는 다운로드 스크립트가 자동 호출.
 - **JDK 17+** (Temurin 17). **Gradle 8.x** (wrapper로 자동).
-- **디스크 공간**: ~210 MB (dict 다운로드 40 MB + 후처리 산출물 170 MB)
+- **디스크 공간**: 약 1.5 GB
+  - simplewiki dump 250 MB (압축) + WikiExtractor 산출 ~600 MB
+  - dict 다운로드 40 MB + 후처리 산출물 170 MB
+  - TinyDialogues raw 30 MB (옵션 2)
 
 ### 결정 파라미터 (재현용 고정값)
 
@@ -23,7 +31,8 @@
 | `FREQ_THRESHOLD` | 10 | `merge_kid_dictionaries.py` | 입력 코퍼스 빈도 화이트리스트 컷 |
 | `MAX_MEANINGS` | 5 | `merge_kid_dictionaries.py` | entry당 최대 의미 |
 | `VAL_FRAC` | 0.10 | `render_dict_docs.py` | dict train/val split |
-| `SEED` | 42 | `render_dict_docs.py` | shuffle / split 재현 |
+| `SEED` | 42 | `render_dict_docs.py` / `build_base_v3_train_val.py` | shuffle / split 재현 |
+| `--max-level` | 4 | `build_base_v3_train_val.py` | vital articles L1-L4까지 |
 | `vocab` | 2000 | `runBpe` 인자 | BPE vocab 크기 |
 | BPE flags | `cased skip-bin` | `runBpe` 인자 | 대소문자 보존 + shared bin 생략 |
 
@@ -114,24 +123,103 @@ python3 scripts/render_dict_docs.py
 #   format: 1 line = 1 doc, doc 내부는 리터럴 \n
 ```
 
-### Stage B — wiki / conv 복사 + 형식 통일 + shared 합본
+### Stage B — wiki / conv 원본 빌드 + 형식 통일
 
 ```bash
-# 사전: dict/는 Stage A.3에서 자동 생성. 나머지 디렉토리는 cp/cat 전에 mkdir.
+# 사전: dict/는 Stage A.3에서 자동 생성. 나머지는 cp/cat 전에 mkdir.
 mkdir -p data/three-stage-v4/{wiki,conv,shared}
+```
 
-# wiki: v3 base를 그대로 복사 (다단락 본문) → 1 line=1 doc + 리터럴 \n으로 변환
+#### B.1 wiki — simplewiki XML dump → vital articles L1-L4 정제 → inline
+
+상세 결정 이력은 `docs/base-v3-recipe.md` 참조. 본 v4용으로 필요한 절차만 집약:
+
+```bash
+# (1) simplewiki dump 다운로드 (~250 MB 압축)
+mkdir -p data/simplewiki
+wget -O data/simplewiki/simplewiki-latest-pages-articles.xml.bz2 \
+  https://dumps.wikimedia.org/simplewiki/latest/simplewiki-latest-pages-articles.xml.bz2
+
+# (2) WikiExtractor로 raw articles 추출 (~390K)
+#     로컬 wrapper(`scripts/_wikiextractor_local/`) 또는 `pip install wikiextractor`
+python3 -m wikiextractor.WikiExtractor \
+  --json --no-templates --processes 4 \
+  --output data/simplewiki/extracted \
+  data/simplewiki/simplewiki-latest-pages-articles.xml.bz2
+
+# (3) cleaner v2 — title 강조, redirect 본문 회수, 메타 컷, dedup
+python3 scripts/clean_simplewiki_v2.py
+# → data/simplewiki/simplewiki_clean.jsonl (~270K articles)
+
+# (4) en-wiki Vital Articles L1-L4 표제어 추출 + simplewiki 매핑
+python3 scripts/parse_vital_titles.py
+python3 scripts/resolve_vital_titles.py        # SKIP_EN=1로 simplewiki API redirect 만 사용
+python3 scripts/recover_vital_from_raw.py      # cleaner 컷 vital 복구
+python3 scripts/expand_vital_matches.py        # disambig/comma/punct 변형 매칭
+# → data/external/vital_articles/vital_titles_resolved.json
+
+# (5) vital corpus 빌드
+python3 scripts/build_vital_corpus.py
+# → data/simplewiki/simplewiki_vital_corpus.jsonl (L1-L5 30,311 docs)
+
+# (6) base v3 train/val.txt 생성 (L1-L4 8,942 docs, paragraph 보존, seed=42)
+python3 scripts/build_base_v3_train_val.py --max-level 4 --val-frac 0.10 --seed 42
+# → data/two-stage-v3/base/{train,val}.txt
+
+# (7) v4 wiki로 차용 + 1 line=1 doc + 리터럴 \n 변환
 cp data/two-stage-v3/base/{train,val}.txt data/three-stage-v4/wiki/
-python3 scripts/inline_wiki_docs.py    # 정규식 <|bos|>...<|eos|> 매칭
+python3 scripts/inline_wiki_docs.py
+# → data/three-stage-v4/wiki/{train,val}.txt (8,048 / 894 docs)
+```
 
-# conv: v3 it를 그대로 복사 (이미 single-line, 변환 불필요)
-cp data/two-stage-v3/it/{train,val}.txt data/three-stage-v4/conv/
+#### B.2 conv — TinyDialogues age-5+age-10 정제 → v4 conv
 
-# shared: dict + wiki + conv 합본 (BPE 학습용 전용)
-cat data/three-stage-v4/dict/train.txt data/three-stage-v4/wiki/train.txt \
-    data/three-stage-v4/conv/train.txt > data/three-stage-v4/shared/train.txt
-cat data/three-stage-v4/dict/val.txt data/three-stage-v4/wiki/val.txt \
-    data/three-stage-v4/conv/val.txt > data/three-stage-v4/shared/val.txt
+원본은 EMNLP 2024 TinyDialogues. 두 옵션 중 택일.
+
+**옵션 A — git 보존본 풀기 (가장 빠름, byte-identical 재현):**
+```bash
+gunzip -kc data/train.txt.gz > data/three-stage-v4/conv/train.txt
+gunzip -kc data/val.txt.gz   > data/three-stage-v4/conv/val.txt
+# → 51,229 train / 9,219 val conversations (이미 1 line = 1 doc)
+```
+
+**옵션 B — HuggingFace 원본부터 정제 (full self-contained):**
+```bash
+# (1) HuggingFace styfeng/TinyDialogues에서 individual_age_data.zip 다운로드
+#     예: huggingface-cli download styfeng/TinyDialogues individual_age_data.zip --local-dir /tmp/td
+#     압축 해제 후 4개 파일 사용:
+#       tinydialogue_age-5_train.txt, tinydialogue_age-5_val.txt,
+#       tinydialogue_age-10_train.txt, tinydialogue_age-10_val.txt
+
+# (2) age-5 + age-10 concat (순서 고정, shuffle 없음)
+cat /tmp/td/tinydialogue_age-5_train.txt /tmp/td/tinydialogue_age-10_train.txt > /tmp/td/train.raw.txt
+cat /tmp/td/tinydialogue_age-5_val.txt   /tmp/td/tinydialogue_age-10_val.txt   > /tmp/td/val.raw.txt
+
+# (3) 정규식 정제 — speaker 마커 → <|turn|>, emphasis/따옴표 제거,
+#     <|endoftext|> 제거, 첫 turn 토큰 제거, <|bos|>...<|eos|> 래핑
+#     상세는 docs/dialogues-a510-recipe.md §3.2 (Python inline 코드)
+python3 -c "
+import re
+def clean(text):
+    text = re.sub(r'\*\*[^*]+\*\*:\s*', '<|turn|>', text)
+    text = re.sub(r'\*\*([^*]+)\*\*', r'\1', text)
+    text = re.sub(r'\"([^\"]*)\"', r'\1', text)
+    text = text.replace('<|endoftext|>', '').rstrip()
+    if text.startswith('<|turn|>'): text = text[len('<|turn|>'):]
+    return f'<|bos|>{text}<|eos|>'
+for split in ('train', 'val'):
+    with open(f'/tmp/td/{split}.raw.txt') as f: lines = f.read().splitlines()
+    out = '\n'.join(clean(l) for l in lines if l.strip())
+    open(f'data/three-stage-v4/conv/{split}.txt', 'w').write(out + '\n')
+"
+# → data/three-stage-v4/conv/{train,val}.txt (옵션 A와 byte-identical)
+```
+
+#### B.3 shared 합본 — BPE 학습용
+
+```bash
+cat data/three-stage-v4/{dict,wiki,conv}/train.txt > data/three-stage-v4/shared/train.txt
+cat data/three-stage-v4/{dict,wiki,conv}/val.txt   > data/three-stage-v4/shared/val.txt
 ```
 
 ### Stage C — BPE 학습 + 인코딩
@@ -268,28 +356,50 @@ data/three-stage-v4/
 
 ## 10. Quick reference — 처음부터 끝까지 한 번에
 
-선결 조건(§0)이 충족된 상태에서 **repo root에서** 실행. 총 소요 ~5-7분.
+웹 다운로드부터 학습용 .bin까지. **repo root에서** 실행.
+
+- conv 옵션 A (gzip 보존본): 총 ~5-7분
+- conv 옵션 B (HuggingFace) + wiki 신규 빌드: 총 ~30-60분 (WikiExtractor가 가장 큼)
+- wiki 빌드를 이전 결과 캐시(`data/two-stage-v3/base/{train,val}.txt`)에서 재사용하면 wiki 빌드 단계 스킵 가능
 
 ```bash
-# 입력 검증 (없으면 v3 빌드부터)
-for f in data/two-stage-v3/{base,it}/{train,val}.txt; do
-  test -f "$f" || { echo "입력 누락: $f (본 레시피 범위 밖, v3 빌드 선행 필요)"; exit 1; }
-done
+mkdir -p data/three-stage-v4/{wiki,conv,shared}
 
-# Stage A — dict 신규 빌드
+# Stage A — dict (웹 다운로드 + 빌드)
 python3 scripts/download_kid_dictionaries.py
 python3 scripts/merge_kid_dictionaries.py
 python3 scripts/render_dict_docs.py
 
-# Stage B — wiki/conv 입력 받기 + 형식 통일 + shared 합본
-mkdir -p data/three-stage-v4/{wiki,conv,shared}
+# Stage B.1 — wiki (simplewiki dump → vital L1-L4)
+# v3 base가 이미 있으면 (1)-(6) 스킵하고 (7)만 실행
+if [ ! -f data/two-stage-v3/base/train.txt ]; then
+  mkdir -p data/simplewiki
+  wget -O data/simplewiki/simplewiki-latest-pages-articles.xml.bz2 \
+    https://dumps.wikimedia.org/simplewiki/latest/simplewiki-latest-pages-articles.xml.bz2
+  python3 -m wikiextractor.WikiExtractor --json --no-templates --processes 4 \
+    --output data/simplewiki/extracted \
+    data/simplewiki/simplewiki-latest-pages-articles.xml.bz2
+  python3 scripts/clean_simplewiki_v2.py
+  python3 scripts/parse_vital_titles.py
+  python3 scripts/resolve_vital_titles.py
+  python3 scripts/recover_vital_from_raw.py
+  python3 scripts/expand_vital_matches.py
+  python3 scripts/build_vital_corpus.py
+  python3 scripts/build_base_v3_train_val.py --max-level 4 --val-frac 0.10 --seed 42
+fi
 cp data/two-stage-v3/base/{train,val}.txt data/three-stage-v4/wiki/
 python3 scripts/inline_wiki_docs.py
-cp data/two-stage-v3/it/{train,val}.txt data/three-stage-v4/conv/
+
+# Stage B.2 — conv (옵션 A: gzip 보존본 풀기 — 빠름, byte-identical 재현)
+gunzip -kc data/train.txt.gz > data/three-stage-v4/conv/train.txt
+gunzip -kc data/val.txt.gz   > data/three-stage-v4/conv/val.txt
+# (옵션 B: HuggingFace 원본 — §3 Stage B.2 옵션 B 참조)
+
+# Stage B.3 — shared 합본
 cat data/three-stage-v4/{dict,wiki,conv}/train.txt > data/three-stage-v4/shared/train.txt
 cat data/three-stage-v4/{dict,wiki,conv}/val.txt   > data/three-stage-v4/shared/val.txt
 
-# Stage C — BPE 학습 + 인코딩 (후처리)
+# Stage C — BPE 학습 + 인코딩
 ./gradlew runBpe --args="data/three-stage-v4/shared 2000 cased skip-bin"
 for d in dict wiki conv; do
   ./gradlew runEncodeWithExistingMeta \
@@ -344,7 +454,9 @@ python3 scripts/analyze_v4_low_freq.py
 
 | 증상 | 원인 | 해결 |
 |---|---|---|
-| `merge_kid_dictionaries.py`가 화이트리스트 0개 | 입력(`data/two-stage-v3/{base,it}/train.txt`) 없음 | 입력 데이터 확보 (본 레시피 범위 밖, v3 빌드는 `docs/base-v3-recipe.md`) |
+| `merge_kid_dictionaries.py`가 화이트리스트 0개 | 입력 코퍼스(`data/two-stage-v3/{base,it}/train.txt`)가 없음 | Stage B.1 wiki / B.2 conv 빌드 선행, 또는 v3 산출물 캐시 활용 |
+| WikiExtractor 미설치 | `wikiextractor` Python 패키지 부재 | `pip install wikiextractor` 또는 `scripts/_wikiextractor_local/` 사용 |
+| simplewiki dump URL 만료 | `latest` 링크는 갱신되며 표제어 수가 약간 변함 | 특정 시점 dump(`pages-articles-YYYYMMDD.xml.bz2`)로 고정하여 재현성 확보 |
 | `nltk.download('wordnet')` 실패 | 네트워크 차단 / proxy | `~/nltk_data/corpora/wordnet/`로 수동 배치 |
 | `runBpe` OOM | 12GB heap 부족 (대규모 코퍼스) | `build.gradle.kts:37` `-Xmx12g` 상향 또는 `skip-bin` 확실히 적용 |
 | `inline_wiki_docs.py` doc 수가 0 | v3 base가 `<|bos|>...<|eos|>` 형식 아님 | v3 base 형식 확인, 정규식 매칭 점검 |
