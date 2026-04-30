@@ -1,15 +1,15 @@
 # base-v3 데이터셋 레시피 — vital L1-L4 기반 BASE + IT 전이 학습 계획
 
 Two-stage 학습의 BASE 단계용 코퍼스. **simplewiki vital articles Level 1-L4 단독 사용**.
-IT 단계는 기존 `data/two-stage-v2/it-v2/` 그대로 유지.
+IT 단계는 cased 재인코딩본 `data/two-stage-v3/it/` 사용 (BASE와 vocab 공유).
 
 ## 1. 결정 요약
 
 - 채택: **simplewiki vital articles Level 1-L4 전체 (8,942 docs, ~4.0 M words, ~5.6-6.4 M tokens)**
   - L4 11개 카테고리 모두 포함 (People 카테고리 ~1,580 docs 포함). 어른용 specific 인물(Hegel, Faulkner 등) 노이즈는 그대로 학습 신호로 흡수.
 - 산출 파일: `data/simplewiki/simplewiki_vital_corpus.jsonl` 에서 `level <= 4` 필터
-- BPE: **IT-V2 vocab 재사용** (`EncodeWithExistingMeta.kt`)
-- IT 단계: `data/two-stage-v2/it-v2/` 그대로
+- BPE: **shared cased vocab 사용** (`EncodeWithExistingMeta.kt`)
+- IT 단계: `data/two-stage-v3/it/` (cased 재인코딩, vocab 공유)
 - **추가 정제 없음**: B 가독성 컷 / D LLM 5세 적합 분류 / L5 선별 / simplify 모두 본 계획에서 적용 안 함
 
 ### 결정 변경 이력
@@ -148,12 +148,22 @@ data/external/vital_articles/
 ├── vital_simplewiki_titles.txt                  TSV (L{n}\t{cat}\t{sub}\t{title}\t{method})
 └── vital_recovery_report.json                   raw 복구 상세
 
-data/two-stage-v3/base-v3/                       (학습 단계에서 생성 예정)
-├── train.txt / val.txt                          90:10 split, doc 단위 셔플
-└── meta.json / train.bin / val.bin              IT-V2 vocab 재사용
+data/two-stage-v3/
+├── shared/                                      ★ BPE 학습용 합본 (base + it)
+│   ├── train.txt / val.txt                      base + it 합본
+│   ├── meta.json                                vocab 2000, merges 1915, lowercase=false
+│   └── train.bin / val.bin                      23.76M / 3.79M tokens
+├── base/                                        ★ BASE 학습용
+│   ├── train.txt / val.txt                      8,048 / 894 docs (paragraph 보존)
+│   ├── meta.json                                shared/meta.json 복제
+│   └── train.bin / val.bin                      7.53M / 0.86M tokens
+└── it/                                          ★ IT 전이 학습용 (cased 재인코딩)
+    ├── train.txt / val.txt                      data/two-stage-v2/raw/it-v2/{train,val}.txt 사본
+    ├── meta.json                                shared/meta.json 복제
+    └── train.bin / val.bin                      16.23M / 2.93M tokens
 
-data/two-stage-v2/it-v2/                         IT 단계, 변경 없음
-└── meta.json / train.bin / val.bin
+data/two-stage-v2/raw/it-v2/                     IT 원본 (cased 보존본, 합본 입력으로만 사용)
+└── train.txt / val.txt
 ```
 
 ## 5. 코퍼스 record 형식
@@ -182,51 +192,82 @@ data/two-stage-v2/it-v2/                         IT 단계, 변경 없음
 
 ## 6. BPE 및 bin 인코딩
 
-### 6.1 BPE vocab 결정 — IT-V2 재사용
-- IT-V2 vocab (2,048 tokens) 재사용 권장 (`EncodeWithExistingMeta.kt`)
-- 이유: BASE → IT 전이 시 token 분포 일관성 확보 (vocab mismatch 방지)
-- 단점: IT-V2가 dialogue 코퍼스 기반이라 백과사전 어휘에 sub-optimal — 일부 단어가 sub-token 다수로 쪼개질 수 있음. 그러나 base-v2 → IT-V2 전이도 같은 vocab으로 진행했으므로 일관성이 더 중요.
+### 6.1 BPE vocab 결정 — base + IT 합본으로 새 vocab 학습 (cased)
+- 합본 코퍼스 = base/train.txt + it/train.txt (`data/two-stage-v3/shared/`)
+- `vocabSize = 2000`, `lowercase = false` (대문자 보존), `useWordPreTokenize = true`
+- BASE → IT 두 단계가 **같은 cased vocab을 공유** → token 분포 일관성 확보
+- 이전 lowercase IT-V2 vocab (`data/two-stage-v2/it-v2/`) 은 폐기 (lowercase 정제본 통째 삭제)
 
-### 6.2 train/val split
-- doc 단위 90:10 (random seed 고정 — 권장 `seed=42`)
-- 라인당 1 doc, `<|bos|>{text}<|eos|>` 래핑
+### 6.2 paragraph + 줄바꿈 보존 (1라인 1doc 아님)
+- 본문 paragraph 구분(`\n`)은 train.txt에 그대로 보존
+- doc wrap: `<|bos|>\n{text}\n<|eos|>` (한 doc은 multi-line)
+- doc 사이는 빈 줄 (`\n\n`) 으로 구분
+- 라인 안의 multi-space/tab → 단일 공백, smart-quote → ASCII, non-ASCII 제거 (`scripts/text_cleaning.py: clean_preserve_paragraphs`)
+- 저빈도 char(`_ / + ^ $ = ] [ & ~ { } \` \\ @`)는 합본 char-freq pivot 임계로 자동 제거
 
-### 6.3 산출
+### 6.3 train/val split
+- doc 단위 90:10 (random seed 고정 — `seed=42`)
+
+### 6.4 산출 (실측)
 ```
-data/two-stage-v3/base-v3/
-├── train.txt          ~3.6 M words (90%)
-├── val.txt            ~0.4 M words (10%)
-├── meta.json          IT-V2 vocab 복제 (2,048 tokens)
-├── train.bin          ~5.0 - 5.7 M tokens
-└── val.bin            ~0.6 - 0.7 M tokens
+data/two-stage-v3/shared/         ← BPE 학습용 합본 (base + IT)
+├── train.txt          base + IT 합본 (82 MB, 합본)
+├── val.txt            base val + IT val (13 MB)
+├── meta.json          ★ vocab 2000, merges 1915, lowercase=false
+├── train.bin          23.76 M tokens
+└── val.bin            3.79 M tokens
+
+data/two-stage-v3/base/         ← BASE 학습용
+├── train.txt          8,048 docs / 3.61 M words / 21.6 MB
+├── val.txt            894 docs / 0.42 M words / 2.5 MB
+├── meta.json          shared/meta.json 복제
+├── train.bin          7.53 M tokens
+└── val.bin            0.86 M tokens
+
+data/two-stage-v3/it/           ← IT 전이 학습용 (cased 재인코딩)
+├── train.txt          IT-V2 train.txt (61 MB, 대소문자 보존본)
+├── val.txt            IT-V2 val.txt (11 MB)
+├── meta.json          shared/meta.json 복제
+├── train.bin          16.23 M tokens
+└── val.bin            2.93 M tokens
 ```
 
-### 6.4 빌드 명령 (예정)
+### 6.5 빌드 명령 (재현)
 ```bash
-# 1) corpus 재구성 (vital L1-L4 추출 + train/val split + bos/eos wrap)
-python scripts/build_base_v3_train_val.py \
-    --input data/simplewiki/simplewiki_vital_corpus.jsonl \
-    --max-level 4 \
-    --output-dir data/two-stage-v3/base-v3 \
-    --val-frac 0.10 --seed 42
+# 1) base train/val.txt 생성 (vital L1-L4 + paragraph 보존)
+python3 scripts/build_base_v3_train_val.py \
+    --max-level 4 --val-frac 0.10 --seed 42
 
-# 2) BPE 인코딩 (IT-V2 vocab 재사용)
+# 2) shared 디렉토리에 합본 + IT-V2 cased 사본
+mkdir -p data/two-stage-v3/shared data/two-stage-v3/it
+cat data/two-stage-v3/base/train.txt data/two-stage-v2/raw/it-v2/train.txt \
+    > data/two-stage-v3/shared/train.txt
+cat data/two-stage-v3/base/val.txt   data/two-stage-v2/raw/it-v2/val.txt \
+    > data/two-stage-v3/shared/val.txt
+cp data/two-stage-v2/raw/it-v2/{train,val}.txt data/two-stage-v3/it/
+
+# 3) shared에서 cased BPE 학습 (vocab 2000)
+./gradlew runStoriesBpe --args="data/two-stage-v3/shared 2000 cased"
+
+# 4) base + it 인코딩 (같은 vocab)
 ./gradlew runEncodeWithExistingMeta \
-    --args="data/two-stage-v3/base-v3 data/two-stage-v2/it-v2/meta.json"
+    --args="data/two-stage-v3/shared/meta.json data/two-stage-v3/base"
+./gradlew runEncodeWithExistingMeta \
+    --args="data/two-stage-v3/shared/meta.json data/two-stage-v3/it"
 ```
 
 ## 7. BASE 학습 (vec 백엔드)
 
 ### 7.1 진입점 (예정)
-- 신규: `src/main/kotlin/train/experiments/TwoStageBaseV3VitalTrainVec.kt`
+- 신규: `src/main/kotlin/train/experiments/TwoStageBaseTrainV3Vec.kt`
 - 모델: 1M-param vec backend (기존 `TwoStageBaseV2TrainVec.kt` 형상 그대로)
-- 데이터: `data/two-stage-v3/base-v3/{train,val}.bin`
-- 체크포인트: `model/base-v3/vec/${paramCount}/v0001/`
+- 데이터: `data/two-stage-v3/base/{train,val}.bin`
+- 체크포인트: `model/base/vec/${paramCount}/v0001/`
 
 ### 7.2 학습 hyperparameters
 ```kotlin
 TrainConfig(
-    dataPath = "data/two-stage-v3/base-v3",
+    dataPath = "data/two-stage-v3/base",
     modelDir = "model",
     embeddingDimension = 256,
     numberOfLayers = 6,
@@ -273,14 +314,14 @@ TrainConfig(
 ## 8. IT 전이 학습
 
 ### 8.1 진입점 (예정)
-- 기존 `TwoStageITV2TrainVec.kt` 그대로 사용 가능 — `init_from` 만 base-v3-vital ckpt로 변경
-- 또는 신규 wrapper: `TwoStageITV2OnBaseV3VitalTrainVec.kt`
+- 기존 `TwoStageITV2TrainVec.kt` 그대로 사용 가능 — `init_from` 만 base-v3 ckpt로 변경
+- 또는 신규 wrapper: `TwoStageITTrainV3Vec.kt`
 
 ### 8.2 IT 학습 hyperparameters
 - 기존 IT-V2 학습 그대로
 - 학습률: BASE의 1/2 (e.g. 3e-4)
 - maxIters: 4-6k (IT 코퍼스 작아 빠르게 수렴)
-- vocab: BASE와 동일 (IT-V2 vocab 재사용 보장)
+- vocab: BASE와 동일 (shared cased vocab 사용 보장)
 
 ### 8.3 검증 지표
 - IT val ppl
@@ -291,7 +332,7 @@ TrainConfig(
 
 | 지표 | 측정 방법 | 비교 대상 |
 |---|---|---|
-| BASE val ppl | base-v3-vital 학습 중 best | base-v2 BASE 단계 ppl |
+| BASE val ppl | base-v3 학습 중 best | base-v2 BASE 단계 ppl |
 | BASE → IT val ppl | IT 전이 학습 중 best | dialogues-a510 base-v2 → IT-V2 전이 ppl |
 | 샘플 텍스트 정성 | runSamplePromptsFromFile | 5세 친화 prompt 5종 (가족·동물·자연 etc) |
 | Knowledge probing | "What is Saturn?" 등 vital 표제어 직접 prompt 응답 | base-v2 동급 |
@@ -326,32 +367,36 @@ BASE → IT 전이 후 base-v2 대비 ppl이 크게 악화되면(예: 30% 이상
 python scripts/build_base_v3_train_val.py \
     --input data/simplewiki/simplewiki_vital_corpus.jsonl \
     --max-level 4 \
-    --output-dir data/two-stage-v3/base-v3 \
+    --output-dir data/two-stage-v3/base \
     --val-frac 0.10 --seed 42
 ```
 
 ### 11.2 BPE 인코딩 (Kotlin)
+실제 인코딩 흐름은 §6.5 의 4단계 (shared 합본 → cased BPE 학습 → base/it 인코딩). 위 §11.1 산출 후:
 ```bash
+# shared 합본 + cased BPE 학습 후
 ./gradlew runEncodeWithExistingMeta \
-    --args="data/two-stage-v3/base-v3 data/two-stage-v2/it-v2/meta.json"
+    --args="data/two-stage-v3/shared/meta.json data/two-stage-v3/base"
+./gradlew runEncodeWithExistingMeta \
+    --args="data/two-stage-v3/shared/meta.json data/two-stage-v3/it"
 ```
 
 ### 11.3 BASE 학습 (Kotlin, 신규 진입점)
 ```bash
-./gradlew runTwoStageBaseV3VitalTrainVec
+./gradlew runTwoStageBaseTrainV3Vec
 # 또는 resume:
-./gradlew runTwoStageBaseV3VitalTrainVec --args="resume"
+./gradlew runTwoStageBaseTrainV3Vec --args="resume"
 ```
 
 ### 11.4 IT 전이 학습
 ```bash
-./gradlew runTwoStageITV2OnBaseV3VitalTrainVec
+./gradlew runTwoStageITTrainV3Vec
 ```
 
 ### 11.5 검증
 ```bash
 ./gradlew runSamplePromptsFromFile \
-    --args="model/base-v3/vec/<param>/v0001 prompts/vital-base-prompts.txt"
+    --args="model/base/vec/<param>/v0001 prompts/vital-base-prompts.txt"
 ```
 
 ## 12. 산출물 체크리스트
@@ -359,11 +404,11 @@ python scripts/build_base_v3_train_val.py \
 다음 작업 시 이 항목들을 모두 산출해야 완료:
 
 - [ ] `scripts/build_base_v3_train_val.py` 신규
-- [ ] `data/two-stage-v3/base-v3/{train,val}.txt` 생성
-- [ ] `data/two-stage-v3/base-v3/{meta.json,train.bin,val.bin}` 생성 (BPE 인코딩)
-- [ ] `src/main/kotlin/train/experiments/TwoStageBaseV3VitalTrainVec.kt` 신규
-- [ ] `build.gradle.kts` 에 `runTwoStageBaseV3VitalTrainVec` 태스크 추가
-- [ ] `src/main/kotlin/train/experiments/TwoStageITV2OnBaseV3VitalTrainVec.kt` 신규 (또는 기존 `TwoStageITV2TrainVec.kt` 의 init_from 인자화)
+- [ ] `data/two-stage-v3/base/{train,val}.txt` 생성
+- [ ] `data/two-stage-v3/base/{meta.json,train.bin,val.bin}` 생성 (BPE 인코딩)
+- [ ] `src/main/kotlin/train/experiments/TwoStageBaseTrainV3Vec.kt` 신규
+- [ ] `build.gradle.kts` 에 `runTwoStageBaseTrainV3Vec` 태스크 추가
+- [ ] `src/main/kotlin/train/experiments/TwoStageITTrainV3Vec.kt` 신규 (또는 기존 `TwoStageITV2TrainVec.kt` 의 init_from 인자화)
 - [ ] BASE 학습 → ckpt 동결
 - [ ] IT 전이 학습 → ckpt 동결
 - [ ] 샘플링 결과 정성 평가

@@ -30,9 +30,9 @@ tasks.register<JavaExec>("runMain") {
     jvmArgs = listOf("-Xmx2g")
 }
 
-tasks.register<JavaExec>("runStoriesBpe") {
-    description = "Run StoriesBpePrep (스토리 BPE 처리)"
-    mainClass.set("data.StoriesBpePrepKt")
+tasks.register<JavaExec>("runBpe") {
+    description = "Run BpePrep (BPE 학습 + 인코딩)"
+    mainClass.set("data.BpePrepKt")
     classpath = sourceSets.main.get().runtimeClasspath
     jvmArgs = listOf("-Xmx12g")
 }
@@ -42,13 +42,6 @@ tasks.register<JavaExec>("runAlphabetPrep") {
     mainClass.set("data.AlphabetPrepKt")
     classpath = sourceSets.main.get().runtimeClasspath
     jvmArgs = listOf("-Xmx2g")
-}
-
-tasks.register<JavaExec>("runStoryGenerator") {
-    description = "Run StoryGenerator (스토리 생성)"
-    mainClass.set("data.StoryGeneratorKt")
-    classpath = sourceSets.main.get().runtimeClasspath
-    jvmArgs = listOf("-Xmx4g")
 }
 
 tasks.register<JavaExec>("runBPETest") {

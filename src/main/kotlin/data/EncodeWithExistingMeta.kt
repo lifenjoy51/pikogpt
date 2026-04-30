@@ -58,6 +58,6 @@ private fun encodeIfExists(bpe: SimpleBPE, src: File, dst: File) {
     }
     val text = src.readText()
     val tokens = bpe.encode(text)
-    StoriesBPEPrep.writeData(tokens, dst)
+    BpePrep.writeData(tokens, dst)
     println("인코딩 완료: ${src.name} (${text.length} chars) → ${dst.name} (${tokens.size} tokens)")
 }

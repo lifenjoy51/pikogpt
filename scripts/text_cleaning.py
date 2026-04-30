@@ -60,12 +60,33 @@ THRESHOLD_PIVOT_CHAR = '_'
 
 
 def clean_strict(text: str) -> str:
-    """smart-quote/dash/ellipsis → ASCII 등가 + non-ASCII 제거 + 공백 정규화."""
+    """smart-quote/dash/ellipsis → ASCII 등가 + non-ASCII 제거 + 공백 정규화.
+    paragraph 구분(\\n\\n)은 모두 단일 공백으로 평탄화 (1라인 1doc 형식용)."""
     text = text.translate(SMART)
     text = NON_ASCII.sub('', text)
     text = WS_RE.sub(' ', text)
     lines = [ln.strip() for ln in text.splitlines()]
     return '\n'.join(ln for ln in lines if ln)
+
+
+def clean_preserve_paragraphs(text: str) -> str:
+    """clean_strict와 동일하되 paragraph 구분(\\n\\n)을 보존.
+
+    - smart-quote → ASCII 등가
+    - non-ASCII 제거
+    - 라인 안의 multi-space/tab → 단일 공백
+    - 라인 trim (단, 빈 줄은 살려서 paragraph 구분 유지)
+    - 3+ 연속 newline → 2개 (단락 간 한 줄만)
+    """
+    text = text.translate(SMART)
+    text = NON_ASCII.sub('', text)
+    text = WS_RE.sub(' ', text)
+    lines = [ln.strip() for ln in text.splitlines()]
+    text = '\n'.join(lines)
+    # 3+ newline → 2 (단락 간 빈 줄 1개로 정규화)
+    while '\n\n\n' in text:
+        text = text.replace('\n\n\n', '\n\n')
+    return text.strip()
 
 
 def filter_low_freq_chars(text: str, allowed: set) -> str:

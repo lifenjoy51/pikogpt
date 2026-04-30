@@ -37,8 +37,8 @@ data class TrainConfig(
     val replayRatio: Float = 0.0f,
 
     // 데이터
-    /** 사용할 데이터셋의 이름 (e.g., "stories") */
-    val dataset: String = "stories",
+    /** 사용할 데이터셋의 이름 (e.g., "base", "it") */
+    val dataset: String = "default",
     /** 그래디언트 누적 단계 수. 실질적인 배치 크기를 늘려 안정적인 학습을 돕습니다. [메모리: 낮음, 시간: 선형 증가] */
     val gradientAccumulationSteps: Int = 2,
     /** 한 번의 반복(iteration)에서 사용할 데이터 샘플의 수 [메모리: 선형 증가, 시간: 선형 증가] */
