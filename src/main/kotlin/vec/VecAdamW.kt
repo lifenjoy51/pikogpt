@@ -82,6 +82,18 @@ class VecAdamW(
     }
 
     /**
+     * Optimizer 내부 상태(timeStep + 1·2차 모멘트)를 0으로 초기화.
+     *
+     * Pretrain 가중치를 로드한 뒤 finetune을 시작할 때 호출 — 이전 학습의 모멘텀이
+     * 새 데이터 분포에 부적절할 수 있으므로 깨끗하게 reset.
+     */
+    fun resetState() {
+        timeStep = 0
+        for (m in firstMoment) m.fill(0.0f)
+        for (v in secondMoment) v.fill(0.0f)
+    }
+
+    /**
      * 옵티마이저 상태(timeStep + 모든 파라미터의 1·2차 모멘트)를 binary로 저장.
      *
      * 포맷: `[int32 timeStep][param0 m][param0 v][param1 m][param1 v]...`

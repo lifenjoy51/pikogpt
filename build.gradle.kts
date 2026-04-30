@@ -177,6 +177,41 @@ tasks.register<JavaExec>("runDialoguesA510M773SwiGLURoPETrainVec") {
     jvmArgs = listOf("-Xmx6g")
 }
 
+tasks.register<JavaExec>("runTwoStageBaseTrainVec") {
+    description = "Run TwoStageBaseTrainVec (TinyHelen wiki+textbook BASE pretrain — 사실 지식 주입)"
+    mainClass.set("train.experiments.TwoStageBaseTrainVecKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx6g")
+}
+
+tasks.register<JavaExec>("runTwoStageITTrainVec") {
+    description = "Run TwoStageITTrainVec (dialogues-a510 IT finetune + 20% BASE replay)"
+    mainClass.set("train.experiments.TwoStageITTrainVecKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx6g")
+}
+
+tasks.register<JavaExec>("runTwoStageBaseV2TrainVec") {
+    description = "Run TwoStageBaseV2TrainVec (TinyHelen wiki+textbook+web+book BASE pretrain, vocab 2000)"
+    mainClass.set("train.experiments.TwoStageBaseV2TrainVecKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx6g")
+}
+
+tasks.register<JavaExec>("runTwoStageITV2TrainVec") {
+    description = "Run TwoStageITV2TrainVec (v2 IT finetune + 20% v2 BASE replay)"
+    mainClass.set("train.experiments.TwoStageITV2TrainVecKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx6g")
+}
+
+tasks.register<JavaExec>("runEncodeWithExistingMeta") {
+    description = "Run EncodeWithExistingMeta (공유 meta.json으로 다른 디렉터리 인코딩)"
+    mainClass.set("data.EncodeWithExistingMetaKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx12g")
+}
+
 tasks.register<JavaExec>("runSampler") {
     description = "Run SamplerMain (샘플링)"
     mainClass.set("sample.SamplerMainKt")

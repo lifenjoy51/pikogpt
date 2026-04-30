@@ -9,7 +9,9 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import train.BatchSource
 import train.DataLoader
+import train.MixedDataLoader
 import train.TrainConfig
 import vec.layer.VecPikoGPT
 import vec.ops.crossEntropyBackward
@@ -41,7 +43,7 @@ class VecTrainer(private val config: TrainConfig) {
 
     private lateinit var model: VecPikoGPT
     private lateinit var optimizer: VecAdamW
-    private lateinit var trainLoader: DataLoader
+    private lateinit var trainLoader: BatchSource
     private lateinit var valLoader: DataLoader
 
     /**
@@ -108,7 +110,20 @@ class VecTrainer(private val config: TrainConfig) {
             emptyList()
         }
 
-        trainLoader = DataLoader("${config.dataPath}/train.bin", config.batchSize, config.blockSize)
+        // replayDataPath가 지정되면 MixedDataLoader로 두 코퍼스를 mix해서 IT(finetune) 단계의 BASE replay를 구현.
+        // 그 외 단일 코퍼스 학습은 기존 DataLoader 그대로.
+        trainLoader = if (config.replayDataPath != null && config.replayRatio > 0.0f) {
+            println("Mixed train loader 활성: primary=${config.dataPath}/train.bin, replay=${config.replayDataPath}, ratio=${config.replayRatio}")
+            MixedDataLoader(
+                primaryPath = "${config.dataPath}/train.bin",
+                replayPath = config.replayDataPath,
+                replayRatio = config.replayRatio,
+                batchSize = config.batchSize,
+                blockSize = config.blockSize,
+            )
+        } else {
+            DataLoader("${config.dataPath}/train.bin", config.batchSize, config.blockSize)
+        }
         valLoader = DataLoader("${config.dataPath}/val.bin", config.batchSize, config.blockSize)
 
         optimizer = VecAdamW(
@@ -119,13 +134,28 @@ class VecTrainer(private val config: TrainConfig) {
             weightDecay = config.weightDecay,
         )
 
-        if (config.initFrom == "resume") {
-            val latest = findLatestCheckpoint()
-            if (latest != null) {
-                loadCheckpoint(latest)
-            } else {
-                println("initFrom=resume 이지만 체크포인트를 찾지 못함 — scratch로 진행합니다 (modelPath=$modelPath)")
+        when (config.initFrom) {
+            "scratch" -> { /* 신규 학습 — 추가 작업 없음 */ }
+            "resume" -> {
+                val latest = findLatestCheckpoint()
+                if (latest != null) {
+                    loadCheckpoint(latest)
+                } else {
+                    println("initFrom=resume 이지만 체크포인트를 찾지 못함 — scratch로 진행합니다 (modelPath=$modelPath)")
+                }
             }
+            "pretrain_weights" -> {
+                val src = config.pretrainCheckpointDir
+                    ?: error("initFrom=pretrain_weights 일 때 pretrainCheckpointDir이 필요합니다")
+                val srcDir = File(src)
+                require(srcDir.exists()) { "pretrainCheckpointDir 존재하지 않음: $src" }
+                loadModelWeights(File(srcDir, "model_weights.bin"))
+                optimizer.resetState()
+                iterationNumber = 0
+                bestLoss = baselineLoss
+                println("Pretrain 가중치 로드 완료: ${srcDir.absolutePath}; optimizer state reset; iter=0")
+            }
+            else -> error("알 수 없는 initFrom 값: ${config.initFrom}")
         }
 
         // 학습 모드 ON — dropout 활성화. eval 시점에만 잠시 OFF로 전환.

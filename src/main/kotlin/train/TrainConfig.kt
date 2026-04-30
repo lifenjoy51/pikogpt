@@ -25,10 +25,16 @@ data class TrainConfig(
     val evalOnly: Boolean = false,
     /** true일 경우, 성능 향상 여부와 관계없이 항상 체크포인트를 저장 */
     val alwaysSaveCheckpoint: Boolean = true,
-    /** 모델 초기화 방식 ('scratch': 처음부터 학습, 'resume': 체크포인트에서 이어하기) */
+    /** 모델 초기화 방식 ('scratch': 처음부터 학습, 'resume': 체크포인트에서 이어하기, 'pretrain_weights': pretrain 가중치만 로드 + optimizer reset). */
     val initFrom: String = "scratch",
     /** 체크포인트를 저장할 때 사용할 하위 디렉토리 이름 (선택 사항) */
     val modelCheckpointDir: String? = null,
+    /** initFrom='pretrain_weights' 일 때 가중치를 로드할 ckpt 디렉터리 경로. */
+    val pretrainCheckpointDir: String? = null,
+    /** Replay용 보조 train.bin 경로. null이면 단일 데이터로더 사용. IT(finetune) 단계에서 BASE 데이터를 일정 비율 섞어 catastrophic forgetting을 줄일 때 지정. */
+    val replayDataPath: String? = null,
+    /** Replay 비율 (0.0~1.0). 미니배치 시퀀스마다 Bernoulli(p=replayRatio)로 replay 데이터에서 추출. 0이면 비활성. */
+    val replayRatio: Float = 0.0f,
 
     // 데이터
     /** 사용할 데이터셋의 이름 (e.g., "stories") */

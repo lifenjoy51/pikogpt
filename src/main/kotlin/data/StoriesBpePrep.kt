@@ -10,11 +10,22 @@ import java.nio.file.StandardOpenOption
 
 /**
  * `StoriesBPEPrep`을 실행해 지정된 데이터 디렉토리의 `stories.txt`를 BPE로 토큰화한다.
- * 인자가 없으면 기본 경로 `data/simple` 을 사용.
+ * 인자: args[0] = path (기본 `data/simple`), args[1] = vocab size (기본 1000),
+ *       args[2] = "skip-bin" 이면 train.bin/val.bin 건너뛰고 meta.json만 작성.
+ *
+ * 사용 예:
+ *   ./gradlew runStoriesBpe --args="data/two-stage-v2/shared 2000"
+ *   ./gradlew runStoriesBpe --args="data/two-stage-v2/shared 2000 skip-bin"  # OOM 회피
  */
 fun main(args: Array<String>) {
     val path = args.getOrNull(0) ?: "data/simple"
-    StoriesBPEPrep.run(path)
+    val vocab = args.getOrNull(1)?.toIntOrNull()
+    val skipBin = args.any { it.equals("skip-bin", ignoreCase = true) }
+    if (vocab != null) {
+        StoriesBPEPrep.run(path, maxVocabSize = vocab, skipBinOutput = skipBin)
+    } else {
+        StoriesBPEPrep.run(path, skipBinOutput = skipBin)
+    }
 }
 
 /**
@@ -39,12 +50,17 @@ object StoriesBPEPrep {
     private const val DEFAULT_WORD_PRE_TOKENIZE = true
     private const val DEFAULT_VOCAB_SIZE = 1000
 
+    /** unique_words.txt 분석 시 special token이 인접 단어와 합쳐지지 않도록 격리할 토큰들. */
+    private val SPECIAL_TOKENS_FOR_ANALYSIS = listOf("<|eos|>", "<|unk|>", "<|bos|>", "<|turn|>")
+
     fun run(
         path: String,
         maxVocabSize: Int = DEFAULT_VOCAB_SIZE,
         lowercase: Boolean = DEFAULT_LOWERCASE,
         useWordPreTokenize: Boolean = DEFAULT_WORD_PRE_TOKENIZE,
         verbose: Boolean = true,
+        /** true면 train.bin/val.bin은 만들지 않고 meta.json만 작성. 큰 코퍼스에서 encode 단계 OOM 회피용. */
+        skipBinOutput: Boolean = false,
     ) {
         val dataDir = File(path)
         val trainFile = File(path, "train.txt")
@@ -68,10 +84,20 @@ object StoriesBPEPrep {
             is SplitSource.Combined -> split.text
         }
 
-        // 고유 단어 빈도 덤프 (디버그용) — train 소스 기준. 정규화는 이 한 번만.
-        val analysisText = if (lowercase) trainText.lowercase() else trainText
+        // 고유 단어 빈도 덤프 (디버그용) — train 소스 기준.
+        // special token(`<|turn|>` 등)이 인접 발화와 공백 없이 붙어있을 때
+        // 정규식 [^a-z\s] 단순 제거가 `okay<|turn|>okay` → `okayturnokay`로 합쳐버리는
+        // 문제를 막기 위해, 미리 special token 주변에 공백을 삽입한 뒤 정규화한다.
+        val analysisText = run {
+            var t = if (lowercase) trainText.lowercase() else trainText
+            for (token in SPECIAL_TOKENS_FOR_ANALYSIS) {
+                t = t.replace(token.lowercase(), " $token ")
+            }
+            t
+        }
         val uniqueWords = analysisText
-            .replace(Regex("[^a-z\\s]"), "")
+            // 알파벳/공백 외 chars를 *공백*으로 치환 (제거 시 `word1.word2`가 `word1word2`로 합쳐짐).
+            .replace(Regex("[^a-z\\s]"), " ")
             .split(Regex("\\s+"))
             .filter { it.isNotEmpty() }
             .groupingBy { it }
@@ -93,6 +119,28 @@ object StoriesBPEPrep {
         )
         bpe.train(trainText)
 
+        // 메타데이터 즉시 저장 — encode 단계가 OOM/SIGTERM으로 죽어도 BPE 학습 결과는 보존.
+        val stoi = bpe.getStoi()
+        val itos = bpe.getItos()
+        val mergesSerialized = bpe.getMerges().map { listOf(it.first, it.second) }
+        val meta = MetaInfo(
+            vocabularySize = bpe.getVocabSize(),
+            indexToString = itos,
+            stringToIndex = stoi,
+            merges = mergesSerialized,
+            lowercase = lowercase,
+            useWordPreTokenize = useWordPreTokenize,
+        )
+        val json = Json { prettyPrint = true }
+        File(dataDir, "meta.json").writeText(json.encodeToString(meta))
+        println("Vocab size: ${bpe.getVocabSize()}, merges: ${mergesSerialized.size}")
+        println("Saved meta: ${File(dataDir, "meta.json").absolutePath}")
+
+        if (skipBinOutput) {
+            println("skipBinOutput=true → train.bin/val.bin 건너뜀. 학습용 인코딩은 별도 task에서.")
+            return
+        }
+
         val (trainTokens, valTokens) = when (split) {
             is SplitSource.Separate -> {
                 val tr = bpe.encode(split.trainText)
@@ -111,24 +159,6 @@ object StoriesBPEPrep {
 
         writeData(trainTokens, File(dataDir, "train.bin"))
         writeData(valTokens, File(dataDir, "val.bin"))
-
-        // 메타데이터 저장 (Sampler가 정확히 같은 토큰화를 재생하려면 merges + 플래그가 필요)
-        val stoi = bpe.getStoi()
-        val itos = bpe.getItos()
-        val mergesSerialized = bpe.getMerges().map { listOf(it.first, it.second) }
-        val meta = MetaInfo(
-            vocabularySize = bpe.getVocabSize(),
-            indexToString = itos,
-            stringToIndex = stoi,
-            merges = mergesSerialized,
-            lowercase = lowercase,
-            useWordPreTokenize = useWordPreTokenize,
-        )
-        val json = Json { prettyPrint = true }
-        File(dataDir, "meta.json").writeText(json.encodeToString(meta))
-
-        println("Vocab size: ${bpe.getVocabSize()}, merges: ${mergesSerialized.size}")
-        println("Saved: ${File(dataDir, "meta.json").absolutePath}")
     }
 
     /**
