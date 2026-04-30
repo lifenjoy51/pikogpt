@@ -4,6 +4,31 @@
 
 본 문서는 **데이터 준비(Stage A-C) 까지** 완료된 상태를 기록. 학습 코드(Stage D — `ThreeStage*TrainV4Vec.kt`, `TripleDataLoader`)는 후속 작업.
 
+## 0. 선결 조건
+
+### 환경
+- **Python 3.10+** (3.11에서 검증). `nltk` (3.9.x). `nltk.download('wordnet')`는 다운로드 스크립트가 자동 호출.
+- **JDK 17+** (Temurin 17 검증). **Gradle 8.x** (wrapper로 자동).
+- **디스크 공간**: ~210 MB
+  - dict 다운로드: 40 MB (Simple Dict 21 MB + WordNet dump 19 MB)
+  - 합본/encode 산출물: ~170 MB (`shared/train.txt` 84 MB + 학습용 .bin 합 86 MB)
+
+### 데이터 의존성
+**v3 데이터셋이 먼저 빌드되어 있어야** Stage B에서 `wiki/` (← `data/two-stage-v3/base/`)와 `conv/` (← `data/two-stage-v3/it/`)를 복사할 수 있습니다.
+- v3 빌드 절차: `docs/base-v3-recipe.md` 참조
+- 필수 파일: `data/two-stage-v3/base/{train,val}.txt`, `data/two-stage-v3/it/{train,val}.txt`
+
+### 결정 파라미터 (재현용 고정값)
+
+| 파라미터 | 값 | 위치 | 역할 |
+|---|---|---|---|
+| `FREQ_THRESHOLD` | 10 | `merge_kid_dictionaries.py` | v3 코퍼스 빈도 화이트리스트 컷 |
+| `MAX_MEANINGS` | 5 | `merge_kid_dictionaries.py` | entry당 최대 의미 |
+| `VAL_FRAC` | 0.10 | `render_dict_docs.py` | dict train/val split |
+| `SEED` | 42 | `render_dict_docs.py` | shuffle / split 재현 |
+| `vocab` | 2000 | `runBpe` 인자 | BPE vocab 크기 |
+| BPE flags | `cased skip-bin` | `runBpe` 인자 | 대소문자 보존 + shared bin 생략 |
+
 ## 1. 결정 요약
 
 ### 핵심 변경
@@ -94,6 +119,9 @@ python3 scripts/render_dict_docs.py
 ### Stage B — wiki / conv 복사 + 형식 통일 + shared 합본
 
 ```bash
+# 사전: dict/는 Stage A.3에서 자동 생성. 나머지 디렉토리는 cp/cat 전에 mkdir.
+mkdir -p data/three-stage-v4/{wiki,conv,shared}
+
 # wiki: v3 base를 그대로 복사 (다단락 본문) → 1 line=1 doc + 리터럴 \n으로 변환
 cp data/two-stage-v3/base/{train,val}.txt data/three-stage-v4/wiki/
 python3 scripts/inline_wiki_docs.py    # 정규식 <|bos|>...<|eos|> 매칭
@@ -239,6 +267,91 @@ data/three-stage-v4/
 - `TrainConfig` 다중 replay 필드 — `train/TrainConfig.kt`
 - 3개 trainer entry point — `train/experiments/ThreeStage{Dict,Wiki,Conv}TrainV4Vec.kt`
 - 3개 gradle task — `build.gradle.kts`
+
+## 10. Quick reference — 처음부터 끝까지 한 번에
+
+선결 조건(§0)이 모두 충족된 상태에서 **repo root에서** 실행. 총 소요 ~5-7분.
+
+```bash
+# 0. v3 의존 파일 확인 (없으면 docs/base-v3-recipe.md 먼저 빌드)
+test -f data/two-stage-v3/base/train.txt && \
+test -f data/two-stage-v3/base/val.txt && \
+test -f data/two-stage-v3/it/train.txt && \
+test -f data/two-stage-v3/it/val.txt || { echo "v3 데이터 없음. docs/base-v3-recipe.md 빌드 필요."; exit 1; }
+
+# Stage A — dict 데이터 빌드
+python3 scripts/download_kid_dictionaries.py
+python3 scripts/merge_kid_dictionaries.py
+python3 scripts/render_dict_docs.py
+
+# Stage B — wiki/conv 복사 + shared 합본
+mkdir -p data/three-stage-v4/{wiki,conv,shared}
+cp data/two-stage-v3/base/{train,val}.txt data/three-stage-v4/wiki/
+python3 scripts/inline_wiki_docs.py
+cp data/two-stage-v3/it/{train,val}.txt data/three-stage-v4/conv/
+cat data/three-stage-v4/{dict,wiki,conv}/train.txt > data/three-stage-v4/shared/train.txt
+cat data/three-stage-v4/{dict,wiki,conv}/val.txt   > data/three-stage-v4/shared/val.txt
+
+# Stage C — BPE 학습 + 인코딩
+./gradlew runBpe --args="data/three-stage-v4/shared 2000 cased skip-bin"
+for d in dict wiki conv; do
+  ./gradlew runEncodeWithExistingMeta \
+    --args="data/three-stage-v4/shared/meta.json data/three-stage-v4/$d"
+done
+```
+
+## 11. 빌드 후 검증
+
+`expected vs actual`로 sanity check. 수치가 다르면 어떤 단계에서 어긋났는지 진단.
+
+```bash
+# 1) shared meta.json — vocab/merges 검증
+python3 -c "
+import json
+m = json.load(open('data/three-stage-v4/shared/meta.json'))
+assert m['vocabularySize'] == 2000, f'vocab mismatch: {m[\"vocabularySize\"]}'
+assert m['useWordPreTokenize'] == True, 'pre-tokenize off'
+assert len(m['merges']) >= 1900, f'merges 부족: {len(m[\"merges\"])}'
+print(f'OK: vocab={m[\"vocabularySize\"]}, merges={len(m[\"merges\"])}')
+"
+
+# 2) 학습용 토큰 수 — 결정 파라미터 동일 + v3 입력 동일이면 동일 수치 나와야
+python3 -c "
+import os
+expected = {'dict': 863_415, 'wiki': 7_485_510, 'conv': 16_271_975}
+for d, e in expected.items():
+    sz = os.path.getsize(f'data/three-stage-v4/{d}/train.bin') // 4
+    diff_pct = 100 * abs(sz - e) / e
+    status = 'OK' if diff_pct < 1.0 else f'WARN ({diff_pct:.1f}% off)'
+    print(f'{d:<6} {sz:>12,} (expected {e:>12,}) {status}')
+"
+
+# 3) doc 수 vs 라인 수 — 1 line = 1 doc 검증
+for d in dict wiki conv; do
+    lines=$(wc -l < data/three-stage-v4/$d/train.txt)
+    docs=$(grep -c "<|bos|>" data/three-stage-v4/$d/train.txt)
+    [ "$lines" -eq "$docs" ] && echo "$d: OK ($lines lines = $docs docs)" \
+        || echo "$d: MISMATCH (lines=$lines docs=$docs)"
+done
+
+# 4) 단어 분포 진단 — dict 보강 효과 (재현 시 동일 수치)
+python3 scripts/analyze_v4_low_freq.py
+# expected:
+#   unique types: dict=38,422  wiki=101,675  conv=35,680  union=123,305
+#   dict ∩ wiki-only & freq≤5 : 5,796
+#   dict ∩ conv-only & freq≤5 : 1,914
+#   only_dict : 8,433
+```
+
+## 12. 트러블슈팅
+
+| 증상 | 원인 | 해결 |
+|---|---|---|
+| `merge_kid_dictionaries.py`가 화이트리스트 0개 | `data/two-stage-v3/{base,it}/train.txt` 없음 | v3 빌드 (`docs/base-v3-recipe.md`) |
+| `nltk.download('wordnet')` 실패 | 네트워크 차단 / proxy | `~/nltk_data/corpora/wordnet/`로 수동 배치 |
+| `runBpe` OOM | 12GB heap 부족 (대규모 코퍼스) | `build.gradle.kts:37` `-Xmx12g` 상향 또는 `skip-bin` 확실히 적용 |
+| `inline_wiki_docs.py` doc 수가 0 | v3 base가 `<|bos|>...<|eos|>` 형식 아님 | v3 base 형식 확인, 정규식 매칭 점검 |
+| 인코딩 토큰 수가 expected와 ≥1% 다름 | shared/meta.json이 다른 코퍼스로 학습됨 | shared/ 재합본 후 BPE 재실행 |
 - Stage 3 dict/wiki replay 비율 결정 (현재 후보: 15%/15% 또는 11%/19%)
 - 학습 + 단계별 ckpt 평가 (정의 패턴 출력 / 백과 ppl / 대화 ppl)
 - v3 baseline (TwoStageBaseTrainV3Vec → TwoStageITTrainV3Vec) 대비 비교
