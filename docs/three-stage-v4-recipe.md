@@ -6,23 +6,21 @@
 
 ## 0. 선결 조건
 
-### 환경
-- **Python 3.10+** (3.11에서 검증). `nltk` (3.9.x). `nltk.download('wordnet')`는 다운로드 스크립트가 자동 호출.
-- **JDK 17+** (Temurin 17 검증). **Gradle 8.x** (wrapper로 자동).
-- **디스크 공간**: ~210 MB
-  - dict 다운로드: 40 MB (Simple Dict 21 MB + WordNet dump 19 MB)
-  - 합본/encode 산출물: ~170 MB (`shared/train.txt` 84 MB + 학습용 .bin 합 86 MB)
+### 본 레시피의 범위
+**입력**: `data/two-stage-v3/{base,it}/{train,val}.txt` (이미 존재한다 가정 — v3 빌드는 본 레시피 범위 밖, `docs/base-v3-recipe.md` 참조)
+**출력**: `data/three-stage-v4/{dict,wiki,conv,shared}/` 완성 (학습용 `.bin` 포함)
+**책임**: dict 데이터 신규 빌드 + 모든 디렉토리 1 line=1 doc 형식 통일 + BPE + 인코딩
 
-### 데이터 의존성
-**v3 데이터셋이 먼저 빌드되어 있어야** Stage B에서 `wiki/` (← `data/two-stage-v3/base/`)와 `conv/` (← `data/two-stage-v3/it/`)를 복사할 수 있습니다.
-- v3 빌드 절차: `docs/base-v3-recipe.md` 참조
-- 필수 파일: `data/two-stage-v3/base/{train,val}.txt`, `data/two-stage-v3/it/{train,val}.txt`
+### 환경
+- **Python 3.10+** (3.11 검증). `nltk` 3.9.x — `wordnet`는 다운로드 스크립트가 자동 호출.
+- **JDK 17+** (Temurin 17). **Gradle 8.x** (wrapper로 자동).
+- **디스크 공간**: ~210 MB (dict 다운로드 40 MB + 후처리 산출물 170 MB)
 
 ### 결정 파라미터 (재현용 고정값)
 
 | 파라미터 | 값 | 위치 | 역할 |
 |---|---|---|---|
-| `FREQ_THRESHOLD` | 10 | `merge_kid_dictionaries.py` | v3 코퍼스 빈도 화이트리스트 컷 |
+| `FREQ_THRESHOLD` | 10 | `merge_kid_dictionaries.py` | 입력 코퍼스 빈도 화이트리스트 컷 |
 | `MAX_MEANINGS` | 5 | `merge_kid_dictionaries.py` | entry당 최대 의미 |
 | `VAL_FRAC` | 0.10 | `render_dict_docs.py` | dict train/val split |
 | `SEED` | 42 | `render_dict_docs.py` | shuffle / split 재현 |
@@ -270,21 +268,20 @@ data/three-stage-v4/
 
 ## 10. Quick reference — 처음부터 끝까지 한 번에
 
-선결 조건(§0)이 모두 충족된 상태에서 **repo root에서** 실행. 총 소요 ~5-7분.
+선결 조건(§0)이 충족된 상태에서 **repo root에서** 실행. 총 소요 ~5-7분.
 
 ```bash
-# 0. v3 의존 파일 확인 (없으면 docs/base-v3-recipe.md 먼저 빌드)
-test -f data/two-stage-v3/base/train.txt && \
-test -f data/two-stage-v3/base/val.txt && \
-test -f data/two-stage-v3/it/train.txt && \
-test -f data/two-stage-v3/it/val.txt || { echo "v3 데이터 없음. docs/base-v3-recipe.md 빌드 필요."; exit 1; }
+# 입력 검증 (없으면 v3 빌드부터)
+for f in data/two-stage-v3/{base,it}/{train,val}.txt; do
+  test -f "$f" || { echo "입력 누락: $f (본 레시피 범위 밖, v3 빌드 선행 필요)"; exit 1; }
+done
 
-# Stage A — dict 데이터 빌드
+# Stage A — dict 신규 빌드
 python3 scripts/download_kid_dictionaries.py
 python3 scripts/merge_kid_dictionaries.py
 python3 scripts/render_dict_docs.py
 
-# Stage B — wiki/conv 복사 + shared 합본
+# Stage B — wiki/conv 입력 받기 + 형식 통일 + shared 합본
 mkdir -p data/three-stage-v4/{wiki,conv,shared}
 cp data/two-stage-v3/base/{train,val}.txt data/three-stage-v4/wiki/
 python3 scripts/inline_wiki_docs.py
@@ -292,7 +289,7 @@ cp data/two-stage-v3/it/{train,val}.txt data/three-stage-v4/conv/
 cat data/three-stage-v4/{dict,wiki,conv}/train.txt > data/three-stage-v4/shared/train.txt
 cat data/three-stage-v4/{dict,wiki,conv}/val.txt   > data/three-stage-v4/shared/val.txt
 
-# Stage C — BPE 학습 + 인코딩
+# Stage C — BPE 학습 + 인코딩 (후처리)
 ./gradlew runBpe --args="data/three-stage-v4/shared 2000 cased skip-bin"
 for d in dict wiki conv; do
   ./gradlew runEncodeWithExistingMeta \
@@ -347,7 +344,7 @@ python3 scripts/analyze_v4_low_freq.py
 
 | 증상 | 원인 | 해결 |
 |---|---|---|
-| `merge_kid_dictionaries.py`가 화이트리스트 0개 | `data/two-stage-v3/{base,it}/train.txt` 없음 | v3 빌드 (`docs/base-v3-recipe.md`) |
+| `merge_kid_dictionaries.py`가 화이트리스트 0개 | 입력(`data/two-stage-v3/{base,it}/train.txt`) 없음 | 입력 데이터 확보 (본 레시피 범위 밖, v3 빌드는 `docs/base-v3-recipe.md`) |
 | `nltk.download('wordnet')` 실패 | 네트워크 차단 / proxy | `~/nltk_data/corpora/wordnet/`로 수동 배치 |
 | `runBpe` OOM | 12GB heap 부족 (대규모 코퍼스) | `build.gradle.kts:37` `-Xmx12g` 상향 또는 `skip-bin` 확실히 적용 |
 | `inline_wiki_docs.py` doc 수가 0 | v3 base가 `<|bos|>...<|eos|>` 형식 아님 | v3 base 형식 확인, 정규식 매칭 점검 |
