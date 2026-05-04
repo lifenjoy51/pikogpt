@@ -53,7 +53,8 @@ fun main(args: Array<String>) = runBlocking {
     // turn 토큰이 있는 모델에서는 prompt를 "사용자 turn 종료"로 보고 다음 turn(=응답)을 생성하도록
     // prompt 끝에 <|turn|>을 자동 추가. 이렇게 안 하면 따옴표로 닫힌 prompt가 곧바로
     // <|turn|>을 예측해 빈 응답이 나옴.
-    val appendTurn = turnId != null
+    // dict 같은 turn 없는 모델은 args[2]="no-turn"으로 비활성화.
+    val appendTurn = turnId != null && args.getOrNull(2) != "no-turn"
 
     for (prompt in prompts) {
         println("\n=== Prompt: $prompt ===")

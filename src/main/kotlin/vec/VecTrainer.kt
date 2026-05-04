@@ -9,6 +9,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import sample.SampleConfig
 import train.BatchSource
 import train.DataLoader
 import train.MixedDataLoader
@@ -74,6 +75,9 @@ class VecTrainer(private val config: TrainConfig) {
 
     /** 직전 optimizer step의 pre-clip gradient L2 norm — eval 로그에 함께 표시해 학습 안정성 진단. */
     private var lastGradNorm: Float = 0.0f
+
+    /** Early stop용 — best 갱신 안 된 eval 횟수. config.earlyStopPatience 도달 시 학습 종료. */
+    private var earlyStopCounter: Int = 0
 
     fun train() {
         println("=== VecPikoGPT (vec 백엔드) 훈련 시작 ===")
@@ -204,6 +208,22 @@ class VecTrainer(private val config: TrainConfig) {
                 val isBest = avg < bestLoss
                 if (isBest) bestLoss = avg
                 if (isBest || config.alwaysSaveCheckpoint) saveCheckpoint(avg, isBest)
+
+                // Early stop — best 갱신 N번 연속 없으면 학습 조기 종료. plateau 진입 후 시간 낭비 방지.
+                if (config.earlyStopPatience > 0) {
+                    if (isBest) {
+                        earlyStopCounter = 0
+                    } else {
+                        earlyStopCounter++
+                        if (earlyStopCounter >= config.earlyStopPatience) {
+                            println(
+                                "Early stop: best 갱신 ${config.earlyStopPatience}회 연속 없음 — " +
+                                    "iter=${iterationNumber}에서 종료 (maxIters=${config.maxIters})"
+                            )
+                            break
+                        }
+                    }
+                }
             }
 
             if (iterationNumber == 0 && config.evalOnly) break
@@ -450,6 +470,51 @@ class VecTrainer(private val config: TrainConfig) {
 
         val label = if (isBest) "best" else "always"
         println("체크포인트 저장 완료 ($label): ${File(dir, "checkpoint.json").absolutePath}")
+
+        // ckpt 저장 직후 sample 출력 — 학습 진행 상황을 정성적으로 추적.
+        // 새 VecSampler가 ckpt를 다시 로드해 dropout-off 상태 보장. 비용은 무시 가능 (1M params).
+        runSamplesForCheckpoint(dir)
+    }
+
+    /**
+     * `ckpt` 디렉터리에서 `VecSampler`를 새로 만들어 5 prompt × 1 sample = 5개 응답을 stdout에 출력.
+     * 매 ckpt 저장 시 학습 stdout 로그에 함께 찍혀 정성적 진행 추적이 가능.
+     *
+     * **temperature=0 (greedy)** — 모델의 진짜 belief를 보기 위해 random sampling 비활성.
+     * 같은 ckpt에서 항상 같은 결과 → 의미 매핑 변화 추적이 명확.
+     *
+     * 비용: 5 prompt × 1 sample × ~80 token ≈ 400 forward (~5초/ckpt). 학습 시간 미미.
+     * 실패하면 학습은 계속 진행 (예외 swallow).
+     */
+    private fun runSamplesForCheckpoint(ckptDir: File) {
+        val prompts = listOf(
+            "<|bos|>\\n# Apple\\n",
+            "<|bos|>\\n# Cat\\n",
+            "<|bos|>\\n# Run\\n",
+            "<|bos|>\\n# Big\\n",
+            "<|bos|>\\n# Tree\\n",
+        )
+        try {
+            val sampleCfg = SampleConfig(
+                modelDirectoryPath = ckptDir.absolutePath,
+                numberOfSamples = 1,           // greedy는 deterministic이라 1번이면 충분
+                maximumNewTokens = 80,
+                samplingTemperature = 0.0f,    // greedy — 의미 매핑 정확 추적
+                topKFilteringSize = 40,
+                topProbabilityThreshold = 0.95f,
+                repetitionPenalty = 1.15f,
+                stopTokenIds = listOf(0),      // EOS만 — turnId는 dict 도메인 OOD라 사용 안 함
+            )
+            val sampler = VecSampler(sampleCfg)
+            println("--- 샘플 (5 prompt × 1 sample, greedy T=0) ---")
+            for (prompt in prompts) {
+                val samples = sampler.generate(prompt)
+                samples.forEach { s -> println("[$prompt] ${s.trim()}") }
+            }
+            println("--- 샘플 끝 ---")
+        } catch (e: Exception) {
+            println("샘플링 실패 (학습 계속): ${e.message}")
+        }
     }
 
     /**

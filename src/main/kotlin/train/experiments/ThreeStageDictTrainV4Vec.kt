@@ -11,8 +11,10 @@ import train.TrainConfig
  * 같은 weight를 이어받아야 하므로 architecture 고정.
  *
  * 학습 설정:
- *   - corpus tokens ≈ 863K (dict 13,521 entries × 평균 2 의미). batch×accum×block = 4096 tok/iter.
- *   - maxIters 2500 ≈ 12 epoch — 정의 패턴이 internalize되도록 다중 노출.
+ *   - corpus tokens ≈ 1.107M (의미별 doc 분리 형식, 13,521 entries × 평균 3.26 docs/entry).
+ *     batch×accum×block = 4096 tok/iter.
+ *   - maxIters 22000 ≈ 81 epoch — small corpus + hapax 40%라 단어당 충분한 노출 횟수 보장.
+ *     plateau 진입 시 best ckpt 자동 동결 → 다음 단계는 plateau 시점 ckpt 이어받음.
  *   - LR 3e-4 / warmup 3% / cosine 0.95 (v2 BASE와 동일).
  *   - alwaysSave=false — best avg(train+val)/2 갱신 시에만 저장.
  *
@@ -47,15 +49,16 @@ fun main(args: Array<String>) {
         gradClip = 1.0f,
         beta1 = 0.9f,
         beta2 = 0.95f,
-        maxIters = maxItersOverride ?: 2500,
+        maxIters = maxItersOverride ?: 22000,
         warmupRatio = 0.03f,
         learningRateDecayRatio = 0.95f,
         minimumLearningRate = 3e-5f,
         decayLr = true,
-        evalIntervalRatio = 0.05f,
+        evalIntervalRatio = 0.02f,
         evalIters = 100,
         logInterval = 50,
-        alwaysSaveCheckpoint = false,
+        alwaysSaveCheckpoint = true,
+        earlyStopPatience = 10,
         initFrom = if (resume) "resume" else "scratch",
     )
 

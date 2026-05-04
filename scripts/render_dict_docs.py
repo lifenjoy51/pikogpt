@@ -51,51 +51,53 @@ def article_for(word: str) -> str:
     return "An" if word and word[0].lower() in VOWELS else "A"
 
 
-def render_meaning_line(word: str, art: str, cap: str, pos: str, definition: str, is_first: bool) -> str:
+def render_meaning_line(word: str, art: str, cap: str, pos: str, definition: str) -> str:
+    """의미별 doc 분리 모드: 모든 의미가 첫 번째 의미처럼 표현됨 (means / An X is)."""
     if pos == "Noun":
-        if is_first:
-            return f"{art} {word} is {definition}"
-        return f"{art} {word} can also be {definition}"
+        return f"{art} {word} is {definition}"
     # Verb / Adjective / Adverb / 그 외
-    if is_first:
-        return f"{cap} means {definition}"
-    return f"{cap} can also mean {definition}"
+    return f"{cap} means {definition}"
 
 
-def render_doc(entry: dict) -> str:
-    """1 line = 1 doc. doc 내부 단락 구분은 리터럴 \\n으로 (실제 개행 X)."""
+def _wrap_doc(cap: str, body_line: str) -> str:
+    """`<|bos|>\\n# Cap\\n{body_line}\\n<|eos|>` (1 line = 1 doc, 리터럴 \\n)."""
+    return f"<|bos|>\\n# {cap}\\n{body_line}\\n<|eos|>"
+
+
+def render_docs(entry: dict) -> list[str]:
+    """1 entry → 여러 doc. 의미별 doc 분리 + hypernym/syns/ants 별도 doc.
+
+    각 doc는 `<|bos|>\\n# Cap\\n{한 줄 본문}\\n<|eos|>` 형식 (리터럴 \\n).
+    보일러플레이트(`X means ...`, `An X is ...`)는 유지 — 모든 의미가 첫 의미처럼 표현됨.
+    """
     word = entry["word"]
     cap = word.capitalize()
     art = article_for(word)
-    lines: list[str] = [f"# {cap}"]
+    docs: list[str] = []
 
     meanings = entry.get("meanings") or []
     first_pos = ((meanings[0].get("pos") if meanings else "") or "").strip()
 
-    for idx, m in enumerate(meanings):
+    for m in meanings:
         pos = (m.get("pos") or "").strip()
         definition = m["definition"].rstrip(".") + "."
-        lines.append(render_meaning_line(word, art, cap, pos, definition, idx == 0))
+        docs.append(_wrap_doc(cap, render_meaning_line(word, art, cap, pos, definition)))
 
     if first_pos == "Noun" and entry.get("hypernym"):
         hyp = entry["hypernym"].rstrip(".").lower()
         if hyp and hyp != word:
             hyp_art = "an" if hyp[0] in VOWELS else "a"
-            lines.append(f"{art} {word} is {hyp_art} kind of {hyp}.")
+            docs.append(_wrap_doc(cap, f"{art} {word} is {hyp_art} kind of {hyp}."))
 
-    # 별도 정보(syns/ants) 앞에 빈 줄 — 본문과 분리
     if meanings:
         syns = [s.lower() for s in (meanings[0].get("synonyms") or []) if s and s.lower() != word]
         ants = [a.lower() for a in (meanings[0].get("antonyms") or []) if a and a.lower() != word]
-        if syns or ants:
-            lines.append("")
-            if syns:
-                lines.append(f"Similar: {', '.join(syns)}.")
-            if ants:
-                lines.append(f"Opposite: {', '.join(ants)}.")
+        if syns:
+            docs.append(_wrap_doc(cap, f"Similar: {', '.join(syns)}."))
+        if ants:
+            docs.append(_wrap_doc(cap, f"Opposite: {', '.join(ants)}."))
 
-    body = "\\n".join(lines)  # 리터럴 \n
-    return f"<|bos|>\\n{body}\\n<|eos|>"
+    return docs
 
 
 def main():
@@ -110,7 +112,10 @@ def main():
             entries.append(json.loads(line))
     print(f"loaded: {len(entries):,} entries from {src.name}")
 
-    docs = [render_doc(e) for e in entries]
+    docs: list[str] = []
+    for e in entries:
+        docs.extend(render_docs(e))
+    print(f"rendered: {len(docs):,} docs from {len(entries):,} entries (avg {len(docs)/len(entries):.2f} docs/entry)")
     # 1라인=1doc 정제: SMART/non-ASCII + 모든 공백을 단일 공백으로
     docs = [clean_inline(d) for d in docs]
     docs = [d for d in docs if d]

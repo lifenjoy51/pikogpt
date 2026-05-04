@@ -39,6 +39,8 @@ data class TrainConfig(
     val replayDataPath2: String? = null,
     /** 두 번째 replay 비율. `replayRatio + replayRatio2` 합이 1.0 이하여야 함. 0이면 비활성. */
     val replayRatio2: Float = 0.0f,
+    /** Early stop patience: best loss 갱신 없이 N번 연속 eval되면 학습 조기 종료. 0이면 비활성(=maxIters까지). */
+    val earlyStopPatience: Int = 0,
 
     // 데이터
     /** 사용할 데이터셋의 이름 (e.g., "base", "it") */

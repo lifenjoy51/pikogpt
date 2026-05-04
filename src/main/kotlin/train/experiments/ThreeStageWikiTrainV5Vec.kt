@@ -3,24 +3,16 @@ package train.experiments
 import train.TrainConfig
 
 /**
- * **three-stage v4 Stage 2 — wiki pretrain (continued)** — Stage 1 dict ckpt에서 가중치 로드,
- * simplewiki vital articles L1-L4 본문(8,048 docs / 7.5M tokens, 1 line=1 doc 변환됨)으로 백과
- * 맥락 지식 주입. dict replay 0.30으로 정의 패턴 잊지 않도록.
+ * **three-stage v5 Stage 2 — wiki pretrain continued (2.93x scale)** — v5 dict ckpt에서 가중치 로드,
+ * v4와 동일하게 simplewiki vital articles로 백과 맥락 주입 + dict replay 0.30. architecture는
+ * Stage 1과 동일 (emb 144 / layers 9 / heads 6, dropout 0.10).
  *
- * 학습 설정:
- *   - initFrom = "pretrain_weights": Stage 1 가중치 로드 + optimizer state(timeStep, m, v) reset.
- *   - replayDataPath = "data/three-stage-v4/dict/train.bin", replayRatio = 0.30.
- *   - LR 1e-4 (Stage 1의 1/3) — 사전학습된 weight 보호하며 도메인 적응.
- *   - maxIters 20000 ≈ 10.9 epoch over wiki 7.5M tokens (4096 tok/iter).
- *     hapax 단어가 ~11회 노출돼야 사실 학습이 정착 + plateau 진입 보장.
- *   - warmup 1.5% — pretrain 가중치 보존 위해 짧게.
- *
- * 산출 ckpt 경로: `model/wiki/vec/<paramCount>/v00XX/` (datasetName = "wiki")
+ * 의도: v4에서 wiki 단계가 의미 매핑을 깜빡이게만 만들었던 한계를 큰 capacity로 돌파.
  *
  * 사용법:
- *   ./gradlew runThreeStageWikiTrainV4Vec --args="<Stage1 dict ckpt 디렉터리>"
- *   ./gradlew runThreeStageWikiTrainV4Vec --args="<dict ckpt> 8000"     # maxIters override
- *   ./gradlew runThreeStageWikiTrainV4Vec --args="resume"
+ *   ./gradlew runThreeStageWikiTrainV5Vec --args="<Stage1 v5 dict ckpt 디렉터리>"
+ *   ./gradlew runThreeStageWikiTrainV5Vec --args="<dict ckpt> 8000"     # maxIters override
+ *   ./gradlew runThreeStageWikiTrainV5Vec --args="resume"
  */
 fun main(args: Array<String>) {
     val resume = args.any { it.equals("resume", ignoreCase = true) }
@@ -33,8 +25,8 @@ fun main(args: Array<String>) {
 
     if (!resume) {
         require(pretrainCkptDir != null) {
-            "Stage 1 dict pretrain ckpt 디렉터리가 필요합니다. " +
-                "예: ./gradlew runThreeStageWikiTrainV4Vec --args=\"model/dict/vec/<paramCount>/v00XX\""
+            "Stage 1 v5 dict pretrain ckpt 디렉터리가 필요합니다. " +
+                "예: ./gradlew runThreeStageWikiTrainV5Vec --args=\"model/dict/vec/<v5 paramCount>/v00XX\""
         }
     }
 
@@ -47,10 +39,10 @@ fun main(args: Array<String>) {
         gradientAccumulationSteps = 32,
         batchSize = 2,
         blockSize = 64,
-        numberOfLayers = 6,
-        numberOfHeads = 3,
-        embeddingDimension = 96,
-        dropout = 0.05f,
+        numberOfLayers = 9,
+        numberOfHeads = 6,
+        embeddingDimension = 144,
+        dropout = 0.10f,
         bias = true,
         tieWeights = true,
         mlpActivation = "swiglu",
