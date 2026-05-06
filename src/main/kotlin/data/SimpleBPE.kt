@@ -25,7 +25,7 @@ import kotlinx.coroutines.runBlocking
  */
 class SimpleBPE(
     private val maxVocabSize: Int,
-    private val specialTokens: List<String> = listOf(EOS_TOKEN, UNKNOWN_TOKEN, BOS_TOKEN, TURN_TOKEN),
+    private val specialTokens: List<String> = listOf(EOS_TOKEN, UNKNOWN_TOKEN, BOS_TOKEN, TURN_TOKEN, SEP_TOKEN),
     private val lowercase: Boolean = false,
     private val useWordPreTokenize: Boolean = false,
     private val standardBpeScoring: Boolean = true,
@@ -517,5 +517,10 @@ class SimpleBPE(
          *  모델이 turn-taking 구조를 학습하게 한다. Sampler에서 single-turn 응답을 받으려면
          *  이 토큰에서 stop. */
         const val TURN_TOKEN = "<|turn|>"
+
+        /** 문장/줄 경계를 표시하는 특수 토큰. 기본 배치에서 id 4 — 데이터 prep에서 literal `\n`
+         *  같은 sentence delimiter를 단일 토큰으로 박아 BPE merge가 cross-boundary 합성 토큰을
+         *  만들지 않게 한다. */
+        const val SEP_TOKEN = "<|sep|>"
     }
 }

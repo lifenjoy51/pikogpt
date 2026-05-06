@@ -41,6 +41,13 @@ data class TrainConfig(
     val replayRatio2: Float = 0.0f,
     /** Early stop patience: best loss 갱신 없이 N번 연속 eval되면 학습 조기 종료. 0이면 비활성(=maxIters까지). */
     val earlyStopPatience: Int = 0,
+    /** 체크포인트 저장 직후 자동 샘플링에 사용할 프롬프트 목록. null이면 trainer의 기본 prompt 사용. */
+    val samplePrompts: List<String>? = null,
+    /** true면 RecordAwareDataLoader 사용 — 매 시퀀스가 한 record(=한 <|bos|>...<|eos|>) 안에 머무는 두 단계 sampling. */
+    val recordAwareSampling: Boolean = false,
+    /** true면 ChunkAnchoredDataLoader 사용 — record 안 stride=blockSize chunk anchor + jitter sampling.
+     * `recordAwareSampling`과 동시에 true면 이 옵션이 우선. binding 학습 신호 강화 (anchor당 학습 빈도 ~26×). */
+    val chunkAnchoredSampling: Boolean = false,
 
     // 데이터
     /** 사용할 데이터셋의 이름 (e.g., "base", "it") */

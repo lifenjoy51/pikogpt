@@ -53,7 +53,7 @@ object BpePrep {
     private const val DEFAULT_VOCAB_SIZE = 1000
 
     /** unique_words.txt 분석 시 special token이 인접 단어와 합쳐지지 않도록 격리할 토큰들. */
-    private val SPECIAL_TOKENS_FOR_ANALYSIS = listOf("<|eos|>", "<|unk|>", "<|bos|>", "<|turn|>")
+    private val SPECIAL_TOKENS_FOR_ANALYSIS = listOf("<|eos|>", "<|unk|>", "<|bos|>", "<|turn|>", "<|sep|>")
 
     fun run(
         path: String,

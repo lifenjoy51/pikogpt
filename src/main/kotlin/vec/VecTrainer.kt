@@ -3,6 +3,7 @@ package vec
 import data.MetaInfo
 import gpt.GPTConfig
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -11,8 +12,10 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import sample.SampleConfig
 import train.BatchSource
+import train.ChunkAnchoredDataLoader
 import train.DataLoader
 import train.MixedDataLoader
+import train.RecordAwareDataLoader
 import train.TrainConfig
 import train.TripleDataLoader
 import vec.layer.VecPikoGPT
@@ -46,7 +49,7 @@ class VecTrainer(private val config: TrainConfig) {
     private lateinit var model: VecPikoGPT
     private lateinit var optimizer: VecAdamW
     private lateinit var trainLoader: BatchSource
-    private lateinit var valLoader: DataLoader
+    private lateinit var valLoader: BatchSource
 
     /**
      * 데이터 병렬 학습용 worker 복제본들. 매 iter 시작에 master로부터 param.data를 sync받고,
@@ -147,9 +150,51 @@ class VecTrainer(private val config: TrainConfig) {
                     blockSize = config.blockSize,
                 )
             }
+            config.chunkAnchoredSampling -> {
+                val bosId = readBosTokenId()
+                println("Chunk-anchored train loader 활성: data=${config.dataPath}/train.bin, bosId=$bosId, blockSize=${config.blockSize}")
+                ChunkAnchoredDataLoader(
+                    dataPath = "${config.dataPath}/train.bin",
+                    batchSize = config.batchSize,
+                    blockSize = config.blockSize,
+                    bosId = bosId,
+                )
+            }
+            config.recordAwareSampling -> {
+                val bosId = readBosTokenId()
+                println("Record-aware train loader 활성: data=${config.dataPath}/train.bin, bosId=$bosId")
+                RecordAwareDataLoader(
+                    dataPath = "${config.dataPath}/train.bin",
+                    batchSize = config.batchSize,
+                    blockSize = config.blockSize,
+                    bosId = bosId,
+                )
+            }
             else -> DataLoader("${config.dataPath}/train.bin", config.batchSize, config.blockSize)
         }
-        valLoader = DataLoader("${config.dataPath}/val.bin", config.batchSize, config.blockSize)
+        valLoader = when {
+            config.chunkAnchoredSampling -> {
+                val bosId = readBosTokenId()
+                println("Chunk-anchored val loader 활성: data=${config.dataPath}/val.bin, bosId=$bosId, blockSize=${config.blockSize}")
+                ChunkAnchoredDataLoader(
+                    dataPath = "${config.dataPath}/val.bin",
+                    batchSize = config.batchSize,
+                    blockSize = config.blockSize,
+                    bosId = bosId,
+                )
+            }
+            config.recordAwareSampling -> {
+                val bosId = readBosTokenId()
+                println("Record-aware val loader 활성: data=${config.dataPath}/val.bin, bosId=$bosId")
+                RecordAwareDataLoader(
+                    dataPath = "${config.dataPath}/val.bin",
+                    batchSize = config.batchSize,
+                    blockSize = config.blockSize,
+                    bosId = bosId,
+                )
+            }
+            else -> DataLoader("${config.dataPath}/val.bin", config.batchSize, config.blockSize)
+        }
 
         optimizer = VecAdamW(
             parameters = model.parameters(),
@@ -487,7 +532,7 @@ class VecTrainer(private val config: TrainConfig) {
      * 실패하면 학습은 계속 진행 (예외 swallow).
      */
     private fun runSamplesForCheckpoint(ckptDir: File) {
-        val prompts = listOf(
+        val prompts = config.samplePrompts ?: listOf(
             "<|bos|>\\n# Apple\\n",
             "<|bos|>\\n# Cat\\n",
             "<|bos|>\\n# Run\\n",
@@ -505,11 +550,25 @@ class VecTrainer(private val config: TrainConfig) {
                 repetitionPenalty = 1.15f,
                 stopTokenIds = listOf(0),      // EOS만 — turnId는 dict 도메인 OOD라 사용 안 함
             )
-            val sampler = VecSampler(sampleCfg)
-            println("--- 샘플 (5 prompt × 1 sample, greedy T=0) ---")
-            for (prompt in prompts) {
-                val samples = sampler.generate(prompt)
-                samples.forEach { s -> println("[$prompt] ${s.trim()}") }
+            // VecPikoGPT는 forward 시 cache var (cachedTokenIds, cachedQ/K/V 등)를 변경하므로
+            // thread-safe 아님. 따라서 prompt별로 별도 VecSampler 인스턴스를 만들어 병렬 generate.
+            // 모델 가중치 4MB read는 수십 ms이라 인스턴스화 비용 작음.
+            val parallelism = (System.getenv("VEC_MAX_WORKERS")?.toIntOrNull()
+                ?: Runtime.getRuntime().availableProcessors())
+                .coerceAtLeast(1)
+                .coerceAtMost(prompts.size)
+            println("--- 샘플 (${prompts.size} prompt × 1 sample, greedy T=0, ${parallelism} workers) ---")
+            val outputs = runBlocking(Dispatchers.Default) {
+                prompts.map { prompt ->
+                    async {
+                        val sampler = VecSampler(sampleCfg)
+                        val samples = sampler.generate(prompt)
+                        prompt to samples[0].trim()
+                    }
+                }.map { it.await() }
+            }
+            for ((prompt, sample) in outputs) {
+                println("[$prompt] $sample")
             }
             println("--- 샘플 끝 ---")
         } catch (e: Exception) {
@@ -612,6 +671,14 @@ class VecTrainer(private val config: TrainConfig) {
         val meta = File("${config.dataPath}/meta.json").readText()
         val parser = Json { ignoreUnknownKeys = true }
         return parser.decodeFromString<MetaInfo>(meta).vocabularySize
+    }
+
+    private fun readBosTokenId(): Int {
+        val meta = File("${config.dataPath}/meta.json").readText()
+        val parser = Json { ignoreUnknownKeys = true }
+        val info = parser.decodeFromString<MetaInfo>(meta)
+        return info.stringToIndex[data.SimpleBPE.BOS_TOKEN]
+            ?: error("meta.json에 ${data.SimpleBPE.BOS_TOKEN} 가 없음 (recordAwareSampling 사용 불가)")
     }
 
     private fun buildModelConfig(): GPTConfig = GPTConfig(

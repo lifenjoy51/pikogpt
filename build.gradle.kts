@@ -240,11 +240,32 @@ tasks.register<JavaExec>("runThreeStageConvTrainV5Vec") {
     jvmArgs = listOf("-Xmx8g")
 }
 
+tasks.register<JavaExec>("runCcmcV2ProStage1TrainVec") {
+    description = "Run CcmcV2ProStage1TrainVec (CCMC v2-pro Stage 1: binding scratch, 8L×96D×3H SwiGLU+RoPE, vocab 2000)"
+    mainClass.set("train.experiments.CcmcV2ProStage1TrainVecKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx6g")
+}
+
+tasks.register<JavaExec>("runCcmcV2ProStage2TrainVec") {
+    description = "Run CcmcV2ProStage2TrainVec (CCMC v2-pro Stage 2: instruction finetune from stage1 ckpt + 25% stage1 replay)"
+    mainClass.set("train.experiments.CcmcV2ProStage2TrainVecKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx6g")
+}
+
 tasks.register<JavaExec>("runEncodeWithExistingMeta") {
     description = "Run EncodeWithExistingMeta (공유 meta.json으로 다른 디렉터리 인코딩)"
     mainClass.set("data.EncodeWithExistingMetaKt")
     classpath = sourceSets.main.get().runtimeClasspath
     jvmArgs = listOf("-Xmx12g")
+}
+
+tasks.register<JavaExec>("runSplitByTokenRatio") {
+    description = "Run SplitByTokenRatio (record-per-line 입력을 토큰 수 기준으로 train/val 분할)"
+    mainClass.set("data.SplitByTokenRatioKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx4g")
 }
 
 tasks.register<JavaExec>("runSampler") {

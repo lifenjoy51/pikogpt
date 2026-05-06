@@ -23,7 +23,7 @@ fun main(args: Array<String>) = runBlocking {
     require(checkpointDir.exists()) { "ckpt 경로 없음: ${checkpointDir.absolutePath}" }
     require(promptsFile.exists()) { "prompts 파일 없음: ${promptsFile.absolutePath}" }
 
-    val prompts = promptsFile.readLines().map { it.trim() }.filter { it.isNotEmpty() }
+    val prompts = promptsFile.readLines().map { it.trimEnd() }.filter { it.isNotBlank() }
     println("=== 벡터 백엔드 샘플링 ckpt: ${checkpointDir.absolutePath} ===")
     println("프롬프트 수: ${prompts.size}")
 
@@ -42,7 +42,7 @@ fun main(args: Array<String>) = runBlocking {
         modelDirectoryPath = checkpointDir.absolutePath,
         numberOfSamples = 2,
         maximumNewTokens = 120,
-        samplingTemperature = 0.8f,
+        samplingTemperature = 0.0f,
         topKFilteringSize = 40,
         topProbabilityThreshold = 0.95f,  // top-k 위에 nucleus 추가 — 보수적 다양성 컷
         repetitionPenalty = 1.15f,         // 반복 차단 (mode collapse 완화)
