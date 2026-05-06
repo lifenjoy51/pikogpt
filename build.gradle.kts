@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     kotlin("jvm") version "1.9.0"
     kotlin("plugin.serialization") version "1.9.0"
@@ -16,8 +18,36 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 }
 
+// turbo 백엔드용 JDK 21 toolchain + Java Vector API (jdk.incubator.vector).
+// Kotlin 1.9.0은 jvmTarget=21을 지원하지 않으므로 컴파일 target은 17로 유지.
+// Toolchain은 JDK 21 — Vector API는 JDK 21 런타임에서 활성화 (--add-modules).
+kotlin {
+    jvmToolchain(21)
+}
+
+tasks.withType<KotlinCompile>().configureEach {
+    kotlinOptions {
+        jvmTarget = "17"
+        freeCompilerArgs = freeCompilerArgs + listOf(
+            "-Xadd-modules=jdk.incubator.vector",
+        )
+    }
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    // Kotlin 1.9.0의 jvmTarget=17과 일치시켜 compile target 호환성 확보.
+    sourceCompatibility = "17"
+    targetCompatibility = "17"
+    options.compilerArgs.addAll(listOf("--add-modules", "jdk.incubator.vector"))
+}
+
+tasks.withType<JavaExec>().configureEach {
+    jvmArgs("--add-modules=jdk.incubator.vector")
+}
+
 tasks.test {
     useJUnitPlatform()
+    jvmArgs("--add-modules=jdk.incubator.vector")
 }
 
 // Main 함수들을 실행하는 Gradle 태스크들
@@ -287,6 +317,28 @@ tasks.register<JavaExec>("runTinyHelenSampleVec") {
     mainClass.set("sample.TinyHelenSampleVecKt")
     classpath = sourceSets.main.get().runtimeClasspath
     jvmArgs = listOf("-Xmx2g")
+}
+
+// turbo 백엔드 — Phase 0~5 진행 중. JDK 21 + Java Vector API 활용.
+tasks.register<JavaExec>("runTinyHelenTrainTurbo") {
+    description = "Run TinyHelenTrainTurbo (~1M 파라미터, turbo 백엔드)"
+    mainClass.set("train.experiments.TinyHelenTrainTurboKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx4g", "--add-modules=jdk.incubator.vector")
+}
+
+tasks.register<JavaExec>("runTinyHelenSampleTurbo") {
+    description = "Run TinyHelenSampleTurbo (model/<dataset>/turbo/ 최신 체크포인트 자동 샘플링)"
+    mainClass.set("sample.TinyHelenSampleTurboKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx2g", "--add-modules=jdk.incubator.vector")
+}
+
+tasks.register<JavaExec>("runTurboBench") {
+    description = "Run TurboMicroBench (turbo MatMul / AdamW 벤치마크 vs vec)"
+    mainClass.set("turbo.bench.TurboMicroBenchKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx2g", "--add-modules=jdk.incubator.vector")
 }
 
 tasks.register<JavaExec>("runSamplePromptsFromFile") {
