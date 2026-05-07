@@ -1,10 +1,13 @@
 package turbo.ops
 
+import jdk.incubator.vector.FloatVector
+import jdk.incubator.vector.VectorOperators
+import turbo.TurboSimdMath
 import turbo.TurboTensor
 import kotlin.math.sqrt
 
 /**
- * Row-wise LayerNorm. Phase 0은 vec와 동일 (Phase 1에서 RMSNorm 추가).
+ * Row-wise LayerNorm. Phase B에서 SIMD 적용 — reduction (sum/sumSq) + 정규화 inner SIMD.
  *
  *   y = γ · (x - μ)/√(σ² + ε) + β
  */
@@ -29,23 +32,65 @@ fun turboLayerNormForward(
     val y = TurboTensor(intArrayOf(n, c))
     val xHat = FloatArray(n * c)
     val invStd = FloatArray(n)
+    val species = TurboSimdMath.SPECIES
+    val laneLen = species.length()
+    val cUpper = species.loopBound(c)
+    val xData = x.data
+    val yData = y.data
+    val gammaData = gamma.data
+    val betaData = beta.data
+    val invC = 1.0f / c
 
     for (i in 0 until n) {
-        var mean = 0.0f
-        for (j in 0 until c) mean += x.data[i * c + j]
-        mean /= c
-        var variance = 0.0f
-        for (j in 0 until c) {
-            val d = x.data[i * c + j] - mean
-            variance += d * d
+        val rowOff = i * c
+        // 1) mean = Σ x / c (SIMD reduction)
+        var meanAcc = FloatVector.zero(species)
+        var j = 0
+        while (j < cUpper) {
+            meanAcc = meanAcc.add(FloatVector.fromArray(species, xData, rowOff + j))
+            j += laneLen
         }
-        variance /= c
+        var mean = meanAcc.reduceLanes(VectorOperators.ADD)
+        while (j < c) { mean += xData[rowOff + j]; j++ }
+        mean *= invC
+
+        // 2) variance = Σ (x-mean)^2 / c (SIMD fma reduction)
+        val vMean = FloatVector.broadcast(species, mean)
+        var varAcc = FloatVector.zero(species)
+        j = 0
+        while (j < cUpper) {
+            val vX = FloatVector.fromArray(species, xData, rowOff + j)
+            val vD = vX.sub(vMean)
+            varAcc = vD.fma(vD, varAcc)
+            j += laneLen
+        }
+        var variance = varAcc.reduceLanes(VectorOperators.ADD)
+        while (j < c) {
+            val d = xData[rowOff + j] - mean
+            variance += d * d
+            j++
+        }
+        variance *= invC
         val inv = 1.0f / sqrt(variance + eps)
         invStd[i] = inv
-        for (j in 0 until c) {
-            val h = (x.data[i * c + j] - mean) * inv
-            xHat[i * c + j] = h
-            y.data[i * c + j] = gamma.data[j] * h + beta.data[j]
+
+        // 3) y = γ * (x-mean)*inv + β  + xHat 캐시
+        val vInv = FloatVector.broadcast(species, inv)
+        j = 0
+        while (j < cUpper) {
+            val vX = FloatVector.fromArray(species, xData, rowOff + j)
+            val vH = vX.sub(vMean).mul(vInv)
+            vH.intoArray(xHat, rowOff + j)
+            val vG = FloatVector.fromArray(species, gammaData, j)
+            val vB = FloatVector.fromArray(species, betaData, j)
+            vH.fma(vG, vB).intoArray(yData, rowOff + j)
+            j += laneLen
+        }
+        while (j < c) {
+            val h = (xData[rowOff + j] - mean) * inv
+            xHat[rowOff + j] = h
+            yData[rowOff + j] = gammaData[j] * h + betaData[j]
+            j++
         }
     }
     return y to TurboLayerNormCache(xHat, invStd)
@@ -62,27 +107,77 @@ fun turboLayerNormBackward(
     val dGamma = gamma.gradOrAlloc()
     val dBeta = beta.gradOrAlloc()
     val dx = FloatArray(rows * cols)
+    val species = TurboSimdMath.SPECIES
+    val laneLen = species.length()
+    val cUpper = species.loopBound(cols)
+    val gammaData = gamma.data
+    val xHat = cache.xHat
+    val invC = 1.0f / cols
 
     for (i in 0 until rows) {
-        for (j in 0 until cols) {
-            dGamma[j] += gyData[i * cols + j] * cache.xHat[i * cols + j]
-            dBeta[j] += gyData[i * cols + j]
+        val rowOff = i * cols
+
+        // dGamma[j] += gy[i,j] * xHat[i,j]; dBeta[j] += gy[i,j] — j 차원 SIMD scaled add
+        var j = 0
+        while (j < cUpper) {
+            val vGy = FloatVector.fromArray(species, gyData, rowOff + j)
+            val vXh = FloatVector.fromArray(species, xHat, rowOff + j)
+            val vDg = FloatVector.fromArray(species, dGamma, j)
+            vGy.fma(vXh, vDg).intoArray(dGamma, j)
+            val vDb = FloatVector.fromArray(species, dBeta, j)
+            vGy.add(vDb).intoArray(dBeta, j)
+            j += laneLen
         }
-        var meanDxHat = 0.0f
-        var meanDxHatXHat = 0.0f
-        val invC = 1.0f / cols
-        for (j in 0 until cols) {
-            val dxHat = gyData[i * cols + j] * gamma.data[j]
+        while (j < cols) {
+            dGamma[j] += gyData[rowOff + j] * xHat[rowOff + j]
+            dBeta[j] += gyData[rowOff + j]
+            j++
+        }
+
+        // meanDxHat = Σ (gy*γ); meanDxHatXHat = Σ (gy*γ*xHat) — SIMD reduction
+        var meanAcc = FloatVector.zero(species)
+        var meanXAcc = FloatVector.zero(species)
+        j = 0
+        while (j < cUpper) {
+            val vGy = FloatVector.fromArray(species, gyData, rowOff + j)
+            val vG = FloatVector.fromArray(species, gammaData, j)
+            val vDxHat = vGy.mul(vG)
+            meanAcc = meanAcc.add(vDxHat)
+            val vXh = FloatVector.fromArray(species, xHat, rowOff + j)
+            meanXAcc = vDxHat.fma(vXh, meanXAcc)
+            j += laneLen
+        }
+        var meanDxHat = meanAcc.reduceLanes(VectorOperators.ADD)
+        var meanDxHatXHat = meanXAcc.reduceLanes(VectorOperators.ADD)
+        while (j < cols) {
+            val dxHat = gyData[rowOff + j] * gammaData[j]
             meanDxHat += dxHat
-            meanDxHatXHat += dxHat * cache.xHat[i * cols + j]
+            meanDxHatXHat += dxHat * xHat[rowOff + j]
+            j++
         }
         meanDxHat *= invC
         meanDxHatXHat *= invC
 
+        // dx = inv * (dxHat - meanDxHat - xHat * meanDxHatXHat)
         val inv = cache.invStd[i]
-        for (j in 0 until cols) {
-            val dxHat = gyData[i * cols + j] * gamma.data[j]
-            dx[i * cols + j] = inv * (dxHat - meanDxHat - cache.xHat[i * cols + j] * meanDxHatXHat)
+        val vInv = FloatVector.broadcast(species, inv)
+        val vMeanDx = FloatVector.broadcast(species, meanDxHat)
+        val vMeanXX = FloatVector.broadcast(species, meanDxHatXHat)
+        j = 0
+        while (j < cUpper) {
+            val vGy = FloatVector.fromArray(species, gyData, rowOff + j)
+            val vG = FloatVector.fromArray(species, gammaData, j)
+            val vXh = FloatVector.fromArray(species, xHat, rowOff + j)
+            val vDxHat = vGy.mul(vG)
+            // term = dxHat - meanDx - xHat*meanXX; dx = inv * term
+            val vTerm = vDxHat.sub(vMeanDx).sub(vXh.mul(vMeanXX))
+            vTerm.mul(vInv).intoArray(dx, rowOff + j)
+            j += laneLen
+        }
+        while (j < cols) {
+            val dxHat = gyData[rowOff + j] * gammaData[j]
+            dx[rowOff + j] = inv * (dxHat - meanDxHat - xHat[rowOff + j] * meanDxHatXHat)
+            j++
         }
     }
     return dx
