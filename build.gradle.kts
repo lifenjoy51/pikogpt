@@ -362,6 +362,13 @@ tasks.register<JavaExec>("runBench10MTurbo") {
     jvmArgs = listOf("-Xmx8g", "--add-modules=jdk.incubator.vector")
 }
 
+tasks.register<JavaExec>("runCcmcV4TinyStoriesPrep") {
+    description = "Run CcmcV4TinyStoriesPrep (cefr-kb의 raw.jsonl → data/ccmc-v4-tinystories/{train,val}.bin)"
+    mainClass.set("data.CcmcV4TinyStoriesPrepKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx4g")
+}
+
 tasks.register<JavaExec>("runBench5MVec") {
     description = "Run Bench5MVec — 5M params 500 iter (vec 백엔드 시간 측정)"
     mainClass.set("train.experiments.Bench5MVecKt")
