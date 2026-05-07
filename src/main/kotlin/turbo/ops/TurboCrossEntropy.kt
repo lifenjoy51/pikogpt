@@ -1,22 +1,19 @@
 package turbo.ops
 
+import jdk.incubator.vector.FloatVector
+import jdk.incubator.vector.VectorOperators
 import kotlin.math.exp
 import kotlin.math.ln
+import turbo.TurboSimdMath
 import turbo.TurboTensor
 
 /**
- * Softmax + NLL fused cross-entropy. label smoothing + z-loss 옵션 지원.
- *
- * z-loss (PaLM/T5 표준 안정화):
- *   loss += zLossWeight * mean(lse²)  where lse = log(Σ exp(logits))
- *
- * z-loss는 logits의 매우 큰 값에 대한 페널티 — softmax 정규화 항(lse)이 폭주하지 않게 함.
- * default 0 → 기존 CE와 정확히 동일 (회귀 보장).
+ * Softmax + NLL fused cross-entropy + label smoothing + z-loss. Phase B에서 SIMD化.
+ *   loss = mean(lse - (1-ε)·logits[t] - (ε/V)·Σ logits) + zLossWeight*mean(lse²)
  */
 data class TurboCrossEntropyResult(
     val loss: Float,
     val softmax: TurboTensor,
-    /** z-loss backward에 필요한 행별 lse (zLossWeight=0이면 null). */
     val lsePerRow: FloatArray? = null,
 ) {
     override fun equals(other: Any?): Boolean = this === other
@@ -36,34 +33,59 @@ fun turboCrossEntropyForward(
     require(targets.size == n) { "targets 크기가 N과 다름: ${targets.size} vs $n" }
 
     val sm = TurboTensor(intArrayOf(n, v))
+    val smData = sm.data
+    val logitsData = logits.data
     var totalCeLoss = 0.0f
     var totalZLoss = 0.0f
     val epsOverV = if (labelSmoothing > 0f) labelSmoothing / v else 0f
     val oneMinusEps = 1.0f - labelSmoothing
     val lsePerRow = if (zLossWeight != 0f) FloatArray(n) else null
+    val species = TurboSimdMath.SPECIES
+    val laneLen = species.length()
+    val vUpper = species.loopBound(v)
 
     for (i in 0 until n) {
-        var maxVal = Float.NEGATIVE_INFINITY
-        for (j in 0 until v) {
-            val z = logits.data[i * v + j]
-            if (z > maxVal) maxVal = z
+        val rowOff = i * v
+
+        // 1) row max — SIMD reduceLanes(MAX)
+        var maxAcc = FloatVector.broadcast(species, Float.NEGATIVE_INFINITY)
+        var j = 0
+        while (j < vUpper) {
+            maxAcc = maxAcc.max(FloatVector.fromArray(species, logitsData, rowOff + j))
+            j += laneLen
         }
+        var maxVal = maxAcc.reduceLanes(VectorOperators.MAX)
+        while (j < v) { if (logitsData[rowOff + j] > maxVal) maxVal = logitsData[rowOff + j]; j++ }
+
+        // 2) sm[j] = exp(logits[j] - max), sumExp + sumLogits
+        val vMax = FloatVector.broadcast(species, maxVal)
+        // exp는 scalar fallback (lanewise EXP는 일부 플랫폼만)
         var sumExp = 0.0f
         var sumLogits = 0.0f
-        for (j in 0 until v) {
-            val z = logits.data[i * v + j]
+        j = 0
+        while (j < v) {
+            val z = logitsData[rowOff + j]
             val e = exp((z - maxVal).toDouble()).toFloat()
-            sm.data[i * v + j] = e
+            smData[rowOff + j] = e
             sumExp += e
             if (epsOverV > 0f) sumLogits += z
+            j++
         }
+
+        // 3) sm *= 1/sumExp — SIMD scalar mul
         val invSum = 1.0f / sumExp
-        for (j in 0 until v) sm.data[i * v + j] *= invSum
+        val vInvSum = FloatVector.broadcast(species, invSum)
+        j = 0
+        while (j < vUpper) {
+            FloatVector.fromArray(species, smData, rowOff + j).mul(vInvSum).intoArray(smData, rowOff + j)
+            j += laneLen
+        }
+        while (j < v) { smData[rowOff + j] *= invSum; j++ }
 
         val t = targets[i]
         require(t in 0 until v) { "target 범위 밖: $t vs vocab $v" }
         val lse = ln(sumExp.toDouble()).toFloat() + maxVal
-        totalCeLoss += lse - oneMinusEps * logits.data[i * v + t] - epsOverV * sumLogits
+        totalCeLoss += lse - oneMinusEps * logitsData[rowOff + t] - epsOverV * sumLogits
         if (zLossWeight != 0f) {
             totalZLoss += zLossWeight * lse * lse
             lsePerRow!![i] = lse
@@ -88,18 +110,35 @@ fun turboCrossEntropyBackward(
     val n = logits.rows
     val v = logits.cols
     val gLogits = TurboTensor(logits.shape.copyOf())
+    val gData = gLogits.data
+    val smData = softmaxOut.data
     val factor = upstreamGrad / n
     val epsOverV = if (labelSmoothing > 0f) labelSmoothing / v else 0f
     val targetExtra = if (labelSmoothing > 0f) 1.0f - labelSmoothing else 1.0f
     val zActive = zLossWeight != 0f && lsePerRow != null
+    val species = TurboSimdMath.SPECIES
+    val laneLen = species.length()
+    val vUpper = species.loopBound(v)
+
     for (i in 0 until n) {
+        val rowOff = i * v
         val zCoeff = if (zActive) 2.0f * zLossWeight * lsePerRow!![i] * factor else 0.0f
-        for (j in 0 until v) {
-            var g = (softmaxOut.data[i * v + j] - epsOverV) * factor
-            if (zActive) g += zCoeff * softmaxOut.data[i * v + j]
-            gLogits.data[i * v + j] = g
+        // g[j] = sm[j]*(factor + zCoeff) - epsOverV*factor
+        // (zActive=false면 g[j] = sm[j]*factor - epsOverV*factor)
+        val combined = factor + zCoeff
+        val vCombined = FloatVector.broadcast(species, combined)
+        val vBias = FloatVector.broadcast(species, -epsOverV * factor)
+        var j = 0
+        while (j < vUpper) {
+            val vSm = FloatVector.fromArray(species, smData, rowOff + j)
+            vSm.fma(vCombined, vBias).intoArray(gData, rowOff + j)
+            j += laneLen
         }
-        gLogits.data[i * v + targets[i]] -= targetExtra * factor
+        while (j < v) {
+            gData[rowOff + j] = smData[rowOff + j] * combined - epsOverV * factor
+            j++
+        }
+        gData[rowOff + targets[i]] -= targetExtra * factor
     }
     return gLogits
 }
