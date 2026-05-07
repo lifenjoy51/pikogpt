@@ -348,6 +348,20 @@ tasks.register<JavaExec>("runCcmcV2ProStage2TrainTurbo") {
     jvmArgs = listOf("-Xmx6g", "--add-modules=jdk.incubator.vector")
 }
 
+tasks.register<JavaExec>("runBench10MVec") {
+    description = "Run Bench10MVec — 10M params 250 iter (vec)"
+    mainClass.set("train.experiments.Bench10MVecKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx8g")
+}
+
+tasks.register<JavaExec>("runBench10MTurbo") {
+    description = "Run Bench10MTurbo — 10M params 250 iter (turbo)"
+    mainClass.set("train.experiments.Bench10MTurboKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx8g", "--add-modules=jdk.incubator.vector")
+}
+
 tasks.register<JavaExec>("runBench5MVec") {
     description = "Run Bench5MVec — 5M params 500 iter (vec 백엔드 시간 측정)"
     mainClass.set("train.experiments.Bench5MVecKt")
