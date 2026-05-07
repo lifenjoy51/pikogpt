@@ -1,6 +1,8 @@
 package turbo.layer
 
+import jdk.incubator.vector.FloatVector
 import turbo.TurboKVCache
+import turbo.TurboSimdMath
 import turbo.TurboTensor
 import turbo.ops.turboApplyRoPE
 import turbo.ops.turboApplyRoPEAtPosition
@@ -103,19 +105,21 @@ class TurboSelfAttention(
         }
         cachedQ = q; cachedK = k; cachedV = v
 
+        // Phase A: Q·K^T inner d loop을 SIMD dot으로 가속.
+        val qData = q.data
+        val kData = k.data
         val attnProbs = FloatArray(numHeads * t * t)
         for (h in 0 until numHeads) {
             val kvHead = h / groupSize
             val qOffset = h * headDim
             val kvOffset = kvHead * headDim
             for (i in 0 until t) {
+                val qRowOff = i * embedDim + qOffset
                 val scoresRow = FloatArray(t)
                 var maxScore = Float.NEGATIVE_INFINITY
                 for (j in 0..i) {
-                    var dot = 0.0f
-                    for (d in 0 until headDim) {
-                        dot += q[i, qOffset + d] * k[j, kvOffset + d]
-                    }
+                    val kRowOff = j * kvDim + kvOffset
+                    val dot = TurboSimdMath.dot(qData, qRowOff, kData, kRowOff, headDim)
                     val s = dot * scale
                     scoresRow[j] = s
                     if (s > maxScore) maxScore = s
@@ -127,8 +131,9 @@ class TurboSelfAttention(
                     sumExp += e
                 }
                 val invSum = 1.0f / sumExp
+                val attnBase = h * t * t + i * t
                 for (j in 0..i) {
-                    attnProbs[h * t * t + i * t + j] = scoresRow[j] * invSum
+                    attnProbs[attnBase + j] = scoresRow[j] * invSum
                 }
             }
         }
@@ -139,19 +144,40 @@ class TurboSelfAttention(
         val droppedAttn = droppedAttnTensor.data
         cachedDroppedAttn = droppedAttn
 
+        // Phase A: out_h[i, d] = Σ_j attn[i, j] * V[j, d] — d 차원 SIMD scaled add.
+        val vData = v.data
         val out = TurboTensor(intArrayOf(t, embedDim))
+        val outData = out.data
+        val species = TurboSimdMath.SPECIES
+        val laneLen = species.length()
+        val dUpper = species.loopBound(headDim)
+        val outRow = FloatArray(headDim)
         for (h in 0 until numHeads) {
             val kvHead = h / groupSize
             val qOffset = h * headDim
             val kvOffset = kvHead * headDim
             for (i in 0 until t) {
-                for (d in 0 until headDim) {
-                    var acc = 0.0f
-                    for (j in 0..i) {
-                        acc += droppedAttn[h * t * t + i * t + j] * v[j, kvOffset + d]
+                java.util.Arrays.fill(outRow, 0.0f)
+                val attnBase = h * t * t + i * t
+                for (j in 0..i) {
+                    val attnIj = droppedAttn[attnBase + j]
+                    if (attnIj == 0.0f) continue
+                    val vRowOff = j * kvDim + kvOffset
+                    val vScalar = FloatVector.broadcast(species, attnIj)
+                    var d = 0
+                    while (d < dUpper) {
+                        val vV = FloatVector.fromArray(species, vData, vRowOff + d)
+                        val vO = FloatVector.fromArray(species, outRow, d)
+                        vV.fma(vScalar, vO).intoArray(outRow, d)
+                        d += laneLen
                     }
-                    out[i, qOffset + d] = acc
+                    while (d < headDim) {
+                        outRow[d] += attnIj * vData[vRowOff + d]
+                        d++
+                    }
                 }
+                val outRowOff = i * embedDim + qOffset
+                System.arraycopy(outRow, 0, outData, outRowOff, headDim)
             }
         }
 
@@ -175,29 +201,50 @@ class TurboSelfAttention(
         val dV = TurboTensor(intArrayOf(t, kvDim))
 
         val dAttnDropped = FloatArray(numHeads * t * t)
+        val dMergedData = dMerged.data
+        val vData2 = v.data
+        val dVData = dV.gradOrAlloc()  // not used; use dV.data directly
+        val dVarr = dV.data
+        val species = TurboSimdMath.SPECIES
+        val laneLen = species.length()
+        val dUpper = species.loopBound(headDim)
 
         for (h in 0 until numHeads) {
             val kvHead = h / groupSize
             val qOffset = h * headDim
             val kvOffset = kvHead * headDim
 
+            // dAttnDropped[h, i, j] = Σ_d dMerged[i, qOff+d] * V[j, kvOff+d] — d 차원 SIMD dot
             for (i in 0 until t) {
+                val dMergedRowOff = i * embedDim + qOffset
+                val attnBase = h * t * t + i * t
                 for (j in 0..i) {
-                    var acc = 0.0f
-                    for (d in 0 until headDim) {
-                        acc += dMerged[i, qOffset + d] * v[j, kvOffset + d]
-                    }
-                    dAttnDropped[h * t * t + i * t + j] = acc
+                    val vRowOff = j * kvDim + kvOffset
+                    dAttnDropped[attnBase + j] = TurboSimdMath.dot(
+                        dMergedData, dMergedRowOff, vData2, vRowOff, headDim,
+                    )
                 }
             }
-            // GQA: 같은 kvHead를 공유하는 여러 h가 dV에 += 누적된다 (각 h가 독립적으로 contribution 추가).
+            // dV[j, kvOff+d] += Σ_i droppedAttn[h, i, j] * dMerged[i, qOff+d]
+            //   j outer, i inner, d innermost SIMD scaled add (GQA에서 누적)
             for (j in 0 until t) {
-                for (d in 0 until headDim) {
-                    var acc = 0.0f
-                    for (i in j until t) {
-                        acc += droppedAttn[h * t * t + i * t + j] * dMerged[i, qOffset + d]
+                val dVRowOff = j * kvDim + kvOffset
+                for (i in j until t) {
+                    val attnIj = droppedAttn[h * t * t + i * t + j]
+                    if (attnIj == 0.0f) continue
+                    val vScalar = FloatVector.broadcast(species, attnIj)
+                    val dMergedRowOff = i * embedDim + qOffset
+                    var d = 0
+                    while (d < dUpper) {
+                        val vDM = FloatVector.fromArray(species, dMergedData, dMergedRowOff + d)
+                        val vDV = FloatVector.fromArray(species, dVarr, dVRowOff + d)
+                        vDM.fma(vScalar, vDV).intoArray(dVarr, dVRowOff + d)
+                        d += laneLen
                     }
-                    dV[j, kvOffset + d] += acc
+                    while (d < headDim) {
+                        dVarr[dVRowOff + d] += attnIj * dMergedData[dMergedRowOff + d]
+                        d++
+                    }
                 }
             }
         }
@@ -225,23 +272,50 @@ class TurboSelfAttention(
                 }
             }
 
+            // dQ[i, qOff+d] += scale * Σ_j dScores[i, j] * K[j, kvOff+d] — d 차원 SIMD scaled add
+            val kData2 = k.data
+            val qData2 = q.data
+            val dQData = dQ.data
+            val dKData = dK.data
             for (i in 0 until t) {
-                for (d in 0 until headDim) {
-                    var acc = 0.0f
-                    for (j in 0..i) {
-                        acc += dScores[i * t + j] * k[j, kvOffset + d]
+                val dQRowOff = i * embedDim + qOffset
+                for (j in 0..i) {
+                    val ds = dScores[i * t + j] * scale
+                    if (ds == 0.0f) continue
+                    val kRowOff = j * kvDim + kvOffset
+                    val vScalar = FloatVector.broadcast(species, ds)
+                    var d = 0
+                    while (d < dUpper) {
+                        val vK = FloatVector.fromArray(species, kData2, kRowOff + d)
+                        val vDQ = FloatVector.fromArray(species, dQData, dQRowOff + d)
+                        vK.fma(vScalar, vDQ).intoArray(dQData, dQRowOff + d)
+                        d += laneLen
                     }
-                    dQ[i, qOffset + d] += scale * acc
+                    while (d < headDim) {
+                        dQData[dQRowOff + d] += ds * kData2[kRowOff + d]
+                        d++
+                    }
                 }
             }
-            // GQA: 같은 kvHead를 공유하는 여러 h가 dK에 += 누적.
+            // dK[j, kvOff+d] += scale * Σ_i dScores[i, j] * Q[i, qOff+d] (GQA 누적)
             for (j in 0 until t) {
-                for (d in 0 until headDim) {
-                    var acc = 0.0f
-                    for (i in j until t) {
-                        acc += dScores[i * t + j] * q[i, qOffset + d]
+                val dKRowOff = j * kvDim + kvOffset
+                for (i in j until t) {
+                    val ds = dScores[i * t + j] * scale
+                    if (ds == 0.0f) continue
+                    val qRowOff = i * embedDim + qOffset
+                    val vScalar = FloatVector.broadcast(species, ds)
+                    var d = 0
+                    while (d < dUpper) {
+                        val vQ = FloatVector.fromArray(species, qData2, qRowOff + d)
+                        val vDK = FloatVector.fromArray(species, dKData, dKRowOff + d)
+                        vQ.fma(vScalar, vDK).intoArray(dKData, dKRowOff + d)
+                        d += laneLen
                     }
-                    dK[j, kvOffset + d] += scale * acc
+                    while (d < headDim) {
+                        dKData[dKRowOff + d] += ds * qData2[qRowOff + d]
+                        d++
+                    }
                 }
             }
         }
