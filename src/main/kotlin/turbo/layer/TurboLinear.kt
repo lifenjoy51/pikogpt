@@ -1,5 +1,7 @@
 package turbo.layer
 
+import jdk.incubator.vector.FloatVector
+import turbo.TurboSimdMath
 import turbo.TurboTensor
 import turbo.ops.turboMatmul
 import turbo.transpose2D
@@ -42,14 +44,32 @@ class TurboLinear(
         val x = cachedInput ?: error("forward 없이 backward 호출")
         require(gy.rows == x.rows && gy.cols == outFeatures)
 
+        // dW[o, i] += Σ_n gy[n, o] * x[n, i]   — n outer, i inner SIMD scaled-add
         val wGrad = weight.gradOrAlloc()
-        for (o in 0 until outFeatures) {
-            for (i in 0 until inFeatures) {
-                var sum = 0.0f
-                for (n in 0 until gy.rows) {
-                    sum += gy.data[n * outFeatures + o] * x.data[n * inFeatures + i]
+        val species = TurboSimdMath.SPECIES
+        val iUpper = species.loopBound(inFeatures)
+        val gyData = gy.data
+        val xData = x.data
+        val rows = gy.rows
+        for (n in 0 until rows) {
+            val gyOff = n * outFeatures
+            val xOff = n * inFeatures
+            for (o in 0 until outFeatures) {
+                val gyno = gyData[gyOff + o]
+                if (gyno == 0.0f) continue
+                val vScalar = FloatVector.broadcast(species, gyno)
+                val wOff = o * inFeatures
+                var i = 0
+                while (i < iUpper) {
+                    val vX = FloatVector.fromArray(species, xData, xOff + i)
+                    val vW = FloatVector.fromArray(species, wGrad, wOff + i)
+                    vX.fma(vScalar, vW).intoArray(wGrad, wOff + i)
+                    i += species.length()
                 }
-                wGrad[o * inFeatures + i] += sum
+                while (i < inFeatures) {
+                    wGrad[wOff + i] += gyno * xData[xOff + i]
+                    i++
+                }
             }
         }
 

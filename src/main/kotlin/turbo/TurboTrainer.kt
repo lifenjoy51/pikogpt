@@ -1,6 +1,7 @@
 package turbo
 
 import data.MetaInfo
+import data.SimpleBPE
 import gpt.GPTConfig
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -9,6 +10,7 @@ import sample.SampleConfig
 import train.BatchSource
 import train.DataLoader
 import train.MixedDataLoader
+import train.RecordAwareDataLoader
 import train.TrainConfig
 import train.TripleDataLoader
 import turbo.layer.TurboPikoGPT
@@ -54,7 +56,7 @@ class TurboTrainer(
     private lateinit var model: TurboPikoGPT
     private lateinit var optimizer: TurboAdamW
     private lateinit var trainLoader: BatchSource
-    private lateinit var valLoader: DataLoader
+    private lateinit var valLoader: BatchSource
     private lateinit var turboModelConfig: TurboModelConfig
 
     private lateinit var workers: List<TurboPikoGPT>
@@ -92,7 +94,8 @@ class TurboTrainer(
         val totalSeqsPerIter = config.batchSize * config.gradientAccumulationSteps
         val cpuCount = Runtime.getRuntime().availableProcessors().coerceAtLeast(1)
         val envCap = System.getenv("TURBO_MAX_WORKERS")?.toIntOrNull()?.coerceAtLeast(1)
-        val defaultCap = 4
+        // CPU core - 1로 default (시스템에 1 core 여유 — JIT/GC/OS 활용)
+        val defaultCap = (cpuCount - 1).coerceAtLeast(1)
         val desiredWorkers = minOf(envCap ?: defaultCap, cpuCount, totalSeqsPerIter)
         workers = if (desiredWorkers >= 2) {
             println(
@@ -142,9 +145,30 @@ class TurboTrainer(
                     blockSize = config.blockSize,
                 )
             }
+            config.recordAwareSampling -> {
+                val bosId = readBosTokenId()
+                println("Record-aware train loader 활성: data=${config.dataPath}/train.bin, bosId=$bosId")
+                RecordAwareDataLoader(
+                    dataPath = "${config.dataPath}/train.bin",
+                    batchSize = config.batchSize,
+                    blockSize = config.blockSize,
+                    bosId = bosId,
+                )
+            }
             else -> DataLoader("${config.dataPath}/train.bin", config.batchSize, config.blockSize)
         }
-        valLoader = DataLoader("${config.dataPath}/val.bin", config.batchSize, config.blockSize)
+        valLoader = if (config.recordAwareSampling) {
+            val bosId = readBosTokenId()
+            println("Record-aware val loader 활성: data=${config.dataPath}/val.bin, bosId=$bosId")
+            RecordAwareDataLoader(
+                dataPath = "${config.dataPath}/val.bin",
+                batchSize = config.batchSize,
+                blockSize = config.blockSize,
+                bosId = bosId,
+            )
+        } else {
+            DataLoader("${config.dataPath}/val.bin", config.batchSize, config.blockSize)
+        }
 
         optimizer = TurboAdamW(
             parameters = model.parameters(),
@@ -536,6 +560,15 @@ class TurboTrainer(
         val meta = File("${config.dataPath}/meta.json").readText()
         val parser = Json { ignoreUnknownKeys = true }
         return parser.decodeFromString<MetaInfo>(meta).vocabularySize
+    }
+
+    /** record-aware sampling용 — meta.json의 stringToIndex에서 BOS 토큰 id 추출. */
+    private fun readBosTokenId(): Int {
+        val meta = File("${config.dataPath}/meta.json").readText()
+        val parser = Json { ignoreUnknownKeys = true }
+        val info = parser.decodeFromString<MetaInfo>(meta)
+        return info.stringToIndex[SimpleBPE.BOS_TOKEN]
+            ?: error("meta.json에 ${SimpleBPE.BOS_TOKEN} 가 없음 (recordAwareSampling 사용 불가)")
     }
 
     private fun buildModelConfig(): TurboModelConfig {

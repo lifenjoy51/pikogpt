@@ -36,6 +36,12 @@ private fun benchMatmul() {
         Triple(64, 3072, 768),       // FFN contract
         Triple(128, 128, 128),
         Triple(256, 256, 256),
+        // stage2 학습 실제 shape (8 layer × 96 emb × 3 head × headDim 32 × block 32)
+        Triple(32, 96, 96),          // QKV projection
+        Triple(32, 96, 256),         // SwiGLU expand
+        Triple(32, 256, 96),         // SwiGLU contract
+        Triple(32, 96, 2000),        // tied lm_head (vocab 2000)
+        Triple(32, 32, 32),          // attention head Q·K^T
     )
 
     for ((m, k, n) in cases) {

@@ -341,6 +341,27 @@ tasks.register<JavaExec>("runTurboBench") {
     jvmArgs = listOf("-Xmx2g", "--add-modules=jdk.incubator.vector")
 }
 
+tasks.register<JavaExec>("runCcmcV2ProStage2TrainTurbo") {
+    description = "Run CcmcV2ProStage2TrainTurbo (Stage 2 instruction finetune, turbo 백엔드)"
+    mainClass.set("train.experiments.CcmcV2ProStage2TrainTurboKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx6g", "--add-modules=jdk.incubator.vector")
+}
+
+tasks.register<JavaExec>("runBench5MVec") {
+    description = "Run Bench5MVec — 5M params 500 iter (vec 백엔드 시간 측정)"
+    mainClass.set("train.experiments.Bench5MVecKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx6g")
+}
+
+tasks.register<JavaExec>("runBench5MTurbo") {
+    description = "Run Bench5MTurbo — 5M params 500 iter (turbo 백엔드 시간 측정)"
+    mainClass.set("train.experiments.Bench5MTurboKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx6g", "--add-modules=jdk.incubator.vector")
+}
+
 tasks.register<JavaExec>("runSamplePromptsFromFile") {
     description = "Run SamplePromptsFromFile (ckpt + 프롬프트 파일로 커스텀 샘플링)"
     mainClass.set("sample.SamplePromptsFromFileKt")
