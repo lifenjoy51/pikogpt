@@ -28,19 +28,15 @@ class TurboPikoGPT(val config: TurboModelConfig) {
         if (gptConfig.tieWeights) null
         else TurboLinear(gptConfig.embeddingDimension, gptConfig.vocabularySize, useBias = false)
 
-    private var cachedTokenIds: IntArray? = null
-    private var cachedPositionIds: IntArray? = null
+    /** tied lm_head 모드(lmHead=null)에서만 backward에 필요한 finalLayerNorm 출력. */
     private var cachedHeadInput: TurboTensor? = null
 
     fun forward(tokenIds: IntArray): TurboTensor {
         val t = tokenIds.size
         require(t <= gptConfig.maxSequenceLength) { "시퀀스 길이 $t > maxSequenceLength ${gptConfig.maxSequenceLength}" }
 
-        val positionIds = IntArray(t) { it }
-        cachedTokenIds = tokenIds
-        cachedPositionIds = positionIds
-
         val tokEmb = tokenEmbedding.forward(tokenIds)
+        val positionIds = IntArray(t) { it }
         var x = if (positionEmbedding != null) {
             val posEmb = positionEmbedding.forward(positionIds)
             addTensors(tokEmb, posEmb)

@@ -224,7 +224,7 @@ class TurboTrainer(
                 )
                 val isBest = avg < bestLoss
                 if (isBest) bestLoss = avg
-                if (isBest || config.alwaysSaveCheckpoint) saveCheckpoint(avg, isBest)
+                if (isBest || config.alwaysSaveCheckpoint) saveCheckpoint(isBest)
 
                 if (config.earlyStopPatience > 0) {
                     if (isBest) {
@@ -424,7 +424,7 @@ class TurboTrainer(
         return config.minimumLearningRate + coefficient * (config.learningRate - config.minimumLearningRate)
     }
 
-    private fun saveCheckpoint(loss: Double, isBest: Boolean) {
+    private fun saveCheckpoint(isBest: Boolean) {
         val nextVersion = nextCheckpointVersion()
         val dir = File(modelPath, "v%04d".format(nextVersion))
         dir.mkdirs()

@@ -23,6 +23,7 @@ class TurboTensorPool(val enabled: Boolean = false) {
     fun acquire(size: Int): FloatArray = FloatArray(size)
 
     /** 빌린 배열을 반환. Phase 0은 no-op (GC가 회수). */
+    @Suppress("UNUSED_PARAMETER")
     fun release(buf: FloatArray) { /* Phase 0 no-op */ }
 
     companion object {

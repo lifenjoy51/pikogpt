@@ -58,8 +58,7 @@ fun turboCrossEntropyForward(
         while (j < v) { if (logitsData[rowOff + j] > maxVal) maxVal = logitsData[rowOff + j]; j++ }
 
         // 2) sm[j] = exp(logits[j] - max), sumExp + sumLogits
-        val vMax = FloatVector.broadcast(species, maxVal)
-        // exp는 scalar fallback (lanewise EXP는 일부 플랫폼만)
+        // exp는 scalar fallback (lanewise EXP는 ARM에서 scalar로 fallback되어 SIMD 효과 없음)
         var sumExp = 0.0f
         var sumLogits = 0.0f
         j = 0

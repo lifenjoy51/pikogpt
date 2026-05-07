@@ -70,8 +70,8 @@ class TurboQkNormTest {
         // grad가 실제로 0이 아닌 값을 가지는지 (단조롭게 0이면 backward 누락 의심)
         var anyNonzeroQ = false
         var anyNonzeroK = false
-        for (g in qNormGrad!!) if (g != 0.0f) { anyNonzeroQ = true; break }
-        for (g in kNormGrad!!) if (g != 0.0f) { anyNonzeroK = true; break }
+        for (g in qNormGrad) if (g != 0.0f) { anyNonzeroQ = true; break }
+        for (g in kNormGrad) if (g != 0.0f) { anyNonzeroK = true; break }
         assertTrue(anyNonzeroQ, "qNorm grad가 모두 0 — backward 누락 의심")
         assertTrue(anyNonzeroK, "kNorm grad가 모두 0 — backward 누락 의심")
     }

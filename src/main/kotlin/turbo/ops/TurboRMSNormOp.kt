@@ -124,7 +124,6 @@ fun turboRmsNormBackward(
         meanXa *= invC
 
         // dx = invRms * a - invRms3 * meanXa * x
-        val vA0 = FloatVector.broadcast(species, 0f)  // unused placeholder
         val vScale3 = FloatVector.broadcast(species, invRms3 * meanXa)
         j = 0
         while (j < cUpper) {

@@ -203,7 +203,6 @@ class TurboSelfAttention(
         val dAttnDropped = FloatArray(numHeads * t * t)
         val dMergedData = dMerged.data
         val vData2 = v.data
-        val dVData = dV.gradOrAlloc()  // not used; use dV.data directly
         val dVarr = dV.data
         val species = TurboSimdMath.SPECIES
         val laneLen = species.length()

@@ -5,10 +5,14 @@ Apple Silicon, NEON SIMD lane 4.
 
 ## 결론 요약
 
-| 모델 | 데이터 | iter | vec (w4) | turbo (w11) | speedup | 비고 |
+| 모델 | 데이터 | iter | vec | turbo | speedup | 비고 |
 |---|---|---:|---:|---:|---:|---|
 | **stage2 1M** | ccmc-v2-pro/stage2 | 3000 | 36m 10s | **9m 45s** | **3.73×** | finetune from stage1 ckpt |
 | **bench 5M** | ccmc-v2-pro/stage2 | 500 | 14m 11s | **4m 26s** | **3.20×** | scratch |
+| **bench 10M** | ccmc-v2-pro/stage2 | 250 | 16m 18s | **4m 19s** | **3.78×** | scratch (16L × 256 × 8h) |
+
+50 iter warmup 시점 가속비:
+- 1M: 3.61×, 5M: 3.62×, 10M: **4.32×** — 큰 모델일수록 SIMD 효과 분명
 
 두 모델 모두 turbo가 **3.2~3.7× 가속**. final loss는 vec와 거의 동등 (random init 차이
 범위, 알고리즘 동등성은 동등성 테스트에서 검증됨).
