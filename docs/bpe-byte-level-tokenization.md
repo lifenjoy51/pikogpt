@@ -53,9 +53,9 @@ LM 입력은 결국 정수 시퀀스. 그래서 텍스트 → 정수 매핑이 �
 
 ---
 
-## 3. Char-level BPE의 한계 — 우리 SimpleBPE 사례
+## 3. Char-level BPE의 한계 — 우리 CharBPE 사례
 
-pikogpt의 `SimpleBPE` (vocab 2K)로 v4-merged 코퍼스를 학습한 결과, 출력 sample에 다음과 같은 OOV가 빈번:
+pikogpt의 `CharBPE` (이전 이름 `SimpleBPE`, vocab 2K)로 v4-merged 코퍼스를 학습한 결과, 출력 sample에 다음과 같은 OOV가 빈번:
 
 ```
 livee, spoit, surp, dace, rereat, mip, toar, cererciderer,
@@ -195,9 +195,9 @@ byte-level이 다국어를 어떻게 커버하는가? 답: **UTF-8 design 자체
 
 ---
 
-## 8. 우리 SimpleBPE vs GPT-2 BPE 비교
+## 8. 우리 CharBPE vs GPT-2 BPE 비교
 
-| | 우리 SimpleBPE | GPT-2 BPE |
+| | 우리 CharBPE | GPT-2 BPE |
 |---|---|---|
 | 학습 출발 | char 단위 (코퍼스 unique chars) | byte 단위 (256개 fixed) |
 | OOV 처리 | char로 fallback. 코퍼스에 없는 char(한글)은 UNK. | byte로 fallback. 모든 입력 인코딩 가능. |
@@ -228,7 +228,7 @@ byte-level이 다국어를 어떻게 커버하는가? 답: **UTF-8 design 자체
 ### 우리 corpus의 개선 방향
 1. **데이터 어휘 좁히기** (TinyStories 방식): proper nouns, foreign words 제거
 2. **vocab 적당히 늘림** (4K~8K): trade-off
-3. **byte-level fallback 추가**: SimpleBPE를 byte-level로 재설계
+3. **byte-level fallback 추가**: CharBPE를 byte-level로 재설계
 
 ---
 
@@ -246,7 +246,7 @@ GPT-2 BPE의 우아함은 세 요소의 결합:
 - 어떤 입력도 인코딩 가능, OOV 원천 불가
 - BPE merge로 자주 등장하는 byte 시퀀스 자동 압축
 
-우리 SimpleBPE는 char-level이라 OOV 가능. 다국어 학습이나 robust handling이 필요하면 byte-level로 전환하는 게 현대적 접근.
+우리 CharBPE는 char-level이라 OOV 가능. 다국어 학습이나 robust handling이 필요하면 byte-level로 전환하는 게 현대적 접근.
 
 ---
 

@@ -112,7 +112,7 @@ The codebase has **two parallel autodiff backends** with deliberately different 
    - `SampleConfig.kt` — sampling parameters (long-name canonical: `modelDirectoryPath`, `numberOfSamples`, ...).
 
 6. **Data processing (`src/main/kotlin/data/`)**
-   - `SimpleBPE.kt` — BPE train + encode/decode. 플래그: `lowercase`, `useWordPreTokenize` (GPT-2 스타일 regex 사전 분할), `standardBpeScoring`(빈도 기준 merge), `verbose`. 학습된 상태를 `getMerges()`로 내보내고 `restore(stoi, merges)`로 복원 — Sampler가 학습과 **정확히 같은 토큰화를 재생**.
+   - `CharBPE.kt` — char-level BPE train + encode/decode. 플래그: `lowercase`, `useWordPreTokenize` (GPT-2 스타일 regex 사전 분할), `standardBpeScoring`(빈도 기준 merge), `splitSpaceAsToken` (공백을 단일 토큰으로 고정 → 알파벳만 BPE merge), `verbose`. 학습된 상태를 `getMerges()`로 내보내고 `restore(stoi, merges)`로 복원 — Sampler가 학습과 **정확히 같은 토큰화를 재생**. (이전 이름 `SimpleBPE` — char pair encoding이 더 정확. byte-level이 아니다.)
    - `StoriesBpePrep.kt` — BPE 전처리 파이프라인. `main(args)` CLI로 데이터 경로 지정. meta.json에 `merges` + 플래그까지 저장.
    - `AlphabetPrep.kt` — alternative character-level preprocessing path. Has a `main()`.
    - `StoryGenerator.kt` — optional LM Studio integration (`http://127.0.0.1:1234`, `google/gemma-3-1b`) for generating/validating children's stories. Has a `main()`.
@@ -176,7 +176,7 @@ model/                        # 모든 체크포인트 루트 (gitignored)
 - `train/ScalarCheckpoint.kt`, `train/States.kt` — checkpoint / per-layer serialization format.
 - `train/experiments/` — ConvMix*, TinyHelen* 실험 진입점 14개 (별도 서브패키지).
 - `sample/ScalarSampler.kt`, `sample/ChatVec.kt` — generation paths (scalar / vec).
-- `data/SimpleBPE.kt`, `data/StoriesBpePrep.kt` — tokenizer + pipeline.
+- `data/CharBPE.kt`, `data/StoriesBpePrep.kt` — tokenizer + pipeline.
 
 ## External Dependency
 

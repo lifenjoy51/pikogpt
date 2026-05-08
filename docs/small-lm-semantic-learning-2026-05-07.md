@@ -269,4 +269,60 @@ Step 3. chunk-anchored sampling 그대로 + maxIters 적정 조정
 1. `synth-tinystories --tuples-file curated_tuples.jsonl` 실행 — tuple당 1편씩 짧은 children's story 생성. 목표 토큰량 100M+.
 2. pikogpt 측 `runCcmcV4TinyStoriesPrep` (`src/main/kotlin/data/CcmcV4TinyStoriesPrep.kt`)으로 stage1 BPE meta로 인코딩 → `data/ccmc-v4-tinystories/{train,val}.bin` 생성.
 3. 5순위 처방 후속 — embedding dim 96 → 128, model capacity ~2~3M로 분포 가설 임계 위 학습.
+
+---
+
+## 9. 진행 — v4 stories 생성 + v4-merged 통합 (2026-05-08 기준)
+
+### 9.1 v4 stories 생성 완료 (Pro 3 epoch + Flash 6 epoch)
+
+OpenRouter cost cap $6 합의 후 **Pro 3 epoch + Flash 6 epoch** 생성 완료:
+- 합 41,619 stories / 2.16M words / ~7M BPE tokens (vocab 2K stage1 BPE 기준)
+- 산출물: `llm-playground/data/processed/ccmc_v4_tinystories/{flash,flash_e2..e6,pro,pro_e2,pro_e3}/raw.jsonl`
+- LLM cost: ~$6 (Pro 1+2 epoch + Flash 1+5 epoch)
+- 동일 큐레이션 5,932 tuples 기반, prompt에 epoch별 variation marker로 cache miss 강제 → 같은 tuple도 epoch별 다양한 stories
+
+QA 결과 (`cefr-kb ccmc validate-v4` 신규):
+- unique types 5,698 / hapax 20.3% (v2-pro 대비 narrative 특성으로 ~6× 높음)
+- 명백한 typo 1건 (`arthopods`) + 외국어 4-5개 (`adios`/`amor`/`asante`/`gracias`)
+- → 5개 ban-word filter로 7 stories 제외 후 prep 진행 (의미적 영향 미미)
+
+### 9.2 v4-merged 통합 코퍼스
+
+`CcmcV4MergedPrep.kt` (multi-source prep) 신규:
+- v2-pro stage1+stage2 (4 .txt) + v4 9 raw.jsonl 통합
+- text MD5 dedupe, record-level shuffle(seed 42), 95:5 split
+- v2-pro markers 보존, v4는 BOS/EOS wrap
+- 산출물: `data/ccmc-v4-merged/{train.bin, val.bin, meta.json}` (BPE meta는 stage1 재사용)
+- 합 **4.35M BPE tokens** (train 4.14M + val 211K)
+- v4-merged 단독 학습 시 vocab 2K 한계로 OOV(`prombures`, `gapercess`) 빈발
+
+### 9.3 공백 분리 BPE 실험 — v4-merged-spacesep
+
+`CharBPE.splitSpaceAsToken` 옵션 신설:
+- 공백을 단일 토큰으로 고정, BPE merge는 알파벳만 → 같은 단어가 위치(문장 시작 vs 중간) 무관 동일 토큰화
+- 의도: 같은 lemma의 occurrences가 모두 동일 token 시퀀스 → embedding 학습 강화
+
+신규 prep `CcmcV4MergedSpaceSepPrep.kt`로 vocab=2000 기준 학습:
+- token 6 = ` ` (단일 공백) 단일 토큰 고정
+- 합 **7.02M BPE tokens** (공백 분리로 ~60% 길어짐)
+- 1M 모델 (block 128, 3000 iter) sanity 학습:
+  - val loss 7.45 → **2.10** (72% 감소)
+  - prompt별 setting 분화 명확 (cat→kitchen, tree→garden, water→garden)
+  - 자연 문장 다수: "It is sad to go to the park", "I think it is a great place to learn"
+  - OOV 잔존: subword fragment 모음 (`livee`, `prombures`, `gapercess`) — vocab=2K 한계
+
+### 9.4 vocab 4000 prep (실행 전 단계)
+
+`spacesep-4k` 변형 prep 완료 (학습 미실행):
+- vocab=4000, merges=3904, train 6.27M / val 319K (vocab 두 배지만 토큰 수는 ~6.6% 감소 — merge 더 많아 시퀀스 압축됨)
+- 산출물: `data/ccmc-v4-merged-spacesep-4k/`
+- 가설: vocab 두 배 → OOV 70% 감소 + 의미 binding 강화
+
+### 9.5 다음 단계
+
+1. spacesep-4k 1M 모델 3000 iter 학습 → val loss 1.9~2.0 / OOV 감소 확인
+2. embedding dim 96→128, layers 8→10 확장 (~2.5M params) — TinyStories emergent threshold 위로
+3. Iter 5000~10000 + LR cosine restart로 추가 0.2~0.3 loss drop
+4. byte-level BPE 고려 (`docs/bpe-byte-level-tokenization.md` 참고) — char-level fallback의 OOV 한계 우회
 > **합성 데이터 10× 확장 + dim 1.5× 확장**이 검증된 공식.

@@ -5,17 +5,18 @@ import train.TrainConfig
 /**
  * v4-merged space-sep BPE corpus로 1M 파라미터 모델 학습.
  *
- *   - dataPath: data/ccmc-v4-merged-spacesep (vocab=2000, 공백 분리 BPE, train 6.68M / val 339K)
- *   - 모델: layers 8 · dim 96 · heads 3 · **block 128** · tied + SwiGLU + RoPE (~1.06M, RoPE라 block size 무관)
+ *   - dataPath: data/ccmc-v4-merged-spacesep-4k (vocab=4000, 공백 분리 BPE, train 6.27M / val 319K)
+ *   - 모델: layers 8 · dim 96 · heads 3 · **block 128** · tied + SwiGLU + RoPE
+ *     (~1.25M params; vocab 2K→4K로 embedding 192K → 384K 증가)
  *   - 학습: 3000 iter × 8192 token/step (block 128 × batch 2 × gradAccum 32) ≈ 24.6M token 노출
- *   - 목적: 새 BPE/코퍼스의 의미 binding 검증 (resume 가능).
+ *   - 목적: vocab 두 배 늘려 OOV 감소 + 의미 binding 강화 검증 (resume 가능).
  */
 fun main(args: Array<String>) {
     val resume = args.any { it.equals("resume", ignoreCase = true) }
     val maxItersOverride = args.firstOrNull { !it.equals("resume", ignoreCase = true) }?.toIntOrNull()
 
     val config = TrainConfig(
-        dataPath = "data/ccmc-v4-merged-spacesep",
+        dataPath = "data/ccmc-v4-merged-spacesep-4k",
         modelDir = "model",
         samplePrompts = listOf(
             "the cat ",
