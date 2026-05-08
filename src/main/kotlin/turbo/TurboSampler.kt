@@ -1,7 +1,7 @@
 package turbo
 
 import data.MetaInfo
-import data.SimpleBPE
+import data.CharBPE
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import sample.SampleConfig
@@ -246,7 +246,7 @@ class TurboSampler(
 
     private fun buildEncoderDecoder(metaInfo: MetaInfo): Pair<(String) -> List<Int>, (List<Int>) -> String> {
         val encoder: (String) -> List<Int> = if (metaInfo.merges.isNotEmpty()) {
-            val bpe = SimpleBPE(
+            val bpe = CharBPE(
                 maxVocabSize = metaInfo.vocabularySize,
                 specialTokens = metaInfo.specialTokens,
                 lowercase = metaInfo.lowercase,

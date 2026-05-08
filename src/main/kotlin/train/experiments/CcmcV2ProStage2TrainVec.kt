@@ -58,7 +58,7 @@ fun main(args: Array<String>) {
         pretrainCheckpointDir = pretrainCkptDir,
         gradientAccumulationSteps = 32,
         batchSize = 2,
-        blockSize = 64,
+        blockSize = 32,
         numberOfLayers = 8,
         numberOfHeads = 3,
         embeddingDimension = 96,

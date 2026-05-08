@@ -5,13 +5,13 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 /**
- * SimpleBPE의 새 기능(lowercase, word pre-tokenize, merges 직렬화/복원)을 검증.
+ * CharBPE의 새 기능(lowercase, word pre-tokenize, merges 직렬화/복원)을 검증.
  */
-class SimpleBPEFeaturesTest {
+class CharBPEFeaturesTest {
 
     @Test
     fun lowercaseNormalizesBeforeTraining() {
-        val bpe = SimpleBPE(maxVocabSize = 50, lowercase = true, verbose = false)
+        val bpe = CharBPE(maxVocabSize = 50, lowercase = true, verbose = false)
         bpe.train("Hello HELLO hello HeLLo")
         val stoi = bpe.getStoi()
         // 소문자 플래그 on이면 대문자 토큰이 어휘에 들어오지 않아야 함
@@ -22,7 +22,7 @@ class SimpleBPEFeaturesTest {
 
     @Test
     fun wordPreTokenizeKeepsWordBoundariesSeparate() {
-        val bpe = SimpleBPE(
+        val bpe = CharBPE(
             maxVocabSize = 200,
             lowercase = true,
             useWordPreTokenize = true,
@@ -44,7 +44,7 @@ class SimpleBPEFeaturesTest {
 
     @Test
     fun encodeWithPreTokenizeIsConsistent() {
-        val bpe = SimpleBPE(
+        val bpe = CharBPE(
             maxVocabSize = 100,
             lowercase = true,
             useWordPreTokenize = true,
@@ -59,7 +59,7 @@ class SimpleBPEFeaturesTest {
     @Test
     fun restoreReproducesSameEncoding() {
         // 원본 학습
-        val original = SimpleBPE(
+        val original = CharBPE(
             maxVocabSize = 120,
             lowercase = true,
             useWordPreTokenize = true,
@@ -71,7 +71,7 @@ class SimpleBPEFeaturesTest {
         val merges = original.getMerges()
 
         // 빈 인스턴스로 복원
-        val restored = SimpleBPE(
+        val restored = CharBPE(
             maxVocabSize = 120,
             lowercase = true,
             useWordPreTokenize = true,

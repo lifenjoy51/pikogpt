@@ -17,7 +17,7 @@ import java.io.File
  *   args[4] = shuffle seed (기본 42)
  *
  * 동작:
- *   1) meta.json으로 SimpleBPE 복원
+ *   1) meta.json으로 CharBPE 복원
  *   2) 각 record를 encode → 토큰 수 측정
  *   3) seed 기반 shuffle 후 누적 토큰이 ratio 도달할 때까지 train, 나머지 val
  *   4) train.txt / val.txt를 record-per-line으로 출력
@@ -41,7 +41,7 @@ fun main(args: Array<String>) {
     val meta = Json { ignoreUnknownKeys = true }
         .decodeFromString(MetaInfo.serializer(), File(metaPath).readText())
     val merges = meta.merges.map { it[0] to it[1] }
-    val bpe = SimpleBPE(
+    val bpe = CharBPE(
         maxVocabSize = meta.vocabularySize,
         specialTokens = meta.specialTokens,
         lowercase = meta.lowercase,

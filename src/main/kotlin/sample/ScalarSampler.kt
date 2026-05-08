@@ -3,8 +3,8 @@ package sample
 import GradContext
 import Value
 import data.MetaInfo
-import data.SimpleBPE
-import data.SimpleBPE.Companion.UNKNOWN_TOKEN
+import data.CharBPE
+import data.CharBPE.Companion.UNKNOWN_TOKEN
 import gpt.ScalarPikoGPT
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -196,7 +196,7 @@ class ScalarSampler(private val samplingConfiguration: SampleConfig) {
      * 토큰화 인코딩/디코딩 설정.
      *
      * `meta.json`에 **BPE merges가 포함되어 있으면** 학습 때와 완전히 동일한
-     * `SimpleBPE.encode` 경로를 복원해 사용한다. merges가 비어 있으면
+     * `CharBPE.encode` 경로를 복원해 사용한다. merges가 비어 있으면
      * (구버전 체크포인트) 그리디 최장매칭으로 폴백.
      */
     private fun setupTokenization() {
@@ -206,7 +206,7 @@ class ScalarSampler(private val samplingConfiguration: SampleConfig) {
 
         if (vocabularyMetadata.merges.isNotEmpty()) {
             // BPE 복원 — 학습 시와 동일한 플래그로 인스턴스 생성 후 stoi + merges 주입
-            val bpe = SimpleBPE(
+            val bpe = CharBPE(
                 maxVocabSize = vocabularyMetadata.vocabularySize,
                 specialTokens = vocabularyMetadata.specialTokens,
                 lowercase = vocabularyMetadata.lowercase,

@@ -1,0 +1,545 @@
+> Task :processResources NO-SOURCE
+
+> Task :compileKotlin
+w: file:///Users/joey51/works/pikogpt/src/main/kotlin/vec/VecTrainer.kt:495:32 Parameter 'loss' is never used
+
+> Task :compileJava NO-SOURCE
+> Task :classes UP-TO-DATE
+
+> Task :runCcmcV2ProStage2TrainVec
+=== VecPikoGPT (vec 백엔드) 훈련 시작 ===
+설정: TrainConfig(dataPath=data/ccmc-v2-pro/stage2, modelDir=model, evalIntervalRatio=0.05, logInterval=100, evalIters=100, evalOnly=false, alwaysSaveCheckpoint=false, initFrom=pretrain_weights, modelCheckpointDir=null, pretrainCheckpointDir=model/stage1/vec/1087936/v0053, replayDataPath=data/ccmc-v2-pro/stage1/train.bin, replayRatio=0.25, replayDataPath2=null, replayRatio2=0.0, earlyStopPatience=0, samplePrompts=[<|bos|>What is a cat?<|turn|>, <|bos|>What is water?<|turn|>, <|bos|>What is a tree?<|turn|>, <|bos|>What does run mean?<|turn|>, <|bos|>What does eat mean?<|turn|>, <|bos|>What does happy mean?<|turn|>, <|bos|>What does big mean?<|turn|>, <|bos|>What does above mean?<|turn|>, <|bos|>What does quickly mean?<|turn|>, <|bos|>What does and mean?<|turn|>], recordAwareSampling=true, chunkAnchoredSampling=false, dataset=default, gradientAccumulationSteps=32, batchSize=2, blockSize=32, embeddingDimension=96, numberOfLayers=8, numberOfHeads=3, bias=true, dropout=0.05, learningRate=1.0E-4, maxIters=3000, weightDecay=0.05, beta1=0.9, beta2=0.95, gradClip=1.0, labelSmoothing=0.05, tieWeights=true, mlpActivation=swiglu, positionEncoding=rope, decayLr=true, warmupRatio=0.05, learningRateDecayRatio=0.95, minimumLearningRate=1.0E-5)
+베이스라인 손실: 7.6009 (vocab=2000)
+모델 파라미터 텐서 수: 147, 총 스칼라 원소: 1087936
+데이터 병렬 학습 활성 — worker 수 10 (CPU 12, seq/iter 64)
+Mixed train loader 활성: primary=data/ccmc-v2-pro/stage2/train.bin, replay=data/ccmc-v2-pro/stage1/train.bin, ratio=0.25
+데이터 로드 완료: 241844 토큰
+데이터 로드 완료: 974210 토큰
+Record-aware val loader 활성: data=data/ccmc-v2-pro/stage2/val.bin, bosId=2
+데이터 로드 완료: 26831 토큰, 362 records (record-aware, bosId=2)
+Pretrain 가중치 로드 완료: /Users/joey51/works/pikogpt/model/stage1/vec/1087936/v0053; optimizer state reset; iter=0
+스텝 0: 훈련 4.00 (47.3%) | 검증 4.23 (44.3%) | 평균 4.119363046884537 | grad-norm 0.000
+체크포인트 저장 완료 (best): /Users/joey51/works/pikogpt/model/stage2/vec/1087936/v0002/checkpoint.json
+--- 샘플 (10 prompt × 1 sample, greedy T=0, 10 workers) ---
+# 모델 로드 완료 (iter=0, val loss=4.119363046884537)
+# 프롬프트 '<|bos|>What does big mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=0, val loss=4.119363046884537)
+# 프롬프트 '<|bos|>What is a tree?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=0, val loss=4.119363046884537)
+# 프롬프트 '<|bos|>What does and mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=0, val loss=4.119363046884537)
+# 프롬프트 '<|bos|>What does eat mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=0, val loss=4.119363046884537)
+# 프롬프트 '<|bos|>What is a cat?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=0, val loss=4.119363046884537)
+# 프롬프트 '<|bos|>What is water?<|turn|>' → 토큰 8개
+# 모델 로드 완료 (iter=0, val loss=4.119363046884537)
+# 프롬프트 '<|bos|>What does quickly mean?<|turn|>' → 토큰 10개
+# 모델 로드 완료 (iter=0, val loss=4.119363046884537)
+# 프롬프트 '<|bos|>What does above mean?<|turn|>' → 토큰 10개
+# 모델 로드 완료 (iter=0, val loss=4.119363046884537)
+# 프롬프트 '<|bos|>What does happy mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=0, val loss=4.119363046884537)
+# 프롬프트 '<|bos|>What does run mean?<|turn|>' → 토큰 9개
+[<|bos|>What is a cat?<|turn|>] What is a cat? , the dog is on the chair.  We are having a soft red bike.  The baby was in the living room.  I see her friend's dog.
+[<|bos|>What is water?<|turn|>] What is water? , the teacher shows us a cat. I hold my hand on top of the cup and put it back in my hand. I like our pictures on the board. Then, I take some apple from the shelf. Next, we draw the paper next to the shop near the door. After that, the shop goes over the shelf. Finally, we open the kitchen window with our toys.
+[<|bos|>What is a tree?<|turn|>] What is a tree? , the wind in the sky. Inside the water was dry and dry. I put the tree on my hands and my legs turn to the rhythm. Finally, I move the bird out until it was too loud.
+[<|bos|>What does run mean?<|turn|>] What does run mean? !  The dog's voice is soft.  A girl and a cat are all people who can talk to.
+[<|bos|>What does eat mean?<|turn|>] What does eat mean? 'ty, and I am playing with my mum. The teacher says, 'I would for a good day.' We all go over to the park and see what I want to play alone. After that, our mum looks at his little desk from the park. Finally, we all stop at the swings.
+[<|bos|>What does happy mean?<|turn|>] What does happy mean? !  The dog's voice is fast.  The girl's smile is loud and thick.
+[<|bos|>What does big mean?<|turn|>] What does big mean? ' tight is to tell something is not as bake or quick.  I can find a dark sun in the air.
+[<|bos|>What does above mean?<|turn|>] What does above mean? , I am at the garden with my mum. She is making eggs and water in a cup of water. She calls it again to me with a small knife. We wait for our day. We sit still with the spoon that has new things. When the bag comes into, we open our bags. Now she will be quiet now.
+[<|bos|>What does quickly mean?<|turn|>] What does quickly mean? , the funnay feels safe to touch.  This is the fun afternoon's day.  A rule can be like a small bell.  The common cold makes loud songs when we go down.  A community is fast and easy for us.  A communication can both have short fur; that a soft comic does not keep
+[<|bos|>What does and mean?<|turn|>] What does and mean? 'ty, my dad gives me. I know that the song feels cold and cold. The dog is good to keep me warm, so we can play a new song.  Dirds are loud like someone all say when we bear.  Tonight and six are ways to move what something in a time.  Dirty shirt looks brown but barking in the sun.
+--- 샘플 끝 ---
+반복 0: 손실 4.19 (44.9%), elapsed 14s.
+반복 100: 손실 3.60 (52.7%), elapsed 83s.
+스텝 150: 훈련 2.89 (61.9%) | 검증 3.05 (59.9%) | 평균 2.972712974846363 | grad-norm 2.327
+체크포인트 저장 완료 (best): /Users/joey51/works/pikogpt/model/stage2/vec/1087936/v0003/checkpoint.json
+--- 샘플 (10 prompt × 1 sample, greedy T=0, 10 workers) ---
+# 모델 로드 완료 (iter=150, val loss=2.972712974846363)
+# 프롬프트 '<|bos|>What does run mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=150, val loss=2.972712974846363)
+# 프롬프트 '<|bos|>What does and mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=150, val loss=2.972712974846363)
+# 프롬프트 '<|bos|>What is a cat?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=150, val loss=2.972712974846363)
+# 프롬프트 '<|bos|>What is water?<|turn|>' → 토큰 8개
+# 모델 로드 완료 (iter=150, val loss=2.972712974846363)
+# 프롬프트 '<|bos|>What does quickly mean?<|turn|>' → 토큰 10개
+# 모델 로드 완료 (iter=150, val loss=2.972712974846363)
+# 프롬프트 '<|bos|>What is a tree?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=150, val loss=2.972712974846363)
+# 프롬프트 '<|bos|>What does happy mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=150, val loss=2.972712974846363)
+# 프롬프트 '<|bos|>What does eat mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=150, val loss=2.972712974846363)
+# 프롬프트 '<|bos|>What does big mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=150, val loss=2.972712974846363)
+# 프롬프트 '<|bos|>What does above mean?<|turn|>' → 토큰 10개
+[<|bos|>What is a cat?<|turn|>] What is a cat?  I like the dog to me. My dad gets it and says thank you.
+[<|bos|>What is water?<|turn|>] What is water?  I can drive a spoon very fast.  A potato has a big tower.  The bottle can on the plate.
+[<|bos|>What is a tree?<|turn|>] What is a tree?  I like the bird in my window.
+[<|bos|>What does run mean?<|turn|>] What does run mean?  I can play with the ball.
+[<|bos|>What does eat mean?<|turn|>] What does eat mean?  I can play with my dog.
+[<|bos|>What does happy mean?<|turn|>] What does happy mean?  I like to play in the evening morning.
+[<|bos|>What does big mean?<|turn|>] What does big mean?  I can look at the first page.  You can see old walls in a big red door.
+[<|bos|>What does above mean?<|turn|>] What does above mean?  I can make a soft light falls over the water.  Yes, Is the sun as the sun in the morning?
+[<|bos|>What does quickly mean?<|turn|>] What does quickly mean?  I can go up and down. I look out the back of my bed. I feel proud but it is warm.
+[<|bos|>What does and mean?<|turn|>] What does and mean?  I can play with my mom. The sun comes into the house where he is a little domestication. My friend is making cake and we are in our kitchena. He says we are expensive to eat food. I want to give the apple so we do not say hello. He points at that cars. When it comes home, she takes out one-dong toy at school.
+--- 샘플 끝 ---
+반복 200: 손실 3.28 (56.8%), elapsed 164s.
+스텝 300: 훈련 2.55 (66.5%) | 검증 2.60 (65.9%) | 평균 2.5707911509275436 | grad-norm 2.135
+체크포인트 저장 완료 (best): /Users/joey51/works/pikogpt/model/stage2/vec/1087936/v0004/checkpoint.json
+--- 샘플 (10 prompt × 1 sample, greedy T=0, 10 workers) ---
+# 모델 로드 완료 (iter=300, val loss=2.5707911509275436)
+# 프롬프트 '<|bos|>What does above mean?<|turn|>' → 토큰 10개
+# 모델 로드 완료 (iter=300, val loss=2.5707911509275436)
+# 프롬프트 '<|bos|>What is water?<|turn|>' → 토큰 8개
+# 모델 로드 완료 (iter=300, val loss=2.5707911509275436)
+# 프롬프트 '<|bos|>What is a tree?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=300, val loss=2.5707911509275436)
+# 프롬프트 '<|bos|>What does quickly mean?<|turn|>' → 토큰 10개
+# 모델 로드 완료 (iter=300, val loss=2.5707911509275436)
+# 프롬프트 '<|bos|>What does run mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=300, val loss=2.5707911509275436)
+# 프롬프트 '<|bos|>What does eat mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=300, val loss=2.5707911509275436)
+# 프롬프트 '<|bos|>What is a cat?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=300, val loss=2.5707911509275436)
+# 프롬프트 '<|bos|>What does happy mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=300, val loss=2.5707911509275436)
+# 모델 로드 완료 (iter=300, val loss=2.5707911509275436)
+# 프롬프트 '<|bos|>What does big mean?<|turn|>' → 토큰 9개
+# 프롬프트 '<|bos|>What does and mean?<|turn|>' → 토큰 9개
+[<|bos|>What is a cat?<|turn|>] What is a cat?  Tr dad and dad have any dogs.
+[<|bos|>What is water?<|turn|>] What is water?  I can eat it.  This is not cold and cold.  You can make a big tree in the sky.
+[<|bos|>What is a tree?<|turn|>] What is a tree?  A cat cannot see the sky.
+[<|bos|>What does run mean?<|turn|>] What does run mean?  I can play with my ball. I am sleeping and feel tired in the room.
+[<|bos|>What does eat mean?<|turn|>] What does eat mean?  I like my mum and dad. He says 'n't keep you warm?  I eat boots and a sour cake.
+[<|bos|>What does happy mean?<|turn|>] What does happy mean?  I like the cold sevolution because it was funny. My mom said I had a soil in his hook. He told me to be the nice wire made of soft bear. My grandpa gave me her my new cat next to me. We sat and played with his soft smile. Later, we said everyone. I could want to sleep together so much, but he was very happy. I
+[<|bos|>What does big mean?<|turn|>] What does big mean?  Today is the best one.  Hat and outside are both times in a house.
+[<|bos|>What does above mean?<|turn|>] What does above mean?  I can play with my bike for a day.
+[<|bos|>What does quickly mean?<|turn|>] What does quickly mean?  I can make a soft sound.
+[<|bos|>What does and mean?<|turn|>] What does and mean?  I can play with my mum. She has a blue car on its bike. The cat is my favorite part of the toy and its toy.  I see his friend at bed.  The teacher puts off my hands for lunch.    I am in my room with my dog. A boy wears her yellow blue crayons. She tells me the number more people know. The prayer does not
+--- 샘플 끝 ---
+반복 300: 손실 3.06 (59.7%), elapsed 244s.
+반복 400: 손실 2.97 (60.9%), elapsed 310s.
+스텝 450: 훈련 2.43 (68.1%) | 검증 2.48 (67.4%) | 평균 2.452755044400692 | grad-norm 2.031
+체크포인트 저장 완료 (best): /Users/joey51/works/pikogpt/model/stage2/vec/1087936/v0005/checkpoint.json
+--- 샘플 (10 prompt × 1 sample, greedy T=0, 10 workers) ---
+# 모델 로드 완료 (iter=450, val loss=2.452755044400692)
+# 프롬프트 '<|bos|>What is a cat?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=450, val loss=2.452755044400692)
+# 프롬프트 '<|bos|>What does happy mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=450, val loss=2.452755044400692)
+# 프롬프트 '<|bos|>What does eat mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=450, val loss=2.452755044400692)
+# 프롬프트 '<|bos|>What does and mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=450, val loss=2.452755044400692)
+# 프롬프트 '<|bos|>What does above mean?<|turn|>' → 토큰 10개
+# 모델 로드 완료 (iter=450, val loss=2.452755044400692)
+# 프롬프트 '<|bos|>What does run mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=450, val loss=2.452755044400692)
+# 프롬프트 '<|bos|>What is water?<|turn|>' → 토큰 8개
+# 모델 로드 완료 (iter=450, val loss=2.452755044400692)
+# 프롬프트 '<|bos|>What is a tree?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=450, val loss=2.452755044400692)
+# 프롬프트 '<|bos|>What does quickly mean?<|turn|>' → 토큰 10개
+# 모델 로드 완료 (iter=450, val loss=2.452755044400692)
+# 프롬프트 '<|bos|>What does big mean?<|turn|>' → 토큰 9개
+[<|bos|>What is a cat?<|turn|>] What is a cat?  A cat is a cat or many personals, a dog or a cat?  A person in an animal, a dog.
+[<|bos|>What is water?<|turn|>] What is water?  I can fly to clean its tail.
+[<|bos|>What is a tree?<|turn|>] What is a tree?  A cat is in the garden.
+[<|bos|>What does run mean?<|turn|>] What does run mean?  I can play with the ball.
+[<|bos|>What does eat mean?<|turn|>] What does eat mean?  I like my discovery by going out and get sick for a thing.
+[<|bos|>What does happy mean?<|turn|>] What does happy mean?  I like to play on the road.  When is my mother's hand?  A baby is happy.
+[<|bos|>What does big mean?<|turn|>] What does big mean?  Today is the way things welfare.  Is a long time in the morning.  Where is a movie?  A video game makes you want to learn about words.
+[<|bos|>What does above mean?<|turn|>] What does above mean?  I can go to the same as my friend.
+[<|bos|>What does quickly mean?<|turn|>] What does quickly mean?  I can have o'clock at night.
+[<|bos|>What does and mean?<|turn|>] What does and mean?  I can play with my family.
+--- 샘플 끝 ---
+반복 500: 손실 2.92 (61.6%), elapsed 392s.
+스텝 600: 훈련 2.37 (68.8%) | 검증 2.37 (68.8%) | 평균 2.3741236287355423 | grad-norm 1.948
+체크포인트 저장 완료 (best): /Users/joey51/works/pikogpt/model/stage2/vec/1087936/v0006/checkpoint.json
+--- 샘플 (10 prompt × 1 sample, greedy T=0, 10 workers) ---
+# 모델 로드 완료 (iter=600, val loss=2.3741236287355423)
+# 프롬프트 '<|bos|>What does run mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=600, val loss=2.3741236287355423)
+# 프롬프트 '<|bos|>What is a cat?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=600, val loss=2.3741236287355423)
+# 프롬프트 '<|bos|>What is a tree?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=600, val loss=2.3741236287355423)
+# 프롬프트 '<|bos|>What does happy mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=600, val loss=2.3741236287355423)
+# 프롬프트 '<|bos|>What does and mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=600, val loss=2.3741236287355423)
+# 프롬프트 '<|bos|>What does quickly mean?<|turn|>' → 토큰 10개
+# 모델 로드 완료 (iter=600, val loss=2.3741236287355423)
+# 프롬프트 '<|bos|>What does above mean?<|turn|>' → 토큰 10개
+# 모델 로드 완료 (iter=600, val loss=2.3741236287355423)
+# 프롬프트 '<|bos|>What does big mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=600, val loss=2.3741236287355423)
+# 프롬프트 '<|bos|>What is water?<|turn|>' → 토큰 8개
+# 모델 로드 완료 (iter=600, val loss=2.3741236287355423)
+# 프롬프트 '<|bos|>What does eat mean?<|turn|>' → 토큰 9개
+[<|bos|>What is a cat?<|turn|>] What is a cat?  A cat is a cat or many personal things.
+[<|bos|>What is water?<|turn|>] What is water?  I can see water in the ocean.
+[<|bos|>What is a tree?<|turn|>] What is a tree?  A sun is in the sky where you find it.
+[<|bos|>What does run mean?<|turn|>] What does run mean?  I can make a cat grow much.
+[<|bos|>What does eat mean?<|turn|>] What does eat mean?  I can play with my toys.
+[<|bos|>What does happy mean?<|turn|>] What does happy mean?  I like to play on the road.  How do you need to go to the park?  You get a big bowl from the park.
+[<|bos|>What does big mean?<|turn|>] What does big mean?  Today is in your nose, but not a little sour.
+[<|bos|>What does above mean?<|turn|>] What does above mean?  I do not have my favorite song.  When is the opposite of die?  The words look like a big cat.
+[<|bos|>What does quickly mean?<|turn|>] What does quickly mean?  I like to play in the air.  How do you give to a friend?  You can start on a ribage.
+[<|bos|>What does and mean?<|turn|>] What does and mean?  I can play with my family.
+--- 샘플 끝 ---
+반복 600: 손실 2.89 (62.0%), elapsed 473s.
+반복 700: 손실 2.86 (62.3%), elapsed 538s.
+스텝 750: 훈련 2.31 (69.6%) | 검증 2.40 (68.5%) | 평균 2.3528658866882326 | grad-norm 1.980
+체크포인트 저장 완료 (best): /Users/joey51/works/pikogpt/model/stage2/vec/1087936/v0007/checkpoint.json
+--- 샘플 (10 prompt × 1 sample, greedy T=0, 10 workers) ---
+# 모델 로드 완료 (iter=750, val loss=2.3528658866882326)
+# 프롬프트 '<|bos|>What is a cat?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=750, val loss=2.3528658866882326)
+# 프롬프트 '<|bos|>What does happy mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=750, val loss=2.3528658866882326)
+# 프롬프트 '<|bos|>What does big mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=750, val loss=2.3528658866882326)
+# 프롬프트 '<|bos|>What is a tree?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=750, val loss=2.3528658866882326)
+# 프롬프트 '<|bos|>What does quickly mean?<|turn|>' → 토큰 10개
+# 모델 로드 완료 (iter=750, val loss=2.3528658866882326)
+# 프롬프트 '<|bos|>What does above mean?<|turn|>' → 토큰 10개
+# 모델 로드 완료 (iter=750, val loss=2.3528658866882326)
+# 프롬프트 '<|bos|>What is water?<|turn|>' → 토큰 8개
+# 모델 로드 완료 (iter=750, val loss=2.3528658866882326)
+# 프롬프트 '<|bos|>What does run mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=750, val loss=2.3528658866882326)
+# 모델 로드 완료 (iter=750, val loss=2.3528658866882326)
+# 프롬프트 '<|bos|>What does and mean?<|turn|>' → 토큰 9개
+# 프롬프트 '<|bos|>What does eat mean?<|turn|>' → 토큰 9개
+[<|bos|>What is a cat?<|turn|>] What is a cat?  A cat is a cat or an dog does not like sick.
+[<|bos|>What is water?<|turn|>] What is water?  Thy is not too heavy.  When is the opposite of shied.
+[<|bos|>What is a tree?<|turn|>] What is a tree?  A dog is a man who reads the car.
+[<|bos|>What does run mean?<|turn|>] What does run mean?  I can play with the ball.
+[<|bos|>What does eat mean?<|turn|>] What does eat mean?  I like my day in my class.
+[<|bos|>What does happy mean?<|turn|>] What does happy mean?  I like to look at my own book.
+[<|bos|>What does big mean?<|turn|>] What does big mean?  Today is the best place to stay up.
+[<|bos|>What does above mean?<|turn|>] What does above mean?  I do not have my favorite song.  How do you write on a toy?  You show your new car, or put it on a small chair.
+[<|bos|>What does quickly mean?<|turn|>] What does quickly mean?  I can have an animal from anything.
+[<|bos|>What does and mean?<|turn|>] What does and mean?  I can show my friend from home.  How do you think when I am very fight on a bed.
+--- 샘플 끝 ---
+반복 800: 손실 2.82 (62.9%), elapsed 616s.
+스텝 900: 훈련 2.29 (69.9%) | 검증 2.30 (69.7%) | 평균 2.294047047793865 | grad-norm 1.986
+체크포인트 저장 완료 (best): /Users/joey51/works/pikogpt/model/stage2/vec/1087936/v0008/checkpoint.json
+--- 샘플 (10 prompt × 1 sample, greedy T=0, 10 workers) ---
+# 모델 로드 완료 (iter=900, val loss=2.294047047793865)
+# 프롬프트 '<|bos|>What does and mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=900, val loss=2.294047047793865)
+# 프롬프트 '<|bos|>What does above mean?<|turn|>' → 토큰 10개
+# 모델 로드 완료 (iter=900, val loss=2.294047047793865)
+# 프롬프트 '<|bos|>What does eat mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=900, val loss=2.294047047793865)
+# 프롬프트 '<|bos|>What is water?<|turn|>' → 토큰 8개
+# 모델 로드 완료 (iter=900, val loss=2.294047047793865)
+# 프롬프트 '<|bos|>What is a tree?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=900, val loss=2.294047047793865)
+# 프롬프트 '<|bos|>What does quickly mean?<|turn|>' → 토큰 10개
+# 모델 로드 완료 (iter=900, val loss=2.294047047793865)
+# 프롬프트 '<|bos|>What is a cat?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=900, val loss=2.294047047793865)
+# 프롬프트 '<|bos|>What does big mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=900, val loss=2.294047047793865)
+# 프롬프트 '<|bos|>What does happy mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=900, val loss=2.294047047793865)
+# 프롬프트 '<|bos|>What does run mean?<|turn|>' → 토큰 9개
+[<|bos|>What is a cat?<|turn|>] What is a cat?  A cat is a toy part than a cat.
+[<|bos|>What is water?<|turn|>] What is water?  I can not see it at night.  How do you push the ball a tree?  You push the car and throw the car.
+[<|bos|>What is a tree?<|turn|>] What is a tree?  A ball is not a tree.
+[<|bos|>What does run mean?<|turn|>] What does run mean?  I can play with the ball.
+[<|bos|>What does eat mean?<|turn|>] What does eat mean?  I can play with my own apple.
+[<|bos|>What does happy mean?<|turn|>] What does happy mean?  I can make danging before I sleep.
+[<|bos|>What does big mean?<|turn|>] What does big mean?  Today is the best time.  How do you write my song to your friend?  You use a book about 'dow".
+[<|bos|>What does above mean?<|turn|>] What does above mean?  I do not go to school.
+[<|bos|>What does quickly mean?<|turn|>] What does quickly mean?  I can make a soft sound.
+[<|bos|>What does and mean?<|turn|>] What does and mean?  I can show my dad about him.
+--- 샘플 끝 ---
+반복 900: 손실 2.83 (62.8%), elapsed 695s.
+반복 1000: 손실 2.82 (62.9%), elapsed 760s.
+스텝 1050: 훈련 2.26 (70.3%) | 검증 2.31 (69.6%) | 평균 2.2846885471045972 | grad-norm 1.937
+체크포인트 저장 완료 (best): /Users/joey51/works/pikogpt/model/stage2/vec/1087936/v0009/checkpoint.json
+--- 샘플 (10 prompt × 1 sample, greedy T=0, 10 workers) ---
+# 모델 로드 완료 (iter=1050, val loss=2.2846885471045972)
+# 프롬프트 '<|bos|>What is a cat?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=1050, val loss=2.2846885471045972)
+# 프롬프트 '<|bos|>What does big mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=1050, val loss=2.2846885471045972)
+# 프롬프트 '<|bos|>What does eat mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=1050, val loss=2.2846885471045972)
+# 프롬프트 '<|bos|>What does and mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=1050, val loss=2.2846885471045972)
+# 프롬프트 '<|bos|>What is a tree?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=1050, val loss=2.2846885471045972)
+# 프롬프트 '<|bos|>What does quickly mean?<|turn|>' → 토큰 10개
+# 모델 로드 완료 (iter=1050, val loss=2.2846885471045972)
+# 프롬프트 '<|bos|>What is water?<|turn|>' → 토큰 8개
+# 모델 로드 완료 (iter=1050, val loss=2.2846885471045972)
+# 프롬프트 '<|bos|>What does run mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=1050, val loss=2.2846885471045972)
+# 프롬프트 '<|bos|>What does happy mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=1050, val loss=2.2846885471045972)
+# 프롬프트 '<|bos|>What does above mean?<|turn|>' → 토큰 10개
+[<|bos|>What is a cat?<|turn|>] What is a cat?  A cat is a cat or an dog's toy.
+[<|bos|>What is water?<|turn|>] What is water?  To is in the kitchen.
+[<|bos|>What is a tree?<|turn|>] What is a tree?  A dog is a boy.
+[<|bos|>What does run mean?<|turn|>] What does run mean?  I mick the ball out by my door.
+[<|bos|>What does eat mean?<|turn|>] What does eat mean?  I like to eat to play.
+[<|bos|>What does happy mean?<|turn|>] What does happy mean?  I can play with my family.
+[<|bos|>What does big mean?<|turn|>] What does big mean?  Today is the best place to sleep.
+[<|bos|>What does above mean?<|turn|>] What does above mean?  If you go to bed if I did not see your body.
+[<|bos|>What does quickly mean?<|turn|>] What does quickly mean?  I can play with the ball.
+[<|bos|>What does and mean?<|turn|>] What does and mean?  I can help with the same toys.  How do you write on a toy?  You read it with a big toy.
+--- 샘플 끝 ---
+반복 1100: 손실 2.78 (63.4%), elapsed 838s.
+스텝 1200: 훈련 2.23 (70.7%) | 검증 2.35 (69.1%) | 평균 2.2869473010301586 | grad-norm 2.153
+반복 1200: 손실 2.77 (63.5%), elapsed 905s.
+반복 1300: 손실 2.76 (63.7%), elapsed 970s.
+스텝 1350: 훈련 2.19 (71.1%) | 검증 2.26 (70.2%) | 평균 2.2281108516454697 | grad-norm 2.017
+체크포인트 저장 완료 (best): /Users/joey51/works/pikogpt/model/stage2/vec/1087936/v0010/checkpoint.json
+--- 샘플 (10 prompt × 1 sample, greedy T=0, 10 workers) ---
+# 모델 로드 완료 (iter=1350, val loss=2.2281108516454697)
+# 프롬프트 '<|bos|>What is a cat?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=1350, val loss=2.2281108516454697)
+# 프롬프트 '<|bos|>What does above mean?<|turn|>' → 토큰 10개
+# 모델 로드 완료 (iter=1350, val loss=2.2281108516454697)
+# 프롬프트 '<|bos|>What does run mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=1350, val loss=2.2281108516454697)
+# 프롬프트 '<|bos|>What does quickly mean?<|turn|>' → 토큰 10개
+# 모델 로드 완료 (iter=1350, val loss=2.2281108516454697)
+# 프롬프트 '<|bos|>What does and mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=1350, val loss=2.2281108516454697)
+# 프롬프트 '<|bos|>What is water?<|turn|>' → 토큰 8개
+# 모델 로드 완료 (iter=1350, val loss=2.2281108516454697)
+# 프롬프트 '<|bos|>What does eat mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=1350, val loss=2.2281108516454697)
+# 프롬프트 '<|bos|>What does happy mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=1350, val loss=2.2281108516454697)
+# 모델 로드 완료 (iter=1350, val loss=2.2281108516454697)
+# 프롬프트 '<|bos|>What does big mean?<|turn|>' → 토큰 9개
+# 프롬프트 '<|bos|>What is a tree?<|turn|>' → 토큰 9개
+[<|bos|>What is a cat?<|turn|>] What is a cat?  A cat is a cat or an dog does not see it.
+[<|bos|>What is water?<|turn|>] What is water?  Thy is in water.
+[<|bos|>What is a tree?<|turn|>] What is a tree?  A ball is the next house.
+[<|bos|>What does run mean?<|turn|>] What does run mean?  I do not have when it happens.
+[<|bos|>What does eat mean?<|turn|>] What does eat mean?  I like my sweets when they are happy.
+[<|bos|>What does happy mean?<|turn|>] What does happy mean?  I can make it warm when they feel good.
+[<|bos|>What does big mean?<|turn|>] What does big mean?  Today is the best mean.
+[<|bos|>What does above mean?<|turn|>] What does above mean?  If you feel very tired.  How do you wash your hands in the sun?  You take a big bottle from the table.
+[<|bos|>What does quickly mean?<|turn|>] What does quickly mean?  I can play with my cat.
+[<|bos|>What does and mean?<|turn|>] What does and mean?  I can eat at the same time.  How do you ask for a dog?  You take your red begin to make my hand when she is still too cold.
+--- 샘플 끝 ---
+반복 1400: 손실 2.74 (64.0%), elapsed 1048s.
+스텝 1500: 훈련 2.28 (70.0%) | 검증 2.29 (69.8%) | 평균 2.288521852195263 | grad-norm 2.009
+반복 1500: 손실 2.72 (64.2%), elapsed 1115s.
+반복 1600: 손실 2.74 (64.0%), elapsed 1181s.
+스텝 1650: 훈련 2.22 (70.8%) | 검증 2.33 (69.4%) | 평균 2.2720395711064336 | grad-norm 2.034
+반복 1700: 손실 2.73 (64.1%), elapsed 1247s.
+스텝 1800: 훈련 2.15 (71.7%) | 검증 2.26 (70.2%) | 평균 2.2084783026576043 | grad-norm 1.971
+체크포인트 저장 완료 (best): /Users/joey51/works/pikogpt/model/stage2/vec/1087936/v0011/checkpoint.json
+--- 샘플 (10 prompt × 1 sample, greedy T=0, 10 workers) ---
+# 모델 로드 완료 (iter=1800, val loss=2.2084783026576043)
+# 프롬프트 '<|bos|>What does run mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=1800, val loss=2.2084783026576043)
+# 프롬프트 '<|bos|>What does quickly mean?<|turn|>' → 토큰 10개
+# 모델 로드 완료 (iter=1800, val loss=2.2084783026576043)
+# 프롬프트 '<|bos|>What does eat mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=1800, val loss=2.2084783026576043)
+# 프롬프트 '<|bos|>What does above mean?<|turn|>' → 토큰 10개
+# 모델 로드 완료 (iter=1800, val loss=2.2084783026576043)
+# 프롬프트 '<|bos|>What does and mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=1800, val loss=2.2084783026576043)
+# 프롬프트 '<|bos|>What is a tree?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=1800, val loss=2.2084783026576043)
+# 프롬프트 '<|bos|>What does happy mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=1800, val loss=2.2084783026576043)
+# 프롬프트 '<|bos|>What is water?<|turn|>' → 토큰 8개
+# 모델 로드 완료 (iter=1800, val loss=2.2084783026576043)
+# 프롬프트 '<|bos|>What does big mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=1800, val loss=2.2084783026576043)
+# 프롬프트 '<|bos|>What is a cat?<|turn|>' → 토큰 9개
+[<|bos|>What is a cat?<|turn|>] What is a cat?  A cat is a cat or an dog's toy.
+[<|bos|>What is water?<|turn|>] What is water?  Tech is a place where you use water.
+[<|bos|>What is a tree?<|turn|>] What is a tree?  A bird is a very white cloud in the sky.
+[<|bos|>What does run mean?<|turn|>] What does run mean?  I can play with the ball.
+[<|bos|>What does eat mean?<|turn|>] What does eat mean?  I like to play with my friends.
+[<|bos|>What does happy mean?<|turn|>] What does happy mean?  I can make you feel happy.
+[<|bos|>What does big mean?<|turn|>] What does big mean?  Text is the best time.
+[<|bos|>What does above mean?<|turn|>] What does above mean?  Text is that mean what you want to do.
+[<|bos|>What does quickly mean?<|turn|>] What does quickly mean?  I can play with the ball.
+[<|bos|>What does and mean?<|turn|>] What does and mean?  I can read the story about what to mean.
+--- 샘플 끝 ---
+반복 1800: 손실 2.75 (63.8%), elapsed 1326s.
+반복 1900: 손실 2.73 (64.1%), elapsed 1392s.
+스텝 1950: 훈련 2.22 (70.8%) | 검증 2.28 (70.0%) | 평균 2.248803016245365 | grad-norm 1.948
+반복 2000: 손실 2.72 (64.2%), elapsed 1458s.
+스텝 2100: 훈련 2.10 (72.3%) | 검증 2.29 (69.8%) | 평균 2.199615701138973 | grad-norm 2.007
+체크포인트 저장 완료 (best): /Users/joey51/works/pikogpt/model/stage2/vec/1087936/v0012/checkpoint.json
+--- 샘플 (10 prompt × 1 sample, greedy T=0, 10 workers) ---
+# 모델 로드 완료 (iter=2100, val loss=2.199615701138973)
+# 프롬프트 '<|bos|>What is a tree?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=2100, val loss=2.199615701138973)
+# 프롬프트 '<|bos|>What does quickly mean?<|turn|>' → 토큰 10개
+# 모델 로드 완료 (iter=2100, val loss=2.199615701138973)
+# 프롬프트 '<|bos|>What does run mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=2100, val loss=2.199615701138973)
+# 프롬프트 '<|bos|>What does happy mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=2100, val loss=2.199615701138973)
+# 프롬프트 '<|bos|>What is a cat?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=2100, val loss=2.199615701138973)
+# 프롬프트 '<|bos|>What does eat mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=2100, val loss=2.199615701138973)
+# 프롬프트 '<|bos|>What does big mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=2100, val loss=2.199615701138973)
+# 프롬프트 '<|bos|>What does above mean?<|turn|>' → 토큰 10개
+# 모델 로드 완료 (iter=2100, val loss=2.199615701138973)
+# 프롬프트 '<|bos|>What does and mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=2100, val loss=2.199615701138973)
+# 프롬프트 '<|bos|>What is water?<|turn|>' → 토큰 8개
+[<|bos|>What is a cat?<|turn|>] What is a cat?  A cat is a cat or an cat's dog.
+[<|bos|>What is water?<|turn|>] What is water?  Tever is the same thing.
+[<|bos|>What is a tree?<|turn|>] What is a tree?  A bird is a very quiet building with tall leaves.  Where do you see a bird?  You can see its blackants in the pond.  Is a bird heavy?  Yes, a tree is hard.  Can a fish sleep?  No, a boat stays still on a tree.  Who takes a seed longer.
+[<|bos|>What does run mean?<|turn|>] What does run mean?  Irsect is when someone says good day.
+[<|bos|>What does eat mean?<|turn|>] What does eat mean?  I like my more snack.
+[<|bos|>What does happy mean?<|turn|>] What does happy mean?  I do not feel happy or loud.  How do you think of your personal body?  You look at a name with my finger and legs.  Why do people make your body sad?  People make your hair soft and soft.  What color is your body from sickness?  In my head or the skin part of your mouth.
+[<|bos|>What does big mean?<|turn|>] What does big mean?  Today can be quiet because it comes after the day.
+[<|bos|>What does above mean?<|turn|>] What does above mean?  Thchy feels lovely.  How do you need to go in a rope.  Where is a slim toy?  Philine is when you use it again.
+[<|bos|>What does quickly mean?<|turn|>] What does quickly mean?  I do not feel happy or quiet.  How do you come to the park?  You go inside for a big place.
+[<|bos|>What does and mean?<|turn|>] What does and mean?  I can say goodbye too, when I am tired.
+--- 샘플 끝 ---
+반복 2100: 손실 2.73 (64.1%), elapsed 1537s.
+반복 2200: 손실 2.68 (64.7%), elapsed 1602s.
+스텝 2250: 훈련 2.19 (71.2%) | 검증 2.34 (69.3%) | 평균 2.263447640836239 | grad-norm 2.029
+반복 2300: 손실 2.71 (64.3%), elapsed 1669s.
+스텝 2400: 훈련 2.13 (72.0%) | 검증 2.23 (70.7%) | 평균 2.1777781529724596 | grad-norm 2.072
+체크포인트 저장 완료 (best): /Users/joey51/works/pikogpt/model/stage2/vec/1087936/v0013/checkpoint.json
+--- 샘플 (10 prompt × 1 sample, greedy T=0, 10 workers) ---
+# 모델 로드 완료 (iter=2400, val loss=2.1777781529724596)
+# 프롬프트 '<|bos|>What does quickly mean?<|turn|>' → 토큰 10개
+# 모델 로드 완료 (iter=2400, val loss=2.1777781529724596)
+# 프롬프트 '<|bos|>What is water?<|turn|>' → 토큰 8개
+# 모델 로드 완료 (iter=2400, val loss=2.1777781529724596)
+# 프롬프트 '<|bos|>What is a cat?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=2400, val loss=2.1777781529724596)
+# 프롬프트 '<|bos|>What does above mean?<|turn|>' → 토큰 10개
+# 모델 로드 완료 (iter=2400, val loss=2.1777781529724596)
+# 프롬프트 '<|bos|>What is a tree?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=2400, val loss=2.1777781529724596)
+# 프롬프트 '<|bos|>What does eat mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=2400, val loss=2.1777781529724596)
+# 프롬프트 '<|bos|>What does run mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=2400, val loss=2.1777781529724596)
+# 프롬프트 '<|bos|>What does big mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=2400, val loss=2.1777781529724596)
+# 프롬프트 '<|bos|>What does happy mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=2400, val loss=2.1777781529724596)
+# 프롬프트 '<|bos|>What does and mean?<|turn|>' → 토큰 9개
+[<|bos|>What is a cat?<|turn|>] What is a cat?  A cat is a cat or an dog does not see it.
+[<|bos|>What is water?<|turn|>] What is water?  Tever is a place where you want to bend time.
+[<|bos|>What is a tree?<|turn|>] What is a tree?  A bird is a very white spot.
+[<|bos|>What does run mean?<|turn|>] What does run mean?  Irseight is fun because it stops soon.
+[<|bos|>What does eat mean?<|turn|>] What does eat mean?  I like my sweets as lunch.
+[<|bos|>What does happy mean?<|turn|>] What does happy mean?  I can make you feel happy.
+[<|bos|>What does big mean?<|turn|>] What does big mean?  Today can be quiet because it comes after the day.
+[<|bos|>What does above mean?<|turn|>] What does above mean?  Teie is not kind because it helps us feel so nice.
+[<|bos|>What does quickly mean?<|turn|>] What does quickly mean?  I can play with my cat.
+[<|bos|>What does and mean?<|turn|>] What does and mean?  I can read the stories now.
+--- 샘플 끝 ---
+반복 2400: 손실 2.73 (64.1%), elapsed 1747s.
+반복 2500: 손실 2.72 (64.3%), elapsed 1812s.
+스텝 2550: 훈련 2.07 (72.8%) | 검증 2.23 (70.7%) | 평균 2.148167310059071 | grad-norm 2.041
+체크포인트 저장 완료 (best): /Users/joey51/works/pikogpt/model/stage2/vec/1087936/v0014/checkpoint.json
+--- 샘플 (10 prompt × 1 sample, greedy T=0, 10 workers) ---
+# 모델 로드 완료 (iter=2550, val loss=2.148167310059071)
+# 프롬프트 '<|bos|>What does and mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=2550, val loss=2.148167310059071)
+# 프롬프트 '<|bos|>What does quickly mean?<|turn|>' → 토큰 10개
+# 모델 로드 완료 (iter=2550, val loss=2.148167310059071)
+# 프롬프트 '<|bos|>What does above mean?<|turn|>' → 토큰 10개
+# 모델 로드 완료 (iter=2550, val loss=2.148167310059071)
+# 프롬프트 '<|bos|>What is a tree?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=2550, val loss=2.148167310059071)
+# 프롬프트 '<|bos|>What does big mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=2550, val loss=2.148167310059071)
+# 프롬프트 '<|bos|>What is a cat?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=2550, val loss=2.148167310059071)
+# 프롬프트 '<|bos|>What does run mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=2550, val loss=2.148167310059071)
+# 프롬프트 '<|bos|>What does eat mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=2550, val loss=2.148167310059071)
+# 프롬프트 '<|bos|>What is water?<|turn|>' → 토큰 8개
+# 모델 로드 완료 (iter=2550, val loss=2.148167310059071)
+# 프롬프트 '<|bos|>What does happy mean?<|turn|>' → 토큰 9개
+[<|bos|>What is a cat?<|turn|>] What is a cat?  A cat is a cat or an dog's toy.
+[<|bos|>What is water?<|turn|>] What is water?  Thotic is made by cars, but a balloon is for being way.
+[<|bos|>What is a tree?<|turn|>] What is a tree?  A bird is a very white field.
+[<|bos|>What does run mean?<|turn|>] What does run mean?  If you feel happy or tired, like a little tired.
+[<|bos|>What does eat mean?<|turn|>] What does eat mean?  I like my sweets feel good.
+[<|bos|>What does happy mean?<|turn|>] What does happy mean?  I do not feel happy or loud.
+[<|bos|>What does big mean?<|turn|>] What does big mean?  Today you can read something in your head.
+[<|bos|>What does above mean?<|turn|>] What does above mean?  Text is that mean way to happen when you see what not become?  My mom says the wife is not a big cat.
+[<|bos|>What does quickly mean?<|turn|>] What does quickly mean?  I do not feel happy or quiet.
+[<|bos|>What does and mean?<|turn|>] What does and mean?  I can read the word 'xto' in a story today."
+--- 샘플 끝 ---
+반복 2600: 손실 2.73 (64.0%), elapsed 1891s.
+스텝 2700: 훈련 2.16 (71.6%) | 검증 2.20 (71.0%) | 평균 2.1811020687222484 | grad-norm 2.061
+반복 2700: 손실 2.72 (64.2%), elapsed 1958s.
+반복 2800: 손실 2.73 (64.1%), elapsed 2023s.
+스텝 2850: 훈련 2.01 (73.5%) | 검증 2.23 (70.7%) | 평균 2.1181880167126654 | grad-norm 2.058
+체크포인트 저장 완료 (best): /Users/joey51/works/pikogpt/model/stage2/vec/1087936/v0015/checkpoint.json
+--- 샘플 (10 prompt × 1 sample, greedy T=0, 10 workers) ---
+# 모델 로드 완료 (iter=2850, val loss=2.1181880167126654)
+# 프롬프트 '<|bos|>What is a cat?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=2850, val loss=2.1181880167126654)
+# 프롬프트 '<|bos|>What does above mean?<|turn|>' → 토큰 10개
+# 모델 로드 완료 (iter=2850, val loss=2.1181880167126654)
+# 프롬프트 '<|bos|>What is a tree?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=2850, val loss=2.1181880167126654)
+# 프롬프트 '<|bos|>What does eat mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=2850, val loss=2.1181880167126654)
+# 프롬프트 '<|bos|>What does and mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=2850, val loss=2.1181880167126654)
+# 프롬프트 '<|bos|>What is water?<|turn|>' → 토큰 8개
+# 모델 로드 완료 (iter=2850, val loss=2.1181880167126654)
+# 프롬프트 '<|bos|>What does run mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=2850, val loss=2.1181880167126654)
+# 프롬프트 '<|bos|>What does big mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=2850, val loss=2.1181880167126654)
+# 프롬프트 '<|bos|>What does quickly mean?<|turn|>' → 토큰 10개
+# 모델 로드 완료 (iter=2850, val loss=2.1181880167126654)
+# 프롬프트 '<|bos|>What does happy mean?<|turn|>' → 토큰 9개
+[<|bos|>What is a cat?<|turn|>] What is a cat?  A cat is a cat or an dog's toy.
+[<|bos|>What is water?<|turn|>] What is water?  Tever is to drink drinking fruit.
+[<|bos|>What is a tree?<|turn|>] What is a tree?  A bird is a very white spot.
+[<|bos|>What does run mean?<|turn|>] What does run mean?  If you feel happy or tired, we do not stay warm.
+[<|bos|>What does eat mean?<|turn|>] What does eat mean?  I like my more snake if I want to be it too.
+[<|bos|>What does happy mean?<|turn|>] What does happy mean?  I might feel happy when she was happy.
+[<|bos|>What does big mean?<|turn|>] What does big mean?  Today can be quiet because it comes after the day.
+[<|bos|>What does above mean?<|turn|>] What does above mean?  Text is when you listen to each other.  Where do you go to a park?  I go over the door to the park before I jump outside.  Is it heavy?  Yes, outer can drive a car.
+[<|bos|>What does quickly mean?<|turn|>] What does quickly mean?  I do not feel happy or quiet.  How do you think of the sun?  You can know if a toy was old, but I like more.  Is it fun to reading?  Yes, all the other things make the game fun.
+[<|bos|>What does and mean?<|turn|>] What does and mean?  I can hear the happy song before you finish.  When do you show a mom?  You feel a nice smile at your name.
+--- 샘플 끝 ---
+반복 2900: 손실 2.72 (64.3%), elapsed 2101s.
+스텝 3000: 훈련 2.12 (72.1%) | 검증 2.31 (69.6%) | 평균 2.2149445028603076 | grad-norm 2.076
+반복 3000: 손실 2.71 (64.4%), elapsed 2167s.
+
+훈련 완료!
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.8/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 36m 10s
+2 actionable tasks: 2 executed

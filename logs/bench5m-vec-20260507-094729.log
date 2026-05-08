@@ -1,0 +1,120 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.8/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :compileKotlin UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+
+> Task :runBench5MVec
+=== VecPikoGPT (vec 백엔드) 훈련 시작 ===
+설정: TrainConfig(dataPath=data/ccmc-v2-pro/stage2, modelDir=model/bench5m-vec, evalIntervalRatio=0.2, logInterval=50, evalIters=25, evalOnly=false, alwaysSaveCheckpoint=false, initFrom=scratch, modelCheckpointDir=null, pretrainCheckpointDir=null, replayDataPath=null, replayRatio=0.0, replayDataPath2=null, replayRatio2=0.0, earlyStopPatience=0, samplePrompts=null, recordAwareSampling=false, chunkAnchoredSampling=false, dataset=default, gradientAccumulationSteps=16, batchSize=2, blockSize=32, embeddingDimension=192, numberOfLayers=12, numberOfHeads=6, bias=true, dropout=0.0, learningRate=3.0E-4, maxIters=500, weightDecay=0.01, beta1=0.9, beta2=0.95, gradClip=1.0, labelSmoothing=0.0, tieWeights=true, mlpActivation=swiglu, positionEncoding=rope, decayLr=true, warmupRatio=0.05, learningRateDecayRatio=0.95, minimumLearningRate=3.0E-5)
+베이스라인 손실: 7.6009 (vocab=2000)
+모델 파라미터 텐서 수: 219, 총 스칼라 원소: 5725824
+데이터 병렬 학습 활성 — worker 수 10 (CPU 12, seq/iter 32)
+데이터 로드 완료: 241844 토큰
+데이터 로드 완료: 26831 토큰
+스텝 0: 훈련 7.64 (0.0%) | 검증 7.64 (0.0%) | 평균 7.641341948509217 | grad-norm 0.000
+반복 0: 손실 7.65 (0.0%), elapsed 3s.
+반복 50: 손실 6.06 (20.3%), elapsed 76s.
+스텝 100: 훈련 4.97 (34.6%) | 검증 5.01 (34.1%) | 평균 4.986984937191009 | grad-norm 1.415
+체크포인트 저장 완료 (best): /Users/joey51/works/pikogpt/model/bench5m-vec/stage2/vec/5725824/v0001/checkpoint.json
+--- 샘플 (5 prompt × 1 sample, greedy T=0, 5 workers) ---
+# 모델 로드 완료 (iter=100, val loss=4.986984937191009)
+# 프롬프트 '<|bos|>\n# Big\n' → 토큰 10개
+# 모델 로드 완료 (iter=100, val loss=4.986984937191009)
+# 프롬프트 '<|bos|>\n# Tree\n' → 토큰 10개
+# 모델 로드 완료 (iter=100, val loss=4.986984937191009)
+# 프롬프트 '<|bos|>\n# Cat\n' → 토큰 10개
+# 모델 로드 완료 (iter=100, val loss=4.986984937191009)
+# 프롬프트 '<|bos|>\n# Apple\n' → 토큰 11개
+# 모델 로드 완료 (iter=100, val loss=4.986984937191009)
+# 프롬프트 '<|bos|>\n# Run\n' → 토큰 10개
+[<|bos|>\n# Apple\n] n Applen,s the a the big or a when with a to peopleer?  I a can a your m?  You be a d?  Is?  can on you you see and Can of a you does a be s it?  Yes,  Yes, at a does many be in a d at A can we a Yes, like is can you in a c the do
+[<|bos|>\n# Cat\n] n Catn,y the a the be does a see you a is or is a to?  A see the a a play on a I?  Is?  can A 
+  Can you How of a you You a can to What  Yes, you Can you see a does people it in?  Yes, you be can  you Yes, you have you in a m the of
+[<|bos|>\n# Run\n] n Runn,s the ty on or a see you?  What can a the ms?  When do Who you a f?  Can  How is on a an and does you to you You a do and ano the of A  Yes, it a does people at in a d like in you see? the when you What you you a c a can
+[<|bos|>\n# Big\n] n Bign, a to I the be does a see you a d have fm?  I do a your the a a play on a I?  Is?  
+  does a an is does you A you You a can is ano the do you Can you What a your does see in?  Yes, you be be a your like to at  can a c the you
+[<|bos|>\n# Tree\n] n Treen,o the a the be does a see you a is or is a ts?  A see the a a play on a f?  Is?  can A can is of d your in a you your a big a does a in on to   When the have does an to a A Yes, in you see? is big and be  
+  do in you
+--- 샘플 끝 ---
+반복 100: 손실 5.08 (33.2%), elapsed 174s.
+반복 150: 손실 4.62 (39.2%), elapsed 248s.
+스텝 200: 훈련 4.32 (43.2%) | 검증 4.38 (42.3%) | 평균 4.350064239501953 | grad-norm 1.218
+체크포인트 저장 완료 (best): /Users/joey51/works/pikogpt/model/bench5m-vec/stage2/vec/5725824/v0002/checkpoint.json
+--- 샘플 (5 prompt × 1 sample, greedy T=0, 5 workers) ---
+# 모델 로드 완료 (iter=200, val loss=4.350064239501953)
+# 프롬프트 '<|bos|>\n# Apple\n' → 토큰 11개
+# 모델 로드 완료 (iter=200, val loss=4.350064239501953)
+# 프롬프트 '<|bos|>\n# Tree\n' → 토큰 10개
+# 모델 로드 완료 (iter=200, val loss=4.350064239501953)
+# 프롬프트 '<|bos|>\n# Cat\n' → 토큰 10개
+# 모델 로드 완료 (iter=200, val loss=4.350064239501953)
+# 프롬프트 '<|bos|>\n# Run\n' → 토큰 10개
+# 모델 로드 완료 (iter=200, val loss=4.350064239501953)
+# 프롬프트 '<|bos|>\n# Big\n' → 토큰 10개
+[<|bos|>\n# Apple\n] n Applen.  Can a very new a little in a big longer?  A the smallm can be a a suns.
+[<|bos|>\n# Cat\n] n Catn.  Can a very newy can it is the person?  
+  What do you people in a t or to you can?  A small can do you can see in your book?  The not the sun?  Yes,  When does a sun or at the ser when you see be?  Yes, you?  A n is to
+[<|bos|>\n# Run\n] n Runn, a Mt is my person.  What do does the ce?  Yes, a cat is a t or A myser or a carer.  Can you can find I are in bigey a sun?  Yes,?  When do we did not e?  Yes, you have a school be in on?  The g is f
+[<|bos|>\n# Big\n] n Bign.  Can a your persons are in a big longera?  A an mid is a ter.
+[<|bos|>\n# Tree\n] n Treen.  Can a very momrs.
+--- 샘플 끝 ---
+반복 200: 손실 4.42 (41.8%), elapsed 347s.
+반복 250: 손실 4.23 (44.4%), elapsed 420s.
+스텝 300: 훈련 4.32 (43.2%) | 검증 4.07 (46.5%) | 평균 4.19295134305954 | grad-norm 1.345
+체크포인트 저장 완료 (best): /Users/joey51/works/pikogpt/model/bench5m-vec/stage2/vec/5725824/v0003/checkpoint.json
+--- 샘플 (5 prompt × 1 sample, greedy T=0, 5 workers) ---
+# 모델 로드 완료 (iter=300, val loss=4.19295134305954)
+# 프롬프트 '<|bos|>\n# Run\n' → 토큰 10개
+# 모델 로드 완료 (iter=300, val loss=4.19295134305954)
+# 프롬프트 '<|bos|>\n# Cat\n' → 토큰 10개
+# 모델 로드 완료 (iter=300, val loss=4.19295134305954)
+# 프롬프트 '<|bos|>\n# Apple\n' → 토큰 11개
+# 모델 로드 완료 (iter=300, val loss=4.19295134305954)
+# 모델 로드 완료 (iter=300, val loss=4.19295134305954)
+# 프롬프트 '<|bos|>\n# Big\n' → 토큰 10개
+# 프롬프트 '<|bos|>\n# Tree\n' → 토큰 10개
+[<|bos|>\n# Apple\n] n Applen.  Can a toy use a cat in a sty?  The lge can be an my sby.
+[<|bos|>\n# Cat\n] n Catn?  
+  How many fay are a ration are the cs the mic?  A tur to the hbh when a book bet in a toy and many not des from a book.
+[<|bos|>\n# Run\n] n Runn.  Can a toy use bay in a big your small?  A mon is an in a suratmsaa or a very sun?  Yes, the body can be my schooler you can eat a big an bigcale.
+[<|bos|>\n# Big\n] n Bign.  Can a toy use the cat in a big or in a fu?  A sun is a silicer to a cam.  Can you see on the body in a an friend?  How do you have a tow you eat?  When does a sturatal can you find at the cat.
+[<|bos|>\n# Tree\n] n Treen.  Can a toy use bay in a big long?  The the moner can be a sur in a hbh or a very suny of a many ey?  Yes, it is on a new sin in the talic can can make your new forcer or to have not a dogy.  What is a ct a book
+--- 샘플 끝 ---
+반복 300: 손실 4.09 (46.1%), elapsed 523s.
+반복 350: 손실 4.06 (46.6%), elapsed 600s.
+스텝 400: 훈련 3.97 (47.8%) | 검증 4.10 (46.1%) | 평균 4.030375771522522 | grad-norm 1.706
+체크포인트 저장 완료 (best): /Users/joey51/works/pikogpt/model/bench5m-vec/stage2/vec/5725824/v0004/checkpoint.json
+--- 샘플 (5 prompt × 1 sample, greedy T=0, 5 workers) ---
+# 모델 로드 완료 (iter=400, val loss=4.030375771522522)
+# 프롬프트 '<|bos|>\n# Tree\n' → 토큰 10개
+# 모델 로드 완료 (iter=400, val loss=4.030375771522522)
+# 프롬프트 '<|bos|>\n# Big\n' → 토큰 10개
+# 모델 로드 완료 (iter=400, val loss=4.030375771522522)
+# 프롬프트 '<|bos|>\n# Run\n' → 토큰 10개
+# 모델 로드 완료 (iter=400, val loss=4.030375771522522)
+# 프롬프트 '<|bos|>\n# Cat\n' → 토큰 10개
+# 모델 로드 완료 (iter=400, val loss=4.030375771522522)
+# 프롬프트 '<|bos|>\n# Apple\n' → 토큰 11개
+[<|bos|>\n# Apple\n] n Applen.  Is a long long a sun?  No, the fus is a friend and your small.  How do you do the baby a toy can been?  No, you can have So in the balls in the toy.  Who can eat your ball to a big mom?  A ball have the new.
+[<|bos|>\n# Cat\n] n Catn?  Yes, the long people can make it is in Yes, you can see a cis.  Where is a ball with a stbhy?  Who can have a cat in your longo in Mmicues.
+[<|bos|>\n# Run\n] n Runn.  Is a vation in A toy?  Yes, the fhae is big famya.  What do you can find a friend at the longh of mabonah or a book?  You see the a cat with not be an intery.
+[<|bos|>\n# Big\n] n Bign.  Is a long long sadar?  Yes, the ferhmano can be a samengs a f or a very dog?  Can you need my hat with a book and people is in the toy.  Who do we need anen?  You does not can read not your mom, and dry and make
+[<|bos|>\n# Tree\n] n Treen.  Is a long hot?  The big hot in the phage in the dog to the samengsa?  Yes, an is Mten to use you can see an mens when I put it on a cats.
+--- 샘플 끝 ---
+반복 400: 손실 4.02 (47.1%), elapsed 699s.
+반복 450: 손실 3.96 (47.9%), elapsed 772s.
+스텝 500: 훈련 3.95 (48.1%) | 검증 4.16 (45.2%) | 평균 4.054907829761505 | grad-norm 1.596
+반복 500: 손실 3.96 (47.9%), elapsed 847s.
+
+훈련 완료!
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.8/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 14m 11s
+2 actionable tasks: 1 executed, 1 up-to-date

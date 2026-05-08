@@ -31,7 +31,7 @@ fun main(args: Array<String>) {
         .decodeFromString(MetaInfo.serializer(), File(metaPath).readText())
     val merges = meta.merges.map { it[0] to it[1] }
 
-    val bpe = SimpleBPE(
+    val bpe = CharBPE(
         maxVocabSize = meta.vocabularySize,
         specialTokens = meta.specialTokens,
         lowercase = meta.lowercase,
@@ -51,7 +51,7 @@ fun main(args: Array<String>) {
     println("meta.json 복사 완료: ${destMeta.absolutePath}")
 }
 
-private fun encodeIfExists(bpe: SimpleBPE, src: File, dst: File) {
+private fun encodeIfExists(bpe: CharBPE, src: File, dst: File) {
     if (!src.exists()) {
         println("스킵: ${src.absolutePath} 없음")
         return

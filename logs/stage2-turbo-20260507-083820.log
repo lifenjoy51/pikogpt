@@ -1,0 +1,156 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.8/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :compileKotlin UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+
+> Task :runCcmcV2ProStage2TrainTurbo
+WARNING: Using incubator modules: jdk.incubator.vector
+=== TurboPikoGPT (turbo 백엔드) 훈련 시작 ===
+설정: TrainConfig(dataPath=data/ccmc-v2-pro/stage2, modelDir=model, evalIntervalRatio=0.05, logInterval=100, evalIters=100, evalOnly=false, alwaysSaveCheckpoint=false, initFrom=pretrain_weights, modelCheckpointDir=null, pretrainCheckpointDir=model/stage1/vec/1087936/v0053, replayDataPath=data/ccmc-v2-pro/stage1/train.bin, replayRatio=0.25, replayDataPath2=null, replayRatio2=0.0, earlyStopPatience=0, samplePrompts=null, recordAwareSampling=false, chunkAnchoredSampling=false, dataset=default, gradientAccumulationSteps=32, batchSize=2, blockSize=32, embeddingDimension=96, numberOfLayers=8, numberOfHeads=3, bias=true, dropout=0.05, learningRate=1.0E-4, maxIters=3000, weightDecay=0.05, beta1=0.9, beta2=0.95, gradClip=1.0, labelSmoothing=0.05, tieWeights=true, mlpActivation=swiglu, positionEncoding=rope, decayLr=true, warmupRatio=0.05, learningRateDecayRatio=0.95, minimumLearningRate=1.0E-5)
+베이스라인 손실: 7.6009 (vocab=2000)
+모델 파라미터 텐서 수: 147, 총 스칼라 원소: 1087936
+데이터 병렬 학습 활성 — worker 수 4 (CPU 12, seq/iter 64)
+Mixed train loader 활성: primary=data/ccmc-v2-pro/stage2/train.bin, replay=data/ccmc-v2-pro/stage1/train.bin, ratio=0.25
+데이터 로드 완료: 241844 토큰
+데이터 로드 완료: 974210 토큰
+데이터 로드 완료: 26831 토큰
+Pretrain 가중치 로드 완료: /Users/joey51/works/pikogpt/model/stage1/vec/1087936/v0053; optimizer state reset; iter=0
+스텝 0: 훈련 3.93 (48.3%) | 검증 4.37 (42.5%) | 평균 4.150404264926911 | grad-norm 0.000
+체크포인트 저장 완료 (best): /Users/joey51/works/pikogpt/model/stage2/turbo/1087936/v0001/checkpoint.json
+# 모델 로드 완료 (iter=0, val loss=4.150404264926911)
+--- 샘플 (5 prompt × 1 sample, greedy T=0) ---
+# 프롬프트 '<|bos|>\n# Apple\n' → 토큰 11개
+[<|bos|>\n# Apple\n] n Applena is like a big town or a big, tall building.  A gene is made of big, green, but an old dangerious pair are small and small.  This is the german language all time.  Mese is to learn as husband science book is to school.
+# 프롬프트 '<|bos|>\n# Cat\n' → 토큰 10개
+[<|bos|>\n# Cat\n] n Catn My new friend and I love him. We play near our house and his family fell out. He is sitting on a cow with a low roof at home. The teacher shows us two cups in each line. We see that some blocks can go down and down. It is time to help me do theses.  My dad uses a key with a star.  First, I open
+# 프롬프트 '<|bos|>\n# Run\n' → 토큰 10개
+[<|bos|>\n# Run\n] n Runni Rube is heavy, but a few little fish is big.  I see Julius Maromy's bright is bright.  Tuesday days are big and very small.
+# 프롬프트 '<|bos|>\n# Big\n' → 토큰 10개
+[<|bos|>\n# Big\n] n Bignoons are very big.  In the classroom, I have a big bag of toys on a desk. My dad has a big bowl of milk and the toy car. The red ball made me want a lot. Then I put it back in my hand. The dog walks to the slide so the bear is under the bed. Now I am not awake because I say yes with it.  When I
+# 프롬프트 '<|bos|>\n# Tree\n' → 토큰 10개
+[<|bos|>\n# Tree\n] n Treenis is big.  Yesterday, my teacher helped us in school. We watched our classical mechanic on a red carpet. I gave it to my mom and she asked if the police till is like a whisper. She told me about it. I said yes, and helded his friend's turtle. The political print makes an excited
+--- 샘플 끝 ---
+반복 0: 손실 4.39 (42.3%), elapsed 5s.
+반복 100: 손실 3.59 (52.8%), elapsed 82s.
+스텝 150: 훈련 2.90 (61.8%) | 검증 3.07 (59.7%) | 평균 2.9852762842178344 | grad-norm 2.257
+체크포인트 저장 완료 (best): /Users/joey51/works/pikogpt/model/stage2/turbo/1087936/v0002/checkpoint.json
+# 모델 로드 완료 (iter=150, val loss=2.9852762842178344)
+--- 샘플 (5 prompt × 1 sample, greedy T=0) ---
+# 프롬프트 '<|bos|>\n# Apple\n' → 토큰 11개
+[<|bos|>\n# Apple\n] n Applena is a long time than its name.
+# 프롬프트 '<|bos|>\n# Cat\n' → 토큰 10개
+[<|bos|>\n# Cat\n] n Catnam is a big spoken system? k. ty.
+# 프롬프트 '<|bos|>\n# Run\n' → 토큰 10개
+[<|bos|>\n# Run\n] n Runni Rube is very small.  Rain can make the ground warm.
+# 프롬프트 '<|bos|>\n# Big\n' → 토큰 10개
+[<|bos|>\n# Big\n] n Bignoons go on mouth.  Last year, I made a new day for my father. My cat was on the grass. My mom laughed and played with her toy car. Then we was happy.  A duck sits very high in the park.
+# 프롬프트 '<|bos|>\n# Tree\n' → 토큰 10개
+[<|bos|>\n# Tree\n] n Treen eat a cookie? m.  Soon and events were all types of life in named water.
+--- 샘플 끝 ---
+반복 200: 손실 3.28 (56.8%), elapsed 162s.
+스텝 300: 훈련 2.60 (65.8%) | 검증 2.67 (64.8%) | 평균 2.635822892487049 | grad-norm 2.125
+체크포인트 저장 완료 (best): /Users/joey51/works/pikogpt/model/stage2/turbo/1087936/v0003/checkpoint.json
+# 모델 로드 완료 (iter=300, val loss=2.635822892487049)
+--- 샘플 (5 prompt × 1 sample, greedy T=0) ---
+# 프롬프트 '<|bos|>\n# Apple\n' → 토큰 11개
+[<|bos|>\n# Apple\n] n Applena is the same as the whole as Tuesday or I do.
+# 프롬프트 '<|bos|>\n# Cat\n' → 토큰 10개
+[<|bos|>\n# Cat\n] n Catn Genghis Khan lives in my room.  Why do you find Pepp script inside?  The cow's story is at night.
+# 프롬프트 '<|bos|>\n# Run\n' → 토큰 10개
+[<|bos|>\n# Run\n] n Runnis did not be sad.
+# 프롬프트 '<|bos|>\n# Big\n' → 토큰 10개
+[<|bos|>\n# Big\n] n Bignard can make a loud sound?  They give you don't made it very big and light.
+# 프롬프트 '<|bos|>\n# Tree\n' → 토큰 10개
+[<|bos|>\n# Tree\n] n Treenam is long and lines?  You use a minute to buy things.  What are fairy in an hour?  The beard moves through the nature.
+--- 샘플 끝 ---
+반복 300: 손실 3.11 (59.1%), elapsed 241s.
+반복 400: 손실 2.97 (61.0%), elapsed 317s.
+스텝 450: 훈련 2.47 (67.6%) | 검증 2.49 (67.2%) | 평균 2.4783249190449714 | grad-norm 2.006
+체크포인트 저장 완료 (best): /Users/joey51/works/pikogpt/model/stage2/turbo/1087936/v0004/checkpoint.json
+# 모델 로드 완료 (iter=450, val loss=2.4783249190449714)
+--- 샘플 (5 prompt × 1 sample, greedy T=0) ---
+# 프롬프트 '<|bos|>\n# Apple\n' → 토큰 11개
+[<|bos|>\n# Apple\n] n Appleno is the same as a fevery.
+# 프롬프트 '<|bos|>\n# Cat\n' → 토큰 10개
+[<|bos|>\n# Cat\n] n Catnard in a big dirt.  Where do people speak Colombia?  Tokyo is the same as a german language.
+# 프롬프트 '<|bos|>\n# Run\n' → 토큰 10개
+[<|bos|>\n# Run\n] n Runnum or the mall has big round face.  Why does a fertile men in the middle of the sun?  A house is very old.
+# 프롬프트 '<|bos|>\n# Big\n' → 토큰 10개
+[<|bos|>\n# Big\n] n Bignoons have a ball in the morning.  In the kitchen, I have two cars for somewhere. My dad has a big hole on her knee. He says yes, that is very old. I say, 'Whis is an apple?" Then, I put them under a chair. Next, I sit with how my brother can get dress. After that, he takes the blocks away and
+# 프롬프트 '<|bos|>\n# Tree\n' → 토큰 10개
+[<|bos|>\n# Tree\n] n Treen of the great and the United States didrax to stay very strong.  Where do you see it?  I feel happy when I sit down on her chair.
+--- 샘플 끝 ---
+반복 500: 손실 2.91 (61.7%), elapsed 396s.
+스텝 600: 훈련 2.36 (69.0%) | 검증 2.44 (67.9%) | 평균 2.3985822796821594 | grad-norm 2.206
+체크포인트 저장 완료 (best): /Users/joey51/works/pikogpt/model/stage2/turbo/1087936/v0005/checkpoint.json
+# 모델 로드 완료 (iter=600, val loss=2.3985822796821594)
+--- 샘플 (5 prompt × 1 sample, greedy T=0) ---
+# 프롬프트 '<|bos|>\n# Apple\n' → 토큰 11개
+[<|bos|>\n# Apple\n] n Appleno is a long time ago, you am praying it.
+# 프롬프트 '<|bos|>\n# Cat\n' → 토큰 10개
+[<|bos|>\n# Cat\n] n Catn Lows float.  Where do people speak Colombia?  A king can see a big mountain in the Socrates.
+# 프롬프트 '<|bos|>\n# Run\n' → 토큰 10개
+[<|bos|>\n# Run\n] n Runn is loud and a race can be quiet or quiet.  Where can you see a lamp?  You can see a disaster in school that day.
+# 프롬프트 '<|bos|>\n# Big\n' → 토큰 10개
+[<|bos|>\n# Big\n] n Bignoons go on mind.  Which book do we like to learn about products.  Is a refronand very cold?  Yes, a reicle can be same.  What does an spaceproscology change?  Anyshake makes the light move.  Is an edge of architecture made?
+# 프롬프트 '<|bos|>\n# Tree\n' → 토큰 10개
+[<|bos|>\n# Tree\n] n Treenis is inside your body by a persondment.  When did Alexander do you use the doctor?  My mom gives me a clean hug.  What can you do at the park.  Can you buy food in our living room.
+--- 샘플 끝 ---
+반복 600: 손실 2.90 (61.8%), elapsed 477s.
+반복 700: 손실 2.85 (62.6%), elapsed 553s.
+스텝 750: 훈련 2.31 (69.6%) | 검증 2.38 (68.7%) | 평균 2.342701863646507 | grad-norm 1.956
+체크포인트 저장 완료 (best): /Users/joey51/works/pikogpt/model/stage2/turbo/1087936/v0006/checkpoint.json
+# 모델 로드 완료 (iter=750, val loss=2.342701863646507)
+--- 샘플 (5 prompt × 1 sample, greedy T=0) ---
+# 프롬프트 '<|bos|>\n# Apple\n' → 토큰 11개
+[<|bos|>\n# Apple\n] n Appleno is in a big circle called a hole.  Does a beverage feel?  No, a beer sounds like a bean.
+# 프롬프트 '<|bos|>\n# Cat\n' → 토큰 10개
+[<|bos|>\n# Cat\n] n Catnam can be big and brown.  Where do people speak Colombia?  A woman like cows at the mall because they live in Central America in India.  Can a german be very fast?  Yes, Polynesia is okay, not evolution.  Is a piano in English?
+# 프롬프트 '<|bos|>\n# Run\n' → 토큰 10개
+[<|bos|>\n# Run\n] n Runn is faster than a long time ago, just like your birthday in Set.
+# 프롬프트 '<|bos|>\n# Big\n' → 토큰 10개
+[<|bos|>\n# Big\n] n Bignoons look like small lights on the roof.  What is neprogen?  No sious nationality is too big and small.
+# 프롬프트 '<|bos|>\n# Tree\n' → 토큰 10개
+[<|bos|>\n# Tree\n] n Treenis is inside your body because the arm is still inside a body.  Can an body make with the eyes?  Yes, an opera can be small when you watch it.
+--- 샘플 끝 ---
+반복 800: 손실 2.85 (62.5%), elapsed 633s.
+스텝 900: 훈련 2.27 (70.1%) | 검증 2.35 (69.1%) | 평균 2.3087423864006995 | grad-norm 1.972
+체크포인트 저장 완료 (best): /Users/joey51/works/pikogpt/model/stage2/turbo/1087936/v0007/checkpoint.json
+# 모델 로드 완료 (iter=900, val loss=2.3087423864006995)
+--- 샘플 (5 prompt × 1 sample, greedy T=0) ---
+# 프롬프트 '<|bos|>\n# Apple\n' → 토큰 11개
+[<|bos|>\n# Apple\n] n Applen pants are small and flat.  How do you write a little picture?  You read my book.
+# 프롬프트 '<|bos|>\n# Cat\n' → 토큰 10개
+[<|bos|>\n# Cat\n] n Catnam can be big and flat.  Where do people speak Marie Clamiz beahes.
+# 프롬프트 '<|bos|>\n# Run\n' → 토큰 10개
+[<|bos|>\n# Run\n] n Runn is old and a big person can feel bark.  Who looks at me?  People look at their shoes.
+# 프롬프트 '<|bos|>\n# Big\n' → 토큰 10개
+[<|bos|>\n# Big\n] n Bignoons go from in the Milkynes Gutenberg had a big, hard, round stuff and a little sink.  Where do you find a Mississippi Republic?  You can see a flag on a screen.  What are the Middle East?  The Milky Was the United N
+# 프롬프트 '<|bos|>\n# Tree\n' → 토큰 10개
+[<|bos|>\n# Tree\n] n Treenis is bigger, a horse, or a bird or a cat.  Can many children sit on a chair?  Yes, many people are having a box at the shop.
+--- 샘플 끝 ---
+반복 900: 손실 2.80 (63.1%), elapsed 713s.
+반복 1000: 손실 2.80 (63.2%), elapsed 789s.
+스텝 1050: 훈련 2.20 (71.1%) | 검증 2.37 (68.8%) | 평균 2.2834073743224144 | grad-norm 1.910
+체크포인트 저장 완료 (best): /Users/joey51/works/pikogpt/model/stage2/turbo/1087936/v0008/checkpoint.json
+# 모델 로드 완료 (iter=1050, val loss=2.2834073743224144)
+--- 샘플 (5 prompt × 1 sample, greedy T=0) ---
+# 프롬프트 '<|bos|>\n# Apple\n' → 토큰 11개
+[<|bos|>\n# Apple\n] n Applen pants are not angry?  Swimming is the same as dog I am thirsty than me.
+# 프롬프트 '<|bos|>\n# Cat\n' → 토큰 10개
+[<|bos|>\n# Cat\n] n Catn and Calis is bigger than the same as old numbers.  Who is the opposite of a cookie?  The opposite of a toy apple has three and two two things.
+# 프롬프트 '<|bos|>\n# Run\n' → 토큰 10개
+[<|bos|>\n# Run\n] n Runna feels cold, but you feel warm when it dries.  How does the Mediterranath Tagore feels?  It has dance.
+# 프롬프트 '<|bos|>\n# Big\n' → 토큰 10개
+[<|bos|>\n# Big\n] n Bignoons have a loud sound?  Many fish play with a small ball.  Where is the sun of Merya on my ears?  The sun is cold because it has a lot.
+# 프롬프트 '<|bos|>\n# Tree\n' → 토큰 10개
+[<|bos|>\n# Tree\n] n Treen and I will eat the apple.  Where can you see three dirt.  First, I find a car in my room with many little wheels. Then, I open my box with two small boxes. Next, I put the car on the floor. Then, I move your shoes into a red box. Next, I get a toy up and sit. After that, I open the book to the next page. Finally, I go out
+--- 샘플 끝 ---
+반복 1100: 손실 2.79 (63.3%), elapsed 869s.
+스텝 1200: 훈련 2.22 (70.8%) | 검증 2.35 (69.1%) | 평균 2.284037374854088 | grad-norm 2.037
+반복 1200: 손실 2.81 (63.1%), elapsed 946s.
+반복 1300: 손실 2.77 (63.6%), elapsed 1023s.
+스텝 1350: 훈련 2.25 (70.4%) | 검증 2.32 (69.4%) | 평균 2.2859590393304825 | grad-norm 2.177
+반복 1400: 손실 2.77 (63.5%), elapsed 1100s.

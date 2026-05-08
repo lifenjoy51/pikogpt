@@ -1,7 +1,7 @@
 package turbo
 
 import data.MetaInfo
-import data.SimpleBPE
+import data.CharBPE
 import gpt.GPTConfig
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -567,8 +567,8 @@ class TurboTrainer(
         val meta = File("${config.dataPath}/meta.json").readText()
         val parser = Json { ignoreUnknownKeys = true }
         val info = parser.decodeFromString<MetaInfo>(meta)
-        return info.stringToIndex[SimpleBPE.BOS_TOKEN]
-            ?: error("meta.json에 ${SimpleBPE.BOS_TOKEN} 가 없음 (recordAwareSampling 사용 불가)")
+        return info.stringToIndex[CharBPE.BOS_TOKEN]
+            ?: error("meta.json에 ${CharBPE.BOS_TOKEN} 가 없음 (recordAwareSampling 사용 불가)")
     }
 
     private fun buildModelConfig(): TurboModelConfig {

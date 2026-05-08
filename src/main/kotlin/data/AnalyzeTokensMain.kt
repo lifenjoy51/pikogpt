@@ -1,6 +1,6 @@
 package data
 
-import data.SimpleBPE.Companion.UNKNOWN_TOKEN
+import data.CharBPE.Companion.UNKNOWN_TOKEN
 import java.io.File
 import java.nio.ByteBuffer
 import java.nio.ByteOrder

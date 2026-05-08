@@ -6,7 +6,7 @@ import java.io.File
 
 fun main() {
     // 기존 BPE 모델 로드
-    val bpe = SimpleBPE(maxVocabSize = 1000)
+    val bpe = CharBPE(maxVocabSize = 1000)
 
     // meta.json에서 vocabulary 정보 로드
     val metaFile = File("/Users/joey51/works/pikogpt/data/1k/meta.json")

@@ -1,0 +1,59 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.8/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :compileKotlin UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+
+> Task :runBench5MTurbo
+WARNING: Using incubator modules: jdk.incubator.vector
+=== TurboPikoGPT (turbo 백엔드) 훈련 시작 ===
+설정: TrainConfig(dataPath=data/ccmc-v2-pro/stage2, modelDir=model/bench5m-turbo, evalIntervalRatio=0.2, logInterval=50, evalIters=25, evalOnly=false, alwaysSaveCheckpoint=false, initFrom=scratch, modelCheckpointDir=null, pretrainCheckpointDir=null, replayDataPath=null, replayRatio=0.0, replayDataPath2=null, replayRatio2=0.0, earlyStopPatience=0, samplePrompts=null, recordAwareSampling=false, chunkAnchoredSampling=false, dataset=default, gradientAccumulationSteps=16, batchSize=2, blockSize=32, embeddingDimension=192, numberOfLayers=12, numberOfHeads=6, bias=true, dropout=0.0, learningRate=3.0E-4, maxIters=500, weightDecay=0.01, beta1=0.9, beta2=0.95, gradClip=1.0, labelSmoothing=0.0, tieWeights=true, mlpActivation=swiglu, positionEncoding=rope, decayLr=true, warmupRatio=0.05, learningRateDecayRatio=0.95, minimumLearningRate=3.0E-5)
+베이스라인 손실: 7.6009 (vocab=2000)
+모델 파라미터 텐서 수: 219, 총 스칼라 원소: 5725824
+데이터 병렬 학습 활성 — worker 수 4 (CPU 12, seq/iter 32)
+데이터 로드 완료: 241844 토큰
+데이터 로드 완료: 26831 토큰
+스텝 0: 훈련 7.63 (0.0%) | 검증 7.63 (0.0%) | 평균 7.631011896133423 | grad-norm 0.000
+반복 0: 손실 7.65 (0.0%), elapsed 2s.
+반복 50: 손실 6.10 (19.7%), elapsed 38s.
+스텝 100: 훈련 4.98 (34.5%) | 검증 5.09 (33.1%) | 평균 5.031880042552948 | grad-norm 1.099
+체크포인트 저장 완료 (best): /Users/joey51/works/pikogpt/model/bench5m-turbo/stage2/turbo/5725824/v0001/checkpoint.json
+# 모델 로드 완료 (iter=100, val loss=5.031880042552948)
+--- 샘플 (5 prompt × 1 sample, greedy T=0) ---
+# 프롬프트 '<|bos|>\n# Apple\n' → 토큰 11개
+[<|bos|>\n# Apple\n] n Applen  What is a it youry of to a d or to a a the a a do the an?
+# 프롬프트 '<|bos|>\n# Cat\n' → 토큰 10개
+[<|bos|>\n# Cat\n] n Catn and and a the a find or to mys an your the a be has?  you does Which is a a the ans  Does see an the in the the not and at a find make a a can Can when.  A not see a does the the to  is  Yes, the can a an or a a a the is a does a d
+# 프롬프트 '<|bos|>\n# Run\n' → 토큰 10개
+[<|bos|>\n# Run\n] n Runn  What a do you you 
+  Where do not of the do What is?  can you a get a to the f your the a find a r
+# 프롬프트 '<|bos|>\n# Big\n' → 토큰 10개
+[<|bos|>\n# Big\n] n Bigns is is a has the a at mys? a and isa? a you have in 
+  Yes, the a the a reader and the in a not a the on have you you Why a like a you see your to you you a a find?  people can No,?  A find in can c to a to a it my and for a use have?
+# 프롬프트 '<|bos|>\n# Tree\n' → 토큰 10개
+[<|bos|>\n# Tree\n] n Treen?  Yes, a find  What you What  
+  is does a use you can do the in a be?  A in is the a A can you your an?  Can  I to a like finds.es or 
+  You can to likes a a A big, the  A do on a a can a f an a bee?
+--- 샘플 끝 ---
+반복 100: 손실 5.11 (32.8%), elapsed 90s.
+반복 150: 손실 4.66 (38.7%), elapsed 125s.
+스텝 200: 훈련 4.32 (43.2%) | 검증 4.53 (40.4%) | 평균 4.426574625968933 | grad-norm 1.472
+체크포인트 저장 완료 (best): /Users/joey51/works/pikogpt/model/bench5m-turbo/stage2/turbo/5725824/v0002/checkpoint.json
+# 모델 로드 완료 (iter=200, val loss=4.426574625968933)
+--- 샘플 (5 prompt × 1 sample, greedy T=0) ---
+# 프롬프트 '<|bos|>\n# Apple\n' → 토큰 11개
+[<|bos|>\n# Apple\n] n Applen
+# 프롬프트 '<|bos|>\n# Cat\n' → 토큰 10개
+[<|bos|>\n# Cat\n] n Catn and an ss?  Yes, the be when people bes do big?  Who is olders.  Yes,?  No, we can see a r of the momy or make a a caring.
+# 프롬프트 '<|bos|>\n# Run\n' → 토큰 10개
+[<|bos|>\n# Run\n] n Runn.  A m to see the friend or a longicy to make and the des.
+# 프롬프트 '<|bos|>\n# Big\n' → 토큰 10개
+[<|bos|>\n# Big\n] n Bigner is and gs.
+# 프롬프트 '<|bos|>\n# Tree\n' → 토큰 10개
+[<|bos|>\n# Tree\n] n Treenos when you do people a not not small an a find at sun?  Yes, I can see a friend?  A an it is b to have the mom when a day,s.
+--- 샘플 끝 ---
+반복 200: 손실 4.37 (42.5%), elapsed 177s.
+반복 250: 손실 4.23 (44.4%), elapsed 213s.
+스텝 300: 훈련 4.20 (44.7%) | 검증 4.21 (44.6%) | 평균 4.208805756568909 | grad-norm 1.397
+체크포인트 저장 완료 (best): /Users/joey51/works/pikogpt/model/bench5m-turbo/stage2/turbo/5725824/v0003/checkpoint.json

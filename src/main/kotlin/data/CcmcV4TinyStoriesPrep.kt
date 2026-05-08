@@ -81,7 +81,7 @@ fun main(args: Array<String>) {
     println("vocab: ${meta.vocabularySize}, BPE merges: ${meta.merges.size}")
 
     val encoder: (String) -> List<Int> = if (meta.merges.isNotEmpty()) {
-        val bpe = SimpleBPE(
+        val bpe = CharBPE(
             maxVocabSize = meta.vocabularySize,
             specialTokens = meta.specialTokens,
             lowercase = meta.lowercase,

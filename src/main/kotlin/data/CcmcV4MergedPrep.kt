@@ -56,7 +56,7 @@ fun main(args: Array<String>) {
     println("vocab=${meta.vocabularySize}, merges=${meta.merges.size}, specialTokens=${meta.specialTokens}")
 
     // ── BPE 복원 + special token 단일 토큰 검증 ─────────────────────────────────
-    val bpe = SimpleBPE(
+    val bpe = CharBPE(
         maxVocabSize = meta.vocabularySize,
         specialTokens = meta.specialTokens,
         lowercase = meta.lowercase,
@@ -242,14 +242,15 @@ private fun containsBanned(text: String, banWords: Set<String>): Boolean {
 
 // ── output writers ─────────────────────────────────────────────────────────────
 private fun writeUint16Bin(file: File, tokens: List<Int>, vocabSize: Int) {
-    require(vocabSize <= 65536) { "vocab too large for uint16 bin: $vocabSize" }
+    // 명칭은 uint16이지만 vec/scalar DataLoader가 BIG_ENDIAN int32로 읽으므로 호환을 위해
+    // 4 bytes BE int32로 저장 (BpePrep.writeData와 동일 포맷). vocab 검증만 유지.
     file.parentFile?.mkdirs()
     RandomAccessFile(file, "rw").use { raf ->
         raf.setLength(0)
-        val buf = ByteBuffer.allocate(tokens.size * 2).order(ByteOrder.LITTLE_ENDIAN)
+        val buf = ByteBuffer.allocate(tokens.size * 4).order(ByteOrder.BIG_ENDIAN)
         for (t in tokens) {
             require(t in 0 until vocabSize) { "token out of vocab: $t" }
-            buf.putShort(t.toShort())
+            buf.putInt(t)
         }
         raf.write(buf.array())
     }

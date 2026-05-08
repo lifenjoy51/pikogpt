@@ -18,7 +18,7 @@ object AlphabetPrep {
      * 지정된 경로의 텍스트 파일을 읽어 BPE 토큰화를 수행하고 결과를 저장합니다.
      *
      * 1. 텍스트 파일에서 고유 단어를 추출하여 `unique_words.txt`로 저장합니다.
-     * 2. `SimpleBPE`를 사용하여 텍스트 데이터로 BPE 모델을 훈련합니다.
+     * 2. `CharBPE`를 사용하여 텍스트 데이터로 BPE 모델을 훈련합니다.
      * 3. 훈련된 BPE 모델로 전체 텍스트를 인코딩(토큰화)합니다.
      * 4. 인코딩된 데이터를 90%는 훈련용(`train.bin`), 10%는 검증용(`val.bin`)으로 분할합니다.
      * 5. 토큰화에 사용된 어휘 사전 정보(meta)를 `meta.json` 파일로 저장합니다.
@@ -31,7 +31,7 @@ object AlphabetPrep {
         val text = inputFile.readText()
 
         // BPE 모델 훈련
-        val bpe = SimpleBPE(maxVocabSize = 28)
+        val bpe = CharBPE(maxVocabSize = 28)
         runBlocking {
             bpe.train(text)
         }

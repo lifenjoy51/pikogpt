@@ -4,11 +4,11 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class SimpleBPETest {
+class CharBPETest {
 
     @Test
     fun testBasicTrainingAndEncoding() {
-        val bpe = SimpleBPE(maxVocabSize = 100)
+        val bpe = CharBPE(maxVocabSize = 100)
         val text = "hello world hello"
 
         bpe.train(text)
@@ -23,7 +23,7 @@ class SimpleBPETest {
     @Test
     fun testSpecialTokens() {
         val specialTokens = listOf("<|eos|>", " ", "<|start|>")
-        val bpe = SimpleBPE(maxVocabSize = 50, specialTokens = specialTokens)
+        val bpe = CharBPE(maxVocabSize = 50, specialTokens = specialTokens)
         val text = "hello<|eos|>world<|start|>"
 
         bpe.train(text)
@@ -36,7 +36,7 @@ class SimpleBPETest {
 
     @Test
     fun testEmptyTextEncoding() {
-        val bpe = SimpleBPE(maxVocabSize = 50)
+        val bpe = CharBPE(maxVocabSize = 50)
         bpe.train("hello world")
 
         val encoded = bpe.encode("")
@@ -45,7 +45,7 @@ class SimpleBPETest {
 
     @Test
     fun testSingleCharacterText() {
-        val bpe = SimpleBPE(maxVocabSize = 50)
+        val bpe = CharBPE(maxVocabSize = 50)
         val text = "a"
 
         bpe.train(text)
@@ -56,7 +56,7 @@ class SimpleBPETest {
 
     @Test
     fun testRepeatedCharacters() {
-        val bpe = SimpleBPE(maxVocabSize = 100)
+        val bpe = CharBPE(maxVocabSize = 100)
         val text = "aaabbbccc"
 
         bpe.train(text)
@@ -68,7 +68,7 @@ class SimpleBPETest {
 
     @Test
     fun testVocabularyMapping() {
-        val bpe = SimpleBPE(maxVocabSize = 50)
+        val bpe = CharBPE(maxVocabSize = 50)
         val text = "abc"
 
         bpe.train(text)
@@ -85,7 +85,7 @@ class SimpleBPETest {
 
     @Test
     fun testEncodingConsistency() {
-        val bpe = SimpleBPE(maxVocabSize = 100)
+        val bpe = CharBPE(maxVocabSize = 100)
         val text = "hello world test"
 
         bpe.train(text)
@@ -98,7 +98,7 @@ class SimpleBPETest {
 
     @Test
     fun testLargerVocabularySize() {
-        val bpe = SimpleBPE(maxVocabSize = 1000)
+        val bpe = CharBPE(maxVocabSize = 1000)
         val text = "the quick brown fox jumps over the lazy dog".repeat(10)
 
         bpe.train(text)
@@ -111,7 +111,7 @@ class SimpleBPETest {
 
     @Test
     fun testSpecialTokensInEncoding() {
-        val bpe = SimpleBPE(maxVocabSize = 100, specialTokens = listOf("<|eos|>", " "))
+        val bpe = CharBPE(maxVocabSize = 100, specialTokens = listOf("<|eos|>", " "))
         val text = "hello <|eos|> world"
 
         bpe.train(text)
@@ -125,7 +125,7 @@ class SimpleBPETest {
 
     @Test
     fun testUnknownTokenHandling() {
-        val bpe = SimpleBPE(maxVocabSize = 50)
+        val bpe = CharBPE(maxVocabSize = 50)
         bpe.train("abc")
 
         val encodedKnown = bpe.encode("abc")
@@ -138,7 +138,7 @@ class SimpleBPETest {
     @Test
     fun testMinimalVocabSize() {
         // 기본 special 토큰 4개(eos, unk, bos, turn) + 'a', 'b' = 최소 6
-        val bpe = SimpleBPE(maxVocabSize = 8)
+        val bpe = CharBPE(maxVocabSize = 8)
         val text = "ab"
 
         bpe.train(text)
@@ -149,7 +149,7 @@ class SimpleBPETest {
 
     @Test
     fun testCompressionRatio() {
-        val bpe = SimpleBPE(maxVocabSize = 200)
+        val bpe = CharBPE(maxVocabSize = 200)
         val text = "hello hello hello world world world"
 
         bpe.train(text)
@@ -160,7 +160,7 @@ class SimpleBPETest {
 
     @Test
     fun testTokenPairMerging() {
-        val bpe = SimpleBPE(maxVocabSize = 100)
+        val bpe = CharBPE(maxVocabSize = 100)
         val text = "abab"
 
         bpe.train(text)

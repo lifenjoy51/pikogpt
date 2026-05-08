@@ -1,0 +1,77 @@
+Starting a Gradle Daemon, 1 incompatible Daemon could not be reused, use --status for details
+> Task :processResources NO-SOURCE
+> Task :compileKotlin
+> Task :compileJava NO-SOURCE
+> Task :classes UP-TO-DATE
+
+> Task :runCcmcV2ProStage2TrainVec
+=== VecPikoGPT (vec 백엔드) 훈련 시작 ===
+설정: TrainConfig(dataPath=data/ccmc-v2-pro/stage2, modelDir=model, evalIntervalRatio=0.05, logInterval=100, evalIters=100, evalOnly=false, alwaysSaveCheckpoint=false, initFrom=pretrain_weights, modelCheckpointDir=null, pretrainCheckpointDir=model/stage1/vec/1087936/v0053, replayDataPath=data/ccmc-v2-pro/stage1/train.bin, replayRatio=0.25, replayDataPath2=null, replayRatio2=0.0, earlyStopPatience=0, samplePrompts=[<|bos|>What is a cat?<|turn|>, <|bos|>What is water?<|turn|>, <|bos|>What is a tree?<|turn|>, <|bos|>What does run mean?<|turn|>, <|bos|>What does eat mean?<|turn|>, <|bos|>What does happy mean?<|turn|>, <|bos|>What does big mean?<|turn|>, <|bos|>What does above mean?<|turn|>, <|bos|>What does quickly mean?<|turn|>, <|bos|>What does and mean?<|turn|>], recordAwareSampling=true, chunkAnchoredSampling=false, dataset=default, gradientAccumulationSteps=32, batchSize=2, blockSize=32, embeddingDimension=96, numberOfLayers=8, numberOfHeads=3, bias=true, dropout=0.05, learningRate=1.0E-4, maxIters=3000, weightDecay=0.05, beta1=0.9, beta2=0.95, gradClip=1.0, labelSmoothing=0.05, tieWeights=true, mlpActivation=swiglu, positionEncoding=rope, decayLr=true, warmupRatio=0.05, learningRateDecayRatio=0.95, minimumLearningRate=1.0E-5)
+베이스라인 손실: 7.6009 (vocab=2000)
+모델 파라미터 텐서 수: 147, 총 스칼라 원소: 1087936
+데이터 병렬 학습 활성 — worker 수 4 (CPU 12, seq/iter 64)
+Mixed train loader 활성: primary=data/ccmc-v2-pro/stage2/train.bin, replay=data/ccmc-v2-pro/stage1/train.bin, ratio=0.25
+데이터 로드 완료: 241844 토큰
+데이터 로드 완료: 974210 토큰
+Record-aware val loader 활성: data=data/ccmc-v2-pro/stage2/val.bin, bosId=2
+데이터 로드 완료: 26831 토큰, 362 records (record-aware, bosId=2)
+Pretrain 가중치 로드 완료: /Users/joey51/works/pikogpt/model/stage1/vec/1087936/v0053; optimizer state reset; iter=0
+스텝 0: 훈련 3.95 (48.0%) | 검증 4.15 (45.4%) | 평균 4.0494713240861895 | grad-norm 0.000
+체크포인트 저장 완료 (best): /Users/joey51/works/pikogpt/model/stage2/vec/1087936/v0001/checkpoint.json
+--- 샘플 (10 prompt × 1 sample, greedy T=0, 10 workers) ---
+# 모델 로드 완료 (iter=0, val loss=4.0494713240861895)
+# 프롬프트 '<|bos|>What does and mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=0, val loss=4.0494713240861895)
+# 프롬프트 '<|bos|>What does eat mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=0, val loss=4.0494713240861895)
+# 프롬프트 '<|bos|>What does above mean?<|turn|>' → 토큰 10개
+# 모델 로드 완료 (iter=0, val loss=4.0494713240861895)
+# 프롬프트 '<|bos|>What does happy mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=0, val loss=4.0494713240861895)
+# 프롬프트 '<|bos|>What is a tree?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=0, val loss=4.0494713240861895)
+# 프롬프트 '<|bos|>What is a cat?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=0, val loss=4.0494713240861895)
+# 프롬프트 '<|bos|>What does run mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=0, val loss=4.0494713240861895)
+# 프롬프트 '<|bos|>What does big mean?<|turn|>' → 토큰 9개
+# 모델 로드 완료 (iter=0, val loss=4.0494713240861895)
+# 프롬프트 '<|bos|>What does quickly mean?<|turn|>' → 토큰 10개
+# 모델 로드 완료 (iter=0, val loss=4.0494713240861895)
+# 프롬프트 '<|bos|>What is water?<|turn|>' → 토큰 8개
+[<|bos|>What is a cat?<|turn|>] What is a cat? , the dog is on the chair.  We are having a soft red bike.  The baby was in the living room.  I see her friend's dog.
+[<|bos|>What is water?<|turn|>] What is water? , the teacher shows us a cat. I hold my hand on top of the cup and put it back in my hand. I like our pictures on the board. Then, I take some apple from the shelf. Next, we draw the paper next to the shop near the door. After that, the shop goes over the shelf. Finally, we open the kitchen window with our toys.
+[<|bos|>What is a tree?<|turn|>] What is a tree? , the wind in the sky. Inside the water was dry and dry. I put the tree on my hands and my legs turn to the rhythm. Finally, I move the bird out until it was too loud.
+[<|bos|>What does run mean?<|turn|>] What does run mean? !  The dog's voice is soft.  A girl and a cat are all people who can talk to.
+[<|bos|>What does eat mean?<|turn|>] What does eat mean? 'ty, and I am playing with my mum. The teacher says, 'I would for a good day.' We all go over to the park and see what I want to play alone. After that, our mum looks at his little desk from the park. Finally, we all stop at the swings.
+[<|bos|>What does happy mean?<|turn|>] What does happy mean? !  The dog's voice is fast.  The girl's smile is loud and thick.
+[<|bos|>What does big mean?<|turn|>] What does big mean? ' tight is to tell something is not as bake or quick.  I can find a dark sun in the air.
+[<|bos|>What does above mean?<|turn|>] What does above mean? , I am at the garden with my mum. She is making eggs and water in a cup of water. She calls it again to me with a small knife. We wait for our day. We sit still with the spoon that has new things. When the bag comes into, we open our bags. Now she will be quiet now.
+[<|bos|>What does quickly mean?<|turn|>] What does quickly mean? , the funnay feels safe to touch.  This is the fun afternoon's day.  A rule can be like a small bell.  The common cold makes loud songs when we go down.  A community is fast and easy for us.  A communication can both have short fur; that a soft comic does not keep
+[<|bos|>What does and mean?<|turn|>] What does and mean? 'ty, my dad gives me. I know that the song feels cold and cold. The dog is good to keep me warm, so we can play a new song.  Dirds are loud like someone all say when we bear.  Tonight and six are ways to move what something in a time.  Dirty shirt looks brown but barking in the sun.
+--- 샘플 끝 ---
+반복 0: 손실 4.31 (43.3%), elapsed 17s.
+반복 100: 손실 3.60 (52.7%), elapsed 150s.
+
+> Task :runCcmcV2ProStage2TrainVec FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':runCcmcV2ProStage2TrainVec'.
+> Process 'command '/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home/bin/java'' finished with non-zero exit value 143
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.8/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 3m 35s
+2 actionable tasks: 2 executed

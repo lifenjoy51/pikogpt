@@ -1,0 +1,125 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.8/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :compileKotlin UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+
+> Task :runBench5MTurbo
+WARNING: Using incubator modules: jdk.incubator.vector
+=== TurboPikoGPT (turbo 백엔드) 훈련 시작 ===
+설정: TrainConfig(dataPath=data/ccmc-v2-pro/stage2, modelDir=model/bench5m-turbo, evalIntervalRatio=0.2, logInterval=50, evalIters=25, evalOnly=false, alwaysSaveCheckpoint=false, initFrom=scratch, modelCheckpointDir=null, pretrainCheckpointDir=null, replayDataPath=null, replayRatio=0.0, replayDataPath2=null, replayRatio2=0.0, earlyStopPatience=0, samplePrompts=null, recordAwareSampling=false, chunkAnchoredSampling=false, dataset=default, gradientAccumulationSteps=16, batchSize=2, blockSize=32, embeddingDimension=192, numberOfLayers=12, numberOfHeads=6, bias=true, dropout=0.0, learningRate=3.0E-4, maxIters=500, weightDecay=0.01, beta1=0.9, beta2=0.95, gradClip=1.0, labelSmoothing=0.0, tieWeights=true, mlpActivation=swiglu, positionEncoding=rope, decayLr=true, warmupRatio=0.05, learningRateDecayRatio=0.95, minimumLearningRate=3.0E-5)
+베이스라인 손실: 7.6009 (vocab=2000)
+모델 파라미터 텐서 수: 219, 총 스칼라 원소: 5725824
+데이터 병렬 학습 활성 — worker 수 11 (CPU 12, seq/iter 32)
+데이터 로드 완료: 241844 토큰
+데이터 로드 완료: 26831 토큰
+스텝 0: 훈련 7.64 (0.0%) | 검증 7.62 (0.0%) | 평균 7.631154088973998 | grad-norm 0.000
+반복 0: 손실 7.62 (0.0%), elapsed 2s.
+반복 50: 손실 6.11 (19.6%), elapsed 20s.
+스텝 100: 훈련 4.93 (35.1%) | 검증 4.98 (34.4%) | 평균 4.956322464942932 | grad-norm 1.057
+체크포인트 저장 완료 (best): /Users/joey51/works/pikogpt/model/bench5m-turbo/stage2/turbo/5725824/v0001/checkpoint.json
+# 모델 로드 완료 (iter=100, val loss=4.956322464942932)
+--- 샘플 (5 prompt × 1 sample, greedy T=0) ---
+# 프롬프트 '<|bos|>\n# Apple\n' → 토큰 11개
+[<|bos|>\n# Apple\n] n Applen  What is a big does a small to?  Can you is a wr?  When you
+# 프롬프트 '<|bos|>\n# Cat\n' → 토큰 10개
+[<|bos|>\n# Cat\n] n Catn and is a theiy? of is to a dad your f?  
+  Where does  Why in a a the small a you Who What You A you do is beer of a use your the?  You does?  A have small a toy a f a?  A Can you 
+  Where Is the a a p the the make a my
+# 프롬프트 '<|bos|>\n# Run\n' → 토큰 10개
+[<|bos|>\n# Run\n] n Runn. the the.  Yes, the you Is is can be a big likes  No, the a get a p the w make the? 
+  You I the the use in a the a of and a a 
+  andi with have your a get are of a my big f can you you 
+  see a 
+  What  How do a big is the a find you a
+# 프롬프트 '<|bos|>\n# Big\n' → 토큰 10개
+[<|bos|>\n# Big\n] n Bign the f and a see the a an to make of the f?  You your you We a not p?
+# 프롬프트 '<|bos|>\n# Tree\n' → 토큰 10개
+[<|bos|>\n# Tree\n] n Treen?   a find You do you does a get on Can the make you an and a are a not a the see a can do you I on of the small an a the be does?  What a small people do 
+  does big like  A your a the a can see.
+--- 샘플 끝 ---
+반복 100: 손실 5.08 (33.1%), elapsed 53s.
+반복 150: 손실 4.60 (39.5%), elapsed 71s.
+스텝 200: 훈련 4.33 (43.1%) | 검증 4.32 (43.2%) | 평균 4.3222091054916385 | grad-norm 1.279
+체크포인트 저장 완료 (best): /Users/joey51/works/pikogpt/model/bench5m-turbo/stage2/turbo/5725824/v0002/checkpoint.json
+# 모델 로드 완료 (iter=200, val loss=4.3222091054916385)
+--- 샘플 (5 prompt × 1 sample, greedy T=0) ---
+# 프롬프트 '<|bos|>\n# Apple\n' → 토큰 11개
+[<|bos|>\n# Apple\n] n Applen, a 
+  What do people you go in a 
+  Where is a gca and the dog?  No, you can be a f or a friend be cs.  Where eat my g to make a very gent?  Yes, a toy can go is not many dog can?  You it itin has at the sun
+# 프롬프트 '<|bos|>\n# Cat\n' → 토큰 10개
+[<|bos|>\n# Cat\n] n Catnat to a d?  Yes, finent or the the very dad, and find an?  A ts can can What many teacher like the smaller the dog to have a babyy?
+# 프롬프트 '<|bos|>\n# Run\n' → 토큰 10개
+[<|bos|>\n# Run\n] n Runn?  I do you see the toy or the dog can be eamer, the babya?  We can be many st.
+# 프롬프트 '<|bos|>\n# Big\n' → 토큰 10개
+[<|bos|>\n# Big\n] n Bign is the very ls.
+# 프롬프트 '<|bos|>\n# Tree\n' → 토큰 10개
+[<|bos|>\n# Tree\n] n Treenrs when you is your a smaller to play?  People can use the long in a small?  A toy is the small to is the v and make ani.
+--- 샘플 끝 ---
+반복 200: 손실 4.36 (42.6%), elapsed 104s.
+반복 250: 손실 4.18 (44.9%), elapsed 122s.
+스텝 300: 훈련 4.08 (46.4%) | 검증 4.21 (44.6%) | 평균 4.143466260433197 | grad-norm 1.537
+체크포인트 저장 완료 (best): /Users/joey51/works/pikogpt/model/bench5m-turbo/stage2/turbo/5725824/v0003/checkpoint.json
+# 모델 로드 완료 (iter=300, val loss=4.143466260433197)
+--- 샘플 (5 prompt × 1 sample, greedy T=0) ---
+# 프롬프트 '<|bos|>\n# Apple\n' → 토큰 11개
+[<|bos|>\n# Apple\n] n Applen.  Can a dad use a dog be a big person?  You can do you can get pe.  What is a fosaar of a vy can see make with the book or a toy?  Yes, you can is at to eat and your doctor when you is ding.  Why is an anon on?  A Mer can
+# 프롬프트 '<|bos|>\n# Cat\n' → 토큰 10개
+[<|bos|>\n# Cat\n] n Catnit and a 
+  Which does fony go make to the toy with a ny?  People can be a dols, and find very mom and be with the mom and small ds?  I see your snces in a dog or a prar?
+# 프롬프트 '<|bos|>\n# Run\n' → 토큰 10개
+[<|bos|>\n# Run\n] n Runna for and a cenicer can get you gos.  Why do I like your big mation?  You use the sangtin, a din than A fhares in a lingam.  Does a pralenier have a dog?  How can an din a baby be the toy with a cy?
+# 프롬프트 '<|bos|>\n# Big\n' → 토큰 10개
+[<|bos|>\n# Big\n] n Bigner in the hunin?  People have a small boicital to a 
+  How do to you a person in the big to the dog?  It can see a persons it the little for water to go to the ly?  No, you is hot, you can be colds.
+# 프롬프트 '<|bos|>\n# Tree\n' → 토큰 10개
+[<|bos|>\n# Tree\n] n Treens and make it is bigg, you can feel or a baby of bigg.  How can you see a cat?  A big big but is in the friend or very mer with a dad.
+--- 샘플 끝 ---
+반복 300: 손실 4.10 (46.1%), elapsed 155s.
+반복 350: 손실 4.04 (46.8%), elapsed 173s.
+스텝 400: 훈련 3.95 (48.1%) | 검증 4.15 (45.4%) | 평균 4.047306401729584 | grad-norm 1.553
+체크포인트 저장 완료 (best): /Users/joey51/works/pikogpt/model/bench5m-turbo/stage2/turbo/5725824/v0004/checkpoint.json
+# 모델 로드 완료 (iter=400, val loss=4.047306401729584)
+--- 샘플 (5 prompt × 1 sample, greedy T=0) ---
+# 프롬프트 '<|bos|>\n# Apple\n' → 토큰 11개
+[<|bos|>\n# Apple\n] n Applen?  We see not cold is very hot.  Where do you see a fisment?  No, you can see a pardcon at the cat and feel it your cat?  The book to find a small toy with a suns.
+# 프롬프트 '<|bos|>\n# Cat\n' → 토큰 10개
+[<|bos|>\n# Cat\n] n Catnitit?  They use dicy from its small the dad like a hanger.  Is a su of the a dy?  My little does a dog can make a baby or a te.  What is a damy.  Where do you the li?  Yes, a red pam go to the mes in a person.
+# 프롬프트 '<|bos|>\n# Run\n' → 토큰 10개
+[<|bos|>\n# Run\n] n Runna be in a cales?  Yes, an for my dad can be a dia and sate.
+# 프롬프트 '<|bos|>\n# Big\n' → 토큰 10개
+[<|bos|>\n# Big\n] n Bignin is at the dog?  Yes, No, an in the mtales from the tine of meo.
+# 프롬프트 '<|bos|>\n# Tree\n' → 토큰 10개
+[<|bos|>\n# Tree\n] n Treens and many car.
+--- 샘플 끝 ---
+반복 400: 손실 4.00 (47.4%), elapsed 206s.
+반복 450: 손실 3.95 (48.0%), elapsed 224s.
+스텝 500: 훈련 4.04 (46.9%) | 검증 3.88 (48.9%) | 평균 3.960141034126282 | grad-norm 1.636
+체크포인트 저장 완료 (best): /Users/joey51/works/pikogpt/model/bench5m-turbo/stage2/turbo/5725824/v0005/checkpoint.json
+# 모델 로드 완료 (iter=500, val loss=3.960141034126282)
+--- 샘플 (5 prompt × 1 sample, greedy T=0) ---
+# 프롬프트 '<|bos|>\n# Apple\n' → 토큰 11개
+[<|bos|>\n# Apple\n] n Applen?  Yes, the cat color is very old sith.
+# 프롬프트 '<|bos|>\n# Cat\n' → 토큰 10개
+[<|bos|>\n# Cat\n] n Catnites?  People use mententation in a toy or a hanges.  Is a sring the a ds?  You can see a dog on in a baby because but a long time or a friend to it can find a prits to a dm.
+# 프롬프트 '<|bos|>\n# Run\n' → 토큰 10개
+[<|bos|>\n# Run\n] n Runnd for fa?  Yes, it than the mom are my dad from the mina.
+# 프롬프트 '<|bos|>\n# Big\n' → 토큰 10개
+[<|bos|>\n# Big\n] n Bigner in the Miserbe.  Who can be a pam is about a tin?  A pa does a bookar is a dog and the little number to have?  Yes, a friend can use to make a lration.  How is your cico?  Yes, a toy do you see on the dad or a doctor or a
+# 프롬프트 '<|bos|>\n# Tree\n' → 토큰 10개
+[<|bos|>\n# Tree\n] n Treens to read on a body.  How does a child make make a doctor?  A book is an the sturies in the gatils.  What is fa in a diin?  Yes, be has it from a ry when I can be with ancit, and the cats to you like a big person.
+--- 샘플 끝 ---
+반복 500: 손실 3.94 (48.2%), elapsed 257s.
+
+훈련 완료!
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.8/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 4m 22s
+2 actionable tasks: 1 executed, 1 up-to-date

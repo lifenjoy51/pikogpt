@@ -23,13 +23,20 @@ import kotlinx.coroutines.runBlocking
  * **학습된 상태**(어휘 + 병합 규칙)는 [getStoi] + [getMerges]로 내보낼 수 있고,
  * [restore]로 다시 주입할 수 있다 → `Sampler`가 학습 때와 **동일한 토큰화**를 재생할 수 있다.
  */
-class SimpleBPE(
+class CharBPE(
     private val maxVocabSize: Int,
     private val specialTokens: List<String> = listOf(EOS_TOKEN, UNKNOWN_TOKEN, BOS_TOKEN, TURN_TOKEN, SEP_TOKEN),
     private val lowercase: Boolean = false,
     private val useWordPreTokenize: Boolean = false,
     private val standardBpeScoring: Boolean = true,
     private val verbose: Boolean = false,
+    /**
+     * 공백을 BPE merge 대상에서 제외하고 단일 ' ' 토큰으로 고정한다.
+     * true면 splitToWords가 공백 chunk와 비공백 chunk를 분리하고, 공백 chunk는 char 분해 없이
+     * 단일 토큰으로 처리됨 → BPE는 알파벳/숫자만 merge.
+     * useWordPreTokenize와 동시에 사용 시 의도가 모호하므로 둘 중 하나만 권장.
+     */
+    private val splitSpaceAsToken: Boolean = false,
 ) {
     /** 토큰 문자열 → ID 매핑. 학습/복원 시 채워짐. */
     private val tokenToId = mutableMapOf<String, Int>()
@@ -75,11 +82,18 @@ class SimpleBPE(
         val rawWordCount = rawWords.size
         val rawTokenCount = rawWords.sumOf { it.size }
         var wordCounts: HashMap<List<String>, Long> = HashMap(rawWords.size.coerceAtLeast(1024))
+        var skippedWhitespace = 0L
         for (word in rawWords) {
+            // splitSpaceAsToken 모드: 공백-only word는 BPE merge 대상에서 제외 → '  ',
+            // ' '+letter 같은 멀티공백/혼합 토큰 학습 방지. 기본 char ID로만 인코딩됨.
+            if (splitSpaceAsToken && word.all { it.isNotEmpty() && it[0].isWhitespace() }) {
+                skippedWhitespace++
+                continue
+            }
             // MutableList → 불변 List로 변환해 안전한 Map key로 사용
             wordCounts.merge(word.toList(), 1L, Long::plus)
         }
-        log("초기 단어 수: $rawWordCount (unique: ${wordCounts.size}), 전체 토큰 수: $rawTokenCount")
+        log("초기 단어 수: $rawWordCount (unique: ${wordCounts.size}, 공백 skip: $skippedWhitespace), 전체 토큰 수: $rawTokenCount")
 
         // 4) 병합 루프 (unique word 단위)
         var iteration = 0
@@ -232,11 +246,17 @@ class SimpleBPE(
      * 특수 토큰은 `tokenize` 단에서 longest-match로 잡아 온전한 단일 토큰으로 추가한다.
      */
     private fun splitToWords(text: String): List<MutableList<String>> {
-        val chunks: List<String> = if (useWordPreTokenize) {
-            // \s*\S+ 는 "선택적 선행 공백 + 연속된 비공백" 즉 단어 덩어리 하나
-            Regex("\\s*\\S+").findAll(text).map { it.value }.toList()
-        } else {
-            listOf(text)
+        val chunks: List<String> = when {
+            splitSpaceAsToken -> {
+                // \s+ 또는 \S+ 매치 → 공백 chunk와 비공백 chunk 분리.
+                // 공백 chunk는 char 분해 없이 통째로 1 토큰으로 보존.
+                Regex("\\s+|\\S+").findAll(text).map { it.value }.toList()
+            }
+            useWordPreTokenize -> {
+                // \s*\S+ 는 "선택적 선행 공백 + 연속된 비공백" 즉 단어 덩어리 하나
+                Regex("\\s*\\S+").findAll(text).map { it.value }.toList()
+            }
+            else -> listOf(text)
         }
         return chunks.map { tokenize(it) }
     }

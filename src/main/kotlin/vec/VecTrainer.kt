@@ -96,14 +96,12 @@ class VecTrainer(private val config: TrainConfig) {
         Path(modelPath).toFile().mkdirs()
 
         // Worker 복제본 준비 (data-parallel). 한 iter당 seq 개수보다 많을 이유 없음.
-        // 기본 상한을 **4**로 둔 이유: 12코어 머신에서 측정 결과 worker 4와 8이 같은
-        // 0.5s/iter로 수렴 (공유 L3 캐시 + Apple Silicon P/E core mix 특성). 그 이상 쓰면
-        // CPU만 더 쓰고 속도는 같으니 4가 비용 효율적. 머신 특성이 다르면
-        // 환경변수 VEC_MAX_WORKERS로 override 가능 (벤치/튜닝 용도).
+        // 기본 상한 10. 12코어 머신에서 1~2 코어를 OS/sampler 등에 남겨두는 선택.
+        // 머신 특성이 다르면 환경변수 VEC_MAX_WORKERS로 override 가능 (벤치/튜닝 용도).
         val totalSeqsPerIter = config.batchSize * config.gradientAccumulationSteps
         val cpuCount = Runtime.getRuntime().availableProcessors().coerceAtLeast(1)
         val envCap = System.getenv("VEC_MAX_WORKERS")?.toIntOrNull()?.coerceAtLeast(1)
-        val defaultCap = 4
+        val defaultCap = 10
         val desiredWorkers = minOf(envCap ?: defaultCap, cpuCount, totalSeqsPerIter)
         workers = if (desiredWorkers >= 2) {
             println(
@@ -677,8 +675,8 @@ class VecTrainer(private val config: TrainConfig) {
         val meta = File("${config.dataPath}/meta.json").readText()
         val parser = Json { ignoreUnknownKeys = true }
         val info = parser.decodeFromString<MetaInfo>(meta)
-        return info.stringToIndex[data.SimpleBPE.BOS_TOKEN]
-            ?: error("meta.json에 ${data.SimpleBPE.BOS_TOKEN} 가 없음 (recordAwareSampling 사용 불가)")
+        return info.stringToIndex[data.CharBPE.BOS_TOKEN]
+            ?: error("meta.json에 ${data.CharBPE.BOS_TOKEN} 가 없음 (recordAwareSampling 사용 불가)")
     }
 
     private fun buildModelConfig(): GPTConfig = GPTConfig(

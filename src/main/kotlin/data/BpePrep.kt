@@ -102,7 +102,7 @@ object BpePrep {
         println("Unique words: ${String.format("%,d", uniqueWords.size)}")
 
         // BPE 학습 — train 소스에서만. val 텍스트는 encode 대상으로만 사용해 leakage 방지.
-        val bpe = SimpleBPE(
+        val bpe = CharBPE(
             maxVocabSize = maxVocabSize,
             lowercase = lowercase,
             useWordPreTokenize = useWordPreTokenize,

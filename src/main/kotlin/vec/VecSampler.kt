@@ -1,7 +1,7 @@
 package vec
 
 import data.MetaInfo
-import data.SimpleBPE
+import data.CharBPE
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import sample.SampleConfig
@@ -51,7 +51,7 @@ class VecSampler(private val samplingConfig: SampleConfig) {
         blockSize = meta.modelArgs.maxSequenceLength
         println("# 모델 로드 완료 (iter=${meta.iterationNumber}, val loss=${meta.bestValidationLoss})")
 
-        // 3) 토크나이저 복원 (meta.json → SimpleBPE.restore 경로)
+        // 3) 토크나이저 복원 (meta.json → CharBPE.restore 경로)
         val metaInfo = parser.decodeFromString<MetaInfo>(
             File("${samplingConfig.modelDirectoryPath}/meta.json").readText()
         )
@@ -219,7 +219,7 @@ class VecSampler(private val samplingConfig: SampleConfig) {
 
     private fun buildEncoderDecoder(metaInfo: MetaInfo): Pair<(String) -> List<Int>, (List<Int>) -> String> {
         val encoder: (String) -> List<Int> = if (metaInfo.merges.isNotEmpty()) {
-            val bpe = SimpleBPE(
+            val bpe = CharBPE(
                 maxVocabSize = metaInfo.vocabularySize,
                 specialTokens = metaInfo.specialTokens,
                 lowercase = metaInfo.lowercase,
