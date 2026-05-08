@@ -60,6 +60,7 @@ run-stories-bpe.kt
 # 학습/추론 실행 로그 — 이미 tracked된 히스토리 파일(overnight.log 등)은 계속 유지,
 # 새 로그(smoke.log, bench.log 등)는 git status에 노이즈로 올라오지 않도록 차단.
 run-logs/
+logs/
 
 # Python 캐시·로그 — 커밋 노이즈/용량 방지
 **/__pycache__/
