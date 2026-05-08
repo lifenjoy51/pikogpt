@@ -369,6 +369,13 @@ tasks.register<JavaExec>("runCcmcV4TinyStoriesPrep") {
     jvmArgs = listOf("-Xmx4g")
 }
 
+tasks.register<JavaExec>("runCcmcV4MergedPrep") {
+    description = "v2-pro + v4 9 epochs 통합 prep → data/ccmc-v4-merged/{train,val}.bin"
+    mainClass.set("data.CcmcV4MergedPrepKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx6g")
+}
+
 tasks.register<JavaExec>("runBench5MVec") {
     description = "Run Bench5MVec — 5M params 500 iter (vec 백엔드 시간 측정)"
     mainClass.set("train.experiments.Bench5MVecKt")
