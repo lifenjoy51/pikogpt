@@ -16,6 +16,12 @@ dependencies {
     testImplementation(kotlin("test"))
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+
+    // 추론 API 서버용 (server.InferenceApiMain)
+    implementation("io.ktor:ktor-server-core:2.3.12")
+    implementation("io.ktor:ktor-server-netty:2.3.12")
+    implementation("io.ktor:ktor-server-content-negotiation:2.3.12")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.12")
 }
 
 // turbo 백엔드용 JDK 21 toolchain + Java Vector API (jdk.incubator.vector).
@@ -431,6 +437,13 @@ tasks.register<JavaExec>("runChatVec") {
     classpath = sourceSets.main.get().runtimeClasspath
     jvmArgs = listOf("-Xmx2g")
     standardInput = System.`in`
+}
+
+tasks.register<JavaExec>("runInferenceApi") {
+    description = "Run lightweight inference HTTP API (Turbo 백엔드, ckpt + port 인자)"
+    mainClass.set("server.InferenceApiMainKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx2g", "--add-modules=jdk.incubator.vector", "-XX:+AlwaysPreTouch")
 }
 
 tasks.register<JavaExec>("runAnalyzeTokens") {

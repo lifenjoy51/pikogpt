@@ -20,7 +20,7 @@ import kotlin.random.Random
  * 또 prompt + maxNewTokens > blockSize 시에도 fallback (KV cache 슬라이딩 미지원).
  */
 class TurboSampler(
-    private val samplingConfig: SampleConfig,
+    private var samplingConfig: SampleConfig,
     private val useKvCache: Boolean = true,
 ) {
 
@@ -63,6 +63,17 @@ class TurboSampler(
             decode(generated)
         }
         return samples
+    }
+
+    /** 한 번의 generate 호출에 한해 다른 SampleConfig를 적용. 호출자가 동시성 직렬화 책임. */
+    fun generate(prompt: String, overrideConfig: SampleConfig): List<String> {
+        val original = samplingConfig
+        samplingConfig = overrideConfig
+        return try {
+            generate(prompt)
+        } finally {
+            samplingConfig = original
+        }
     }
 
     fun continueOne(promptIds: IntArray): Pair<List<Int>, String> {
