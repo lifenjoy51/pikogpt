@@ -1,6 +1,6 @@
 package train.experiments
 
-import train.TrainConfig
+import turbo.TurboTrainConfig
 import turbo.TurboTrainer
 
 /**
@@ -9,7 +9,7 @@ import turbo.TurboTrainer
 fun main(args: Array<String>) {
     val maxIters = args.firstOrNull()?.toIntOrNull() ?: 500
 
-    val config = TrainConfig(
+    val config = TurboTrainConfig(
         dataPath = "data/ccmc-v2-pro/stage2",
         modelDir = "model",
         expName = "bench5m",

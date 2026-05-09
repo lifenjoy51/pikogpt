@@ -1,6 +1,6 @@
 package train.experiments
 
-import train.TrainConfig
+import turbo.TurboTrainConfig
 
 /**
  * **three-stage v5 Stage 3 — conv finetune (2.93x scale)** — v5 wiki ckpt에서 가중치 로드,
@@ -28,7 +28,7 @@ fun main(args: Array<String>) {
         }
     }
 
-    val config = TrainConfig(
+    val config = TurboTrainConfig(
         dataPath = "data/three-stage-v4/conv",
         modelDir = "model",
         expName = "v5",

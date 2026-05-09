@@ -87,13 +87,6 @@ tasks.register<JavaExec>("runBPETest") {
     jvmArgs = listOf("-Xmx2g", "--add-modules=jdk.incubator.vector", "-XX:+AlwaysPreTouch")
 }
 
-tasks.register<JavaExec>("runTrainer") {
-    description = "Run TrainerMain (학습 smoke)"
-    mainClass.set("train.TrainerMainKt")
-    classpath = sourceSets.main.get().runtimeClasspath
-    jvmArgs = listOf("-Xmx8g", "--add-modules=jdk.incubator.vector", "-XX:+AlwaysPreTouch")
-}
-
 tasks.register<JavaExec>("runMiniTrainer") {
     description = "Run MiniTrainerMain — Scalar 백엔드 quickstart 학습 (data/alphabet, ~10분)"
     mainClass.set("train.MiniTrainerMainKt")
@@ -352,6 +345,25 @@ tasks.register<JavaExec>("runCcmcV4MergedPrep") {
     mainClass.set("data.CcmcV4MergedPrepKt")
     classpath = sourceSets.main.get().runtimeClasspath
     jvmArgs = listOf("-Xmx6g", "--add-modules=jdk.incubator.vector", "-XX:+AlwaysPreTouch")
+}
+
+tasks.register<JavaExec>("runCcmcV5QaPrep") {
+    description = "v5_qa Stage 2 dialogues (raw.jsonl) → data/ccmc-v5-qa/{train,val}.bin (v2-pro stage1 BPE 재사용)"
+    mainClass.set("data.CcmcV5QaPrepKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx2g", "--add-modules=jdk.incubator.vector", "-XX:+AlwaysPreTouch")
+}
+
+tasks.register<JavaExec>("runCcmcV5QaItTrainTurbo") {
+    description = "v5-qa-4k IT finetune turbo (3M base v0022). workers=8 (ForkJoinPool common parallelism)"
+    mainClass.set("train.experiments.CcmcV5QaItTrainTurboKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf(
+        "-Xmx8g",
+        "--add-modules=jdk.incubator.vector",
+        "-XX:+AlwaysPreTouch",
+        "-Djava.util.concurrent.ForkJoinPool.common.parallelism=8",
+    )
 }
 
 tasks.register<JavaExec>("runCcmcV4MergedSpaceSepPrep") {

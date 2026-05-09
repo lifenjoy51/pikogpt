@@ -1,6 +1,6 @@
 package train.experiments
 
-import train.TrainConfig
+import turbo.TurboTrainConfig
 
 /**
  * **three-stage v4 Stage 1 — dict pretrain** — Simple English Dict + WordNet 병합 자연어 doc으로
@@ -29,7 +29,7 @@ fun main(args: Array<String>) {
     val resume = args.any { it.equals("resume", ignoreCase = true) }
     val maxItersOverride = args.firstOrNull { !it.equals("resume", ignoreCase = true) }?.toIntOrNull()
 
-    val config = TrainConfig(
+    val config = TurboTrainConfig(
         dataPath = "data/three-stage-v4/dict",
         modelDir = "model",
         expName = "v4",

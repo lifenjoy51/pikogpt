@@ -26,10 +26,10 @@ class TurboQkNormTest {
                 embeddingDimension = 8,
                 useBias = true,
                 dropoutProbability = 0.0f,
-                positionEncoding = "rope",
             ),
             normalizationType = "rmsnorm",
             useQkNorm = useQkNorm,
+            positionEncoding = "rope",
         )
     }
 

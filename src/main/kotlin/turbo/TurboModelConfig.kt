@@ -44,6 +44,17 @@ data class TurboModelConfig(
      * 0이면 비활성. 0.0001 정도가 표준 (PaLM/T5).
      */
     val zLossWeight: Float = 0.0f,
+
+    /** Weight tying — token_embedding과 lm_head가 같은 weight 행렬 공유.
+     *  vocab × dim 만큼 파라미터 절약 + 임베딩 학습 신호 강화 (Press & Wolf 2017).
+     *  기본 true (대부분 LM 표준). false면 별도 lm_head 행렬을 둠. */
+    val tieWeights: Boolean = true,
+
+    /** MLP activation — `"gelu"`(default, GPT-2 스타일) 또는 `"swiglu"`(Llama 스타일, hidden=8/3·dim). */
+    val mlpActivation: String = "gelu",
+
+    /** Position encoding — `"learned"`(default, GPT-2 스타일) 또는 `"rope"`(Q·K 회전 주입, position param 제거). */
+    val positionEncoding: String = "learned",
 ) {
     /** 모든 옵션이 OFF인 경우만 Phase 0 회귀 경로 (vec 동등성 검증 가능). */
     val isPhase0Compatible: Boolean

@@ -1,6 +1,6 @@
 package train.experiments
 
-import train.TrainConfig
+import turbo.TurboTrainConfig
 import turbo.TurboTrainer
 
 /**
@@ -36,7 +36,7 @@ fun main(args: Array<String>) {
         }
     }
 
-    val config = TrainConfig(
+    val config = TurboTrainConfig(
         dataPath = "data/ccmc-v2-pro/stage2",
         modelDir = "model",
         replayDataPath = "data/ccmc-v2-pro/stage1/train.bin",

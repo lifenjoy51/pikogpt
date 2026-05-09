@@ -25,9 +25,13 @@ class TurboKVCacheTest {
             embeddingDimension = 8,
             useBias = true,
             dropoutProbability = 0.0f,
-            positionEncoding = if (useRoPE) "rope" else "learned",
         )
-        val model = TurboPikoGPT(TurboModelConfig(gpt = gptCfg))
+        val model = TurboPikoGPT(
+            TurboModelConfig(
+                gpt = gptCfg,
+                positionEncoding = if (useRoPE) "rope" else "learned",
+            )
+        )
         model.setTraining(false)
         return model
     }

@@ -1,6 +1,6 @@
 package train.experiments
 
-import train.TrainConfig
+import turbo.TurboTrainConfig
 
 /**
  * **dialogues-a510 + 773k tied + SwiGLU + RoPE** — TinyHelen 제거하고 TinyDialogues age-5+10만 사용.
@@ -18,7 +18,7 @@ fun main(args: Array<String>) {
     val resume = args.any { it.equals("resume", ignoreCase = true) }
     val maxItersOverride = args.firstOrNull { !it.equals("resume", ignoreCase = true) }?.toIntOrNull()
 
-    val config = TrainConfig(
+    val config = TurboTrainConfig(
         dataPath = "data/dialogues-a510",
         modelDir = "model",
         gradientAccumulationSteps = 32,

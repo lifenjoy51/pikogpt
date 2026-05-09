@@ -1,6 +1,6 @@
 package train.experiments
 
-import train.TrainConfig
+import turbo.TurboTrainConfig
 
 /**
  * **two-stage BASE pretrain** — TinyHelen leaner/100M의 wiki + textbook으로 사실 지식을 주입.
@@ -26,7 +26,7 @@ fun main(args: Array<String>) {
     val resume = args.any { it.equals("resume", ignoreCase = true) }
     val maxItersOverride = args.firstOrNull { !it.equals("resume", ignoreCase = true) }?.toIntOrNull()
 
-    val config = TrainConfig(
+    val config = TurboTrainConfig(
         dataPath = "data/two-stage/base",
         modelDir = "model",
         gradientAccumulationSteps = 32,

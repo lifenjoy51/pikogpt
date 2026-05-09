@@ -197,14 +197,6 @@ class Value(
     }
 
     /**
-     * forward:  out = 1 / (1 + exp(-a))
-     * backward: chain rule로 자동 (div + exp + neg + plus 조합).
-     *
-     * 별도 backward 클로저를 두지 않고 합성된 sub-그래프가 그대로 미분되도록 둡니다.
-     */
-    fun sigmoid(): Value = ONE / (ONE + (-this).exp())
-
-    /**
      * forward:  out = 0.5 * a * (1 + tanh(sqrt(2/π) * (a + 0.044715 * a³)))
      * backward: chain rule로 자동 (모든 sub-연산이 Value 그래프).
      *

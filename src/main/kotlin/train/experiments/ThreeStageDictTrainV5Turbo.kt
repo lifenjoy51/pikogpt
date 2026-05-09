@@ -1,6 +1,6 @@
 package train.experiments
 
-import train.TrainConfig
+import turbo.TurboTrainConfig
 
 /**
  * **three-stage v5 Stage 1 — dict pretrain (2.93x scale)** — v4와 동일 데이터·LR·iter, architecture만
@@ -24,7 +24,7 @@ fun main(args: Array<String>) {
     val resume = args.any { it.equals("resume", ignoreCase = true) }
     val maxItersOverride = args.firstOrNull { !it.equals("resume", ignoreCase = true) }?.toIntOrNull()
 
-    val config = TrainConfig(
+    val config = TurboTrainConfig(
         dataPath = "data/three-stage-v4/dict",
         modelDir = "model",
         expName = "v5",

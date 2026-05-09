@@ -12,7 +12,7 @@ import turbo.transpose2D
  */
 class TurboPikoGPT(val config: TurboModelConfig) {
     private val gptConfig = config.gpt
-    private val useRoPE: Boolean = gptConfig.positionEncoding.equals("rope", ignoreCase = true)
+    private val useRoPE: Boolean = config.positionEncoding.equals("rope", ignoreCase = true)
 
     val tokenEmbedding = TurboEmbeddingTable(gptConfig.vocabularySize, gptConfig.embeddingDimension)
     val positionEmbedding: TurboEmbeddingTable? =
@@ -25,7 +25,7 @@ class TurboPikoGPT(val config: TurboModelConfig) {
         createTurboNorm(gptConfig.embeddingDimension, gptConfig.useBias, config.normalizationType)
 
     val lmHead: TurboLinear? =
-        if (gptConfig.tieWeights) null
+        if (config.tieWeights) null
         else TurboLinear(gptConfig.embeddingDimension, gptConfig.vocabularySize, useBias = false)
 
     /** tied lm_head 모드(lmHead=null)에서만 backward에 필요한 finalLayerNorm 출력. */

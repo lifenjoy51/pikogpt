@@ -9,10 +9,6 @@ import kotlinx.serialization.json.Json
 import sample.SampleConfig
 import train.BatchSource
 import train.DataLoader
-import train.MixedDataLoader
-import train.RecordAwareDataLoader
-import train.TrainConfig
-import train.TripleDataLoader
 import turbo.layer.TurboPikoGPT
 import turbo.ops.turboCrossEntropyBackward
 import turbo.ops.turboCrossEntropyForward
@@ -34,7 +30,7 @@ import kotlin.math.sqrt
  * Phase 2에서 풀링/SIMD, Phase 5에서 worker-replica 폐기 후 ForkJoinPool로 재설계.
  */
 class TurboTrainer(
-    private val config: TrainConfig,
+    private val config: TurboTrainConfig,
     /** turbo 전용 알고리즘 옵션. Default OFF면 Phase 0 (vec 동등) 경로 그대로. */
     private val normalizationType: String = "layernorm",
     private val numKvHeads: Int? = null,
@@ -580,9 +576,6 @@ class TurboTrainer(
             embeddingDimension = config.embeddingDimension,
             useBias = config.bias,
             dropoutProbability = config.dropout,
-            tieWeights = config.tieWeights,
-            mlpActivation = config.mlpActivation,
-            positionEncoding = config.positionEncoding,
         )
         return TurboModelConfig(
             gpt = gptCfg,
@@ -591,6 +584,9 @@ class TurboTrainer(
             useQkNorm = useQkNorm,
             useFusedQkv = useFusedQkv,
             zLossWeight = zLossWeight,
+            tieWeights = config.tieWeights,
+            mlpActivation = config.mlpActivation,
+            positionEncoding = config.positionEncoding,
         )
     }
 

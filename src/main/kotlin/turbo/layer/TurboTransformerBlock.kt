@@ -25,14 +25,14 @@ class TurboTransformerBlock(modelConfig: TurboModelConfig) {
         numHeads = numHeads,
         useBias = useBias,
         dropoutProbability = dropoutProbability,
-        positionEncoding = gptConfig.positionEncoding,
+        positionEncoding = modelConfig.positionEncoding,
         numKvHeads = modelConfig.effectiveKvHeads,
         useFusedQkv = modelConfig.useFusedQkv,
         useQkNorm = modelConfig.useQkNorm,
         normalizationType = modelConfig.normalizationType,
     )
     val layerNorm2: TurboNorm = createTurboNorm(embedDim, useBias, modelConfig.normalizationType)
-    val mlp: TurboMLP = TurboMLP(embedDim, useBias, dropoutProbability, gptConfig.mlpActivation)
+    val mlp: TurboMLP = TurboMLP(embedDim, useBias, dropoutProbability, modelConfig.mlpActivation)
 
     /**
      * Phase 4.4 — gradient checkpointing 토글. true면 backward 시 forward 재실행으로

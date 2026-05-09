@@ -1,6 +1,6 @@
 package train.experiments
 
-import train.TrainConfig
+import turbo.TurboTrainConfig
 
 /**
  * **two-stage IT finetune** — BASE pretrain 가중치에서 시작해 dialogues-a510 + 20% BASE replay로
@@ -37,7 +37,7 @@ fun main(args: Array<String>) {
         }
     }
 
-    val config = TrainConfig(
+    val config = TurboTrainConfig(
         dataPath = "data/two-stage/it",
         modelDir = "model",
         replayDataPath = "data/two-stage/base/train.bin",

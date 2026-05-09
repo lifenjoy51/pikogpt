@@ -1,6 +1,6 @@
 package train.experiments
 
-import train.TrainConfig
+import turbo.TurboTrainConfig
 
 /**
  * **three-stage v4 Stage 3 — conv finetune (multi-replay)** — Stage 2 wiki ckpt에서 가중치 로드,
@@ -42,7 +42,7 @@ fun main(args: Array<String>) {
         }
     }
 
-    val config = TrainConfig(
+    val config = TurboTrainConfig(
         dataPath = "data/three-stage-v4/conv",
         modelDir = "model",
         expName = "v4",

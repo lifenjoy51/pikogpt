@@ -1,6 +1,6 @@
 package train.experiments
 
-import train.TrainConfig
+import turbo.TurboTrainConfig
 
 /**
  * **three-stage v5 Stage 2 — wiki pretrain continued (2.93x scale)** — v5 dict ckpt에서 가중치 로드,
@@ -30,7 +30,7 @@ fun main(args: Array<String>) {
         }
     }
 
-    val config = TrainConfig(
+    val config = TurboTrainConfig(
         dataPath = "data/three-stage-v4/wiki",
         modelDir = "model",
         expName = "v5",

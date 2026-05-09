@@ -3,18 +3,19 @@ package gpt
 import kotlinx.serialization.Serializable
 
 /**
- * GPT 모델 아키텍처 설정
+ * GPT 모델 아키텍처 설정 (scalar/turbo 백엔드 공유).
  *
- * GPT 모델의 구조를 정의하는 모든 하이퍼파라미터를 포함합니다.
- * 이 설정들은 모델의 크그, 복잡도, 성능을 결정합니다.
+ * 두 백엔드가 모두 사용하는 기본 모델 형태(layers/heads/embd/dropout/bias) 만 담는다.
+ * Turbo 전용 옵션(weight tying, MLP activation 종류, position encoding 종류 등)은
+ * [turbo.TurboModelConfig]에 분리되어 있다.
  *
- * @param blockSize 시퀀스 최대 길이 (맥락 윈도우) - 모델이 한 번에 처리할 수 있는 토큰 수
- * @param vocabSize 어휘 사전 크기 - 모델이 알고 있는 가능한 모든 토큰의 수
- * @param nLayer Transformer 블록 수 - 모델의 깊이를 결정하는 중요한 요소
- * @param nHead Multi-Head Attention의 헤드 수 - 병렬 어텐션 메커니즘 수
- * @param nEmbd 임베딩 차원 - 모델의 표현력과 직결되는 핵심 파라미터
- * @param bias 선형 레이어에 편향(bias) 사용 여부
- * @param dropout Dropout 확률 - 과적합 방지를 위한 정규화 기법
+ * @param maxSequenceLength 시퀀스 최대 길이 (맥락 윈도우)
+ * @param vocabularySize 어휘 사전 크기
+ * @param numberOfLayers Transformer 블록 수
+ * @param numberOfAttentionHeads Multi-Head Attention 헤드 수
+ * @param embeddingDimension 임베딩 차원
+ * @param useBias 선형 레이어 bias 사용 여부
+ * @param dropoutProbability Dropout 확률
  */
 @Serializable
 data class GPTConfig(
@@ -38,24 +39,4 @@ data class GPTConfig(
 
     /** 드롭아웃 확률 - 정규화를 위한 뉴런 제거 비율 */
     val dropoutProbability: Float,
-
-    /** Weight tying — token_embedding과 lm_head가 같은 weight 행렬 공유.
-     *  vocab × dim 크기 만큼 파라미터 절약 + 임베딩 학습 신호 강화 (Press & Wolf 2017).
-     *  기본 true (대부분 LM 표준). false면 별도 lm_head 행렬을 둠.
-     *  현재는 vec 백엔드만 지원. 기존 untied ckpt와 호환 안 되니 주의. */
-    val tieWeights: Boolean = true,
-
-    /**
-     * MLP activation 종류 — `"gelu"`(현재 기본) 또는 `"swiglu"`(미구현, 추후 옵션).
-     * SwiGLU는 Llama 등 현대 LM에서 GELU 대비 perplexity 2-5% 개선 보고. params 약간↑(gate weight 추가).
-     * 향후 vec.layer.MLP에서 분기 구현 예정.
-     */
-    val mlpActivation: String = "gelu",
-
-    /**
-     * Position encoding 종류 — `"learned"`(현재 기본) 또는 `"rope"`(미구현, 추후 옵션).
-     * RoPE(Rotary)는 학습 가능 position embedding 제거 + 더 robust + blockSize 확장 자유.
-     * 향후 vec.layer.PikoGPT/SelfAttention에서 분기 구현 예정.
-     */
-    val positionEncoding: String = "learned"
 )
