@@ -51,10 +51,11 @@ per-tuple 단일 호출. **배치 없음** (사용자 요구). 출력 schema:
 핵심 아이디어: LLM이 "이 lemma 묶음에 어떤 발화 타입 분포가 자연스러운지" 판단 →
 의미적으로 정당한 spec 생성. 단순 템플릿보다 풍부한 결과 기대.
 
-### Stage 2 (예정): QA synthesis
+### Stage 2 (완료): QA synthesis
 
 Stage 1 spec을 따라 실제 multi-turn QA 텍스트 생성. 각 turn의 act/aux/marker/lemma
-지시 사항을 따라 자연스러운 대화 생성. (현재 미구현 — Stage 1 결과 보고 진행 결정)
+지시 사항을 따라 자연스러운 대화 생성. **2026-05-09 완료** — 자세한 결과는
+아래 "Stage 2 최종 결과" 섹션 참고.
 
 ## Stage 1 구현 — 3중 JSON 보장 + 자가 수정 retry
 
@@ -202,17 +203,71 @@ llm-playground/data/processed/ccmc_v5_qa_specs/
 - `llm-playground/tools/v5_qa_stage1_retry.py` — fail 레코드 Pro 재시도
 - `llm-playground/tools/v5_qa_stage1_fill.py` — 미커버 anchor만 모델별 채움 (`--dry-run`으로 분류 미리 보기)
 
-## 다음 단계 (Stage 1 완료 후)
+## Stage 2 최종 결과 (2026-05-09 완료)
 
-1. spec 풀 통계 분석:
-   - act type 실제 분포 (LLM이 실제로 선택한 비율)
-   - rejection 비율 + 이유
-   - lemma_role 패턴 (noun=agent? verb=action?)
-   - setting 클러스터링
-2. Stage 2 pilot — 같은 spec으로 실제 multi-turn QA 텍스트 생성 (Flash/Pro 비교)
-3. Stage 2 full run + validate_v5_qa 게이트 (어휘/형식/분포 검증)
-4. pikogpt prep — stage2 형식 wrap (`<|bos|>Q?<|turn|>A...<|eos|>`)
-5. **v0022(val 1.84)에서 finetune** — narrative 능력 보존하며 QA 능력 강화
+### 파이프라인
+
+| 단계 | 도구 | 입력 | 출력 |
+|---|---|---|---|
+| Pilot | `tools/v5_qa_pilot_stage2.py` | 10 spec random sample | `data/interim/v5_qa_pilot_stage2/results.jsonl` |
+| Full | `tools/v5_qa_stage2_full.py --model flash` | 14,780 ok specs (6 dirs) | `data/processed/ccmc_v5_qa_dialogues/flash/raw.jsonl` |
+
+### 사용자 결정
+
+1. **입력 spec 풀**: 14,780 ok specs 전부 (`{flash, flash_e2, flash_fill, pro, pro_fill, retry_pro}`).
+   같은 anchor에 spec 여러 개 있어도 모두 별도 호출 (학습 데이터 다양성).
+2. **출력 포맷**: JSON `{"spec_id": "...", "turns": ["Q1", "A1", "Q2", "A2", ...]}`.
+   짝수 인덱스 = Q, 홀수 인덱스 = A. pikogpt prep 단계에서
+   `<|bos|>Q1<|turn|>A1<|turn|>...<|eos|>` 로 변환 예정.
+3. **모델**: Flash 100% (속도/비용 우선). Pro 추가 합성은 결과 보고 결정.
+
+### 검증 게이트 (Pydantic + 의미)
+
+| 검증 | 정책 | 비고 |
+|---|---|---|
+| JSON parse | `response_format=json_object` | 100% 통과 |
+| Pydantic schema | `turns: list[str], 4~14 length` | 통과 |
+| 짝수 turn 보장 | 홀수면 마지막 미응답 Q **자동 truncate** | Q/A pair 보존 |
+| anchor 등장 | verb/noun/adj lowercase substring 1회+ | retry on miss |
+| turn 길이 | 1~30 단어 | retry on out-of-range |
+| ~~turn 수 strict~~ | **제거** (`len == expected*2` 강제 X) | Flash가 짧게 자르는 경향 허용 |
+
+### 결과 통계 (Flash 100%, 16 workers)
+
+| 항목 | 값 |
+|---|---|
+| 처리 spec | **14,780 / 14,780 (100%)** |
+| ok / fail | 14,699 / 81 |
+| fail rate | **0.55%** |
+| 1회 통과 | 14,536 (98.4%) |
+| 2회 통과 | 132 |
+| 3회 통과 | 112 |
+| 누적 비용 | **$1.230** |
+| Elapsed | 36.4 분 |
+| Rate | 6.77 calls/s |
+| 출력 크기 | `flash/raw.jsonl` 15M, 14,780 records |
+
+### Pilot 발견
+
+10 spec × Flash/Pro 비교에서 (`data/interim/v5_qa_pilot_stage2/results.jsonl`):
+
+- **Pro는 spec.expected_turn_count×2를 거의 정확히 따름** (5 pair → 10 turns).
+- **Flash는 종종 짧게 끊음** (5 pair인데 4 turns만 등) — turn 수 strict 검증을
+  제거하고 짝수만 강제하도록 정책 조정.
+- **anchor 자연스러움**: Pro가 더 풍부한 detail (e.g. "piece of paper from Grandma",
+  Sikhism의 "ten gurus"). Flash는 anchor 반복 강조 경향.
+- pilot 자체는 20/20 통과 ($0.00191).
+
+### 다음 단계
+
+1. (선택) **Pro로 일부 spec 추가 합성** — 다양성 보강. 비용 추정 $4 (14k Pro full)
+   또는 부분 (예: 5k = $1.5).
+2. **Fail 81건 retry** — `tools/v5_qa_stage2_retry.py` (Stage 1 retry 패턴 답습),
+   예상 $0.05 / 2분.
+3. **결과 분석** — anchor coverage, turn 길이 분포, vocab 분석 (5세 외 단어).
+4. **pikogpt prep** — `flash/raw.jsonl` → `<|bos|>Q1<|turn|>A1<|turn|>...<|eos|>` 형식
+   bin 변환 (별도 plan).
+5. **v0022(val 1.84)에서 finetune** — narrative 능력 보존하며 QA 능력 강화 (별도 plan).
 
 ## 위험·완화
 
