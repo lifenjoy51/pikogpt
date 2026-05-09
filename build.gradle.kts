@@ -390,6 +390,20 @@ tasks.register<JavaExec>("runCcmcV4MergedSpaceSepQuickTrainVec") {
     jvmArgs = listOf("-Xmx8g")
 }
 
+tasks.register<JavaExec>("runCcmcV4MergedSpaceSep3MTrainVec") {
+    description = "v4-merged-spacesep ~3M 모델 (dim 160 · layers 8 · heads 5) 3000 iter 학습"
+    mainClass.set("train.experiments.CcmcV4MergedSpaceSep3MTrainVecKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx8g")
+}
+
+tasks.register<JavaExec>("runSampleV4MergedSpaceSep3M") {
+    description = "v0022 best ckpt 재샘플링 (T=0.8, topK=40, topP=0.9, repPenalty=1.15)"
+    mainClass.set("sample.SampleV4MergedSpaceSep3MKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf("-Xmx4g")
+}
+
 tasks.register<JavaExec>("runBench5MVec") {
     description = "Run Bench5MVec — 5M params 500 iter (vec 백엔드 시간 측정)"
     mainClass.set("train.experiments.Bench5MVecKt")
