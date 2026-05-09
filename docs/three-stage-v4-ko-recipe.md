@@ -285,13 +285,13 @@ done
 
 ```bash
 # Stage 1 — scratch
-./gradlew runThreeStageKoDictTrainV4Vec
+./gradlew runThreeStageKoDictTrainV4Turbo
 
 # Stage 2 — Stage 1 ckpt에서 이어받기
-./gradlew runThreeStageKoWikiTrainV4Vec --args="model/dict-ko/vec/<paramCount>/v00XX"
+./gradlew runThreeStageKoWikiTrainV4Turbo --args="model/dict-ko/vec/<paramCount>/v00XX"
 
 # Stage 3 — Stage 2 ckpt에서 이어받기
-./gradlew runThreeStageKoConvTrainV4Vec --args="model/wiki-ko/vec/<paramCount>/v00XX"
+./gradlew runThreeStageKoConvTrainV4Turbo --args="model/wiki-ko/vec/<paramCount>/v00XX"
 
 # 각 단계 resume / maxIters override 지원:
 #   runThreeStageKo*TrainV4Vec --args="resume"
@@ -303,7 +303,7 @@ done
 - `data/three-stage-v4/`, `data/dictionaries/`, `data/simplewiki/`, `data/two-stage-v3/` — 보존
 - `scripts/{download_kid_dictionaries, merge_kid_dictionaries, render_dict_docs, build_base_v3_train_val, inline_wiki_docs, text_cleaning, clean_simplewiki_v2, parse_vital_titles, resolve_vital_titles, recover_vital_from_raw, expand_vital_matches, build_vital_corpus, analyze_v4_low_freq}.py` — 변경 0건 (한국어판은 read-only import만)
 - `src/main/kotlin/train/experiments/ThreeStage{Dict,Wiki,Conv}TrainV4Vec.kt` 영문 3개 — 변경 0건
-- `build.gradle.kts`의 영문 task 3개 (`runThreeStageDictTrainV4Vec` 등) — 변경 0건. 한국어 task 3개를 추가만 함
+- `build.gradle.kts`의 영문 task 3개 (`runThreeStageDictTrainV4Turbo` 등) — 변경 0건. 한국어 task 3개를 추가만 함
 - `src/main/kotlin/data/SimpleBPE.kt`, `vec/VecTrainer.kt`, `vec/VecSampler.kt` 등 코어 — 변경 0건. 한국어판도 그대로 재사용
 
 ## 7. 산출물 트리
@@ -400,9 +400,9 @@ for d in dict-ko wiki-ko conv-ko; do
 done
 
 # Stage D — 학습
-./gradlew runThreeStageKoDictTrainV4Vec
-./gradlew runThreeStageKoWikiTrainV4Vec --args="model/dict-ko/vec/<P>/v00XX"
-./gradlew runThreeStageKoConvTrainV4Vec --args="model/wiki-ko/vec/<P>/v00XX"
+./gradlew runThreeStageKoDictTrainV4Turbo
+./gradlew runThreeStageKoWikiTrainV4Turbo --args="model/dict-ko/vec/<P>/v00XX"
+./gradlew runThreeStageKoConvTrainV4Turbo --args="model/wiki-ko/vec/<P>/v00XX"
 ```
 
 ## 9. 빌드 후 검증
@@ -438,7 +438,7 @@ for d in dict-ko wiki-ko conv-ko; do
 done
 
 # 4) smoke 학습 (각 stage 2 iter)
-./gradlew runThreeStageKoDictTrainV4Vec --args="2"
+./gradlew runThreeStageKoDictTrainV4Turbo --args="2"
 # → model/dict-ko/vec/<P>/v0001/ 생성 확인 후 다음 stage smoke
 ```
 

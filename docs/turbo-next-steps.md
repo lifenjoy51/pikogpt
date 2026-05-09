@@ -46,8 +46,6 @@ ROI/복잡도 검토 결과:
 | **Flash Attention v2** | 현재 컨텍스트 길이 (T<128)에서 효과 미미 |
 | **GPU 가속 (Vulkan/Metal/TornadoVM)** | Apple Silicon에서 학습 곡선 큼, ROI 낮음 |
 | **추가 알고리즘 옵션** | RMSNorm/GQA/qk-norm/fused QKV/z-loss 이미 모두 보유 |
-| **vec → turbo 체크포인트 호환** | vec/turbo는 별도 트랙으로 유지. 신규 학습만 turbo |
-| **Vec 실험 진입점 마이그레이션** | 위와 동일 — 기존 Vec 진입점은 그대로 두고, 신규 실험만 Turbo로 추가 |
 
 ## 검증 게이트
 

@@ -3,19 +3,16 @@ package turbo.bench
 import turbo.TurboSimdMath
 import turbo.TurboTensor
 import turbo.ops.turboMatmul
-import vec.Tensor as VecTensor
-import vec.ops.matmul as vecMatmul
 import kotlin.random.Random
 import kotlin.system.measureNanoTime
 
 /**
- * Phase 2 마이크로벤치마크 — vec(naive ikj) vs turbo(SIMD blocked) MatMul 비교.
+ * Turbo MatMul 마이크로벤치마크 — shape별 절대 처리 시간 측정.
  *
- * 결과는 환경마다 다르지만 Apple Silicon NEON (lane 4) 기준 1M 모델 hot shapes에서
- * **2~4×** 가속이 기대치. AVX2/AVX-512에서 더 큼.
+ * vec 백엔드 폐기 후 turbo 단독 측정. 회귀 추적용 (이전 측정과 절대 시간 비교).
  */
 fun main() {
-    println("=== Turbo MatMul / AdamW micro-benchmark ===")
+    println("=== Turbo MatMul micro-benchmark ===")
     println("SIMD lane count: ${TurboSimdMath.laneCount} (FloatVector.SPECIES_PREFERRED)")
     println("CPU cores: ${Runtime.getRuntime().availableProcessors()}")
     println()
@@ -25,7 +22,7 @@ fun main() {
 
 private fun benchMatmul() {
     println("--- MatMul forward ---")
-    println("%-22s %12s %12s %10s".format("shape", "turbo (us)", "vec (us)", "speedup"))
+    println("%-22s %12s".format("shape", "turbo (us)"))
     val warmupIters = 20
     val measureIters = 100
 
@@ -51,7 +48,6 @@ private fun benchMatmul() {
 
         repeat(warmupIters) {
             turboMatmul(TurboTensor(intArrayOf(m, k), aData), TurboTensor(intArrayOf(k, n), bData))
-            vecMatmul(VecTensor(intArrayOf(m, k), aData), VecTensor(intArrayOf(k, n), bData))
         }
 
         val turboNs = measureNanoTime {
@@ -59,14 +55,7 @@ private fun benchMatmul() {
                 turboMatmul(TurboTensor(intArrayOf(m, k), aData), TurboTensor(intArrayOf(k, n), bData))
             }
         }
-        val vecNs = measureNanoTime {
-            repeat(measureIters) {
-                vecMatmul(VecTensor(intArrayOf(m, k), aData), VecTensor(intArrayOf(k, n), bData))
-            }
-        }
         val turboUs = turboNs / measureIters / 1000.0
-        val vecUs = vecNs / measureIters / 1000.0
-        val speedup = vecUs / turboUs
-        println("%-22s %12.1f %12.1f %9.2fx".format("[$m, $k, $n]", turboUs, vecUs, speedup))
+        println("%-22s %12.1f".format("[$m, $k, $n]", turboUs))
     }
 }
