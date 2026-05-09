@@ -103,9 +103,11 @@ class FullPipelineTest {
     }
 
     private fun findCheckpointDir(): File? {
+        // 새 schema: ${modelDir}/${datasetName}/${expName}/v0001/
         if (!modelDir.exists()) return null
-        val paramDir = modelDir.listFiles()?.firstOrNull { it.isDirectory } ?: return null
-        return paramDir.listFiles()?.firstOrNull {
+        val datasetDir = modelDir.listFiles()?.firstOrNull { it.isDirectory } ?: return null
+        val expDir = datasetDir.listFiles()?.firstOrNull { it.isDirectory } ?: return null
+        return expDir.listFiles()?.firstOrNull {
             it.isDirectory && File(it, "checkpoint.json").exists()
         }
     }

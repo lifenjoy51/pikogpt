@@ -1,84 +1,69 @@
 package sample
 
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
+import java.io.File
 
-fun main() {
-    runBlocking {
-//        test()
-        testVariousPrompts()
+/**
+ * Scalar 백엔드 quickstart 샘플링 진입점.
+ *
+ * MiniTrainerMain으로 학습한 ckpt를 로드해 알파벳 패턴이 어느 정도 학습됐는지 텍스트 생성으로 확인.
+ *
+ * 사용법:
+ *   ./gradlew runSampler
+ *     # → model/alphabet/main 아래 가장 큰 v 번호 디렉토리 자동 검색
+ *
+ *   ./gradlew runSampler --args="model/alphabet/main/v0001"
+ *     # → 명시 ckpt 디렉토리 사용
+ *
+ * 기대 출력:
+ *   학습 후반부의 ckpt에서는 "the cat ran"처럼 자주 나오는 단어 시퀀스가 부분적으로
+ *   재현됩니다. 작은 모델이라 완벽한 문장은 아니지만 알파벳·음절 패턴은 살아 있어야 합니다.
+ *
+ * 자세한 한 흐름 가이드: docs/scalar-quickstart.md
+ */
+fun main(args: Array<String>) = runBlocking {
+    val ckptPath = args.firstOrNull() ?: findLatestCheckpoint("model/alphabet/main")
+    require(File(ckptPath).exists()) {
+        "ckpt 디렉토리가 없습니다: $ckptPath\n" +
+            "먼저 './gradlew runMiniTrainer'로 학습하거나 인자로 ckpt 경로를 지정하세요."
     }
-}
-
-suspend fun testVariousPrompts() = withContext(Dispatchers.Default) {
-    val prompts = listOf(
-        "once upon a time",
-        "the cat and the dog",
-        "the boy saw a",
-        "the girl said,",
-        "they lived happily"
-    )
-
-    val loss = listOf("68")
-
-    // 모든 loss 값을 병렬로 처리
-    val result = loss.map { l ->
-        val config = SampleConfig(
-            modelDirectoryPath = "model/39360/$l",
-            numberOfSamples = 1
-        )
-        val sampler = ScalarSampler(config)
-
-        // 각 loss 값에 대해 모든 프롬프트를 병렬로 처리
-        prompts.map { prompt ->
-            //println("\n=== Loss: $l, Prompt: $prompt ===")
-            sampler.generateText(prompt)
-        }
-    }.flatten()
-
-    result.forEach {
-        println("\n=== ModelId: ${it.uid}, Prompt: ${it.prompt} ===")
-        it.results.forEach { line ->
-            println(line)
-        }
-    }
-}
-
-
-suspend fun test() {
-    val config = SampleConfig(
-        modelInitializationMode = "resume",
-        modelDirectoryPath = "model/71200/20",
-        numberOfSamples = 3,
-    )
-
-    val sampler = ScalarSampler(config)
-    val result = sampler.generateText("the cat and the dog")
-    println(result)
-}
-
-fun sampleInteractive() {
-    println("대화형 텍스트 생성")
-    println("종료하려면 'quit'를 입력하세요.")
 
     val config = SampleConfig(
-        numberOfSamples = 1,
-        maximumNewTokens = 100,
+        modelDirectoryPath = ckptPath,
+        numberOfSamples = 2,
+        maximumNewTokens = 30,
         samplingTemperature = 0.8f,
-        topKFilteringSize = 50
+        topKFilteringSize = 20,
     )
-
     val sampler = ScalarSampler(config)
 
-    runBlocking {
-        while (true) {
-            print("\n프롬프트 입력: ")
-            val prompt = readlnOrNull() ?: break
+    // 알파벳 학습 모델용 짧은 프롬프트.
+    val prompts = listOf("a", "the", "the cat", "abc")
 
-            if (prompt.lowercase() == "quit") break
-
-            sampler.generateText(prompt)
-        }
+    for (prompt in prompts) {
+        println("\n=== prompt: '$prompt' ===")
+        val result = sampler.generateText(prompt)
+        result.results.forEachIndexed { i, line -> println("  [${i + 1}] $line") }
     }
+}
+
+/**
+ * `${baseDir}/v0001`, `v0002`, ... 중 가장 큰 번호의 디렉토리 경로를 반환.
+ * 없으면 IllegalStateException.
+ */
+private fun findLatestCheckpoint(baseDir: String): String {
+    val base = File(baseDir)
+    require(base.exists() && base.isDirectory) {
+        "$baseDir 디렉토리가 없습니다. 먼저 './gradlew runMiniTrainer'로 학습하세요."
+    }
+    val versionRegex = Regex("""v(\d{4})""")
+    val latest = base.listFiles()
+        ?.filter { it.isDirectory && versionRegex.matches(it.name) }
+        ?.maxByOrNull { versionRegex.matchEntire(it.name)!!.groupValues[1].toInt() }
+        ?: error(
+            "$baseDir 아래에 v0001 형식의 ckpt 디렉토리가 없습니다. " +
+                "먼저 './gradlew runMiniTrainer'로 학습하세요."
+        )
+    println("# 자동 검색: ${latest.absolutePath}")
+    return latest.absolutePath
 }

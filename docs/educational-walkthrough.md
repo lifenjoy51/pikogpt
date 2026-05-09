@@ -217,6 +217,16 @@ tokenEmbedding(ids) + positionEmbedding(positions)
 
 ---
 
+## 11. 직접 돌려보기 — quickstart
+
+이 문서는 **코드 읽기** 가이드입니다. **실제로 학습→샘플링을 한 번 돌려보고** 싶다면
+[scalar-quickstart.md](scalar-quickstart.md)를 참고하세요.
+
+요약: `runAlphabetPrep` → `runMiniTrainer` (~10분) → `runSampler`. 알파벳 a-z 텍스트로
+가장 작은 모델을 학습해 음절·단어 패턴을 눈으로 확인할 수 있습니다.
+
+---
+
 ## 다음 단계 — 실제 학습 실험
 
 스칼라는 71K 파라미터 모델로도 iter당 ~16초가 걸려 실험에는 너무 느립니다. 실험 단계로 넘어가려면:

@@ -74,7 +74,7 @@ tasks.register<JavaExec>("runBpe") {
 }
 
 tasks.register<JavaExec>("runAlphabetPrep") {
-    description = "Run AlphabetPrep (알파벳 데이터 준비)"
+    description = "Run AlphabetPrep — data/alphabet/az.txt를 토큰화해 train.bin/val.bin/meta.json 생성"
     mainClass.set("data.AlphabetPrepKt")
     classpath = sourceSets.main.get().runtimeClasspath
     jvmArgs = listOf("-Xmx2g", "--add-modules=jdk.incubator.vector", "-XX:+AlwaysPreTouch")
@@ -95,7 +95,7 @@ tasks.register<JavaExec>("runTrainer") {
 }
 
 tasks.register<JavaExec>("runMiniTrainer") {
-    description = "Run MiniTrainerMain (경량 학습 - az 알파벳)"
+    description = "Run MiniTrainerMain — Scalar 백엔드 quickstart 학습 (data/alphabet, ~10분)"
     mainClass.set("train.MiniTrainerMainKt")
     classpath = sourceSets.main.get().runtimeClasspath
     jvmArgs = listOf("-Xmx2g", "--add-modules=jdk.incubator.vector", "-XX:+AlwaysPreTouch")
@@ -291,7 +291,7 @@ tasks.register<JavaExec>("runSplitByTokenRatio") {
 }
 
 tasks.register<JavaExec>("runSampler") {
-    description = "Run SamplerMain (샘플링)"
+    description = "Run SamplerMain — Scalar quickstart 샘플링 (인자 없으면 model/alphabet/main 최신 v 자동 검색)"
     mainClass.set("sample.SamplerMainKt")
     classpath = sourceSets.main.get().runtimeClasspath
     jvmArgs = listOf("-Xmx2g", "--add-modules=jdk.incubator.vector", "-XX:+AlwaysPreTouch")

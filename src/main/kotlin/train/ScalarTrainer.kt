@@ -41,11 +41,11 @@ class ScalarTrainer(private val config: TrainConfig) {
     /** 검증 데이터 로더 */
     private lateinit var validationDataLoader: DataLoader
 
-    /** 데이터셋 크기 식별자 (모델 파라미터 수 기반) */
-    private val datasetSize = "${config.calculateTotalParameters(getVocabularySize())}"
+    /** dataPath의 마지막 segment — turbo와 같은 schema. 예: "data/alphabet" → "alphabet". */
+    private val datasetName = config.dataPath.substringAfterLast('/')
 
-    /** 모델 저장 경로 */
-    private val modelPath = "${config.modelDir}/${datasetSize}"
+    /** ckpt 저장 베이스 경로. 매 저장마다 그 아래 `v0001`, `v0002`, ... 디렉토리 생성. */
+    private val modelPath = "${config.modelDir}/$datasetName/${config.expName}"
 
     /** 베이스라인 손실 - 랜덤 추측의 이론적 손실 값 (ln(어휘수)) */
     private val baselineLoss = ln(getVocabularySize().toDouble())
@@ -396,22 +396,22 @@ class ScalarTrainer(private val config: TrainConfig) {
             config = config
         )
 
-        // JSON으로 저장
+        // JSON으로 저장 — 매 저장마다 v0001, v0002, ... zero-pad 4자리 디렉토리 생성 (turbo 동일 규칙).
         val jsonEncoder = Json {
             prettyPrint = true
             encodeDefaults = true
         }
-        val lossInteger = (loss * 10).toInt()
-        File("${modelPath}/${lossInteger}").mkdir()
-        val checkpointFile = File("${modelPath}/${lossInteger}/checkpoint.json")
+        val versionDir = nextVersionDir()
+        versionDir.mkdirs()
+        val checkpointFile = File(versionDir, "checkpoint.json")
         checkpointFile.writeText(jsonEncoder.encodeToString(checkpoint))
 
         // 가중치를 별도의 바이너리 파일로 저장 (더 효율적)
-        saveModelWeights("${modelPath}/${lossInteger}/model_weights.bin")
+        saveModelWeights(File(versionDir, "model_weights.bin").path)
 
         // meta.json 파일 복사
         val sourceMetadataFile = File("${config.dataPath}/meta.json")
-        val targetMetadataFile = File("${modelPath}/${lossInteger}/meta.json")
+        val targetMetadataFile = File(versionDir, "meta.json")
         if (sourceMetadataFile.exists()) {
             sourceMetadataFile.copyTo(targetMetadataFile, overwrite = true)
         } else {
@@ -419,7 +419,25 @@ class ScalarTrainer(private val config: TrainConfig) {
         }
 
         val label = if (isBest) "best" else "always"
-        println("체크포인트 저장 완료 ($label): ${checkpointFile.absolutePath}")
+        println("체크포인트 저장 완료 ($label, loss=${"%.4f".format(loss)}): ${checkpointFile.absolutePath}")
+    }
+
+    /**
+     * `${modelPath}` 아래에서 가장 큰 v 번호 + 1로 새 버전 디렉토리 결정.
+     *
+     *   model/alphabet/main/v0001  ←  처음 저장
+     *   model/alphabet/main/v0002  ←  두 번째 저장
+     *   ...
+     */
+    private fun nextVersionDir(): File {
+        val baseDir = File(modelPath)
+        if (!baseDir.exists()) baseDir.mkdirs()
+        val versionRegex = Regex("""v(\d{4})""")
+        val nextNum = (baseDir.listFiles()
+            ?.mapNotNull { f -> if (f.isDirectory) versionRegex.matchEntire(f.name)?.groupValues?.get(1)?.toIntOrNull() else null }
+            ?.maxOrNull()
+            ?: 0) + 1
+        return File(baseDir, "v%04d".format(nextNum))
     }
 
     /**

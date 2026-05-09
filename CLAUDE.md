@@ -20,15 +20,19 @@ PikoGPT is a Kotlin port of nanoGPT and micrograd by Andrej Karpathy. This is an
 
 # 실행 스크립트 — 전부 main 소스셋 + JavaExec 기반. 긴 수행 예상.
 ./gradlew runStoriesBpe       # BPE 토큰화 + train.bin/val.bin 생성  (-Xmx4g)
-./gradlew runAlphabetPrep     # 문자 단위 데이터 준비
+./gradlew runAlphabetPrep     # data/alphabet/az.txt → train.bin/val.bin/meta.json (Scalar quickstart용)
 ./gradlew runStoryGenerator   # LM Studio 연동 이야기 생성/검증     (-Xmx4g)
 ./gradlew runBPETest          # BPETestKt
 ./gradlew runMain             # MainKt
-./gradlew runTrainer          # 실제 학습 (TrainerMain, -Xmx8g, 수 분~수십 분)
-./gradlew runMiniTrainer      # 경량 학습 (az 알파벳)
-./gradlew runSampler          # 체크포인트 로드 후 샘플링
+./gradlew runTrainer          # TrainerMain — 옛 스모크 (data/simple 의존, deprecated)
+./gradlew runMiniTrainer      # Scalar 백엔드 quickstart 학습 (data/alphabet, ~10분)
+./gradlew runSampler          # Scalar quickstart 샘플링 (인자 없으면 model/alphabet/main 자동)
+./gradlew runSampler --args="model/alphabet/main/v0001"  # 명시 ckpt
 ./gradlew runAnalyzeTokens    # 토큰 분포 분석 디버그
 ./gradlew runDebugBPE         # BPE 디버그
+
+# Scalar end-to-end (한 흐름 가이드: docs/scalar-quickstart.md)
+./gradlew runAlphabetPrep && ./gradlew runMiniTrainer && ./gradlew runSampler
 
 # TinyHelen 전용 학습/샘플링 (1M 파라미터 turbo 백엔드)
 ./gradlew runTinyHelenTrainTurbo              # 혼합 코퍼스(book+textbook+wiki+conversation) 10k
@@ -144,15 +148,19 @@ Turbo 백엔드는 스칼라를 대체하지 않고 **병행**한다. 기존 스
 ## Training Workflow
 
 1. **Data preparation** — `StoriesBpePrep.kt` (or `AlphabetPrep.kt`) tokenizes text into `data/[dataset]/train.bin` + `val.bin` + `meta.json`. `./gradlew runStoriesBpe` / `runAlphabetPrep`.
-2. **Training** — `./gradlew runTrainer` (스모크 50 iter 프리셋, `train.TrainerMain`)이나 `runMiniTrainer`. 체크포인트는 최적 검증 손실이 갱신될 때마다 저장된다.
-3. **Checkpoint layout** — turbo 백엔드(`TurboTrainer`)는 `${config.modelDir}/${datasetName}/${config.expName}/v0001/` (4자리 zero-pad 버전 번호) 경로에 `checkpoint.json`, `model_weights.bin`, `meta.json`, `optimizer_state.bin`을 쓴다. 매 저장마다 +1. `expName` default `"main"`, 같은 datasetName 공유하는 진입점만 unique 값 명시.
-4. **Sampling** — `./gradlew runSampler`로 체크포인트 디렉토리를 로드해 텍스트 생성 (`sample.SamplerMain`).
+2. **Training** — Scalar 백엔드 quickstart는 `./gradlew runMiniTrainer` (data/alphabet, ~10분). Turbo 백엔드는 `runTinyHelenTrainTurbo` 등. 체크포인트는 best 갱신 또는 매 평가마다 저장.
+3. **Checkpoint layout** — 두 백엔드 모두 `${config.modelDir}/${datasetName}/${config.expName}/v0001/` (4자리 zero-pad 버전) 경로에 `checkpoint.json`, `model_weights.bin`, `meta.json`을 쓴다. Turbo는 `optimizer_state.bin`도 추가. 매 저장마다 v 번호 +1. `expName` default `"main"`, 같은 datasetName 공유하는 진입점만 unique 값 명시.
+4. **Sampling** — Scalar는 `./gradlew runSampler` (인자 없으면 자동 검색). Turbo는 `runChatTurbo` 등. 자세한 가이드: `docs/scalar-quickstart.md`.
 
 ## Data Layout
 
 ```
 data/
-├── [dataset]/                # e.g. 1k, simple, tinyhelen, tinyhelen-textbook
+├── alphabet/                 # Scalar quickstart 데이터 (a-z 영문 패턴 텍스트, ~6KB)
+│   ├── az.txt                # commit된 원본
+│   ├── train.bin / val.bin   # runAlphabetPrep 산출물
+│   └── meta.json
+├── [dataset]/                # e.g. tinyhelen, three-stage-v4
 │   ├── stories.txt           # 단일 입력 (fallback: 90:10 cut)
 │   ├── train.txt / val.txt   # 분리 입력 (있으면 우선, vocab은 train에서만 학습 — leakage 차단)
 │   ├── meta.json             # vocab size + token<->id maps + BPE merges
@@ -161,13 +169,13 @@ data/
 │   └── unique_words.txt      # optional vocab dump
 
 model/                        # 모든 체크포인트 루트 (gitignored)
-└── [datasetName]/            # config.dataPath 마지막 segment (예: tinyhelen, stage2)
+└── [datasetName]/            # config.dataPath 마지막 segment (예: alphabet, tinyhelen, stage2)
     └── [expName]/            # 사람이 정한 실험 이름 (default "main"; 예: bench5m, v4, m773-swiglu)
-        └── v0001/            # 4자리 zero-pad 버전 (매 저장마다 +1).
+        └── v0001/            # 4자리 zero-pad 버전 (매 저장마다 +1). Scalar/Turbo 동일 schema.
             ├── checkpoint.json   # iteration, best loss, model args
             ├── meta.json         # copied from the data dir
             ├── model_weights.bin # serialized weights (big-endian float32)
-            └── optimizer_state.bin # AdamW timeStep + 모멘트 (resume용)
+            └── optimizer_state.bin # Turbo만. AdamW timeStep + 모멘트 (resume용)
 ```
 
 ## Key Files to Understand

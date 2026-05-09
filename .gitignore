@@ -4,6 +4,10 @@
 data/*
 !data/train.txt.gz
 !data/val.txt.gz
+# Scalar quickstart용 alphabet 데이터 — az.txt는 commit, prep 산출물은 무시.
+!data/alphabet/
+data/alphabet/*
+!data/alphabet/az.txt
 
 ### gradle
 .gradle
