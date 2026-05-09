@@ -11,7 +11,8 @@ fun main(args: Array<String>) {
 
     val config = TrainConfig(
         dataPath = "data/ccmc-v2-pro/stage2",
-        modelDir = "model/bench5m-turbo",
+        modelDir = "model",
+        expName = "bench5m",
         gradientAccumulationSteps = 16,
         batchSize = 2,
         blockSize = 32,

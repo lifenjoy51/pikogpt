@@ -28,6 +28,7 @@ fun main(args: Array<String>) {
     val config = TrainConfig(
         dataPath = "data/conv-mix-clean-a510",
         modelDir = "model",
+        expName = "m773-swiglu-rope",
         gradientAccumulationSteps = 32,
         batchSize = 2,
         blockSize = 64,

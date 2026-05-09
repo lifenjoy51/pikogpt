@@ -28,8 +28,8 @@ import kotlin.math.sqrt
  * turbo 백엔드 학습 루프. Phase 0은 vec.VecTrainer와 동등 (LR schedule, gradient
  * accumulation, eval, checkpoint, 데이터 병렬 worker-replica).
  *
- * 체크포인트 경로: `${config.modelDir}/${datasetName}/turbo/${paramCount}/v0001/` —
- * vec 백엔드와 격리됨.
+ * 체크포인트 경로: `${config.modelDir}/${datasetName}/${config.expName}/v0001/`.
+ * 같은 datasetName을 공유하는 진입점은 `expName`으로 분리.
  *
  * Phase 2에서 풀링/SIMD, Phase 5에서 worker-replica 폐기 후 ForkJoinPool로 재설계.
  */
@@ -88,7 +88,7 @@ class TurboTrainer(
         }
         val actualParamCount = model.parameters().sumOf { it.numel }
         println("모델 파라미터 텐서 수: ${model.parameters().size}, 총 스칼라 원소: $actualParamCount")
-        modelPath = "${config.modelDir}/$datasetName/turbo/$actualParamCount"
+        modelPath = "${config.modelDir}/$datasetName/${config.expName}"
         Path(modelPath).toFile().mkdirs()
 
         val totalSeqsPerIter = config.batchSize * config.gradientAccumulationSteps

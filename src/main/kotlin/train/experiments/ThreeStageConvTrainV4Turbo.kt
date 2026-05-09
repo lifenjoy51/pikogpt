@@ -45,6 +45,7 @@ fun main(args: Array<String>) {
     val config = TrainConfig(
         dataPath = "data/three-stage-v4/conv",
         modelDir = "model",
+        expName = "v4",
         replayDataPath = "data/three-stage-v4/dict/train.bin",
         replayRatio = 0.15f,
         replayDataPath2 = "data/three-stage-v4/wiki/train.bin",

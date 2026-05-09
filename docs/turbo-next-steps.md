@@ -60,7 +60,8 @@ ROI/복잡도 검토 결과:
 ./gradlew runTurboBench
 
 # 1M 학습 비교 (3000 iter, ~10분)
-./gradlew runCcmcV2ProStage2TrainTurbo --args="model/stage1/vec/1087936/v0053"
+# pretrain ckpt 경로는 사용자 환경에 맞게 (예: 새 경로 형식 model/stage1/main/v0001).
+./gradlew runCcmcV2ProStage2TrainTurbo --args="model/stage1/main/v0001"
 
 # 5M 학습 비교 (500 iter, ~5분)
 ./gradlew runBench5MTurbo

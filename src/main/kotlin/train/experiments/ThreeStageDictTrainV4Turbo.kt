@@ -32,6 +32,7 @@ fun main(args: Array<String>) {
     val config = TrainConfig(
         dataPath = "data/three-stage-v4/dict",
         modelDir = "model",
+        expName = "v4",
         gradientAccumulationSteps = 32,
         batchSize = 2,
         blockSize = 64,

@@ -14,8 +14,10 @@ import java.io.File
  *   - T=0.8 + topK=40 + topP=0.9 + repetitionPenalty=1.15로 다양성 회복 확인
  *   - 동일 prompt 10개 × 3 sample
  */
-fun main() = runBlocking {
-    val ckptDir = File("model/ccmc-v4-merged-spacesep-4k/vec/3117552/v0022")
+fun main(args: Array<String>) = runBlocking {
+    // 인자 없으면 새 경로 default (`expName="3m"` 진입점 + 첫 ckpt). 인자가 있으면 그 경로 사용.
+    val ckptPath = args.firstOrNull() ?: "model/ccmc-v4-merged-spacesep-4k/3m/v0001"
+    val ckptDir = File(ckptPath)
     require(ckptDir.exists()) { "ckpt 경로 없음: ${ckptDir.absolutePath}" }
 
     val metaFile = File(ckptDir, "meta.json")

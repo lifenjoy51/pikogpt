@@ -15,6 +15,9 @@ data class TrainConfig(
     val dataPath: String = "data",
     /** 훈련된 모델과 체크포인트가 저장될 디렉토리 */
     val modelDir: String = "model",
+    /** 실험 이름. 같은 datasetName을 공유하는 진입점들을 분리하기 위한 사람이 정한 식별자.
+     *  체크포인트 경로: `${modelDir}/${datasetName}/${expName}/v0001/`. */
+    val expName: String = "main",
     /** 전체 훈련 반복 중 검증을 얼마나 자주 실행할지에 대한 비율 (e.g., 0.01 = 1%) */
     val evalIntervalRatio: Float = 0.01f,
     /** 훈련 중 로그 출력 빈도 */

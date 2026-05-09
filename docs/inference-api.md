@@ -10,7 +10,7 @@ Turbo 백엔드를 메모리에 상주시켜 HTTP로 호출 가능하게 한 최
 
 예:
 ```bash
-./gradlew runInferenceApi --args="/Users/joey51/works/pikogpt/model/stage2/turbo/1087936/v0009 8840"
+./gradlew runInferenceApi --args="/Users/joey51/works/pikogpt/model/stage2/main/v0009 8840"
 ```
 
 체크포인트 디렉토리는 `checkpoint.json` + `model_weights.bin` + `meta.json`을 포함해야 한다. **Turbo 백엔드로 학습된** 체크포인트만 호환된다 (vec / scalar 백엔드와 포맷 다름). 체크포인트 경로는 절대 경로 권장 — 상대 경로 사용 시 Gradle 작업 디렉토리 기준이다.

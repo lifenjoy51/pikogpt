@@ -26,6 +26,7 @@ fun main(args: Array<String>) {
     val config = TrainConfig(
         dataPath = "data/conv-mix-turn-noq",
         modelDir = "model",
+        expName = "b128",
         gradientAccumulationSteps = 32,
         batchSize = 2,
         blockSize = 128,

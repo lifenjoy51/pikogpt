@@ -18,6 +18,7 @@ fun main(args: Array<String>) {
     val config = TrainConfig(
         dataPath = "data/ccmc-v4-merged-spacesep-4k",
         modelDir = "model",
+        expName = "quick",
         samplePrompts = listOf(
             "the cat ",
             "the water ",

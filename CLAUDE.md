@@ -129,7 +129,7 @@ Turbo 백엔드는 스칼라를 대체하지 않고 **병행**한다. 기존 스
      `TurboMatMul.kt`, `TurboSoftmax.kt`, `TurboGELU.kt`, `TurboSiLU.kt`(SwiGLU용), `TurboLayerNormOp.kt`, `TurboRMSNormOp.kt`, `TurboCrossEntropy.kt`, `TurboRoPE.kt`, `TurboRoPESingle.kt`(KV cache용).
    - `layer/` — 모두 `Turbo` 접두사. `forward(x)` / `backward(gy)` 노출:
      `TurboLinear`, `TurboLayerNorm`, `TurboRMSNorm`, `TurboNorm`(sealed interface), `TurboMLP`(GELU/SwiGLU 분기), `TurboSelfAttention`(multi-head causal + RoPE/GQA/qk-norm/fused QKV), `TurboTransformerBlock`(pre-LN + grad checkpointing 토글), `TurboEmbeddingTable`, `TurboPikoGPT`(RoPE 모드면 position embedding 제외).
-   - `TurboAdamW.kt`, `TurboTrainer.kt`, `TurboSampler.kt`, `TurboCheckpoint.kt`, `TurboKVCache.kt`(추론 가속), `TurboModelConfig.kt`(GQA/qk-norm/fused QKV/z-loss 옵션) — 파라미터별 FloatArray 기반의 옵티마이저 + 학습 루프 + 샘플러. 체크포인트는 `model/<dataset>/turbo/<paramCount>/v0001/`(zero-pad 4자리 버전 번호)에 저장.
+   - `TurboAdamW.kt`, `TurboTrainer.kt`, `TurboSampler.kt`, `TurboCheckpoint.kt`, `TurboKVCache.kt`(추론 가속), `TurboModelConfig.kt`(GQA/qk-norm/fused QKV/z-loss 옵션) — 파라미터별 FloatArray 기반의 옵티마이저 + 학습 루프 + 샘플러. 체크포인트는 `model/<datasetName>/<expName>/v0001/`(zero-pad 4자리 버전 번호)에 저장. `expName`은 `TrainConfig`의 사람이 정한 식별자 (default `"main"`).
    - `TurboParallel.kt` — ForkJoinPool 기반 데이터 병렬 학습. worker = `cpuCount × 2/3`.
    - `bench/TurboMicroBench.kt` — MatMul shape별 절대 시간 측정 (회귀 추적용).
    - 테스트: `src/test/kotlin/turbo/` — 옵션별 회귀 (`TurboGqaTest`, `TurboFusedQkvTest`, `TurboQkNormTest`, `TurboRMSNormTest`, `TurboZLossTest`, `TurboKVCacheTest`).
@@ -145,7 +145,7 @@ Turbo 백엔드는 스칼라를 대체하지 않고 **병행**한다. 기존 스
 
 1. **Data preparation** — `StoriesBpePrep.kt` (or `AlphabetPrep.kt`) tokenizes text into `data/[dataset]/train.bin` + `val.bin` + `meta.json`. `./gradlew runStoriesBpe` / `runAlphabetPrep`.
 2. **Training** — `./gradlew runTrainer` (스모크 50 iter 프리셋, `train.TrainerMain`)이나 `runMiniTrainer`. 체크포인트는 최적 검증 손실이 갱신될 때마다 저장된다.
-3. **Checkpoint layout** — turbo 백엔드(`TurboTrainer`)는 `${config.modelDir}/${datasetName}/turbo/${paramCount}/v0001/` (4자리 zero-pad 버전 번호) 경로에 `checkpoint.json`, `model_weights.bin`, `meta.json`, `optimizer_state.bin`을 쓴다. 매 저장마다 +1.
+3. **Checkpoint layout** — turbo 백엔드(`TurboTrainer`)는 `${config.modelDir}/${datasetName}/${config.expName}/v0001/` (4자리 zero-pad 버전 번호) 경로에 `checkpoint.json`, `model_weights.bin`, `meta.json`, `optimizer_state.bin`을 쓴다. 매 저장마다 +1. `expName` default `"main"`, 같은 datasetName 공유하는 진입점만 unique 값 명시.
 4. **Sampling** — `./gradlew runSampler`로 체크포인트 디렉토리를 로드해 텍스트 생성 (`sample.SamplerMain`).
 
 ## Data Layout
@@ -161,14 +161,13 @@ data/
 │   └── unique_words.txt      # optional vocab dump
 
 model/                        # 모든 체크포인트 루트 (gitignored)
-└── [datasetName]/            # config.dataPath 마지막 segment (예: tinyhelen, tinyhelen-textbook)
-    └── turbo/                # 백엔드 구분
-        └── [paramCount]/     # 예: 1057536
-            └── v0001/        # 4자리 zero-pad 버전 (매 저장마다 +1).
-                ├── checkpoint.json   # iteration, best loss, model args
-                ├── meta.json         # copied from the data dir
-                ├── model_weights.bin # serialized weights (big-endian float32)
-                └── optimizer_state.bin # AdamW timeStep + 모멘트 (resume용)
+└── [datasetName]/            # config.dataPath 마지막 segment (예: tinyhelen, stage2)
+    └── [expName]/            # 사람이 정한 실험 이름 (default "main"; 예: bench5m, v4, m773-swiglu)
+        └── v0001/            # 4자리 zero-pad 버전 (매 저장마다 +1).
+            ├── checkpoint.json   # iteration, best loss, model args
+            ├── meta.json         # copied from the data dir
+            ├── model_weights.bin # serialized weights (big-endian float32)
+            └── optimizer_state.bin # AdamW timeStep + 모멘트 (resume용)
 ```
 
 ## Key Files to Understand
