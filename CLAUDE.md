@@ -97,8 +97,8 @@ Turbo 백엔드는 스칼라를 대체하지 않고 **병행**한다. 기존 스
    - `ScalarTransformerBlock.kt` — LN → attention → residual → LN → FFN → residual.
    - `ScalarCausalSelfAttention.kt` — causal multi-head attention (Q/K/V projections + masking).
    - `ScalarFeedForward.kt` — Transformer feed-forward (expand → GELU → contract).
-   - `ScalarLayerNorm.kt`, `ScalarDropout.kt`, `ScalarLinear.kt`, `ScalarEmbeddingTable.kt`, `Sequence.kt`, `Logits.kt`
-   - `Matrix.kt` — type-safe matrix abstractions; the shape-safety foundation used across the GPT stack.
+   - `ScalarLayerNorm.kt`, `ScalarDropout.kt`, `ScalarLinear.kt`, `ScalarEmbeddingTable.kt`
+   - `Matrix.kt` — Value 2D 행렬. 스칼라 백엔드의 유일한 텐서 표현. `mapRows`/`zipWith` + 의미적 helper(`lastRow`, `softmaxRows`, `argMaxRows`). 이전의 `Sequence`/`Logits` wrapper 클래스는 통합됨.
 
 4. **Training (`src/main/kotlin/train/`)**
    - `ScalarTrainer.kt` — 스칼라 백엔드 학습 루프: LR schedule, grad clipping, eval, checkpointing.

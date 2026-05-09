@@ -53,7 +53,17 @@ class MlpTest {
         assertTrue(model.parameters().all { it.gradient == 0.0f }, "All gradients should be zero after zeroGrad")
     }
 
-    // 훈련 루프 예제
+    /**
+     * 훈련 루프 예제 — XOR 문제로 학습 사이클을 보여주는 튜토리얼 테스트.
+     *
+     * 한 epoch에서 다음 4단계가 반복됩니다:
+     *   Step 1 — forward pass: 입력으로부터 모델 출력 계산
+     *   Step 2 — loss computation: 예측과 정답의 차이로 loss 노드 생성
+     *   Step 3 — backward propagation: chain rule로 모든 파라미터의 gradient 계산
+     *   Step 4 — parameter update: gradient 방향의 반대로 한 step 이동 (SGD)
+     *
+     * 학습이 진행되면 loss는 줄고 예측은 정답에 가까워집니다.
+     */
     @Test
     fun trainExample() {
         val model = MicrogradMLP(2, listOf(16, 16, 1))
@@ -67,7 +77,7 @@ class MlpTest {
         )
         val ys = listOf(Value.ZERO, Value.ONE, Value.ONE, Value.ZERO)
 
-        // 초기 손실 저장
+        // 초기 손실 저장 (학습 효과 비교용)
         val initialLoss = run {
             val ypred = xs.map { x -> model(x) as Value }
             var loss = Value.ZERO
@@ -77,26 +87,27 @@ class MlpTest {
             }
             loss.scalarValue
         }
-        
+
         // 훈련 루프
         var finalLoss = 0.0f
         val totalEpochs = 50
         for (epoch in 0 until totalEpochs) {
-            // 순전파
+            // Step 1 — forward pass: 모든 입력 샘플에 대해 예측 생성
             val ypred = xs.map { x -> model(x) as Value }
 
-            // 손실 계산 (MSE)
+            // Step 2 — loss computation: MSE = Σ (y_pred - y_true)²
             var loss = Value.ZERO
             for ((yp, y) in ypred.zip(ys)) {
                 val diff = yp - y
                 loss = loss + diff * diff
             }
 
-            // 역전파
+            // Step 3 — backward propagation: chain rule로 gradient 누적.
+            // 매 epoch 시작에 zeroGrad로 이전 step의 gradient를 청소.
             model.zeroGrad()
             loss.backward()
 
-            // 파라미터 업데이트 (경사 하강법)
+            // Step 4 — parameter update: SGD step. 작은 learning rate으로 minima 안정 추적.
             val learningRate = 0.01f
             for (p in model.parameters()) {
                 p.scalarValue -= learningRate * p.gradient
@@ -105,7 +116,7 @@ class MlpTest {
             if (epoch % 10 == 0) {
                 println("Epoch $epoch, Loss: ${loss.scalarValue}")
             }
-            
+
             if (epoch == totalEpochs - 1) {
                 finalLoss = loss.scalarValue
             }

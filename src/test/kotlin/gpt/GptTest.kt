@@ -25,6 +25,6 @@ class GptTest {
         val output = model.forward(input)
         println("입력 시퀀스 길이: ${input.size}")
         println("출력 $output")
-        println("출력 shape: ${output.tokenCount} x ${output.vocabSize}")
+        println("출력 shape: ${output.rows} x ${output.cols}")
     }
 }

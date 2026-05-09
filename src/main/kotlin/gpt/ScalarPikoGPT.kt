@@ -36,43 +36,41 @@ class ScalarPikoGPT(val config: GPTConfig) {
     private val lmHead = ScalarLinear(config.embeddingDimension, config.vocabularySize, false)
 
     /**
-     * 순전파 (Forward Pass)
+     * 순전파.
      *
-     * 입력 토큰 시퀀스를 받아 다음 토큰에 대한 로짓 분포를 출력합니다.
+     * 입력 토큰 시퀀스 → 다음 토큰에 대한 로짓 분포.
      *
-     * 처리 단계:
+     * 단계:
      * 1. 토큰 임베딩 + 위치 임베딩
-     * 2. 여러 Transformer 블록을 통과
+     * 2. 여러 Transformer 블록을 순차 통과
      * 3. 최종 Layer Normalization
-     * 4. Language Model Head로 어휘 로짓 생성
+     * 4. Language Model Head로 vocab 로짓 생성
      *
      * @param tokenIds 입력 토큰 ID 배열
-     * @return 각 위치에서의 어휘 로짓 분포
+     * @return [seqLen, vocabSize] logits 행렬
      */
-    fun forward(tokenIds: IntArray): Logits {
+    fun forward(tokenIds: IntArray): Matrix {
         val seqLen = tokenIds.size
 
-        // 1. 임베딩 레이어: 토큰 + 위치 임베딩
+        // 1. 임베딩 — 토큰 + 위치
         val tokenSequence = tokenEmbedding.lookup(tokenIds)
-        val positionIds = IntArray(seqLen) { it } // [0, 1, 2, ..., seqLen-1]
+        val positionIds = IntArray(seqLen) { it }
         val positionSequence = positionEmbedding.lookup(positionIds)
-        
-        // 요소별 덧셈으로 결합
-        var sequence = tokenSequence.zipWith(positionSequence) { t, p -> t + p }
+        var hidden = tokenSequence.zipWith(positionSequence) { t, p -> t + p }
 
-        // 2. 모든 Transformer 블록을 순차적으로 통과
+        // 2. Transformer 블록 스택
         for (block in blocks) {
-            sequence = block.forward(sequence)
+            hidden = block.forward(hidden)
         }
 
-        // 3. 최종 Layer Normalization
-        sequence = sequence.mapTokens { lnF.forward(it) }
+        // 3. 최종 Layer Norm
+        hidden = hidden.mapRows { lnF.forward(it) }
 
-        // 4. Language Model Head로 어휘 로짓 생성
-        val logitValues = sequence.values
+        // 4. LM Head — 각 위치에서 vocab 로짓 생성
+        val logitRows = hidden.values
             .map { lmHead.forward(it) }
             .toTypedArray()
-        return Logits.fromArray(logitValues)
+        return Matrix.fromArray(logitRows)
     }
 
     /**

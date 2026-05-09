@@ -249,9 +249,10 @@ class ScalarTrainer(private val config: TrainConfig) {
             )
         }
 
-        // 역전파
+        // 역전파. 학습 루프는 매 iter마다 큰 그래프가 새로 만들어지므로 clearGraph=true로
+        // 부모 참조와 backward 클로저를 해제해 GC 부담을 줄인다.
         model.parameters().forEach { it.gradient = 0.0f }
-        averageLoss.backward()
+        averageLoss.backward(clearGraph = true)
 
         return averageLoss.scalarValue
     }

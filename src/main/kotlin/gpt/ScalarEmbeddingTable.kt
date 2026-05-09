@@ -61,23 +61,22 @@ class ScalarEmbeddingTable : Matrix {
     }
     
     /**
-     * 여러 인덱스에 대한 임베딩 벡터들을 한번에 조회
+     * 여러 인덱스의 임베딩을 한번에 조회.
+     *
      * @param indices 인덱스 배열
-     * @return 해당 인덱스들의 임베딩 시퀀스
+     * @return [indices.size, embeddingDim] 행렬 — 토큰 시퀀스로 해석
      */
-    fun lookup(indices: IntArray): Sequence {
+    fun lookup(indices: IntArray): Matrix {
         val embeddings = Array(indices.size) { i ->
             get(indices[i])
         }
-        return Sequence(embeddings)
+        return Matrix(embeddings)
     }
-    
+
     /**
-     * 단일 인덱스에 대한 임베딩 벡터 조회 (시퀀스로 반환)
-     * @param index 인덱스
-     * @return 1x1 시퀀스 (단일 임베딩)
+     * 단일 인덱스의 임베딩을 [1, embeddingDim] 행렬로 반환.
      */
-    fun lookupSingle(index: Int): Sequence {
+    fun lookupSingle(index: Int): Matrix {
         return lookup(intArrayOf(index))
     }
     

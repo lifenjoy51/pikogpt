@@ -65,29 +65,23 @@ class ScalarDropout(
     }
 
     /**
-     * 시퀀스에 대한 Dropout 순전파
+     * 행렬 입력에 대한 Dropout 순전파 (각 행 = 토큰).
      *
-     * 시퀀스 데이터에 대해 드롭아웃을 적용합니다.
-     * 각 시퀀스 위치의 모든 특징에 대해 독립적으로 드롭아웃을 적용합니다.
+     * 각 토큰의 모든 특징에 독립적으로 드롭아웃을 적용합니다.
      *
-     * 사용 예시:
-     * - Attention 결과에 대한 정규화
-     * - MLP 출력에 대한 정규화
-     * - 임베딩 레이어 출력에 대한 정규화
-     *
-     * @param inputSequence 입력 시퀀스
-     * @return Dropout이 적용된 시퀀스
+     * 사용처:
+     * - Attention 결과 정규화
+     * - MLP 출력 정규화
+     * - 임베딩 레이어 출력 정규화
      */
-    fun forward(inputSequence: Sequence): Sequence {
-        // 추론 모드이거나 드롭아웃 확률이 0이면 입력 그대로 반환
+    fun forward(input: Matrix): Matrix {
         if (!training || dropoutProbability <= 0.0f) {
-            return inputSequence
+            return input
         }
 
-        // 스케일링 팩터: 드롭아웃된 뉴런들을 보상하기 위해 나머지 뉴런을 증폭
         val compensationScale = Value(1.0f / (1.0f - dropoutProbability))
 
-        return inputSequence.mapTokens { tokenEmbedding ->
+        return input.mapRows { tokenEmbedding ->
             tokenEmbedding.map { featureValue ->
                 if (Random.nextFloat() < dropoutProbability) {
                     Value.ZERO

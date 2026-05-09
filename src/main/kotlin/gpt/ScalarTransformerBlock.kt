@@ -30,26 +30,27 @@ class ScalarTransformerBlock(config: GPTConfig) {
     private val mlp = ScalarFeedForward(config)
 
     /**
-     * Transformer 블록 순전파
+     * Transformer 블록 순전파 (Pre-Norm).
      *
-     * Pre-Norm 구조를 사용하여 각 서브 레이어 전에 Layer Normalization을 적용합니다.
-     * 잔여 연결을 통해 그래디언트 흐름을 개선하고 훈련 안정성을 향상시킵니다.
+     *   h1 = x  + attn(ln1(x))
+     *   y  = h1 + mlp(ln2(h1))
      *
-     * @param x 입력 시퀀스
-     * @return 변환된 시퀀스
+     * 각 sub-layer 앞에 LayerNorm을 두는 Pre-Norm 구조 — Post-Norm보다 학습 안정성이 좋습니다.
+     * 잔여 연결로 그래디언트가 깊은 스택을 통과해도 흐름이 유지됩니다.
+     *
+     * @param x 입력 [tokens, embed_dim]
+     * @return 같은 형태의 출력
      */
-    fun forward(x: Sequence): Sequence {
-        // 첫 번째 서브레이어: x + self.attn(self.ln_1(x))
-        val normalized1 = x.mapTokens { ln1.forward(it) } // FIXME Sequence에 normalize가 있어도 될듯?
+    fun forward(x: Matrix): Matrix {
+        // 첫 번째 서브레이어: x + attn(ln1(x))
+        val normalized1 = x.mapRows { ln1.forward(it) }
         val attnOut = attn.forward(normalized1)
-        val x1 = x.zipWith(attnOut) { a, b -> a + b }
+        val h1 = x.zipWith(attnOut) { a, b -> a + b }
 
-        // 두 번째 서브레이어: x + self.mlp(self.ln_2(x))
-        val normalized2 = x1.mapTokens { ln2.forward(it) }
-        val mlpSequence = normalized2.mapTokens { mlp.forward(it) }
-        val x2 = x1.zipWith(mlpSequence) { a, b -> a + b }
-
-        return x2
+        // 두 번째 서브레이어: h1 + mlp(ln2(h1))
+        val normalized2 = h1.mapRows { ln2.forward(it) }
+        val mlpOut = normalized2.mapRows { mlp.forward(it) }
+        return h1.zipWith(mlpOut) { a, b -> a + b }
     }
 
     /**

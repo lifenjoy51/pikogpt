@@ -4,134 +4,138 @@ import Value
 import kotlin.math.sqrt
 
 /**
- * 단순화된 Self-Attention 메커니즘
+ * Causal Multi-Head Self-Attention (단순화된 구현).
  *
- * Transformer의 핵심 구성 요소로, 입력 시퀀스의 각 위치가 다른 모든 위치와 상호작용하도록 합니다.
- * 언어 모델에서는 인과 마스킹(causal masking)을 사용하여 다음 토큰 예측 시 미래 정보를 보지 못하도록 합니다.
+ * Transformer의 핵심. 시퀀스의 각 위치가 다른 위치들을 "보면서" 표현을 갱신합니다. 자기회귀
+ * 언어 모델에선 미래 위치를 보지 못하도록 causal mask를 적용합니다.
  *
- * 동작 원리:
- * 1. Query(Q), Key(K), Value(V) 행렬 생성
- * 2. Attention Score 계산: QK^T / sqrt(d_k)
- * 3. Causal Mask 적용 (미래 토큰 마스킹)
- * 4. Softmax로 어텐션 가중치 계산
- * 5. Value와 가중 합 계산
- * 6. 출력 프로젝션 및 Dropout 적용
+ * `forward()`의 본문은 5개 helper의 파이프라인 — 각 단계가 한눈에 보이도록 분해되어 있습니다:
+ *   1. [projectQkv]            — Q, K, V 행렬 생성
+ *   2. [attentionScores]       — scaled dot-product + causal mask
+ *   3. [Matrix.softmaxRows]    — row-wise softmax (수치 안정화 max-trick 포함)
+ *   4. [weightedSum]           — attention 가중치와 V의 가중 합
+ *   5. [outputAndDropout]      — 출력 프로젝션 + dropout
  *
  * @param modelConfig GPT 모델 설정 (어텐션 헤드 수, 임베딩 차원 등)
  */
 class ScalarCausalSelfAttention(private val modelConfig: GPTConfig) {
-    /** 각 어텐션 헤드의 차원 (embedding_dim / num_heads) */
+    /** 각 어텐션 헤드의 차원 (embedding_dim / num_heads). */
     private val attentionHeadDimension = modelConfig.embeddingDimension / modelConfig.numberOfAttentionHeads
 
-    /** Query 행렬 생성을 위한 선형 프로젝션 레이어 */
     private val queryProjection = ScalarLinear(modelConfig.embeddingDimension, modelConfig.embeddingDimension, modelConfig.useBias)
-
-    /** Key 행렬 생성을 위한 선형 프로젝션 레이어 */
     private val keyProjection = ScalarLinear(modelConfig.embeddingDimension, modelConfig.embeddingDimension, modelConfig.useBias)
-
-    /** Value 행렬 생성을 위한 선형 프로젝션 레이어 */
     private val valueProjection = ScalarLinear(modelConfig.embeddingDimension, modelConfig.embeddingDimension, modelConfig.useBias)
 
-    /** 출력 프로젝션 레이어 (어텐션 결과를 최종 출력으로 변환) */
+    /** 어텐션 결과를 다시 임베딩 차원으로 사영. */
     private val outputProjection = ScalarLinear(modelConfig.embeddingDimension, modelConfig.embeddingDimension, modelConfig.useBias)
 
-    /** 정규화를 위한 Dropout 레이어 */
+    /** attention dropout. 학습 안정화. */
     private val attentionDropout = ScalarDropout(modelConfig.dropoutProbability)
 
     /**
-     * Self-Attention 메커니즘 순전파
+     * 5단계 파이프라인. 각 helper가 한 단계를 담당.
      *
-     * 입력 시퀀스에 Self-Attention을 적용하여 각 위치에서 다른 모든 위치의 정보를 고려합니다.
-     * Causal masking을 사용하여 언어 모델의 자기회귀적 특성을 유지합니다.
+     *   1. Q, K, V 사영
+     *   2. Q·K^T / √d_k + causal mask  → scores
+     *   3. row-wise softmax            → attention weights
+     *   4. weights · V                 → context vectors
+     *   5. output projection + dropout
      *
-     * 계산 단계:
-     * 1. 입력에서 Q, K, V 행렬 생성
-     * 2. Scaled Dot-Product Attention 점수 계산
-     * 3. Causal mask 적용 (미래 정보 차단)
-     * 4. Softmax로 어텐션 가중치 정규화
-     * 5. Value 행렬과 가중 합 계산
-     * 6. 출력 프로젝션 및 Dropout 적용
-     *
-     * @param inputSequence 입력 시퀀스
-     * @return 어텐션이 적용된 출력 시퀀스
+     * @param input [tokens, embed_dim]
+     * @return 같은 형태의 출력
      */
-    fun forward(inputSequence: Sequence): Sequence {
-        val tokenCount = inputSequence.tokenCount
-        // FIXME 단순화를 위해 배치 크기를 1로 고정 (실제 구현에서는 배치 처리 필요)
+    fun forward(input: Matrix): Matrix {
+        val (queries, keys, values) = projectQkv(input)
+        val scores = attentionScores(queries, keys)
+        val weights = scores.softmaxRows()
+        val context = weightedSum(weights, values)
+        return outputAndDropout(context)
+    }
 
-        // 1. Query, Key, Value 행렬 생성
-        val queryMatrix = inputSequence.mapTokens { sequenceElement ->
-            queryProjection.forward(sequenceElement)
-        }
+    /**
+     * 단계 1: Q, K, V 행렬 생성.
+     *
+     * 입력의 각 토큰 임베딩에 세 개의 학습된 선형 변환을 적용해 Query, Key, Value를 얻습니다.
+     * Q는 "이 토큰이 무엇을 찾는지", K는 "이 토큰이 무엇을 제공하는지", V는 "실제로 전달되는
+     * 정보"의 역할.
+     */
+    private fun projectQkv(input: Matrix): Triple<Matrix, Matrix, Matrix> {
+        val queries = input.mapRows { tokenEmbedding -> queryProjection.forward(tokenEmbedding) }
+        val keys = input.mapRows { tokenEmbedding -> keyProjection.forward(tokenEmbedding) }
+        val values = input.mapRows { tokenEmbedding -> valueProjection.forward(tokenEmbedding) }
+        return Triple(queries, keys, values)
+    }
 
-        val keyMatrix = inputSequence.mapTokens { sequenceElement ->
-            keyProjection.forward(sequenceElement)
-        }
-
-        val valueMatrix = inputSequence.mapTokens { sequenceElement ->
-            valueProjection.forward(sequenceElement)
-        }
-
-        // 2. Scaled Dot-Product Attention 점수 계산
-        // 스케일 팩터: 1/sqrt(head_dimension) - 어텐션 점수의 분산을 안정화
+    /**
+     * 단계 2: scaled dot-product attention scores + causal mask.
+     *
+     *   scores[i, j] = (Q[i] · K[j]) / √d_k                if j ≤ i
+     *                = -∞ (very large negative)            if j > i  ← causal mask
+     *
+     * √d_k 스케일링은 dot product의 분산이 d_k에 비례해 커지는 것을 방지 (softmax가
+     * 한 점에 몰리는 것을 막음).
+     *
+     * causal mask는 미래 위치에 매우 작은 값을 넣어, softmax 후 가중치가 사실상 0이 되도록.
+     */
+    private fun attentionScores(queries: Matrix, keys: Matrix): Matrix {
+        val tokenCount = queries.rows
         val attentionScale = Value(1.0f / sqrt(attentionHeadDimension.toFloat()))
 
-        val attentionScores = Matrix.fromArray(Array(tokenCount) { queryIndex ->
+        return Matrix.fromArray(Array(tokenCount) { queryIndex ->
             Array(tokenCount) { keyIndex ->
-                if (keyIndex <= queryIndex) { // Causal mask: 현재 이전 위치만 참조 가능
-                    // 닷젝곱 계산: Q[i] · K[j]
+                if (keyIndex <= queryIndex) {
+                    // Q[queryIndex] · K[keyIndex]
                     var dotProduct = Value.ZERO
                     for (embeddingIndex in 0 until modelConfig.embeddingDimension) {
-                        val q = queryMatrix[queryIndex][embeddingIndex]
-                        val k = keyMatrix[keyIndex][embeddingIndex]
+                        val q = queries[queryIndex][embeddingIndex]
+                        val k = keys[keyIndex][embeddingIndex]
                         dotProduct += q * k
                     }
                     dotProduct * attentionScale
                 } else {
-                    // 미래 위치는 매우 작은 값으로 마스킹 (소프트맥스 후 거의 0이 됨)
+                    // 미래 위치는 매우 작은 값 → softmax 후 거의 0
                     Value.MIN
                 }
             }
         })
+    }
 
-        // 3. Softmax 정규화 (각 행별로 수행)
-        val normalizedAttentionWeights = attentionScores.mapRows { scoreRow ->
-            // 수치 안정성을 위해 최대값을 뺄
-            val maxScore = scoreRow.maxByOrNull { it.scalarValue } ?: Value.ZERO
-            val exponentialScores = scoreRow.map { score -> (score - maxScore).exp() }
-            val sumOfExponential = exponentialScores.reduce { accumulator, expScore -> accumulator + expScore }
-            exponentialScores.map { expScore -> expScore / sumOfExponential }.toTypedArray()
-        }
-
-        // 4. Value 행렬과 어텐션 가중치의 가중 합 계산
-        val attentionOutputArray = Array(tokenCount) { queryIndex ->
-            Array(modelConfig.embeddingDimension) { embeddingIndex ->
+    /**
+     * 단계 4: attention 가중치를 V에 적용한 가중 합.
+     *
+     *   context[i, d] = Σ_j weights[i, j] * V[j, d]
+     *
+     * 각 query 위치에 대해 모든 (causal하게 허용된) value 벡터의 가중 평균을 계산.
+     */
+    private fun weightedSum(weights: Matrix, values: Matrix): Matrix {
+        val tokenCount = weights.rows
+        val embedDim = modelConfig.embeddingDimension
+        val output = Array(tokenCount) { queryIndex ->
+            Array(embedDim) { embeddingIndex ->
                 var weightedSum = Value.ZERO
                 for (keyIndex in 0 until tokenCount) {
-                    val naw = normalizedAttentionWeights[queryIndex][keyIndex]
-                    val v = valueMatrix[keyIndex][embeddingIndex]
-                    weightedSum += naw * v
+                    val w = weights[queryIndex][keyIndex]
+                    val v = values[keyIndex][embeddingIndex]
+                    weightedSum += w * v
                 }
                 weightedSum
             }
         }
-
-        // 5. 출력 프로젝션 및 Dropout 적용
-        val outputSequence = Sequence.fromArray(attentionOutputArray)
-            .mapTokens { attentionVector ->
-                outputProjection.forward(attentionVector)
-            }
-
-        return attentionDropout.forward(outputSequence)
+        return Matrix.fromArray(output)
     }
 
     /**
-     * Self-Attention 레이어의 모든 학습 가능한 파라미터 수집
+     * 단계 5: 출력 프로젝션 + dropout.
      *
-     * Q, K, V 프로젝션 레이어와 출력 프로젝션 레이어의 모든 파라미터를 포함합니다.
-     * 이 파라미터들은 어텐션 메커니즘이 시퀀스 간 상호작용을 학습하는 데 필수적입니다.
-     *
-     * @return 모든 학습 가능한 Value 객체들의 리스트
+     * 어텐션의 context 벡터를 다시 임베딩 차원으로 사영하고 dropout을 적용해 최종 출력 생성.
+     */
+    private fun outputAndDropout(context: Matrix): Matrix {
+        val projected = context.mapRows { contextVector -> outputProjection.forward(contextVector) }
+        return attentionDropout.forward(projected)
+    }
+
+    /**
+     * 학습 가능한 파라미터 — Q/K/V 사영 + 출력 사영의 가중치/편향.
      */
     fun parameters(): List<Value> {
         return queryProjection.parameters() + keyProjection.parameters() +

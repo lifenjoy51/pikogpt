@@ -309,9 +309,9 @@ class ScalarSampler(private val samplingConfiguration: SampleConfig) {
                 currentContext = currentContext.takeLast(textGenerationModel.config.maxSequenceLength).toIntArray()
             }
 
-            // 모델을 사용하여 다음 토팠 예측
+            // 모델을 사용하여 다음 토큰 예측
             val outputLogits = textGenerationModel.forward(currentContext)
-            val finalPositionLogits = outputLogits.getLastPositionLogits() // 마지막 위치의 로짓 (다음 토팠 예측용)
+            val finalPositionLogits = outputLogits.lastRow() // 마지막 위치의 로짓 (다음 토큰 예측용)
 
             // 온도 스케일링 적용 (높은 온도는 더 다양한 선택)
             val temperatureScaledLogits = finalPositionLogits.map { logitValue ->
@@ -325,10 +325,10 @@ class ScalarSampler(private val samplingConfiguration: SampleConfig) {
                 temperatureScaledLogits
             }
 
-            // Softmax 확률 분포 계산 및 토팠 샘플링
+            // Softmax 확률 분포 계산 및 토큰 샘플링
             val logitsData = arrayOf(filteredLogits)
-            val logits = gpt.Logits(logitsData)
-            val softmaxResult = logits.softmax()
+            val logits = gpt.Matrix(logitsData)
+            val softmaxResult = logits.softmaxRows()
             val tokenProbabilities = softmaxResult.get(0)
                 .map { it.scalarValue }.toFloatArray()
 
