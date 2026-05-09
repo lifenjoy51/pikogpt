@@ -1,122 +1,197 @@
-# PikoGPT: Kotlin으로 구현된 미니 GPT 모델
+# PikoGPT — Kotlin으로 구현한 미니 GPT
 
-이 프로젝트는 학습 목적으로 [nanoGPT](https://github.com/karpathy/nanoGPT)와 [micrograd](https://github.com/karpathy/micrograd)를 Python에서 Kotlin으로 변환한 것입니다.
+[nanoGPT](https://github.com/karpathy/nanoGPT)와 [micrograd](https://github.com/karpathy/micrograd)를
+Kotlin으로 처음부터 다시 짠 교육용 프로젝트입니다. 외부 ML 라이브러리 없이 autodiff·텐서 연산·옵티마이저·
+토크나이저까지 전부 in-repo로 구현되어 있습니다.
 
-## 원본 프로젝트
+> ⚠️ 이 저장소의 코드/문서 대부분은 **Claude Code**와 **Gemini**가 작성했습니다. 사람이 직접 쓴 비중은 적습니다.
 
-이 프로젝트는 Andrej Karpathy의 다음 원본 작업을 기반으로 합니다.
+## 핵심 개념
 
-*   **nanoGPT:** https://github.com/karpathy/nanoGPT
-*   **micrograd:** https://github.com/karpathy/micrograd
+PikoGPT는 **두 개의 병행 백엔드**를 가집니다.
 
-⚠️ 이 프로젝트는 주로 **Claude Code**와 **Gemini**에 의해 작업되었습니다. 사람이 직접 작성한 코드나 텍스트의 양은 매우 적습니다.
+| | Scalar (`Value` + `gpt/` + `train/Scalar*`) | Turbo (`turbo/`) |
+|---|---|---|
+| 데이터 단위 | `Value` 스칼라 객체(연산마다 노드 생성) | `TurboTensor` = `FloatArray + shape` |
+| autograd | 동적 그래프 + 위상정렬 backward | 명시적 layer-별 forward / backward |
+| 속도 | 71K param iter당 ~16초 | 1M param iter당 ~2.6초 |
+| 가속 | 없음 | JDK 21 `jdk.incubator.vector` SIMD + ForkJoinPool 병렬 + KV cache |
+| 모던 옵션 | LayerNorm + GELU | RMSNorm, SwiGLU, RoPE, GQA, qk-norm, fused QKV, z-loss |
+| 목적 | **chain rule + transformer 수식 학습용 reference** | 실전 성능 |
 
+스칼라 코드는 chain rule이 코드에 그대로 보이는 가장 단순한 micrograd 직계 포팅이고, turbo는 같은 수식을
+SIMD + 명시적 backward로 다시 푼 실전용입니다. 두 백엔드는 서로를 대체하지 않고 **나란히** 존재합니다.
 
-PikoGPT는 Kotlin으로 구현된 경량화된 GPT(Generative Pre-trained Transformer) 모델입니다. 이 프로젝트는 Transformer 아키텍처의 핵심 개념을 이해하고, 자동 미분(autograd) 엔진을 직접 구현하여 신경망 훈련 과정을 투명하게 보여주는 것을 목표로 합니다. 텍스트 생성, 훈련, 데이터 전처리 기능을 포함하며, 교육 및 연구 목적으로 활용될 수 있습니다.
+명명 규칙: 같은 패키지에 두 백엔드가 공존하므로 동명 클래스에 `Scalar`/`Turbo` 접두사를 붙입니다 —
+`ScalarTrainer` vs `TurboTrainer`, `ScalarSampler` vs `TurboSampler` 등. micrograd 출처 클래스는
+`Micrograd*` 접두사 (`MicrogradMLP`, `MicrogradNeuron`, ...).
 
-## 주요 기능
+## 빠른 시작
 
-*   **경량 GPT 모델:** Transformer 블록, Multi-Head Self-Attention, MLP, Layer Normalization 등 GPT의 핵심 구성 요소를 Kotlin으로 직접 구현했습니다.
-*   **자동 미분 엔진:** `Value` 클래스를 통해 순전파 중 계산 그래프를 동적으로 구축하고, 역전파 시 연쇄 법칙을 적용하여 그래디언트를 자동으로 계산합니다.
-*   **AdamW 옵티마이저:** 최신 딥러닝 모델 훈련에 널리 사용되는 AdamW 옵티마이저를 구현하여 효율적인 파라미터 업데이트를 지원합니다.
-*   **BPE 토크나이저:** Byte Pair Encoding (BPE) 알고리즘을 사용하여 텍스트 데이터를 효율적인 토큰 시퀀스로 변환합니다.
-*   **데이터 파이프라인:** 텍스트 데이터 로딩, 훈련/검증 데이터 분할, 바이너리 형식 저장 등 전체 데이터 전처리 과정을 관리합니다.
-*   **체크포인트 시스템:** 훈련 중 모델의 상태(가중치, 옵티마이저 상태)를 저장하고 로드하여 훈련을 재개하거나 사전 훈련된 모델을 활용할 수 있습니다.
-*   **텍스트 생성 및 품질 검증:** 학습된 모델을 사용하여 새로운 텍스트를 생성하고, 생성된 텍스트가 특정 품질 기준(예: 아동용 이야기 적합성)을 만족하는지 외부 LLM(LM Studio)을 통해 검증하는 기능을 포함합니다.
-
-## 아키텍처 개요
-
-PikoGPT는 다음과 같은 주요 모듈로 구성됩니다.
-
-### 1. GPT 모델 (`gpt` 패키지)
-
-*   **`ScalarPikoGPT.kt`**: 전체 GPT 모델의 메인 클래스입니다 (스칼라 백엔드). 토큰 임베딩, 위치 임베딩, 여러 개의 `ScalarTransformerBlock` 및 최종 언어 모델 헤드(`lmHead`)를 포함합니다. 벡터 백엔드는 `vec/layer/VecPikoGPT.kt` 참조.
-*   **`ScalarTransformerBlock.kt`**: GPT 모델의 핵심 빌딩 블록입니다. `ScalarCausalSelfAttention`과 `ScalarFeedForward` 레이어를 포함하며, 잔여 연결(Residual Connection)과 Layer Normalization을 적용합니다.
-*   **`ScalarCausalSelfAttention.kt`**: Multi-Head Causal Self-Attention 메커니즘을 구현합니다. Query, Key, Value 프로젝션 및 인과 마스킹(Causal Masking)을 처리합니다.
-*   **`ScalarLinear.kt`**: 신경망의 기본 선형 변환(완전 연결) 레이어입니다.
-*   **`ScalarFeedForward.kt`**: Transformer 블록 내의 Feed-Forward Network를 구현합니다. 확장-GELU 활성화-수축 구조.
-*   **`ScalarLayerNorm.kt`**: Layer Normalization 구현.
-*   **`ScalarDropout.kt`**: Dropout 정규화 기법 구현.
-
-### 2. 훈련 (`train` 패키지)
-
-*   **`ScalarTrainer.kt`**: 스칼라 백엔드 학습 루프. 학습률 스케줄링, 그래디언트 클리핑, 평가 및 체크포인트 저장 로직 포함. 벡터 백엔드는 `vec/VecTrainer.kt`.
-*   **`ScalarAdamW.kt`**: AdamW 옵티마이저(`Value` 단위) 스칼라 백엔드. 벡터 백엔드는 `vec/VecAdamW.kt`.
-*   **`DataLoader.kt`**: 훈련 및 검증 데이터를 로드하고 미니배치를 생성합니다. 두 백엔드 공유.
-*   **`TrainConfig.kt`**: 훈련 과정에 필요한 모든 하이퍼파라미터를 정의합니다.
-*   **`ScalarCheckpoint.kt`**: 스칼라 백엔드 체크포인트. 벡터 백엔드는 `vec/VecCheckpoint.kt` (가중치는 `model_weights.bin` 별도 저장).
-*   **`States.kt`**: 모델의 다양한 레이어 상태를 직렬화 가능한 형태로 정의합니다.
-*   **`experiments/`**: 14개 실험 진입점 (`ConvMix*`, `TinyHelen*`) 모음. 각각 `fun main()` + `JavaExec` gradle 태스크로 실행. 코어 학습 로직과 분리.
-
-### 3. 데이터 처리 (`data` 패키지)
-
-*   **`SimpleBPE.kt`**: 텍스트를 토큰화하는 BPE(Byte Pair Encoding) 알고리즘의 간단한 구현체입니다. 훈련 및 인코딩 기능을 제공합니다.
-*   **`StoriesBpePrep.kt`**: `SimpleBPE`를 사용하여 원본 텍스트 데이터를 전처리하고, 훈련 및 검증을 위한 바이너리 파일(`train.bin`, `val.bin`)과 어휘 사전(`meta.json`)을 생성합니다.
-*   **`MetaInfo.kt`**: 어휘 사전의 메타데이터(어휘 크기, 토큰-ID 매핑)를 저장하는 데이터 클래스입니다.
-*   **`StoryGenerator.kt`**: 외부 LLM(LM Studio)과 연동하여 새로운 이야기를 생성하고, 생성된 이야기의 품질을 검증하는 기능을 제공합니다.
-
-### 4. 핵심 유틸리티
-
-*   **`Value.kt`**: 자동 미분 엔진의 핵심 클래스입니다. 모든 스칼라 값에 대한 연산을 오버로딩하여 계산 그래프를 구축하고 역전파를 통해 그래디언트를 계산합니다.
-*   **`RandomGaussian.kt`**: 표준 정규 분포를 따르는 난수를 생성하는 유틸리티입니다.
-*   **`util/FloatExtensions.kt`**: `sumOf`와 같은 Float 타입 확장 함수들을 포함합니다.
-
-## 시작하기
-
-### 빌드 및 실행
-
-이 프로젝트는 Gradle을 사용하여 빌드됩니다.
+JDK 21 필요 (`jdk.incubator.vector` 모듈 사용).
 
 ```bash
-# 프로젝트 빌드
+# 빌드
 ./gradlew build
+
+# 단위 테스트 (전체 ~1초, training/sampling 배관 검증 포함)
+./gradlew test
 ```
 
-### 실행 흐름
+### Scalar 백엔드 한 흐름 — 데이터 준비 → 학습 → 샘플링
 
-PikoGPT 프로젝트의 일반적인 실행 순서는 다음과 같습니다.
+```bash
+./gradlew runAlphabetPrep   # data/alphabet/az.txt → train.bin/val.bin/meta.json
+./gradlew runMiniTrainer    # ~10분, 알파벳 패턴 학습
+./gradlew runSampler        # 최신 ckpt 자동 검색, 4개 프롬프트 샘플
+```
 
+전체 가이드: [docs/scalar-quickstart.md](docs/scalar-quickstart.md). 코드 자체를 읽으며 이해하고 싶다면
+[docs/educational-walkthrough.md](docs/educational-walkthrough.md) (10단계 reading guide).
 
-0.  **이야기 생성 (`StoryGenerator.kt`)**
-    *   (선택 사항) 외부 LLM(LM Studio)과 연동하여 어린이를 위한 이야기를 생성하고, 생성된 이야기의 품질을 검증합니다.
-    *   `data/StoryGenerator.kt` 클래스가 LM Studio API 호출 및 응답 처리를 담당합니다.
-    *   이 기능은 `StoryGenerator` 클래스의 `generateStory()` 및 `validateStoryQuality()` 메서드를 통해 사용됩니다.
-    * 
-1.  **데이터 준비 (`StoriesBpePrep.kt`)**
-    *   원시 텍스트 데이터를 BPE 토큰화하고, 훈련 및 검증에 필요한 바이너리 파일(`train.bin`, `val.bin`)과 어휘 사전(`meta.json`)을 생성합니다.
-    *   이 과정은 `data/StoriesBpePrep.kt` 파일의 `main` 함수를 통해 실행됩니다.
-    ```bash
-    ./gradlew run --args="prepare_data data/1k"
-    ```
+### Turbo 백엔드 — 실전 학습/샘플링
 
-2.  **모델 훈련 (`ScalarTrainer.kt` / `VecTrainer.kt`)**
-    *   준비된 데이터를 사용하여 GPT 모델을 훈련합니다.
-    *   `train/ScalarTrainer.kt` (스칼라) 또는 `vec/VecTrainer.kt` (벡터) 클래스가 훈련 루프, 옵티마이저(`ScalarAdamW`/`VecAdamW`), 데이터 로더(`DataLoader.kt`), 체크포인트 저장 등을 관리합니다.
-    *   훈련 설정은 `train/TrainConfig.kt`에서 정의됩니다.
-    *   `train()` 메서드를 호출해 훈련을 시작합니다.
-    ```bash
-    ./gradlew run --args="train"
-    ```
+```bash
+./gradlew runTinyHelenTrainTurbo            # 혼합 코퍼스 1M 모델 학습 (10k iter)
+./gradlew runTinyHelenTrainTextbookTurbo    # textbook-only 6k iter
+./gradlew runTinyHelenSampleTurbo           # 최신 turbo ckpt 샘플링
+./gradlew runSamplePromptsFromFile \
+          --args="<ckpt-dir> <prompts.txt>" # 커스텀 프롬프트 파일
 
-3.  **텍스트 생성 (`ScalarSampler.kt` / `VecSampler.kt`)**
-    *   훈련된 모델을 로드하여 새로운 텍스트를 생성합니다.
-    *   `sample/ScalarSampler.kt` (스칼라) 또는 `vec/VecSampler.kt` (벡터) 클래스가 모델 로드, 토큰화 설정, 샘플링 전략(온도, Top-K) 적용 및 텍스트 생성을 담당합니다.
-    *   `generateText()` (스칼라) 또는 `generate()` / `continueOne()` (벡터) 메서드로 텍스트 생성을 시작합니다.
-    ```bash
-    ./gradlew run --args="sample"
-    ```
+# resume
+./gradlew runTinyHelenTrainTurbo --args="resume"
+./gradlew runTinyHelenTrainTurbo --args="20000 resume"
+```
 
-### 데이터 준비
+기타 스크립트: `runStoriesBpe`(BPE prep), `runStoryGenerator`(LM Studio 연동), `runBPETest`,
+`runAnalyzeTokens`, `runDebugBPE`. 모두 `src/main/kotlin/`의 `fun main()` + `JavaExec` gradle 태스크입니다.
 
-훈련을 위해서는 `data` 디렉토리에 텍스트 파일이 필요합니다. `StoriesBpePrep`를 사용하여 텍스트 파일을 BPE 토큰화하고 훈련 가능한 형식으로 변환할 수 있습니다.
+> NOTE: `application` 플러그인을 사용하지 않으므로 `./gradlew run`은 없습니다. 항상 `runXxx`를 쓰세요.
+> `src/test/kotlin/`에는 `@Test`만 두고(전체 1초 이내), 오래 걸리는 학습/샘플링은 `src/main/kotlin/*Main.kt`로
+> 둡니다.
 
-### LM Studio 연동 (StoryGenerator 사용 시)
+## 디렉토리 구조
 
-`StoryGenerator`를 사용하려면 로컬에 LM Studio가 설치되어 있고, `google/gemma-3-1b` 모델이 로드되어 `http://127.0.0.1:1234`에서 API 서버가 실행 중이어야 합니다.
+```
+src/main/kotlin/
+├── Value.kt                    # 스칼라 autodiff 핵심
+├── grad/                       # Micrograd* MLP (가장 단순한 autodiff 예)
+├── gpt/                        # 스칼라 백엔드 GPT
+│   ├── ScalarPikoGPT.kt        # top-level model
+│   ├── GPTConfig.kt            # 두 백엔드 공유 config
+│   ├── ScalarTransformerBlock.kt
+│   ├── ScalarCausalSelfAttention.kt
+│   ├── ScalarFeedForward.kt
+│   ├── ScalarLayerNorm.kt / Dropout / Linear / EmbeddingTable
+│   └── Matrix.kt               # Value 2D — 스칼라 백엔드 유일 텐서 표현
+├── train/
+│   ├── ScalarTrainer.kt        # 스칼라 학습 루프
+│   ├── ScalarAdamW.kt          # 스칼라 옵티마이저
+│   ├── DataLoader.kt           # 두 백엔드 공유
+│   ├── TrainConfig.kt          # 하이퍼파라미터 + 경로
+│   ├── ScalarCheckpoint.kt / States.kt
+│   ├── MiniTrainerMain.kt      # ★ Scalar quickstart 진입점
+│   ├── TrainerMain.kt          # 옛 진입점 (deprecated)
+│   └── experiments/            # ConvMix*/TinyHelen*/ThreeStage*/TwoStage*/Bench* — 30여 진입점 (모두 turbo)
+├── sample/
+│   ├── ScalarSampler.kt
+│   ├── SamplerMain.kt          # ★ Scalar 샘플링 진입점
+│   ├── SampleConfig.kt
+│   ├── ChatTurbo.kt            # turbo ckpt 인터랙티브 대화
+│   └── SamplePromptsFromFile.kt / SampleV4MergedSpaceSep3M.kt
+├── data/
+│   ├── CharBPE.kt              # char-level BPE (이전 이름 SimpleBPE)
+│   ├── StoriesBpePrep.kt       # BPE 전처리
+│   ├── AlphabetPrep.kt         # Scalar quickstart용 prep
+│   ├── StoryGenerator.kt       # LM Studio 연동(선택)
+│   └── MetaInfo.kt
+├── turbo/                      # Turbo 백엔드
+│   ├── TurboTensor.kt          # FloatArray + shape
+│   ├── TurboSimdMath.kt        # JDK 21 Vector API helper
+│   ├── ops/                    # 원자 연산 (forward + backward + 수식 주석)
+│   ├── layer/                  # TurboLinear/LayerNorm/RMSNorm/MLP/SelfAttention/TransformerBlock/PikoGPT
+│   ├── TurboAdamW.kt / TurboTrainer.kt / TurboSampler.kt
+│   ├── TurboCheckpoint.kt / TurboKVCache.kt / TurboModelConfig.kt
+│   ├── TurboParallel.kt        # ForkJoinPool 병렬 학습
+│   └── bench/                  # MatMul shape별 마이크로벤치
+└── util/FloatExtensions.kt
 
-## 기여
+src/test/kotlin/                # @Test만, 전체 1초 이내
+├── pipeline/FullPipelineTest.kt   # 합성 데이터 end-to-end 배관 검증
+└── turbo/                         # 옵션별 회귀 (GQA, fused QKV, qk-norm, RMSNorm, z-loss, KV cache)
+```
 
-이 프로젝트는 교육 및 연구 목적으로 시작되었습니다. 기여를 환영합니다.
+## 데이터/체크포인트 레이아웃
+
+```
+data/
+├── alphabet/                   # Scalar quickstart (a-z 패턴 텍스트, ~6KB)
+│   ├── az.txt                  # commit된 원본
+│   ├── train.bin / val.bin     # runAlphabetPrep 산출물
+│   └── meta.json
+└── <dataset>/                  # 예: tinyhelen, three-stage-v4
+    ├── train.txt / val.txt     # 분리 입력 (있으면 우선, vocab은 train에서만 학습 — leakage 차단)
+    ├── stories.txt             # fallback (90:10 cut)
+    ├── meta.json               # vocab + token<->id maps + BPE merges
+    ├── train.bin / val.bin
+    └── unique_words.txt        # optional vocab dump
+
+model/                          # gitignored
+└── <datasetName>/              # config.dataPath의 마지막 segment
+    └── <expName>/              # 사람이 정한 실험 이름 (default "main")
+        └── v0001/              # 4자리 zero-pad, 매 저장마다 +1
+            ├── checkpoint.json
+            ├── meta.json
+            ├── model_weights.bin
+            └── optimizer_state.bin   # Turbo만 (resume용)
+```
+
+**두 백엔드 동일 schema**입니다. `expName`은 사용자가 정한 식별자 — 같은 데이터셋을 공유하는 진입점만
+unique 값을 명시하면 됩니다.
+
+## 주요 학습 포인트
+
+- **`Value.kt`** — 스칼라 autodiff 본체. `+ - * / pow ReLU GELU sigmoid` 오버로딩 + 위상정렬
+  `backward()`. 코드를 한 번 읽으면 chain rule이 코드 그대로 보임.
+- **`gpt/Matrix.kt`** — `Value` 2D 행렬에 `mapRows`/`zipWith` + `lastRow()`/`softmaxRows()`/`argMaxRows()`
+  의미적 헬퍼.
+- **`gpt/ScalarTransformerBlock.kt` / `ScalarCausalSelfAttention.kt`** — pre-LN → attention → residual →
+  pre-LN → FFN → residual. attention forward는 5단계 헬퍼로 분해되어 있어 수식과 1:1 대응.
+- **`turbo/layer/`** — 같은 수식을 SIMD + 명시적 backward로 다시 짠 버전. layer 파일을 forward / backward
+  나란히 읽으면 chain rule을 수식 그대로 볼 수 있음.
+- **`train/ScalarTrainer.kt` / `turbo/TurboTrainer.kt`** — 학습 루프(LR schedule, grad clipping, eval,
+  checkpointing).
+- **`data/CharBPE.kt`** — char pair encoding. 학습 시 옵션(`lowercase`, `useWordPreTokenize`,
+  `splitSpaceAsToken`, `standardBpeScoring`)이 meta.json에 그대로 저장되어 샘플러가 학습과 정확히 같은
+  토큰화를 재생.
+
+## 디자인 원칙
+
+- **Pure Kotlin, no ML libs.** autodiff·layer·optimizer·tokenizer 전부 in-repo.
+- **Scalar autograd graph.** `Value`가 forward에서 동적 그래프를 만들고, `backward()`가 위상 역순으로 chain
+  rule 적용.
+- **Explicit layer backward (turbo).** autograd 없이 layer마다 forward/backward를 직접 짜서 SIMD에 맞춤.
+- **kotlinx.serialization.** config·checkpoint·per-layer DTO가 `@Serializable`. 가중치는 `.bin` 별도.
+- **CLI 통합 없음.** 모든 진입점은 `*Main.kt` + `runXxx` JavaExec 태스크. 테스트 디렉토리는 `@Test`만.
+
+## 외부 의존성
+
+- `org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0`
+- `org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3`
+- 테스트: `kotlin("test")` on JUnit Platform
+- **JDK 21** (turbo의 `jdk.incubator.vector` 사용 — `--add-modules=jdk.incubator.vector`)
+
+`StoryGenerator`만 외부 의존이 있습니다 — `http://127.0.0.1:1234`에서 `google/gemma-3-1b`를 서빙하는 LM
+Studio. 다른 흐름엔 필요 없습니다.
+
+## 더 읽어보기
+
+- [docs/scalar-quickstart.md](docs/scalar-quickstart.md) — 데이터 → 학습 → 샘플링 한 흐름 가이드
+- [docs/educational-walkthrough.md](docs/educational-walkthrough.md) — `Value.kt`부터 `ScalarTrainer.kt`까지
+  10단계 코드 reading guide
+- [docs/tinyhelen-training.md](docs/tinyhelen-training.md) — TinyHelen 코퍼스 학습 노트
+- [docs/turbo-bench-results.md](docs/turbo-bench-results.md) — turbo MatMul/end-to-end 벤치
+- [docs/three-stage-v4-recipe.md](docs/three-stage-v4-recipe.md), [docs/ccmc-v5-qa-plan.md](docs/ccmc-v5-qa-plan.md) — 코퍼스/실험 레시피
 
 ## 라이선스
 
