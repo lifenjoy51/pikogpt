@@ -33,8 +33,7 @@ Apple Silicon, NEON SIMD lane 4.
 - `forwardIncremental` — 토큰당 비용 O(t)→O(1)
 - 추론 5~10× 가속 (단순 모드: numKvHeads=numHeads, !useFusedQkv, !useQkNorm)
 
-### Phase 4.0/4.1/4.4
-- `TurboBf16` truncate-style 변환 helper
+### Phase 4.1
 - `TurboTransformerBlock.useGradientCheckpointing` 토글 (dropout=0 require)
 
 ### Phase 5.0/5.1
@@ -105,20 +104,21 @@ worker=11 활성 시:
 - load average: ~10
 - 12-core 머신을 거의 풀 활용
 
-## 보류 항목
+## 폐기 항목
 
-큰 리팩토링 + 작은 모델에서 임팩트 작아 보류, 큰 모델 도입 시 재검토:
-- **4.2/4.3**: TurboTensor BF16 dtype + AMP trainer (master fp32 + bf16 forward) — 메모리 50%
-- **5.3**: model 복제 제거 + 모든 forward/backward의 cache 외부화
-- **3.1/3.2**: Flash Attention v2 forward + backward — long context (T>=128)
-- **Attention nested loop SIMD化** — score/output 계산 hot path (현재 vec과 동일)
+ROI/복잡도 검토 결과 진행하지 않기로 결정:
+- **bf16 dtype + AMP trainer** — CPU + JDK Vector API 환경에서 native bf16 SIMD 미지원. unpack overhead로 속도 이득 모호하고, 1~10M 모델에선 메모리 압박도 없음
+- **model 복제 폐기 (cache 외부화)** — 모든 layer/op 시그니처 변경 필요한 매우 큰 리팩토링. 현재 모델 사이즈에서 메모리 부담 없음
+- **Flash Attention v2** — 현재 컨텍스트 길이(T<128)에서 효과 미미
+- **Embedding scatter 최적화** — vocab 작아 효과 미미
+- **Attention head별 batched matmul / 추가 inner loop 최적화** — 이미 forward/backward 모두 SIMD化 완료, 추가 이득 작음
 
 ## 검증
 
 모든 sub-phase에서 동등성 회귀 테스트 통과:
 - `TurboMatMulEquivalenceTest`, `TurboOpsEquivalenceTest`, `TurboFullPipelineTest`
 - `TurboRMSNormTest`, `TurboZLossTest`, `TurboQkNormTest`, `TurboFusedQkvTest`, `TurboGqaTest`
-- `TurboAdamWEquivalenceTest`, `TurboKVCacheTest`, `TurboBf16Test`
+- `TurboAdamWEquivalenceTest`, `TurboKVCacheTest`
 
 마이크로벤치: `./gradlew runTurboBench` (Apple Silicon NEON lane 4 결과)
 

@@ -324,7 +324,7 @@ tasks.register<JavaExec>("runTinyHelenTrainTurbo") {
     description = "Run TinyHelenTrainTurbo (~1M 파라미터, turbo 백엔드)"
     mainClass.set("train.experiments.TinyHelenTrainTurboKt")
     classpath = sourceSets.main.get().runtimeClasspath
-    jvmArgs = listOf("-Xmx4g", "--add-modules=jdk.incubator.vector")
+    jvmArgs = listOf("-Xmx4g", "--add-modules=jdk.incubator.vector", "-XX:+AlwaysPreTouch")
 }
 
 tasks.register<JavaExec>("runTinyHelenSampleTurbo") {
@@ -345,7 +345,7 @@ tasks.register<JavaExec>("runCcmcV2ProStage2TrainTurbo") {
     description = "Run CcmcV2ProStage2TrainTurbo (Stage 2 instruction finetune, turbo 백엔드)"
     mainClass.set("train.experiments.CcmcV2ProStage2TrainTurboKt")
     classpath = sourceSets.main.get().runtimeClasspath
-    jvmArgs = listOf("-Xmx6g", "--add-modules=jdk.incubator.vector")
+    jvmArgs = listOf("-Xmx6g", "--add-modules=jdk.incubator.vector", "-XX:+AlwaysPreTouch")
 }
 
 tasks.register<JavaExec>("runBench10MVec") {
@@ -359,7 +359,7 @@ tasks.register<JavaExec>("runBench10MTurbo") {
     description = "Run Bench10MTurbo — 10M params 250 iter (turbo)"
     mainClass.set("train.experiments.Bench10MTurboKt")
     classpath = sourceSets.main.get().runtimeClasspath
-    jvmArgs = listOf("-Xmx8g", "--add-modules=jdk.incubator.vector")
+    jvmArgs = listOf("-Xmx8g", "--add-modules=jdk.incubator.vector", "-XX:+AlwaysPreTouch")
 }
 
 tasks.register<JavaExec>("runCcmcV4TinyStoriesPrep") {
@@ -415,7 +415,7 @@ tasks.register<JavaExec>("runBench5MTurbo") {
     description = "Run Bench5MTurbo — 5M params 500 iter (turbo 백엔드 시간 측정)"
     mainClass.set("train.experiments.Bench5MTurboKt")
     classpath = sourceSets.main.get().runtimeClasspath
-    jvmArgs = listOf("-Xmx6g", "--add-modules=jdk.incubator.vector")
+    jvmArgs = listOf("-Xmx6g", "--add-modules=jdk.incubator.vector", "-XX:+AlwaysPreTouch")
 }
 
 tasks.register<JavaExec>("runSamplePromptsFromFile") {

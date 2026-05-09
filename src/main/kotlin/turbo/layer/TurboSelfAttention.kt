@@ -1,6 +1,7 @@
 package turbo.layer
 
 import jdk.incubator.vector.FloatVector
+import jdk.incubator.vector.VectorOperators
 import turbo.TurboKVCache
 import turbo.TurboSimdMath
 import turbo.TurboTensor
@@ -124,16 +125,40 @@ class TurboSelfAttention(
                     scoresRow[j] = s
                     if (s > maxScore) maxScore = s
                 }
-                var sumExp = 0.0f
-                for (j in 0..i) {
-                    val e = exp((scoresRow[j] - maxScore).toDouble()).toFloat()
-                    scoresRow[j] = e
+                // Phase B: shifted exp + sum + normalize SIMD化 (j 범위 [0, i+1))
+                val rowLen = i + 1
+                val sSpecies = TurboSimdMath.SPECIES
+                val sLane = sSpecies.length()
+                val sUpper = sSpecies.loopBound(rowLen)
+                val vMaxScore = FloatVector.broadcast(sSpecies, maxScore)
+                var sumAcc = FloatVector.zero(sSpecies)
+                var sj = 0
+                while (sj < sUpper) {
+                    val vS = FloatVector.fromArray(sSpecies, scoresRow, sj)
+                    val vE = vS.sub(vMaxScore).lanewise(VectorOperators.EXP)
+                    vE.intoArray(scoresRow, sj)
+                    sumAcc = sumAcc.add(vE)
+                    sj += sLane
+                }
+                var sumExp = sumAcc.reduceLanes(VectorOperators.ADD)
+                while (sj < rowLen) {
+                    val e = exp((scoresRow[sj] - maxScore).toDouble()).toFloat()
+                    scoresRow[sj] = e
                     sumExp += e
+                    sj++
                 }
                 val invSum = 1.0f / sumExp
                 val attnBase = h * t * t + i * t
-                for (j in 0..i) {
-                    attnProbs[attnBase + j] = scoresRow[j] * invSum
+                val vInvSum = FloatVector.broadcast(sSpecies, invSum)
+                sj = 0
+                while (sj < sUpper) {
+                    FloatVector.fromArray(sSpecies, scoresRow, sj).mul(vInvSum)
+                        .intoArray(attnProbs, attnBase + sj)
+                    sj += sLane
+                }
+                while (sj < rowLen) {
+                    attnProbs[attnBase + sj] = scoresRow[sj] * invSum
+                    sj++
                 }
             }
         }

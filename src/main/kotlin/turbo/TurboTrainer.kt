@@ -94,8 +94,8 @@ class TurboTrainer(
         val totalSeqsPerIter = config.batchSize * config.gradientAccumulationSteps
         val cpuCount = Runtime.getRuntime().availableProcessors().coerceAtLeast(1)
         val envCap = System.getenv("TURBO_MAX_WORKERS")?.toIntOrNull()?.coerceAtLeast(1)
-        // CPU core - 1로 default (시스템에 1 core 여유 — JIT/GC/OS 활용)
-        val defaultCap = (cpuCount - 1).coerceAtLeast(1)
+        // CPU core × 2/3로 default (JIT/GC/OS 및 다른 프로세스 여유 확보)
+        val defaultCap = (cpuCount * 2 / 3).coerceAtLeast(1)
         val desiredWorkers = minOf(envCap ?: defaultCap, cpuCount, totalSeqsPerIter)
         workers = if (desiredWorkers >= 2) {
             println(
