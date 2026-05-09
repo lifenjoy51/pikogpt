@@ -30,16 +30,16 @@ PikoGPT is a Kotlin port of nanoGPT and micrograd by Andrej Karpathy. This is an
 ./gradlew runAnalyzeTokens    # 토큰 분포 분석 디버그
 ./gradlew runDebugBPE         # BPE 디버그
 
-# TinyHelen 전용 학습/샘플링 (1M 파라미터 벡터 백엔드)
-./gradlew runTinyHelenTrainVec              # 혼합 코퍼스(book+textbook+wiki+conversation) 10k
-./gradlew runTinyHelenTrainTextbookVec      # textbook-only 6k, alwaysSave=false (best avg 기반)
-./gradlew runTinyHelenSampleVec             # 최신 ckpt 자동 샘플링
+# TinyHelen 전용 학습/샘플링 (1M 파라미터 turbo 백엔드)
+./gradlew runTinyHelenTrainTurbo              # 혼합 코퍼스(book+textbook+wiki+conversation) 10k
+./gradlew runTinyHelenTrainTextbookTurbo      # textbook-only 6k, alwaysSave=false (best avg 기반)
+./gradlew runTinyHelenSampleTurbo             # 최신 ckpt 자동 샘플링
 ./gradlew runSamplePromptsFromFile \
           --args="<ckpt-dir> <prompts.txt>" # 커스텀 프롬프트 샘플링
 
-# Resume (벡터 백엔드만)
-./gradlew runTinyHelenTrainVec --args="resume"              # 최대 iter ckpt에서 이어하기
-./gradlew runTinyHelenTrainVec --args="20000 resume"        # maxIters 늘려 이어하기
+# Resume (turbo 백엔드만)
+./gradlew runTinyHelenTrainTurbo --args="resume"              # 최대 iter ckpt에서 이어하기
+./gradlew runTinyHelenTrainTurbo --args="20000 resume"        # maxIters 늘려 이어하기
 ```
 
 NOTE: `application` 플러그인을 쓰지 않으므로 `./gradlew run`은 없다. 위 `runXxx` 태스크를 사용한다. 역할 분리 원칙:
@@ -52,22 +52,24 @@ NOTE: `application` 플러그인을 쓰지 않으므로 `./gradlew run`은 없�
 - `org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0`
 - `org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3`
 - Tests: `kotlin("test")` on JUnit Platform
+- **JDK 21** — turbo 백엔드의 `jdk.incubator.vector` 모듈 사용 (`--add-modules=jdk.incubator.vector`)
 
 ## Architecture
 
 The codebase has **two parallel autodiff backends** with deliberately different priorities:
 
-- **Scalar (`Value.kt` + `grad/` + `gpt/` + `train/` + `sample/`)** — 교육용 레퍼런스.
+- **Scalar (`Value.kt` + `grad/` + `gpt/` + `train/Scalar*` + `sample/ScalarSampler.kt`)** — 교육용 레퍼런스.
   모든 연산이 `Value` 스칼라 객체 그래프 위에서 일어나고, `backward()`가 위상정렬로 체인 룰을
   재생한다. micrograd의 직계 포팅. 학습이 가장 읽기 쉽다는 것이 존재 이유. 단점: 71K 파라미터
   모델이 iter당 16초. 실험용으로는 느림.
-- **Vector (`vec/`)** — 실전 성능.
-  `Tensor` = `FloatArray + shape`. 연산과 backward는 **autograd 없이 레이어마다 명시적**으로 기록
-  (layer.forward / layer.backward를 나란히 읽으면 chain rule이 수식 그대로 드러남). 1M 파라미터 모델이
-  iter당 1.7초 — 스칼라 대비 파라미터당 ~130×. MVP 수준으로만 완성 (SIMD/풀링 등은 미구현).
+- **Turbo (`turbo/`)** — 실전 성능 + SIMD 가속.
+  `TurboTensor` = `FloatArray + shape`. 연산과 backward는 **autograd 없이 레이어마다 명시적**으로 기록
+  (layer.forward / layer.backward를 나란히 읽으면 chain rule이 수식 그대로 드러남). JDK 21
+  `jdk.incubator.vector` API 기반 SIMD + ForkJoinPool 병렬화 + KV cache (추론 5~10×).
+  RMSNorm/SwiGLU/RoPE/GQA/qk-norm/fused QKV/z-loss 옵션 모두 지원. 1M 모델 iter당 ~2.6초.
 
-벡터 백엔드는 스칼라를 대체하지 않고 **병행**한다. 기존 스칼라 파일들은 수정하지 않음. 선택은
-실행 시점에 `runTinyHelenTrain`(scalar) vs `runTinyHelenTrainVec`(vec)로.
+Turbo 백엔드는 스칼라를 대체하지 않고 **병행**한다. 기존 스칼라 파일들은 수정하지 않음. 선택은
+실행 시점에 `runTinyHelenTrain`(scalar) vs `runTinyHelenTrainTurbo`(turbo)로.
 
 이 아래 "Core components" 섹션은 두 백엔드의 파일 트리를 각각 설명한다.
 
@@ -76,7 +78,7 @@ The codebase has **two parallel autodiff backends** with deliberately different 
 
 ### 백엔드 명명 규칙
 
-두 백엔드가 같은 패키지 트리에 공존하므로 **모든 동명 클래스에 `Vec`/`Scalar` 접두사**를 붙여 코드만 봐도 어느 백엔드인지 분명하게 한다. 패키지 명시 없이 클래스명만으로 구분 가능. 예: `VecTrainer` vs `ScalarTrainer`, `VecSampler` vs `ScalarSampler`, `VecAdamW` vs `ScalarAdamW`, `VecPikoGPT` vs `ScalarPikoGPT`. micrograd 출처 클래스는 `Micrograd*` 접두사. `Tensor`(vec)와 `Value`(scalar)는 충돌 없어 그대로.
+두 백엔드가 같은 패키지 트리에 공존하므로 **모든 동명 클래스에 `Turbo`/`Scalar` 접두사**를 붙여 코드만 봐도 어느 백엔드인지 분명하게 한다. 패키지 명시 없이 클래스명만으로 구분 가능. 예: `TurboTrainer` vs `ScalarTrainer`, `TurboSampler` vs `ScalarSampler`, `TurboAdamW` vs `ScalarAdamW`, `TurboPikoGPT` vs `ScalarPikoGPT`. micrograd 출처 클래스는 `Micrograd*` 접두사. `TurboTensor`(turbo)와 `Value`(scalar)는 충돌 없어 그대로.
 
 ### Core components
 
@@ -105,11 +107,13 @@ The codebase has **two parallel autodiff backends** with deliberately different 
    - `TrainConfig.kt` — hyperparameters + data/model paths.
    - `ScalarCheckpoint.kt` — serializable wrapper (iteration, best loss, model args, optimizer state).
    - `States.kt` — per-layer serializable state DTOs used by `ScalarCheckpoint`.
-   - `experiments/` — 14개 실험 진입점 (`ConvMix*TrainVec.kt`, `TinyHelenTrain*.kt` — SwiGLU/RoPE 변형 포함). 코어 학습 로직과 분리.
+   - `experiments/` — turbo 백엔드용 실험 진입점들 (`ConvMix*TrainTurbo.kt`, `TinyHelenTrain*Turbo.kt`, `ThreeStage*Turbo.kt`, `TwoStage*Turbo.kt`, `Bench*Turbo.kt` 등 30여 개 — SwiGLU/RoPE/GQA 변형 포함). 코어 학습 로직과 분리.
 
 5. **Sampling (`src/main/kotlin/sample/`)**
    - `ScalarSampler.kt` — 스칼라 백엔드. 체크포인트 로드 + 텍스트 생성 (temperature / top-k).
    - `SampleConfig.kt` — sampling parameters (long-name canonical: `modelDirectoryPath`, `numberOfSamples`, ...).
+   - `ChatTurbo.kt` — turbo ckpt 인터랙티브 대화.
+   - `SamplePromptsFromFile.kt`, `SampleV4MergedSpaceSep3M.kt` — turbo ckpt + 프롬프트 파일 샘플링 진입점.
 
 6. **Data processing (`src/main/kotlin/data/`)**
    - `CharBPE.kt` — char-level BPE train + encode/decode. 플래그: `lowercase`, `useWordPreTokenize` (GPT-2 스타일 regex 사전 분할), `standardBpeScoring`(빈도 기준 merge), `splitSpaceAsToken` (공백을 단일 토큰으로 고정 → 알파벳만 BPE merge), `verbose`. 학습된 상태를 `getMerges()`로 내보내고 `restore(stoi, merges)`로 복원 — Sampler가 학습과 **정확히 같은 토큰화를 재생**. (이전 이름 `SimpleBPE` — char pair encoding이 더 정확. byte-level이 아니다.)
@@ -118,15 +122,17 @@ The codebase has **two parallel autodiff backends** with deliberately different 
    - `StoryGenerator.kt` — optional LM Studio integration (`http://127.0.0.1:1234`, `google/gemma-3-1b`) for generating/validating children's stories. Has a `main()`.
    - `MetaInfo.kt` — vocab metadata DTO. `merges`, `lowercase`, `useWordPreTokenize`, `specialTokens` 포함 (모두 기본값 있어 구 meta.json도 그대로 로드).
 
-7. **Vector backend (`src/main/kotlin/vec/`)**
-   - `Tensor.kt` — `shape: IntArray`, `data: FloatArray`, lazy `grad: FloatArray?`. 계산 그래프 없음.
-   - `ops/` — 원자 연산. 각 파일에 forward + backward + 수식 주석이 함께.
-     `MatMul.kt`, `Softmax.kt`, `GELU.kt`, `SiLU.kt`(SwiGLU용), `LayerNormOp.kt`, `CrossEntropy.kt`, `RoPE.kt`(rotary position embedding).
-   - `layer/` — 7개 레이어가 각자 `forward(x): Tensor`와 `backward(gy): Tensor`를 노출. 모두 `Vec` 접두사:
-     `VecLinear`, `VecLayerNorm`, `VecMLP`(GELU/SwiGLU 분기), `VecSelfAttention`(multi-head causal + RoPE 옵션), `VecTransformerBlock`(pre-LN), `VecEmbeddingTable`, `VecPikoGPT`(RoPE 모드면 position embedding 제외).
-   - `VecAdamW.kt`, `VecTrainer.kt`, `VecSampler.kt`, `VecCheckpoint.kt` — 파라미터별 FloatArray 기반의 옵티마이저 + 학습 루프 + 샘플러. 체크포인트는 `model/<dataset>/vec/<paramCount>/v0001/`(zero-pad 4자리 버전 번호)에 저장. 레거시 `bestLoss*10` 정수 디렉터리도 loader가 함께 인식.
-   - `Parallel.kt` — 데이터 병렬 학습 helper.
-   - 테스트: `src/test/kotlin/vec/` — 각 op의 수치(유한차분) gradient 검사 + 레이어 단위 dx 검증 + `VFullPipelineTest`(합성 vocab end-to-end) + `AdamWTest`.
+7. **Turbo backend (`src/main/kotlin/turbo/`)**
+   - `TurboTensor.kt` — `shape: IntArray`, `data: FloatArray`, lazy `grad: FloatArray?`. 계산 그래프 없음.
+   - `TurboSimdMath.kt` — JDK 21 Vector API helper (`SPECIES_PREFERRED`, `dot`, `fmaScalar`, `addArrays`).
+   - `ops/` — 원자 연산. 각 파일에 forward + backward + 수식 주석. 거의 모두 SIMD化:
+     `TurboMatMul.kt`, `TurboSoftmax.kt`, `TurboGELU.kt`, `TurboSiLU.kt`(SwiGLU용), `TurboLayerNormOp.kt`, `TurboRMSNormOp.kt`, `TurboCrossEntropy.kt`, `TurboRoPE.kt`, `TurboRoPESingle.kt`(KV cache용).
+   - `layer/` — 모두 `Turbo` 접두사. `forward(x)` / `backward(gy)` 노출:
+     `TurboLinear`, `TurboLayerNorm`, `TurboRMSNorm`, `TurboNorm`(sealed interface), `TurboMLP`(GELU/SwiGLU 분기), `TurboSelfAttention`(multi-head causal + RoPE/GQA/qk-norm/fused QKV), `TurboTransformerBlock`(pre-LN + grad checkpointing 토글), `TurboEmbeddingTable`, `TurboPikoGPT`(RoPE 모드면 position embedding 제외).
+   - `TurboAdamW.kt`, `TurboTrainer.kt`, `TurboSampler.kt`, `TurboCheckpoint.kt`, `TurboKVCache.kt`(추론 가속), `TurboModelConfig.kt`(GQA/qk-norm/fused QKV/z-loss 옵션) — 파라미터별 FloatArray 기반의 옵티마이저 + 학습 루프 + 샘플러. 체크포인트는 `model/<dataset>/turbo/<paramCount>/v0001/`(zero-pad 4자리 버전 번호)에 저장.
+   - `TurboParallel.kt` — ForkJoinPool 기반 데이터 병렬 학습. worker = `cpuCount × 2/3`.
+   - `bench/TurboMicroBench.kt` — MatMul shape별 절대 시간 측정 (회귀 추적용).
+   - 테스트: `src/test/kotlin/turbo/` — 옵션별 회귀 (`TurboGqaTest`, `TurboFusedQkvTest`, `TurboQkNormTest`, `TurboRMSNormTest`, `TurboZLossTest`, `TurboKVCacheTest`).
 
 ### Design patterns
 
@@ -139,7 +145,7 @@ The codebase has **two parallel autodiff backends** with deliberately different 
 
 1. **Data preparation** — `StoriesBpePrep.kt` (or `AlphabetPrep.kt`) tokenizes text into `data/[dataset]/train.bin` + `val.bin` + `meta.json`. `./gradlew runStoriesBpe` / `runAlphabetPrep`.
 2. **Training** — `./gradlew runTrainer` (스모크 50 iter 프리셋, `train.TrainerMain`)이나 `runMiniTrainer`. 체크포인트는 최적 검증 손실이 갱신될 때마다 저장된다.
-3. **Checkpoint layout** — 벡터 백엔드(`VecTrainer`)는 `${config.modelDir}/${datasetName}/vec/${paramCount}/v0001/` (4자리 zero-pad 버전 번호) 경로에 `checkpoint.json`, `model_weights.bin`, `meta.json`, `optimizer_state.bin`을 쓴다. 매 저장마다 +1. 레거시 `bestLoss*10` 정수 디렉터리는 보존되며 loader가 인식.
+3. **Checkpoint layout** — turbo 백엔드(`TurboTrainer`)는 `${config.modelDir}/${datasetName}/turbo/${paramCount}/v0001/` (4자리 zero-pad 버전 번호) 경로에 `checkpoint.json`, `model_weights.bin`, `meta.json`, `optimizer_state.bin`을 쓴다. 매 저장마다 +1.
 4. **Sampling** — `./gradlew runSampler`로 체크포인트 디렉토리를 로드해 텍스트 생성 (`sample.SamplerMain`).
 
 ## Data Layout
@@ -156,13 +162,13 @@ data/
 
 model/                        # 모든 체크포인트 루트 (gitignored)
 └── [datasetName]/            # config.dataPath 마지막 segment (예: tinyhelen, tinyhelen-textbook)
-    └── vec/                  # 백엔드 구분 (스칼라는 직접 파라미터 수부터; 곧 통일 예정)
+    └── turbo/                # 백엔드 구분
         └── [paramCount]/     # 예: 1057536
-            └── v0001/        # 4자리 zero-pad 버전 (매 저장마다 +1). 레거시 "28" 같은 bestLoss*10도 인식.
+            └── v0001/        # 4자리 zero-pad 버전 (매 저장마다 +1).
                 ├── checkpoint.json   # iteration, best loss, model args
                 ├── meta.json         # copied from the data dir
-                ├── model_weights.bin # serialized weights (vec: big-endian float32)
-                └── optimizer_state.bin # vec 전용: AdamW timeStep + 모멘트 (resume용)
+                ├── model_weights.bin # serialized weights (big-endian float32)
+                └── optimizer_state.bin # AdamW timeStep + 모멘트 (resume용)
 ```
 
 ## Key Files to Understand
@@ -171,11 +177,11 @@ model/                        # 모든 체크포인트 루트 (gitignored)
 - `gpt/Matrix.kt` — shape-safe matrix layer underpinning the GPT stack.
 - `gpt/ScalarPikoGPT.kt`, `gpt/GPTConfig.kt` — 스칼라 백엔드 모델 아키텍처 + config.
 - `gpt/ScalarTransformerBlock.kt`, `gpt/ScalarCausalSelfAttention.kt`, `gpt/ScalarFeedForward.kt` — block internals (scalar).
-- `vec/layer/VecPikoGPT.kt`, `vec/VecTrainer.kt` — 벡터 백엔드 모델 + 학습 루프 (실전 성능, SwiGLU/RoPE 지원).
+- `turbo/layer/TurboPikoGPT.kt`, `turbo/TurboTrainer.kt` — turbo 백엔드 모델 + 학습 루프 (실전 성능, SIMD + KV cache + SwiGLU/RoPE/GQA 지원).
 - `train/ScalarTrainer.kt`, `train/TrainConfig.kt`, `train/ScalarAdamW.kt` — 스칼라 학습 루프 + hyperparams + optimizer.
 - `train/ScalarCheckpoint.kt`, `train/States.kt` — checkpoint / per-layer serialization format.
-- `train/experiments/` — ConvMix*, TinyHelen* 실험 진입점 14개 (별도 서브패키지).
-- `sample/ScalarSampler.kt`, `sample/ChatVec.kt` — generation paths (scalar / vec).
+- `train/experiments/` — ConvMix*, TinyHelen*, ThreeStage*, TwoStage*, Bench* 진입점 30여 개 (turbo 백엔드).
+- `sample/ScalarSampler.kt`, `sample/ChatTurbo.kt` — generation paths (scalar / turbo).
 - `data/CharBPE.kt`, `data/StoriesBpePrep.kt` — tokenizer + pipeline.
 
 ## External Dependency

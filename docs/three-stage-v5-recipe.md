@@ -65,7 +65,7 @@ initFrom scratch
 - replayDataPath = dict (0.15), replayDataPath2 = wiki (0.15)
 - maxIters 24000, warmup 0.05, LR 1e-4
 
-build.gradle.kts에 `runThreeStageDictTrainV5Vec`, `runThreeStageWikiTrainV5Vec`, `runThreeStageConvTrainV5Vec` 3개 task 추가.
+build.gradle.kts에 `runThreeStageDictTrainV5Turbo`, `runThreeStageWikiTrainV5Turbo`, `runThreeStageConvTrainV5Turbo` 3개 task 추가.
 
 ---
 
@@ -74,9 +74,9 @@ build.gradle.kts에 `runThreeStageDictTrainV5Vec`, `runThreeStageWikiTrainV5Vec`
 `/tmp/v5-train/run.sh`로 chain 자동화:
 ```
 VEC_MAX_WORKERS=10
-1) runThreeStageDictTrainV5Vec → dict best 추출
-2) runThreeStageWikiTrainV5Vec --args=<dict best> → wiki best 추출
-3) runThreeStageConvTrainV5Vec --args=<wiki best>
+1) runThreeStageDictTrainV5Turbo → dict best 추출
+2) runThreeStageWikiTrainV5Turbo --args=<dict best> → wiki best 추출
+3) runThreeStageConvTrainV5Turbo --args=<wiki best>
 ```
 
 ## 5. 학습 결과
@@ -301,15 +301,15 @@ Apples are round and crunchy.
 
 ```bash
 # v5 chain 전체 실행 (54h 소요)
-./gradlew runThreeStageDictTrainV5Vec
-./gradlew runThreeStageWikiTrainV5Vec --args="model/dict/vec/2546352/v0049"
-./gradlew runThreeStageConvTrainV5Vec --args="model/wiki/vec/2546352/v0038"
+./gradlew runThreeStageDictTrainV5Turbo
+./gradlew runThreeStageWikiTrainV5Turbo --args="model/dict/vec/2546352/v0049"
+./gradlew runThreeStageConvTrainV5Turbo --args="model/wiki/vec/2546352/v0038"
 
 # 의미 평가
 ./gradlew runSamplePromptsFromFile --args="model/conv/vec/2546352/v0047 prompts/conv-semantic-v2.txt"
 
 # 인터랙티브 대화
-./gradlew runChatVec --args="model/conv/vec/2546352/v0047"
+./gradlew runChatTurbo --args="model/conv/vec/2546352/v0047"
 ```
 
 ---

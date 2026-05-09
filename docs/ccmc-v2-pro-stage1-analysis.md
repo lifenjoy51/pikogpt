@@ -458,7 +458,7 @@ v0053 학습 결과 분석:
 **비용**: 0 (이미 entry 준비됨, ~30분 학습)
 **검증 목표**: Stage1 v0053을 base로 instruction tuning이 binding 강화하는지
 
-- `runCcmcV2ProStage2TrainVec --args="model/stage1/vec/1087936/v0053"`
+- `runCcmcV2ProStage2TrainTurbo --args="model/stage1/vec/1087936/v0053"`
 - Stage 2 형식 ("What is a cat?\nA cat is...") 학습 → instruction prompt 활성화
 - replay 0.25로 Stage1 binding 보존
 - 빠른 검증 — Stage1 약함을 stage 2가 메울 수 있는지
@@ -505,7 +505,7 @@ Stage 2 instruction tuning을 v0053 위에 진행. ~30분 학습.
 ### 실행 명령
 
 ```bash
-./gradlew runCcmcV2ProStage2TrainVec --args="model/stage1/vec/1087936/v0053"
+./gradlew runCcmcV2ProStage2TrainTurbo --args="model/stage1/vec/1087936/v0053"
 ```
 
 ### Stage 2 setup 요약 (이미 정의됨)

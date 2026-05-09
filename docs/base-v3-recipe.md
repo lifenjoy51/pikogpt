@@ -383,14 +383,14 @@ python scripts/build_base_v3_train_val.py \
 
 ### 11.3 BASE 학습 (Kotlin, 신규 진입점)
 ```bash
-./gradlew runTwoStageBaseTrainV3Vec
+./gradlew runTwoStageBaseTrainV3Turbo
 # 또는 resume:
-./gradlew runTwoStageBaseTrainV3Vec --args="resume"
+./gradlew runTwoStageBaseTrainV3Turbo --args="resume"
 ```
 
 ### 11.4 IT 전이 학습
 ```bash
-./gradlew runTwoStageITTrainV3Vec
+./gradlew runTwoStageITTrainV3Turbo
 ```
 
 ### 11.5 검증
@@ -407,7 +407,7 @@ python scripts/build_base_v3_train_val.py \
 - [ ] `data/two-stage-v3/base/{train,val}.txt` 생성
 - [ ] `data/two-stage-v3/base/{meta.json,train.bin,val.bin}` 생성 (BPE 인코딩)
 - [ ] `src/main/kotlin/train/experiments/TwoStageBaseTrainV3Vec.kt` 신규
-- [ ] `build.gradle.kts` 에 `runTwoStageBaseTrainV3Vec` 태스크 추가
+- [ ] `build.gradle.kts` 에 `runTwoStageBaseTrainV3Turbo` 태스크 추가
 - [ ] `src/main/kotlin/train/experiments/TwoStageITTrainV3Vec.kt` 신규 (또는 기존 `TwoStageITV2TrainVec.kt` 의 init_from 인자화)
 - [ ] BASE 학습 → ckpt 동결
 - [ ] IT 전이 학습 → ckpt 동결

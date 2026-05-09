@@ -111,10 +111,10 @@ cat data/two-stage-v2/base-v2/val.txt   data/two-stage-v2/it-v2/val.txt   > data
 ./gradlew runEncodeWithExistingMeta --args="data/two-stage-v2/shared/meta.json data/two-stage-v2/it-v2"   # ~15초
 
 # 1. v2 BASE pretrain (~10.5h)
-./gradlew runTwoStageBaseV2TrainVec
+./gradlew runTwoStageBaseV2TrainTurbo
 
 # 2. v2 IT finetune (~4.7h, BASE 끝난 후)
-./gradlew runTwoStageITV2TrainVec --args="model/base-v2/vec/864000/v00XX"
+./gradlew runTwoStageITV2TrainTurbo --args="model/base-v2/vec/864000/v00XX"
 
 # 3. 4-way 비교
 ./gradlew runSamplePromptsFromFile --args="model/dialogues-a510/vec/768000/v0013 topic-relevance-prompts.txt"
@@ -150,7 +150,7 @@ cat data/two-stage-v2/base-v2/val.txt   data/two-stage-v2/it-v2/val.txt   > data
 - `src/main/kotlin/vec/VecTrainer.kt` — `initFrom="pretrain_weights"` 분기 + MixedDataLoader (v1)
 - `src/main/kotlin/train/TrainConfig.kt` — 3 필드 추가 (v1)
 - `src/main/kotlin/train/DataLoader.kt` — `BatchSource` interface + `MixedDataLoader` (v1)
-- `build.gradle.kts` — 5개 task 추가 (`runEncodeWithExistingMeta`, `runTwoStageBaseTrainVec`, `runTwoStageITTrainVec`, `runTwoStageBaseV2TrainVec`, `runTwoStageITV2TrainVec`)
+- `build.gradle.kts` — 5개 task 추가 (`runEncodeWithExistingMeta`, `runTwoStageBaseTrainTurbo`, `runTwoStageITTrainTurbo`, `runTwoStageBaseV2TrainTurbo`, `runTwoStageITV2TrainTurbo`)
 
 ## 학습한 것
 

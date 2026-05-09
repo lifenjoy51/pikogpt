@@ -120,11 +120,11 @@ nohup bash scripts/run-overnight.sh >/dev/null 2>&1 & disown
 `vec/` 백엔드(커밋 `25538c3`)가 완성된 뒤, 같은 데이터셋에 **4층 / embd 128 / 4 heads / FFN 512 = ≈1.05M 파라미터** 구성을 `TinyHelenTrainVec`로 구동 가능.
 
 ```bash
-./gradlew runTinyHelenTrainVec              # 1500 iter 전체 (≈40분)
-./gradlew runTinyHelenTrainVec --args="50"  # 짧은 스모크
+./gradlew runTinyHelenTrainTurbo              # 1500 iter 전체 (≈40분)
+./gradlew runTinyHelenTrainTurbo --args="50"  # 짧은 스모크
 
 # 학습 후
-./gradlew runTinyHelenSampleVec             # model/vec/ 최신 체크포인트 자동 선택
+./gradlew runTinyHelenSampleTurbo             # model/vec/ 최신 체크포인트 자동 선택
 ```
 
 벡터 백엔드는 `model/vec/{params}/{loss*10}/` 경로에 독립적으로 저장 — 스칼라 체크포인트와 간섭 없음.

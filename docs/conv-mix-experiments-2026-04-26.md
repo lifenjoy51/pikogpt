@@ -77,10 +77,10 @@ text.strip().strip('"').strip()                                # outer 따옴표
 ./gradlew runStoriesBpe --args="data/conv-mix-clean-a510"
 
 # 4) 학습
-VEC_MAX_WORKERS=10 ./gradlew runConvMixCleanA510M773TrainVec
+VEC_MAX_WORKERS=10 ./gradlew runConvMixCleanA510M773TrainTurbo
 
 # 5) 샘플링 / chat
-./gradlew runChatVec --args="model/conv-mix-clean-a510/vec/773376/28 0.7 40" --console=plain
+./gradlew runChatTurbo --args="model/conv-mix-clean-a510/vec/773376/28 0.7 40" --console=plain
 ```
 
 ## 베스트 모델 사용
@@ -92,7 +92,7 @@ VEC_MAX_WORKERS=10 ./gradlew runConvMixCleanA510M773TrainVec
 
 **ChatVec 사용**:
 ```bash
-./gradlew runChatVec --args="model/conv-mix-clean-a510/vec/773376/28 0.7 40" --console=plain
+./gradlew runChatTurbo --args="model/conv-mix-clean-a510/vec/773376/28 0.7 40" --console=plain
 ```
 
 권장 temperature 0.7 (다양성 vs topic relevance 균형).

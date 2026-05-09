@@ -5,7 +5,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import java.io.File
-import vec.VecSampler
+import turbo.TurboSampler
 
 /**
  * 벡터 체크포인트 + 프롬프트 파일로 커스텀 샘플링.
@@ -48,7 +48,7 @@ fun main(args: Array<String>) = runBlocking {
         repetitionPenalty = 1.15f,         // 반복 차단 (mode collapse 완화)
         stopTokenIds = stopIds,
     )
-    val sampler = VecSampler(config)
+    val sampler = TurboSampler(config)
 
     // turn 토큰이 있는 모델에서는 prompt를 "사용자 turn 종료"로 보고 다음 turn(=응답)을 생성하도록
     // prompt 끝에 <|turn|>을 자동 추가. 이렇게 안 하면 따옴표로 닫힌 prompt가 곧바로

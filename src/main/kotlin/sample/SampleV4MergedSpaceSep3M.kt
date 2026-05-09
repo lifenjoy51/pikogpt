@@ -4,7 +4,7 @@ import data.MetaInfo
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import vec.VecSampler
+import turbo.TurboSampler
 import java.io.File
 
 /**
@@ -55,7 +55,7 @@ fun main() = runBlocking {
     println("stop tokens: $stopIds")
     println()
 
-    val sampler = VecSampler(config)
+    val sampler = TurboSampler(config)
     for (prompt in prompts) {
         println("=== '$prompt' ===")
         val outputs = sampler.generate(prompt)

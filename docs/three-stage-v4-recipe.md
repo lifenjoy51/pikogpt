@@ -381,14 +381,14 @@ token/iter = 4096 (batch=2 × accum=32 × block=64). dict 코퍼스 863K tok 기
 
 ```bash
 # Stage 1 — scratch
-./gradlew runThreeStageDictTrainV4Vec
+./gradlew runThreeStageDictTrainV4Turbo
 # → 산출 ckpt 경로를 다음 stage에 인자로 넘긴다 (예: model/dict/vec/.../v0010)
 
 # Stage 2 — Stage 1 ckpt에서 이어받기
-./gradlew runThreeStageWikiTrainV4Vec --args="model/dict/vec/<paramCount>/v00XX"
+./gradlew runThreeStageWikiTrainV4Turbo --args="model/dict/vec/<paramCount>/v00XX"
 
 # Stage 3 — Stage 2 ckpt에서 이어받기
-./gradlew runThreeStageConvTrainV4Vec --args="model/wiki/vec/<paramCount>/v00XX"
+./gradlew runThreeStageConvTrainV4Turbo --args="model/wiki/vec/<paramCount>/v00XX"
 
 # 각 단계 resume / maxIters override 지원:
 #   runThreeStage*TrainV4Vec --args="resume"

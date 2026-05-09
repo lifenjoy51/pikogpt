@@ -69,7 +69,7 @@
 
 - `src/main/kotlin/train/experiments/CcmcV2ProStage1TrainVec.kt`
 - `src/main/kotlin/train/experiments/CcmcV2ProStage2TrainVec.kt`
-- `build.gradle.kts:243-255`: `runCcmcV2ProStage1TrainVec`, `runCcmcV2ProStage2TrainVec`
+- `build.gradle.kts:243-255`: `runCcmcV2ProStage1TrainTurbo`, `runCcmcV2ProStage2TrainTurbo`
 
 ## 모델 / 학습 설정 (Stage 1)
 
@@ -132,11 +132,11 @@ cat data/ccmc-v2-pro/stage1/val.txt   data/ccmc-v2-pro/stage2/val.txt   > data/c
 
 ```bash
 # 첫 5000 iter (scratch)
-./gradlew runCcmcV2ProStage1TrainVec
+./gradlew runCcmcV2ProStage1TrainTurbo
 # → best 4600 (val 2.486), final 5000 (val 2.80)
 
 # 의미 연결 강화 위해 5000 iter 추가 (resume + maxIters override)
-./gradlew runCcmcV2ProStage1TrainVec --args="resume 10000"
+./gradlew runCcmcV2ProStage1TrainTurbo --args="resume 10000"
 # → best 8800 (val 2.1895), final 10000 (val 2.67, train 1.88)
 ```
 
@@ -228,7 +228,7 @@ POS 분포: noun×3 (cat/water/tree), verb×2 (run/eat), adj×2 (happy/big), pre
 ## Stage 2 다음 단계
 
 ```bash
-./gradlew runCcmcV2ProStage2TrainVec --args="model/stage1/vec/1087936/v0072"
+./gradlew runCcmcV2ProStage2TrainTurbo --args="model/stage1/vec/1087936/v0072"
 ```
 
 설정: pretrain_weights warm-start + Stage 1 replay 0.25, LR 1e-4, maxIters 3000.

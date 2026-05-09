@@ -1,5 +1,7 @@
 # Turbo 백엔드 벤치마크 결과 (2026-05-07)
 
+> 역사 기록: vec 백엔드 폐기 직전 마지막 vec ↔ turbo 비교 측정. 이후 vec은 삭제됨.
+
 JDK 21 Vector API 기반 turbo 백엔드의 vec 백엔드 대비 학습 속도 비교 측정. 12-core
 Apple Silicon, NEON SIMD lane 4.
 
