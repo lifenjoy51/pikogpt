@@ -265,9 +265,124 @@ llm-playground/data/processed/ccmc_v5_qa_specs/
 2. **Fail 81건 retry** — `tools/v5_qa_stage2_retry.py` (Stage 1 retry 패턴 답습),
    예상 $0.05 / 2분.
 3. **결과 분석** — anchor coverage, turn 길이 분포, vocab 분석 (5세 외 단어).
-4. **pikogpt prep** — `flash/raw.jsonl` → `<|bos|>Q1<|turn|>A1<|turn|>...<|eos|>` 형식
-   bin 변환 (별도 plan).
-5. **v0022(val 1.84)에서 finetune** — narrative 능력 보존하며 QA 능력 강화 (별도 plan).
+4. ✅ **pikogpt prep 완료** — Stage 3 참고.
+5. ✅ **v0022 finetune 완료** — Stage 3 참고.
+
+## Stage 3: pikogpt prep + IT 학습 결과 (2026-05-10 완료)
+
+### 3.1 Prep — `flash/raw.jsonl` → token bin
+
+신규 진입점: `data/CcmcV5QaPrep.kt` + gradle `runCcmcV5QaPrep`.
+
+| 단계 | 처리 |
+|---|---|
+| 입력 | `~/works/llm-playground/data/processed/ccmc_v5_qa_dialogues/flash/raw.jsonl` |
+| 필터 | `ok=true` (14,699 / 14,780) |
+| 정규화 | `dialogue.turns` (짝수 Q, 홀수 A) → 빈/홀수 turn 제외 (0건) |
+| dedupe | text MD5 → 14,697 (-2 중복) |
+| split | `random.Random(42).shuffle` + 95:5 → train 13,963 / val 734 |
+| 인코딩 | turn 단위 BPE encode 후 `bosId`/`turnId`/`eosId` 직접 삽입 (special token single-id 보장; useWordPreTokenize 우회) |
+
+**vocab 결정**: base v0022가 `data/ccmc-v4-merged-spacesep-4k/meta.json` (vocab=4000)
+으로 학습됨. 초기 prep은 v2-pro stage1 meta(vocab=2000)로 진행했으나 base와 호환
+불가로 4k meta 재실행. 출력은 별도 디렉토리 `data/ccmc-v5-qa-4k/`로 분리.
+
+| 산출 | 값 |
+|---|---|
+| `train.bin` | 4.2 MB · **1,326,433 tokens** · 13,963 dialogues |
+| `val.bin` | 220 KB · **69,339 tokens** · 734 dialogues |
+| `meta.json` | base 4k 그대로 복사 (vocab=4000, special: `<|eos|>=0 <|bos|>=2 <|turn|>=3`) |
+
+샘플 (train.bin 첫 dialogue 원형 디코드, 라벨 추가 없음):
+
+```
+<|bos|>What show are you watching?<|turn|>Oh, this show is boring.<|turn|>Maybe we can stop watching it.<|turn|>Can we stop the show?<|eos|>
+```
+
+### 3.2 IT 학습 (turbo, 8 cores)
+
+신규 진입점: `train/experiments/CcmcV5QaItTrainTurbo.kt` + gradle
+`runCcmcV5QaItTrainTurbo` (`-Djava.util.concurrent.ForkJoinPool.common.parallelism=8`).
+
+| 항목 | 값 |
+|---|---|
+| Base | `model/ccmc-v4-merged-spacesep-4k/vec/3117552/v0022` (val 1.82, 3.12M params) |
+| 모델 spec | 8 layers · dim 160 · heads 5 · block 128 · SwiGLU · RoPE · tied · bias=true |
+| Replay | `data/ccmc-v4-merged-spacesep-4k/train.bin` 25% 섞음 (forgetting 완화) |
+| 옵티마이저 | LR 1e-4 · WD 0.05 · β=(0.9, 0.95) · grad clip 1.0 · label smoothing 0.05 |
+| 스케줄 | maxIters 3000 · warmup 5% · LR decay ratio 0.95 · min LR 1e-5 |
+| 배치 | batch 2 × gradAccum 32 (effective 64) |
+| 데이터로더 | `recordAwareSampling=true` (한 시퀀스가 하나의 dialogue 안에 머무름) |
+| Eval | every 150 iter (5%) · evalIters 100 · `alwaysSaveCheckpoint=false` (best만) |
+| Init | `pretrain_weights` (base 가중치만 로드, optimizer reset) |
+
+학습 결과: `model/ccmc-v5-qa-4k/qa-it/v0001 ~ v0015`. **Elapsed 1h 51m, 8 best 갱신**.
+
+| iter | val loss | Δ from base |
+|---:|---:|---:|
+| 0 (base) | 1.821 | — |
+| 150 | 1.7384 | -0.083 |
+| 300 | 1.5939 | -0.227 |
+| 450 | 1.5157 | -0.305 |
+| 600 | 1.5126 | -0.308 |
+| 750 | 1.4430 | -0.378 |
+| 900 | 1.4358 | -0.385 |
+| 1050 | 1.4232 | -0.398 |
+| 1200 | 1.3889 | -0.432 |
+| 1350 | 1.3860 | -0.435 |
+| 1500 | 1.3413 | -0.480 |
+| 1650 | 1.3215 | -0.500 |
+| 2100 | 1.3121 | -0.509 |
+| 2550 | 1.2930 | -0.528 |
+| **3000 (best v0015)** | **1.2708** | **-0.550 (-30%)** |
+
+### 3.3 ckpt 메타 패치 (turbo 리팩터 호환성)
+
+학습 도중 turbo 패키지 리팩터(`tieWeights`/`positionEncoding`이
+`gpt.{nested}` → `config.{top-level}`로 이동)가 일어남. 학습 process는 옛 코드로
+끝까지 진행됐지만, 학습 종료 후 새 빌드된 `runSamplePromptsFromFile`이 ckpt를
+로드할 때 top-level에 두 필드가 없어 default(`positionEncoding="learned"`)로
+떨어짐 → position embedding이 추가되어 모델 사이즈 mismatch (`가중치 파일 EOF
+조기 도달`).
+
+해결: `model/ccmc-v5-qa-4k/qa-it/v0001~v0015`의 `checkpoint.json`을 일괄 패치 —
+`modelArgs`의 nested `gpt.{tieWeights, positionEncoding, mlpActivation}` 값을
+top-level에도 복제. 가중치 파일 무수정. 패치 후 샘플링 호환됨.
+
+### 3.4 Dialogue 프롬프트 샘플링
+
+준비: `data/ccmc-v5-qa-4k/sample_prompts.txt` (5세 영어 dialogue Q 10개).
+실행: `runSamplePromptsFromFile model/ccmc-v5-qa-4k/qa-it/v0015 data/ccmc-v5-qa-4k/sample_prompts.txt`.
+`SamplePromptsFromFile`이 자동으로 prompt 끝에 `<|turn|>` 추가 + stop tokens에
+`<|turn|>`/`<|eos|>` 포함 → single-turn 응답 추출.
+
+샘플 (T=0, prompt당 2 sample):
+
+| Prompt | 응답 1 | 응답 2 |
+|---|---|---|
+| What is your favorite color? | I like my pink dress. | Okay, my clothes are cold clothes. |
+| Please tell me a story. | Wow, that is interesting! | Here is the stories! He told it to me. |
+| What do you see in the park? | Wow, I see a beautiful house! | Wow, I see a small tall mountain near our town. |
+| Is the cat sleeping? | Yes, it is very quiet. | Yes, the dog is on the tree. |
+| Hi! What do you like to do? | Yes, I like to read. | I like new things. |
+| Can we read a book together? | No, I can hear a story. | Yes, let's read a long paragraph! |
+| Where is the dog? | The cat is in a picture. | Please carry the cat to the shop. |
+| What do you want to eat? | Yes, I think eating is delicious. | Wow, I want some rice for breakfast. |
+| Please help me clean up the toys. | Is your toys safe? | Okay, I will help my brother buy it. |
+| How big is the tree? | Wow, the room was so big! | Oh, it is a new country! |
+
+관찰:
+
+- ✅ **single-turn Q→A 형식 학습됨** — 응답이 짧고 stop token에서 정확히 멈춤. 5세 영어 톤 (Wow/Okay/Yes 시작 패턴) 명확.
+- ✅ **base 대비 -0.55 loss** (-30%) → IT 효과 정량 확인.
+- ⚠️ **의미 정합성은 부분적** — 색깔 질문에 `dress`, story 요청에 `that is interesting`. Stage 2 합성 시 본 Q/A 역할 흐림 (Flash 한계)이 그대로 모델에 반영됨.
+
+### 3.5 다음 단계 (Stage 3 후속)
+
+1. **Pro로 fail 81건 + 일부 spec 재합성** — Q/A 역할 정확도 개선.
+2. **prep 다시 + IT 재학습** — Pro 합성분 추가 후 vocab=4000으로 재 prep.
+3. **TurboTrainer 내장 sample prompt 수정** — 현재 `<|bos|>\n# Apple\n` (literal `\n` + markdown 형식)이 학습 데이터와 mismatch. dialogue 형식으로 교체.
+4. **TurboModelConfig nested fallback** (선택) — 옛 형식 ckpt를 자동 로드할 수 있게 코드 한 곳 수정. 차후 호환성 사고 예방.
 
 ## 위험·완화
 
