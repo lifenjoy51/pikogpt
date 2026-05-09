@@ -143,10 +143,64 @@ llm-playground/data/processed/ccmc_v5_qa_specs/
  "spec": {...}, "meta": {"elapsed_s": 4.2, "usage": {...}}}
 ```
 
-## 코드
+## Stage 1 최종 결과 (2026-05-09 완료)
 
-- `llm-playground/tools/v5_qa_pilot_stage1.py` — pilot (n tuple 직접 지정, 단일 thread)
-- `llm-playground/tools/v5_qa_stage1_full.py` — full run (5:2 split, ThreadPool, progress.json, cost cap)
+### 4단계 처리 흐름 (모든 5932 anchor가 양 모델 모두에서 spec 보유 목표)
+
+| 단계 | 시점 | tuples | Flash ok | Pro ok | fail | 비용 | 시간 |
+|---|---|---|---|---|---|---|---|
+| **1. e1 full** (seed=42, schema 좁음) | 14:04 | 5932 | 4227 | 1692 | 13 | $0.974 | 60min |
+| **2. retry_pro** (e1 fail 13건 Pro 재시도) | 14:35 | 13 | — | 12 | 1 | $0.005 | 3min |
+| **3. e2 Flash only** (seed=142, schema 확장) | 14:48 | 4237 | 4201 | — | 36 | $0.492 | 30min |
+|   ↳ Pro 단계는 시작 직전 watchdog kill (모델 다양성 확보 후 fill로 전환) |
+| **4. fill** (Flash 미커버 479 + Pro 미커버 4228) | 15:43 | 4707 | 472 | 4176 | 59 | $1.560 | 104min |
+| **누적** | — | — | **8900** | **5880** | **109** | **$3.03** | **~3.3h** |
+
+### Schema 확장 (e2 + fill 적용)
+
+기존 e1 fail 분석 결과 5세 영어 학습 코퍼스에 자연스러운 토큰이 schema에서 누락되어 있었음:
+
+```python
+# e1 (좁은 schema, 12+6+8+6 = 32 tokens)
+ActType    = imperative|exclamation|polar_q|wh_q|declarative|suggestion        # 6
+WhType     = What|Where|When|Who|Why|How                                        # 6
+AuxType    = Do|Does|Did|Is|Are|Has|Have|Can|Could|Would|Should|Will            # 12
+MarkerType = Wow|Yes|No|Sure|Well|Oh|Of course|Maybe                            # 8
+
+# e2/fill (확장 schema, +20 토큰 = 51 tokens)
+ActType    += greeting|apology|thanks                                           # +3
+WhType     += Which|Whose                                                       # +2
+AuxType    += Was|Were|Am|May                                                   # +4
+MarkerType += Please|Thanks|Thank you|Sorry|OK|Okay|Hi|Hello|Hmm|Uh-oh          # +10
+```
+
+검증: e1 통과 spec 풀 5919건/30,711 turns 전수조사 결과 신규 토큰 0건 → e1 spec 호환성 유지.
+
+### 누적 spec 풀
+
+```
+llm-playground/data/processed/ccmc_v5_qa_specs/
+├── flash/      4227 ok  (e1 seed=42)
+├── flash_e2/   4201 ok  (e2 seed=142, 확장 schema)
+├── flash_fill/  472 ok  (Flash 미커버 채움)
+├── pro/        1692 ok  (e1 seed=42)
+├── retry_pro/    12 ok  (e1 fail Pro 재시도)
+└── pro_fill/   4176 ok  (Pro 미커버 채움)
+                 ─────
+                 14,780 specs
+```
+
+### 모델 커버리지 (5932 anchor 중)
+- **Flash 1+회**: 5,925 (99.9%)
+- **Pro 1+회**: 5,880 (99.1%)
+- **양 모델 모두 1+회**: ~5,880 (99.1%)
+
+### 코드
+
+- `llm-playground/tools/v5_qa_pilot_stage1.py` — schema/Pydantic/프롬프트/call_with_retry 정의
+- `llm-playground/tools/v5_qa_stage1_full.py` — full run (`--suffix _e2`, `--seed 142`로 e2 재실행 가능)
+- `llm-playground/tools/v5_qa_stage1_retry.py` — fail 레코드 Pro 재시도
+- `llm-playground/tools/v5_qa_stage1_fill.py` — 미커버 anchor만 모델별 채움 (`--dry-run`으로 분류 미리 보기)
 
 ## 다음 단계 (Stage 1 완료 후)
 
