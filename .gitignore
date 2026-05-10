@@ -8,6 +8,9 @@ data/*
 !data/alphabet/
 data/alphabet/*
 !data/alphabet/az.txt
+# CCMC 합성 raw 데이터 (DeepSeek 자체 합성, 라이선스 자유) — commit
+!data/ccmc-all-raw/
+!data/ccmc-all-raw/**
 
 ### gradle
 .gradle
