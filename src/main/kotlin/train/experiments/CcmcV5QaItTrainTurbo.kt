@@ -66,7 +66,7 @@ fun main(args: Array<String>) {
         evalIntervalRatio = 0.05f,   // 150 iter마다 eval (3000 × 0.05) → 20 evals
         evalIters = 100,
         logInterval = 50,
-        alwaysSaveCheckpoint = false,
+        alwaysSaveCheckpoint = true,
         recordAwareSampling = true,  // dialogue 한 record 안에서 sampling — Q/A pair 보존
         initFrom = if (resume) "resume" else "pretrain_weights",
     )
