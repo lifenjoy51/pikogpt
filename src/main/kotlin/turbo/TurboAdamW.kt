@@ -8,14 +8,16 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 
 /**
- * AdamW 옵티마이저. Phase 2부터 SIMD 단일 패스 fused 루프 — m/v/decay/p를
- * 한 lane register pass에서 모두 갱신해 메모리 통과 횟수 최소화.
+ * AdamW 옵티마이저 — scalar AdamW 순서로 정렬한 split 패스.
  *
- *   1) decoupled weight decay: p ← p · (1 - lr·wd)
+ *   1) weight decay 먼저: p ← p · (1 - lr·wd)  (decay 결과를 메모리에 즉시 반영)
  *   2) m ← β1·m + (1-β1)·g
  *   3) v ← β2·v + (1-β2)·g²
  *   4) m̂ = m / (1 - β1^t),  v̂ = v / (1 - β2^t)
  *   5) p ← p - lr · m̂ / (√v̂ + ε)
+ *
+ * fused 단일 패스와 수학적으로 동등하지만 floating-point 연산 순서가
+ * scalar AdamW와 일치하도록 split — 작은 모델에서 numerical drift 회피.
  */
 class TurboAdamW(
     private val parameters: List<TurboTensor>,
@@ -59,6 +61,21 @@ class TurboAdamW(
             val len = data.size
             val upper = species.loopBound(len)
 
+            // Pass 1: weight decay (scalar 순서 매칭 — m/v 업데이트 전에 data 갱신)
+            if (weightDecay > 0f) {
+                var i = 0
+                while (i < upper) {
+                    val vP = FloatVector.fromArray(species, data, i)
+                    vP.mul(vDecay).intoArray(data, i)
+                    i += laneLen
+                }
+                while (i < len) {
+                    data[i] *= decayCoeff
+                    i++
+                }
+            }
+
+            // Pass 2: m/v 업데이트 + bias correction + final update
             var i = 0
             while (i < upper) {
                 val vG = FloatVector.fromArray(species, grad, i)
@@ -78,9 +95,9 @@ class TurboAdamW(
                 val vDenom = vVHat.lanewise(VectorOperators.SQRT).add(vEps)
                 val vUpdate = vMHat.div(vDenom)
 
-                // p ← p · decayCoeff + (-lr) · update
+                // p ← p + (-lr) · update  (decay는 Pass 1에서 이미 적용됨)
                 val vP = FloatVector.fromArray(species, data, i)
-                vUpdate.fma(vNegLr, vP.mul(vDecay)).intoArray(data, i)
+                vUpdate.fma(vNegLr, vP).intoArray(data, i)
 
                 i += laneLen
             }
@@ -92,7 +109,7 @@ class TurboAdamW(
                 v[i] = vNew
                 val mHat = mNew * invBc1
                 val vHat = vNew * invBc2
-                data[i] = data[i] * decayCoeff - learningRate * mHat / (sqrt(vHat) + epsilon)
+                data[i] = data[i] - learningRate * mHat / (sqrt(vHat) + epsilon)
                 i++
             }
         }

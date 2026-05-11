@@ -33,8 +33,8 @@ fun main(args: Array<String>) {
         // 모델 아키텍처 (유지)
         blockSize = 48,
         numberOfLayers = 2,
-        numberOfHeads = 3,
-        embeddingDimension = 24, // 24 / 3 heads = 8 dim/head
+        numberOfHeads = 1,  // ScalarCausalSelfAttention은 single-head만 지원
+        embeddingDimension = 24,
         dropout = 0.0f,
         bias = true,
         // 옵티마이저

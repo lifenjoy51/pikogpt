@@ -4,23 +4,34 @@ import Value
 import kotlin.math.sqrt
 
 /**
- * Causal Multi-Head Self-Attention (단순화된 구현).
+ * Causal Single-Head Self-Attention (교육용 단순 구현).
  *
- * Transformer의 핵심. 시퀀스의 각 위치가 다른 위치들을 "보면서" 표현을 갱신합니다. 자기회귀
- * 언어 모델에선 미래 위치를 보지 못하도록 causal mask를 적용합니다.
+ * **이 구현은 single-head만 지원합니다** — `GPTConfig.numberOfAttentionHeads=1` 강제.
+ * Multi-head가 필요한 학습은 turbo 백엔드(`turbo/layer/TurboSelfAttention.kt`)를 사용하세요.
  *
- * `forward()`의 본문은 5개 helper의 파이프라인 — 각 단계가 한눈에 보이도록 분해되어 있습니다:
+ * 과거 버전은 `numberOfAttentionHeads`를 받아 attention scale만 head_dim 기준으로 나눴는데
+ * dot product는 full embedding dim에서 수행 — multi-head로 보이지만 실제로는 head split 없는
+ * single-head + 잘못된 scale이었습니다. 이를 정정해 명시적으로 single-head로만 동작.
+ *
+ * 시퀀스의 각 위치가 다른 위치들을 "보면서" 표현을 갱신. 자기회귀 언어 모델에선 미래 위치를
+ * 보지 못하도록 causal mask 적용.
+ *
+ * `forward()`는 5개 helper의 파이프라인:
  *   1. [projectQkv]            — Q, K, V 행렬 생성
- *   2. [attentionScores]       — scaled dot-product + causal mask
+ *   2. [attentionScores]       — scaled dot-product + causal mask (scale = 1/√embd)
  *   3. [Matrix.softmaxRows]    — row-wise softmax (수치 안정화 max-trick 포함)
  *   4. [weightedSum]           — attention 가중치와 V의 가중 합
  *   5. [outputAndDropout]      — 출력 프로젝션 + dropout
  *
- * @param modelConfig GPT 모델 설정 (어텐션 헤드 수, 임베딩 차원 등)
+ * @param modelConfig GPT 모델 설정 (numberOfAttentionHeads must be 1)
  */
 class ScalarCausalSelfAttention(private val modelConfig: GPTConfig) {
-    /** 각 어텐션 헤드의 차원 (embedding_dim / num_heads). */
-    private val attentionHeadDimension = modelConfig.embeddingDimension / modelConfig.numberOfAttentionHeads
+    init {
+        require(modelConfig.numberOfAttentionHeads == 1) {
+            "ScalarCausalSelfAttention은 single-head만 지원합니다 (numberOfAttentionHeads=1 필수). " +
+                "현재: ${modelConfig.numberOfAttentionHeads}. Multi-head는 turbo 백엔드 사용."
+        }
+    }
 
     private val queryProjection = ScalarLinear(modelConfig.embeddingDimension, modelConfig.embeddingDimension, modelConfig.useBias)
     private val keyProjection = ScalarLinear(modelConfig.embeddingDimension, modelConfig.embeddingDimension, modelConfig.useBias)
@@ -79,7 +90,8 @@ class ScalarCausalSelfAttention(private val modelConfig: GPTConfig) {
      */
     private fun attentionScores(queries: Matrix, keys: Matrix): Matrix {
         val tokenCount = queries.rows
-        val attentionScale = Value(1.0f / sqrt(attentionHeadDimension.toFloat()))
+        // Single-head이므로 dot product 차원 = embeddingDimension. scale = 1/√embd.
+        val attentionScale = Value(1.0f / sqrt(modelConfig.embeddingDimension.toFloat()))
 
         return Matrix.fromArray(Array(tokenCount) { queryIndex ->
             Array(tokenCount) { keyIndex ->
