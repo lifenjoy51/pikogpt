@@ -30,15 +30,18 @@ fun main(args: Array<String>) = runBlocking {
 
     val config = SampleConfig(
         modelDirectoryPath = ckptPath,
-        numberOfSamples = 2,
-        maximumNewTokens = 30,
+        numberOfSamples = 1,
+        maximumNewTokens = 15,
         samplingTemperature = 0.8f,
         topKFilteringSize = 20,
+        topProbabilityThreshold = 1.0f,   // nucleus off (default)
+        repetitionPenalty = 1.0f,         // off (default)
     )
     val sampler = ScalarSampler(config)
 
-    // 알파벳 학습 모델용 짧은 프롬프트.
-    val prompts = listOf("a", "the", "the cat", "abc")
+    // wordstart-prefix 학습 검증: a~z 단일 글자 프롬프트로 첫 글자 conditioning 확인.
+    // BOS/EOS 데이터에선 <|bos|>+letter로 "새 단어 시작" 컨텍스트를 줌 (CharBPE가 longest-match로 인식).
+    val prompts = ('a'..'z').map { "<|bos|>$it" }
 
     for (prompt in prompts) {
         println("\n=== prompt: '$prompt' ===")

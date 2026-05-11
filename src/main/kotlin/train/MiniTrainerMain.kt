@@ -28,25 +28,25 @@ package train
 fun main() {
     val config = TrainConfig(
         // I/O
-        dataPath = "data/alphabet",
+        dataPath = "data/wordstart-4prefix",
         modelDir = "model",
         expName = "main",
 
         // 미니배치
         gradientAccumulationSteps = 1,
         batchSize = 16,
-        blockSize = 16,
+        blockSize = 8,
 
-        // 모델 (가장 작은 사이즈 — 빠른 학습 + 알파벳 패턴 학습 가능)
+        // 모델 (16k params: 16·4·2 옵션 — heads=2 일관성, embd=16)
         embeddingDimension = 8,
-        numberOfLayers = 1,
-        numberOfHeads = 2,
+        numberOfLayers = 4,
+        numberOfHeads = 1,
         bias = true,
         dropout = 0.1f,
 
         // 옵티마이저
         learningRate = 1.0e-3f,
-        maxIters = 1000,
+        maxIters = 6000,
         weightDecay = 0.01f,
         gradClip = 1.0f,
 
@@ -57,7 +57,7 @@ fun main() {
         decayLr = true,
 
         // 평가/체크포인트
-        evalIntervalRatio = 0.1f,   // 매 100 iter eval
+        evalIntervalRatio = 0.1667f,   // 매 1000 iter eval (heads=1 비교용)
         evalIters = 5,
         logInterval = 50,
         alwaysSaveCheckpoint = true,
