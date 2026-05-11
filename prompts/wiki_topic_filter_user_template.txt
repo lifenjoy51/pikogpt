@@ -1,0 +1,4 @@
+Decide keep/drop for each of the following SimpleWiki titles per the system rules.
+Return JSONL with the same `id` ordering, one JSON object per line, no other text.
+
+{BATCH_JSON}
