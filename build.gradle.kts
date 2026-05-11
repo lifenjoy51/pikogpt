@@ -91,7 +91,13 @@ tasks.register<JavaExec>("runMiniTrainer") {
     description = "Run MiniTrainerMain — Scalar 백엔드 quickstart 학습 (data/alphabet, ~10분)"
     mainClass.set("train.MiniTrainerMainKt")
     classpath = sourceSets.main.get().runtimeClasspath
-    jvmArgs = listOf("-Xmx2g", "--add-modules=jdk.incubator.vector", "-XX:+AlwaysPreTouch")
+    jvmArgs = listOf(
+        "-Xmx2g",
+        "--add-modules=jdk.incubator.vector",
+        "-XX:+AlwaysPreTouch",
+        "-XX:ActiveProcessorCount=8",
+        "-Djava.util.concurrent.ForkJoinPool.common.parallelism=8",
+    )
 }
 
 tasks.register<JavaExec>("runTinyHelenTrain") {
@@ -305,6 +311,19 @@ tasks.register<JavaExec>("runTinyHelenTrainTurbo") {
     jvmArgs = listOf("-Xmx4g", "--add-modules=jdk.incubator.vector", "-XX:+AlwaysPreTouch")
 }
 
+tasks.register<JavaExec>("runWordStart4PrefixTrainTurbo") {
+    description = "Run WordStart4PrefixTrainTurbo (32k 파라미터, turbo 백엔드, 8코어)"
+    mainClass.set("train.experiments.WordStart4PrefixTrainTurboKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf(
+        "-Xmx4g",
+        "--add-modules=jdk.incubator.vector",
+        "-XX:+AlwaysPreTouch",
+        "-XX:ActiveProcessorCount=8",
+        "-Djava.util.concurrent.ForkJoinPool.common.parallelism=8",
+    )
+}
+
 tasks.register<JavaExec>("runTinyHelenSampleTurbo") {
     description = "Run TinyHelenSampleTurbo (model/<dataset>/turbo/ 최신 체크포인트 자동 샘플링)"
     mainClass.set("sample.TinyHelenSampleTurboKt")
@@ -355,14 +374,14 @@ tasks.register<JavaExec>("runCcmcV5QaPrep") {
 }
 
 tasks.register<JavaExec>("runCcmcV5QaItTrainTurbo") {
-    description = "v5-qa-4k IT finetune turbo (3M base v0022). workers=8 (ForkJoinPool common parallelism)"
+    description = "v5-qa-4k IT finetune turbo (3M base v0022). workers=4 (ForkJoinPool common parallelism)"
     mainClass.set("train.experiments.CcmcV5QaItTrainTurboKt")
     classpath = sourceSets.main.get().runtimeClasspath
     jvmArgs = listOf(
         "-Xmx8g",
         "--add-modules=jdk.incubator.vector",
         "-XX:+AlwaysPreTouch",
-        "-Djava.util.concurrent.ForkJoinPool.common.parallelism=8",
+        "-Djava.util.concurrent.ForkJoinPool.common.parallelism=4",
     )
 }
 
