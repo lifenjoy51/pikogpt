@@ -37,6 +37,12 @@ class CharBPE(
      * useWordPreTokenize와 동시에 사용 시 의도가 모호하므로 둘 중 하나만 권장.
      */
     private val splitSpaceAsToken: Boolean = false,
+    /**
+     * BPE merge 결과 토큰의 최대 char 길이. null이면 무제한(표준 BPE).
+     * 예: 2로 설정하면 bigram(`ar`, `er` 등)까지만 merge하고 그 이상은 skip.
+     * 작은 값 + 작은 vocab 조합으로 "char + 자주 나오는 bigram만" 학습하는 단순 토크나이저 구성.
+     */
+    private val maxTokenLength: Int? = null,
 ) {
     /** 토큰 문자열 → ID 매핑. 학습/복원 시 채워짐. */
     private val tokenToId = mutableMapOf<String, Int>()
@@ -55,11 +61,11 @@ class CharBPE(
         log("BPE 학습 시작 (목표 어휘 크기: $maxVocabSize, 텍스트 길이: ${text.length})")
         val startTime = System.currentTimeMillis()
 
-        // 1) 정규화 + 특수 토큰 주변 공백 추가
-        var processedText = if (lowercase) text.lowercase() else text
+        // 1) 정규화 + 특수 토큰 vocab 등록 (id 0~). tokenize()가 longest-match로 단위 인식하므로
+        //    텍스트에 공백을 추가하지 않는다 — 공백 padding은 ` b`, `'  '` 같은 artifact를 만든다.
+        val processedText = if (lowercase) text.lowercase() else text
         specialTokens.forEachIndexed { index, token ->
             tokenToId[token] = index
-            processedText = processedText.replace(token, " $token ")
         }
         log("예약된 특수 토큰: $specialTokens")
 
@@ -103,7 +109,15 @@ class CharBPE(
                 log("더 이상 병합할 쌍이 없습니다. (반복: $iteration, 어휘 크기: ${tokenToId.size})")
                 break
             }
-            val bestPair = selectBestPair(pairs)
+            // maxTokenLength 제한이 있으면 너무 긴 merge 후보 제외.
+            val candidatePairs = if (maxTokenLength != null) {
+                pairs.filterKeys { it.toMergedToken().length <= maxTokenLength }
+            } else pairs
+            if (candidatePairs.isEmpty()) {
+                log("더 이상 maxTokenLength=$maxTokenLength 이하 merge 후보 없음. (어휘 크기: ${tokenToId.size})")
+                break
+            }
+            val bestPair = selectBestPair(candidatePairs)
             val mergedToken = bestPair.toMergedToken()
 
             tokenToId[mergedToken] = tokenToId.size
@@ -129,10 +143,8 @@ class CharBPE(
     fun encode(text: String): List<Int> {
         if (text.isEmpty()) return emptyList()
 
-        var processedText = if (lowercase) text.lowercase() else text
-        specialTokens.forEach { token ->
-            processedText = processedText.replace(token, " $token ")
-        }
+        // train()과 동일하게 공백 padding 없이 처리. tokenize()가 special token을 longest-match로 인식.
+        val processedText = if (lowercase) text.lowercase() else text
 
         // 학습과 같은 방식으로 단어 분할 + 초기 토큰화
         val rawWords = splitToWords(processedText)

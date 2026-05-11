@@ -296,6 +296,8 @@ class ScalarSampler(private val samplingConfiguration: SampleConfig) {
     ): List<Int> = GradContext.noGrad {
         val generatedSequence = contextTokenIds.toMutableList()
         var currentContext = contextTokenIds.toIntArray()
+        val topP = samplingConfiguration.topProbabilityThreshold
+        val repPen = samplingConfiguration.repetitionPenalty
 
         repeat(maxNewTokens) { stepIndex ->
             // 진행 상황 로깅 (10% 간격으로)
@@ -313,24 +315,50 @@ class ScalarSampler(private val samplingConfiguration: SampleConfig) {
             val outputLogits = textGenerationModel.forward(currentContext)
             val finalPositionLogits = outputLogits.lastRow() // 마지막 위치의 로짓 (다음 토큰 예측용)
 
-            // 온도 스케일링 적용 (높은 온도는 더 다양한 선택)
-            val temperatureScaledLogits = finalPositionLogits.map { logitValue ->
-                Value(logitValue.scalarValue / temperature)
-            }.toTypedArray()
-
-            // Top-K 필터링 적용 (가장 가능성 높은 K개만 유지)
-            val filteredLogits = if (topKSize > 0 && topKSize < vocabularySize) {
-                applyTopKFiltering(temperatureScaledLogits, topKSize)
-            } else {
-                temperatureScaledLogits
+            // 1. Repetition penalty: 이미 등장한 토큰의 logit을 (양수면 /repPen, 음수면 *repPen)
+            val rawLogits = finalPositionLogits.map { it.scalarValue }.toFloatArray()
+            if (repPen > 1.0f) {
+                val seen = currentContext.toHashSet()
+                for (tid in seen) {
+                    if (tid < rawLogits.size) {
+                        rawLogits[tid] = if (rawLogits[tid] >= 0) rawLogits[tid] / repPen else rawLogits[tid] * repPen
+                    }
+                }
             }
 
-            // Softmax 확률 분포 계산 및 토큰 샘플링
-            val logitsData = arrayOf(filteredLogits)
-            val logits = gpt.Matrix(logitsData)
-            val softmaxResult = logits.softmaxRows()
-            val tokenProbabilities = softmaxResult.get(0)
-                .map { it.scalarValue }.toFloatArray()
+            // 2. 온도 스케일링
+            val tempLogits = if (temperature > 0f) FloatArray(rawLogits.size) { rawLogits[it] / temperature } else rawLogits
+
+            // 3. Top-K
+            val afterTopK = if (topKSize > 0 && topKSize < vocabularySize) {
+                val sortedIndices = tempLogits.indices.sortedByDescending { tempLogits[it] }
+                val topKSet = sortedIndices.take(topKSize).toHashSet()
+                FloatArray(tempLogits.size) { if (it in topKSet) tempLogits[it] else Float.NEGATIVE_INFINITY }
+            } else tempLogits
+
+            // 4. Softmax (수치 안정 max-shift)
+            val maxLogit = afterTopK.max()
+            val expLogits = FloatArray(afterTopK.size) { kotlin.math.exp((afterTopK[it] - maxLogit).toDouble()).toFloat() }
+            val sumExp = expLogits.sum()
+            val tokenProbabilities = FloatArray(expLogits.size) { expLogits[it] / sumExp }
+
+            // 5. Top-P (nucleus): 누적확률이 topP 도달할 때까지만 유지
+            if (topP > 0f && topP < 1.0f) {
+                val sortedDesc = tokenProbabilities.indices.sortedByDescending { tokenProbabilities[it] }
+                var cum = 0f
+                val keep = HashSet<Int>()
+                for (idx in sortedDesc) {
+                    keep.add(idx)
+                    cum += tokenProbabilities[idx]
+                    if (cum >= topP) break
+                }
+                var renorm = 0f
+                for (i in tokenProbabilities.indices) {
+                    if (i !in keep) tokenProbabilities[i] = 0f
+                    renorm += tokenProbabilities[i]
+                }
+                if (renorm > 0f) for (i in tokenProbabilities.indices) tokenProbabilities[i] /= renorm
+            }
 
             // === 디버깅 정보 출력 ===
             if (stepIndex < 10) { // 처음 10 스텝만 출력

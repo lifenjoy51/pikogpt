@@ -174,7 +174,15 @@ class TurboSampler(
         }
 
         val temp = samplingConfig.samplingTemperature
-        if (temp != 1.0f && temp > 0.0f) {
+        if (temp == 0.0f) {
+            // greedy: argmax만 살리고 나머지 -inf
+            var maxIdx = 0
+            var maxVal = lastLogits[0]
+            for (j in 1 until v) {
+                if (lastLogits[j] > maxVal) { maxVal = lastLogits[j]; maxIdx = j }
+            }
+            for (j in 0 until v) if (j != maxIdx) lastLogits[j] = Float.NEGATIVE_INFINITY
+        } else if (temp != 1.0f) {
             for (j in 0 until v) lastLogits[j] /= temp
         }
 

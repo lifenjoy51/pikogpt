@@ -25,10 +25,13 @@ fun main(args: Array<String>) {
     // cased: 대소문자 보존(lowercase=false). 기본은 lowercase=true 유지.
     val cased = args.any { it.equals("cased", ignoreCase = true) }
     val lowercase = !cased
+    // maxTokenLength=N: BPE merge 결과 토큰의 char 길이 상한. "max-len=2" 같은 형식.
+    val maxTokenLength = args.firstOrNull { it.startsWith("max-len=", ignoreCase = true) }
+        ?.substringAfter('=')?.toIntOrNull()
     if (vocab != null) {
-        BpePrep.run(path, maxVocabSize = vocab, lowercase = lowercase, skipBinOutput = skipBin)
+        BpePrep.run(path, maxVocabSize = vocab, lowercase = lowercase, skipBinOutput = skipBin, maxTokenLength = maxTokenLength)
     } else {
-        BpePrep.run(path, lowercase = lowercase, skipBinOutput = skipBin)
+        BpePrep.run(path, lowercase = lowercase, skipBinOutput = skipBin, maxTokenLength = maxTokenLength)
     }
 }
 
@@ -63,6 +66,8 @@ object BpePrep {
         verbose: Boolean = true,
         /** true면 train.bin/val.bin은 만들지 않고 meta.json만 작성. 큰 코퍼스에서 encode 단계 OOM 회피용. */
         skipBinOutput: Boolean = false,
+        /** BPE merge 결과 토큰의 최대 char 길이. null이면 무제한(표준 BPE). */
+        maxTokenLength: Int? = null,
     ) {
         val dataDir = File(path)
         val trainFile = File(path, "train.txt")
@@ -108,6 +113,7 @@ object BpePrep {
             useWordPreTokenize = useWordPreTokenize,
             standardBpeScoring = true,
             verbose = verbose,
+            maxTokenLength = maxTokenLength,
         )
         bpe.train(trainText)
 

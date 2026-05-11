@@ -8,26 +8,32 @@ import java.io.File
 import turbo.TurboSampler
 
 /**
- * 벡터 체크포인트 + 프롬프트 파일로 커스텀 샘플링.
+ * Turbo 체크포인트 + 프롬프트 파일로 커스텀 샘플링.
  *
- * 사용: `./gradlew runSamplePromptsFromFile --args="<ckpt-dir> <prompts.txt>"`
- *   - ckpt-dir: `checkpoint.json` + `model_weights.bin` + `meta.json` 있는 경로
- *   - prompts.txt: 한 줄에 하나의 프롬프트 (빈 줄 무시)
+ * 사용: `./gradlew runSamplePromptsFromFile --args="<ckpt-dir> <prompts.txt> [with-turn] [--temp=X]"`
+ *   - `<ckpt-dir>`: `checkpoint.json` + `model_weights.bin` + `meta.json` 있는 경로
+ *   - `<prompts.txt>`: 한 줄에 하나의 프롬프트 (빈 줄 무시)
+ *   - `with-turn` (선택): meta.json에 `<|turn|>` 토큰이 있고 instruction-tune 모델처럼 사용자 발화 종료
+ *      신호로 turn 추가가 필요할 때 명시. 기본은 prompt를 **그대로** 모델에 전달 (raw mode).
+ *   - `--temp=X` (선택): single temperature 강제. 미지정 시 default `temps` 적용.
  *
- * 출력은 프롬프트별 샘플을 JSON 비슷한 구조로 stdout에 찍어 다음 단계 리포트 생성에 파이프하기 쉽게.
+ * **중요**: 이전 버전은 `<|turn|>`이 meta에 있으면 자동으로 prompt 끝에 추가했음.
+ * dict/wordstart 같이 `<|turn|>`이 vocab에는 있지만 prompt 직후 추가하면 안 되는 데이터셋에서
+ * 잘못된 input이 모델에 들어가 mode collapse처럼 보이는 현상을 일으켰음. 이 동작은 명시적 옵션화.
  */
 fun main(args: Array<String>) = runBlocking {
-    require(args.size >= 2) { "사용: <ckpt-dir> <prompts.txt>" }
-    val checkpointDir = File(args[0])
-    val promptsFile = File(args[1])
+    require(args.size >= 2) { "사용: <ckpt-dir> <prompts.txt> [with-turn] [--temp=X]" }
+    val tempArg = args.firstOrNull { it.startsWith("--temp=") }?.removePrefix("--temp=")?.toFloatOrNull()
+    val positional = args.filter { !it.startsWith("--") }
+    val checkpointDir = File(positional[0])
+    val promptsFile = File(positional[1])
     require(checkpointDir.exists()) { "ckpt 경로 없음: ${checkpointDir.absolutePath}" }
     require(promptsFile.exists()) { "prompts 파일 없음: ${promptsFile.absolutePath}" }
 
     val prompts = promptsFile.readLines().map { it.trimEnd() }.filter { it.isNotBlank() }
-    println("=== 벡터 백엔드 샘플링 ckpt: ${checkpointDir.absolutePath} ===")
+    println("=== Turbo 백엔드 샘플링 ckpt: ${checkpointDir.absolutePath} ===")
     println("프롬프트 수: ${prompts.size}")
 
-    // meta.json에 <|turn|>이 있으면 그 id를 stop 조건에 자동 추가 → single-turn 응답
     val metaFile = File(checkpointDir, "meta.json")
     val turnId: Int? = if (metaFile.exists()) {
         val parser = Json { ignoreUnknownKeys = true }
@@ -35,35 +41,36 @@ fun main(args: Array<String>) = runBlocking {
         meta.stringToIndex["<|turn|>"]
     } else null
     val stopIds = mutableListOf(0).also { if (turnId != null) it.add(turnId) }
-    if (turnId != null) println("stop tokens: EOS=0, <|turn|>=$turnId (single-turn 응답 모드)")
+    if (turnId != null) println("stop tokens: EOS=0, <|turn|>=$turnId")
     else println("stop tokens: EOS=0")
 
-    val config = SampleConfig(
-        modelDirectoryPath = checkpointDir.absolutePath,
-        numberOfSamples = 2,
-        maximumNewTokens = 120,
-        samplingTemperature = 0.0f,
-        topKFilteringSize = 40,
-        topProbabilityThreshold = 0.95f,  // top-k 위에 nucleus 추가 — 보수적 다양성 컷
-        repetitionPenalty = 1.15f,         // 반복 차단 (mode collapse 완화)
-        stopTokenIds = stopIds,
-    )
-    val sampler = TurboSampler(config)
+    // appendTurn은 **명시적 with-turn 옵션이 있을 때만** 활성. 기본은 raw prompt 그대로.
+    val appendTurn = turnId != null && positional.getOrNull(2) == "with-turn"
+    if (appendTurn) println("with-turn 모드: prompt 끝에 <|turn|> 토큰 자동 추가")
+    else println("raw 모드: prompt를 그대로 모델에 전달 (with-turn 옵션으로 활성화)")
 
-    // turn 토큰이 있는 모델에서는 prompt를 "사용자 turn 종료"로 보고 다음 turn(=응답)을 생성하도록
-    // prompt 끝에 <|turn|>을 자동 추가. 이렇게 안 하면 따옴표로 닫힌 prompt가 곧바로
-    // <|turn|>을 예측해 빈 응답이 나옴.
-    // dict 같은 turn 없는 모델은 args[2]="no-turn"으로 비활성화.
-    val appendTurn = turnId != null && args.getOrNull(2) != "no-turn"
+    val temps: List<Float> = if (tempArg != null) listOf(tempArg) else listOf(0.0f, 0.5f, 0.99f)
+    println("temperatures=$temps")
 
-    for (prompt in prompts) {
-        println("\n=== Prompt: $prompt ===")
-        val promptIdsBase = sampler.encodeText(prompt).toMutableList()
-        if (appendTurn) promptIdsBase.add(turnId!!)
-        val numSamples = config.numberOfSamples
-        for (i in 0 until numSamples) {
+    for (temp in temps) {
+        val config = SampleConfig(
+            modelDirectoryPath = checkpointDir.absolutePath,
+            numberOfSamples = 1,
+            maximumNewTokens = 120,
+            samplingTemperature = temp,
+            topKFilteringSize = 40,
+            topProbabilityThreshold = 0.95f,
+            repetitionPenalty = 1.15f,
+            stopTokenIds = stopIds,
+        )
+        val sampler = TurboSampler(config)
+        println("\n##### temperature=$temp #####")
+        for (prompt in prompts) {
+            println("\n=== Prompt: $prompt ===")
+            val promptIdsBase = sampler.encodeText(prompt).toMutableList()
+            if (appendTurn) promptIdsBase.add(turnId!!)
             val (_, response) = sampler.continueOne(promptIdsBase.toIntArray())
-            println("[샘플 ${i + 1}]")
+            println("[샘플 1]")
             println(response.trim())
         }
     }
