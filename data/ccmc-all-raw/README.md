@@ -16,6 +16,7 @@
 | `stories.txt` | 41619 | 1 line = 1 short story (5-10 문장). DeepSeek v4 Pro+Flash 합성. dedup 적용. | v4_tinystories 9개 raw.jsonl (41619 입력) |
 | `dialogues.txt` | 25512 | 1 line = 1 Q/A 또는 다턴 대화. turn 경계는 ` <\|turn\|> `. | v2_pro qa축 pair별 분리 (10815) + v5_qa_dialogues (14697) |
 | `wiki.txt` | 3940 | 1 line = 1 wiki-style 5세 explainer. **표제어 보존 형식**: `title\n\nbody` (literal `\n`, external-all-raw/wiki.txt와 동일). 외부 SimpleWiki 의존 없는 합성본. | SimpleWiki 8942 제목 → DeepSeek v4 Flash로 5세 적합도 필터(3940 keep) → 본문 통째 입력해 5세 explainer 합성 (Flash) |
+| `lemma_anchors.tsv` | 3288 | 5세 적합 lemma anchor 통합본 (lemma + category + source). v6 합성용 입력. TSV 헤더: `lemma\tcategory\tsource` | v2_pro/v3_extra lemma 1826 + lemma-anchor-filter 신규 1462 (LLM 판정 1195 + 사용자 수동 267). 발굴/판정 흐름은 `data/lemma-anchor-filter/` 참조 |
 
 ## 정규화 공통 (lemma_sentences / stories / dialogues)
 
