@@ -1,4 +1,4 @@
-# CCMC-all 모델 진화 — 전체 통합 (2026-05-08 → 2026-05-14)
+# CCMC-all 모델 진화 — 전체 통합 (2026-05-08 → 2026-05-15)
 
 `data/ccmc-all/` 합본 코퍼스 위에서 점진적으로 학습한 **10개 모델**의 통합 보고. vocab 크기 ablation부터 1M 모델 + vocab 확장까지 cycle별 변화를 한 자리에 정리.
 
@@ -50,9 +50,9 @@ data/ccmc-all/{train,val}.txt  ←  스크립트 `scripts/build_ccmc_all.py`로 
 | 2 | v2048-v6 | 64 | 7 | 1 | 2048 | ✓ | 485,184 | 150,000 | 2.852 | **1.066** | 2.806 | 11h 51m |
 | 2 | v2048-v7 | 64 | 7 | 2 | 2048 | ✓ | 485,184 | 183,000 | 2.603 | **0.960** | 2.806 | ~6h |
 | 2 | v2048-v8 | 96 | 7 | 3 | 2048 | ✓ | 985,824 | 142,400 | 2.099 | **0.775** | 2.806 | 17h 23m |
-| 3 ◀ | **v4096-v1** | 96 | 6 | 3 | **4096** | ✓ | 1,070,592 | 16,800★ | 2.725★ | **0.902★** | 2.752 | ~2h+ (진행 중) |
+| 3 | **v4096-v1** | 96 | 6 | 3 | **4096** | ✓ | 1,070,592 | 73,200 | 2.330 | **0.771** | 2.752 | ~12.2h (best) / 15.3h (총) |
 
-★ v4096-v1은 진행 중. 표 작성 시점 best ckpt는 v0016 (iter 16,800, val 2.7254). maxIters 120k 중 14% 진행. 본 보고서의 최종 수치는 학습 종료 후 갱신 필요.
+v4096-v1은 사용자 중단(iter 87,500, 종료 시점 평균 2.42)으로 종료. Best ckpt는 **v0063 (iter 73,200, val 2.3302, bpc 0.771)** — v8 best(0.775)에 미세 우위. patience=20 도달 직전(12 eval 미갱신)에 다음 cycle(v10) 준비를 위해 종료.
 
 공통 설정 (별도 언급 없으면): `blockSize=64`, `batchSize=8`, `evalIntervalRatio=0.01`, `warmupRatio=0.05`, `weightDecay=0.01`, `gradClip=1.0`, `beta1=0.9`, `minimumLearningRate=1e-5`, `learningRateDecayRatio=0.95`.
 
@@ -64,7 +64,7 @@ Cycle별 핵심 hyperparam 차이:
 | v2048-v6 | 3e-4 | 0.95 | 0.1 | 4 | 300k | 20 |
 | v2048-v7 | 3e-4 | 0.95 | 0.1 | 4 | 300k | 20 |
 | v2048-v8 | **2e-4** | **0.99** | **0.05** | **8** (eff batch 64) | 160k | 20 |
-| v4096-v1 | 2e-4 | 0.99 | 0.05 | 8 | **120k** | 20 |
+| v4096-v1 | 2e-4 | 0.99 | 0.05 | 8 | 120k | 20 (12/20 도달 시 중단) |
 
 ## 4. bpc 진화 추이
 
@@ -81,9 +81,8 @@ v1024 (111k params)    1.273 │ ▓▓▓▓▓▓
 v2048-v6 (485k, 7파일)  1.066 │ ▓▓▓▓▓
 v2048   (300k baseline) 1.035 │ ▓▓▓▓▓
 v2048-v7 (485k +BOS/EOS) 0.960 │ ▓▓▓▓▓
-v4096-v1 @ 16.8k (1M)   0.902 │ ▓▓▓▓
 v2048-v8 (986k 1M)      0.775 │ ▓▓▓▓
-v4096-v1 final (예상)    ~0.65 │ ▓▓▓
+v4096-v1 (1M, vocab×2)  0.771 │ ▓▓▓▓
 ```
 
 Phase별로 가장 의미 있는 단일 변경:
@@ -95,7 +94,7 @@ Phase별로 가장 의미 있는 단일 변경:
 | v2048 → v2048-v6 | + 3 axes + lemma split + width 48→64 | **+0.031 (후퇴)** | 데이터/모델 단순 확장은 효과 없음 |
 | v6 → v2048-v7 | + BOS/EOS 래핑 + heads 1→2 | **-0.106** | record boundary 학습 결정적 |
 | v7 → v2048-v8 | embd 64→96, heads 2→3, lr/dropout 튜닝, gradAccum 4→8 | **-0.185** | 1M scale + HP 정교화 |
-| v8 → v4096-v1 (진행 중) | vocab 2048 → 4096, depth 7→6 | -0.13 예상 | vocab 확장으로 rare entity 표현 |
+| v8 → v4096-v1 | vocab 2048 → 4096, depth 7→6 | **-0.004 (실질 동등)** | vocab 확장은 정량 효과 미미, 정성 entity 표현은 강화 |
 
 ## 5. Phase별 정성 평가 (T=0.5, best ckpt)
 
@@ -112,7 +111,7 @@ Phase별로 가장 의미 있는 단일 변경:
 | v6 | v0052 | `s are called a mouse. they have more than thick clays, and some have the same number. in total, there are three bones that make it very strong.` |
 | v7 | v0064 | `s are also a big elephant.` |
 | v8 | v0090 | `s are both small, but some are big.` |
-| v9 | v0016 | `s a long time ago. it has a long, thin, flat tail and a long tail. you can find it in the park or at night. it is a big piece of wood that looks like a star.` |
+| v9 | v0063 | `is very smart. i like to use my smart brain every day.` |
 
 ### Prompt: `i went to the`
 
@@ -125,7 +124,7 @@ Phase별로 가장 의미 있는 단일 변경:
 | v6 | v0052 | `park and saw a big mountain. it was very tall and bright. i like to see how birds fly in the park. my friend said we can see the green trees.` |
 | v7 | v0064 | `park to see a big city. i saw a new city with many trees and green trees. my dad said we can see the old calendar in the park.` |
 | v8 | v0090 | `park and saw a big red ball. he wore it every day after school.` |
-| v9 | v0016 | `beach with her family.` |
+| v9 | v0063 | `park and saw a big river. it was a very old river in the country of china. he built tall buildings with big stone buildings. the river was so long that he could not see many houses.` |
 
 ### Prompt: `do you like`
 
@@ -138,18 +137,18 @@ Phase별로 가장 의미 있는 단일 변경:
 | v6 | v0052 | `to write a new song. first, i write the letter on my paper. then, she writes a story about her cat. last, we both think it is nice.` |
 | v7 | v0064 | `to cook a big meal for me.` |
 | v8 | v0090 | `to ride a bike for fun.` |
-| v9 | v0016 | `a big red ball called a pile. people use it to make a place look nice and can see the world.` |
+| v9 | v0063 | `to swim in the pond. first, it walks around the water. then, it swam away. last, it swims away from its home.` |
 
 ### 정성 진화 요약 (척도별)
 
-| 척도 | v256 | v800 | v1024 | v6 | v7 | v8 | v9 (진행) |
+| 척도 | v256 | v800 | v1024 | v6 | v7 | v8 | v9 |
 |---|---|---|---|---|---|---|---|
 | 단어 인식 | 깨진 글자 다수 | 일부 깨짐 | 거의 영어 | 깨끗 | 깨끗 | 깨끗 | 깨끗 |
 | 문법 | 단편 phrase | 짧은 문장 | 자연 문장 | 자연 문장 | 자연 문장 | 자연 영어 | 자연 영어 |
-| 응답 길이 | 길고 nonsense | 중간 | 중간~긴 | 긴 wiki 톤 | 짧고 정확 | 매우 짧음 (1 sentence) | adaptive |
-| EOS 학습 | 약함 | 부분 | 부분 | 부분 | **강함** | 강함 | 강함 |
-| 의미 일관성 | 없음 | 약함 | 부분 | 부분 | 양호 | **양호** | 부분 (drift 있음) |
-| 사실 정확도 | — | 무관 | 무관 | 부분 | 부분 | **부분 + 일부 오류** | drift + 오류 |
+| 응답 길이 | 길고 nonsense | 중간 | 중간~긴 | 긴 wiki 톤 | 짧고 정확 | 매우 짧음 (1 sentence) | **양극화 (1문장 ↔ wiki 장문)** |
+| EOS 학습 | 약함 | 부분 | 부분 | 부분 | **강함** | 강함 | **과도** (lemma 영향, 단문 prior) |
+| 의미 일관성 | 없음 | 약함 | 부분 | 부분 | 양호 | **양호** | 부분 (entity drift 있음) |
+| 사실 정확도 | — | 무관 | 무관 | 부분 | 부분 | **부분 + 일부 오류** | 부분 + 환각 (`khalabra`, `pajabo`) |
 
 ## 6. Phase별 핵심 발견
 
@@ -176,14 +175,15 @@ Phase별로 가장 의미 있는 단일 변경:
 - depth 7 유지하며 width 1.5×. params 2배(485k → 986k).
 - 더 작은 lr + 더 큰 effective batch + 더 약한 dropout = 큰 모델 + 충분한 데이터에 맞춘 안정화. β₂ 0.99로 Adam 2차 모멘트 smoothing 강화.
 
-### Phase 3 (vocab 확장, 진행 중)
+### Phase 3 (vocab 확장)
 
 #### v9 = v4096-v1 (1.07M, vocab 4096, L=6)
 - vocab 2배(2048 → 4096). depth 1 축소(7 → 6)로 params 유지.
 - token emb 비중 19.9% → 36.7%로 회복 (v8은 1M 모델 대비 vocab 작아 transformer 비중 과대).
-- iter 16.8k(maxIters 14%)에서 이미 **bpc 0.902** — v7 final(0.960) 추월.
-- 정성: `i went to the beach with her family.` 같은 매우 자연스러운 짧은 응답 등장. 하지만 entity drift는 여전 (`the cat` → 막대기/별/돌).
-- 예상 final bpc 0.65~0.70 (v8 vs v9 추세선 추정).
+- best: **iter 73,200, val 2.3302, bpc 0.771** (v0063). v8 best(0.775)와 사실상 동일 — vocab 확장의 정량 효과 미미.
+- 학습 곡선: iter 16.8k에서 이미 bpc 0.902 (v7 final 추월), iter 49.2k에서 bpc 0.778, iter 73.2k에서 최종 best. 그 후 plateau, 12 eval 미갱신.
+- 정성 강화: wiki 톤 자연 문장 형성 ("hello → a small city in the southern europe..."), entity 묘사 풍부 ("china/colombia/europe" 등장). 하지만 단답 prior 강함 (`do you like` → 한 문장으로 끝), entity drift도 잔존 (cat/dog → 동일 wiki 묘사 템플릿 재활용).
+- **bpc 정체의 진단**: 단순 vocab 확장은 EOS 학습 신호의 비대칭(lemma 라인 EOS/chunk 6.5× vs 다른 소스 1×)을 해결 못 함. 다음 cycle에서 lemma stream 가중치 축소로 시도.
 
 ## 7. 학습 곡선 — Phase 2/3 상세
 
@@ -202,20 +202,22 @@ Phase별로 가장 의미 있는 단일 변경:
 - 이후 plateau, patience=20 도달로 종료. v0101이 마지막 ckpt (iter 160k).
 - 17h 23m. 1M 모델 + eff batch 64 + lr 2e-4의 가장 안정적인 학습 곡선.
 
-### v9 학습 진척 (진행 중, 2026-05-14)
+### v9 학습 진척 (2026-05-14 → 05-15)
 ```
 iter   1,200  val 6.210  bpc 2.054  v0002
 iter   2,400  val 4.778  bpc 1.581  v0003
 iter   4,800  val 3.887  bpc 1.286  v0006
-iter   6,000  val 3.523  bpc 1.166  v0007
 iter   7,200  val 3.400  bpc 1.125  v0008
 iter  10,800  val 2.979  bpc 0.986  v0011
-iter  12,000  val 2.965  bpc 0.981  v0012
-iter  16,800  val 2.725  bpc 0.902  v0016 ← 현재 best
+iter  16,800  val 2.725  bpc 0.902  v0016
+iter  49,200  val 2.345  bpc 0.776  v0043
+iter  73,200  val 2.330  bpc 0.771  v0063 ← final best
+iter  87,500  (사용자 중단, plateau 12/20)
 ```
-- 6시간 안에 v7 final 추월. iter rate ~0.61 s/iter.
-- maxIters 120k 완주 예상 시간: ~18h (학습 시작 기준).
-- early stop 가능성: v8 best 88% 지점 패턴 따라간다면 iter ~105k에서 best.
+- 6시간 안에 v7 final 추월, 12시간에 best 도달.
+- iter rate 0.61 s/iter (8 워커) → 0.59 s/iter (4 워커 resume 후).
+- best 갱신: v0008 → ... → v0043 → v0063 (총 20+ 차례). v0043 이후 17 eval 정체 후 v0063에서 1회 추가 갱신, 그 후 다시 12 eval plateau.
+- 최종 bpc 0.771이 v8 0.775 대비 미미한 개선 — vocab 확장은 추가 cycle 없이는 saturation 도달.
 
 ## 8. 비용 (wall-clock, ForkJoinPool 8 workers, JDK 21)
 
@@ -226,7 +228,7 @@ iter  16,800  val 2.725  bpc 0.902  v0016 ← 현재 best
 | v6 | 485k | ~0.14 s/iter | 150k | 11h 51m |
 | v7 | 485k | ~0.14 s/iter | 183k | ~6h (best까지) |
 | v8 | 986k | ~0.39 s/iter | 142k | 17h 23m |
-| v9 | 1,070k | ~0.61 s/iter | 진행 중 | 진행 중 (예상 ~18h) |
+| v9 | 1,070k | ~0.61 s/iter | 73,200 | 12.2h (best) / 15.3h (총) |
 
 vocab 2배 + params 8% 증가 + depth 1 감소가 iter rate ~56% 증가로 나타남. softmax + tied lm head matmul 비용이 vocab에 선형으로 들어간다.
 
@@ -240,17 +242,23 @@ vocab 2배 + params 8% 증가 + depth 1 감소가 iter rate ~56% 증가로 나�
 
 ## 10. 다음 실험 방향
 
-진행 중인 v4096-v1 종료 후 검토:
+v9 종료 분석으로부터 도출된 다음 cycle:
 
 | 방향 | 변경 | 기대 |
 |---|---|---|
-| **a)** v9 완주 + best 분석 | (현재 진행) | vocab 4096 효과 정량화 |
-| b) 데이터 확장 | ccmc-all-raw에 v6 axes (recent_event, conditional, etc.) 추가 → tokens 10M+ 목표 | under-data 해소, bpc 0.65 미만 |
+| **v10 (LemmaW10, 준비됨)** | v9 동일 모델 + lemma stream을 weighted source loader로 secondaryProb=0.1 sampling. val도 동일 분포. | EOS/chunk 1.75 → ~1.18로 균형 → 단답 prior 완화 + 장문 generation 강화. bpc는 동등 or 약간 개선 예상 |
+| b) 데이터 확장 | ccmc-all-raw에 신규 axes 추가 → tokens 10M+ 목표 | under-data 해소, bpc 0.7 미만 |
 | c) depth 늘리기 | embd 96 + L 8 + vocab 2048 (~1.1M, depth ↑) | depth vs width trade-off 측정 |
 | d) RoPE / SwiGLU / GQA | turbo 옵션 활용 (v2048 동일 코퍼스) | architecture ablation |
 | e) Chinchilla 가까운 모델 | params 300k + tokens 6M (= 20:1) → bpc 비교 | 모델 vs 데이터 균형 검증 |
 
-권장 순서: **a → b → c**. d/e는 별도 ablation track.
+권장 순서: **v10 → b → c**. d/e는 별도 ablation track.
+
+### v10 핵심 변경 (`CcmcAllV4096M1LemmaW10TrainTurbo`)
+- `data/ccmc-all-v4096-v2/` — lemma/other 분리 BPE (train_lemma/train_other/val_lemma/val_other 4-stream)
+- `train.WeightedSourceDataLoader` — batch sequence별 베르누이 draw (p_lemma=0.1)
+- `TurboTrainConfig.lemmaSamplingRatio: Float?` 옵션 추가
+- v9와 모든 hyperparam 동일 (model 1.07M, lr 2e-4, β₂ 0.99, dropout 0.05, gradAccum 8, blockSize 64, maxIters 120k)
 
 ## 진입점 및 재현
 
@@ -263,10 +271,18 @@ python3 scripts/build_ccmc_all.py
 ./gradlew runCcmcAllV2048WiderTrainTurbo              # v6
 ./gradlew runCcmcAllV2048WiderH2TrainTurbo            # v7
 ./gradlew runCcmcAllV2048M1TrainTurbo                 # v8
-./gradlew runCcmcAllV4096M1TrainTurbo                 # v9 (현재)
+./gradlew runCcmcAllV4096M1TrainTurbo                 # v9
+./gradlew runCcmcAllV4096M1LemmaW10TrainTurbo         # v10 (lemma stream weight 0.1)
 
 # Resume
 ./gradlew runCcmcAllV4096M1TrainTurbo --args="resume"
+./gradlew runCcmcAllV4096M1LemmaW10TrainTurbo --args="resume"
+```
+
+데이터 prep:
+```bash
+python3 scripts/build_ccmc_all.py        # 단일 합본 (v9 이전)
+python3 scripts/build_ccmc_all_split.py  # lemma/other 분리 (v10)
 ```
 
 체크포인트: `model/ccmc-all-{vocab}{-cycle}/main/v{NNNN}/`. 매 evalIntervalRatio(=0.01)마다 저장.
@@ -274,7 +290,7 @@ python3 scripts/build_ccmc_all.py
 샘플링:
 ```bash
 ./gradlew runSamplePromptsFromFile \
-    --args="model/ccmc-all-v4096-v1/main/v0016 prompts/ccmc_15.txt --temp=0.5"
+    --args="model/ccmc-all-v4096-v1/main/v0063 prompts/ccmc_15.txt"
 ```
 
 ## 참고

@@ -9,6 +9,7 @@ import kotlinx.serialization.json.Json
 import sample.SampleConfig
 import train.BatchSource
 import train.DataLoader
+import train.WeightedSourceDataLoader
 import turbo.layer.TurboPikoGPT
 import turbo.ops.turboCrossEntropyBackward
 import turbo.ops.turboCrossEntropyForward
@@ -151,19 +152,46 @@ class TurboTrainer(
                     bosId = bosId,
                 )
             }
+            config.lemmaSamplingRatio != null -> {
+                println(
+                    "Weighted-source train loader 활성: primary=${config.dataPath}/train_other.bin, " +
+                        "secondary=${config.dataPath}/train_lemma.bin, secondaryProb=${config.lemmaSamplingRatio}"
+                )
+                WeightedSourceDataLoader(
+                    primaryPath = "${config.dataPath}/train_other.bin",
+                    secondaryPath = "${config.dataPath}/train_lemma.bin",
+                    secondaryProb = config.lemmaSamplingRatio,
+                    batchSize = config.batchSize,
+                    blockSize = config.blockSize,
+                )
+            }
             else -> DataLoader("${config.dataPath}/train.bin", config.batchSize, config.blockSize)
         }
-        valLoader = if (config.recordAwareSampling) {
-            val bosId = readBosTokenId()
-            println("Record-aware val loader 활성: data=${config.dataPath}/val.bin, bosId=$bosId")
-            RecordAwareDataLoader(
-                dataPath = "${config.dataPath}/val.bin",
-                batchSize = config.batchSize,
-                blockSize = config.blockSize,
-                bosId = bosId,
-            )
-        } else {
-            DataLoader("${config.dataPath}/val.bin", config.batchSize, config.blockSize)
+        valLoader = when {
+            config.recordAwareSampling -> {
+                val bosId = readBosTokenId()
+                println("Record-aware val loader 활성: data=${config.dataPath}/val.bin, bosId=$bosId")
+                RecordAwareDataLoader(
+                    dataPath = "${config.dataPath}/val.bin",
+                    batchSize = config.batchSize,
+                    blockSize = config.blockSize,
+                    bosId = bosId,
+                )
+            }
+            config.lemmaSamplingRatio != null -> {
+                println(
+                    "Weighted-source val loader 활성: primary=${config.dataPath}/val_other.bin, " +
+                        "secondary=${config.dataPath}/val_lemma.bin, secondaryProb=${config.lemmaSamplingRatio}"
+                )
+                WeightedSourceDataLoader(
+                    primaryPath = "${config.dataPath}/val_other.bin",
+                    secondaryPath = "${config.dataPath}/val_lemma.bin",
+                    secondaryProb = config.lemmaSamplingRatio,
+                    batchSize = config.batchSize,
+                    blockSize = config.blockSize,
+                )
+            }
+            else -> DataLoader("${config.dataPath}/val.bin", config.batchSize, config.blockSize)
         }
 
         optimizer = TurboAdamW(
@@ -447,25 +475,25 @@ class TurboTrainer(
 
     private fun runSamplesForCheckpoint(ckptDir: File) {
         val prompts = listOf(
-            "<|bos|>\\n# Apple\\n",
-            "<|bos|>\\n# Cat\\n",
-            "<|bos|>\\n# Run\\n",
-            "<|bos|>\\n# Big\\n",
-            "<|bos|>\\n# Tree\\n",
+            "the cat",
+            "i went to the",
+            "do you like",
+            "the dog",
+            "yesterday",
         )
         try {
             val sampleCfg = SampleConfig(
                 modelDirectoryPath = ckptDir.absolutePath,
                 numberOfSamples = 1,
                 maximumNewTokens = 80,
-                samplingTemperature = 0.0f,
+                samplingTemperature = 0.5f,
                 topKFilteringSize = 40,
                 topProbabilityThreshold = 0.95f,
                 repetitionPenalty = 1.15f,
                 stopTokenIds = listOf(0),
             )
             val sampler = TurboSampler(sampleCfg)
-            println("--- 샘플 (5 prompt × 1 sample, greedy T=0) ---")
+            println("--- 샘플 (5 prompt × 1 sample, T=0.5) ---")
             for (prompt in prompts) {
                 val samples = sampler.generate(prompt)
                 samples.forEach { s -> println("[$prompt] ${s.trim()}") }

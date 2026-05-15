@@ -92,6 +92,9 @@ data class TurboTrainConfig(
     val mlpActivation: String = "gelu",
     /** Position encoding — `"learned"`(default, GPT-2 스타일) 또는 `"rope"`(Q·K 회전 주입, position param 제거). */
     val positionEncoding: String = "learned",
+    /** Lemma stream을 분리해 가중치 낮춰 sampling. null이면 단일 train.bin 사용. 값(0~1)이 secondaryProb.
+     *  dataPath/train_lemma.bin(secondary) + dataPath/train_other.bin(primary) 둘 다 필수. */
+    val lemmaSamplingRatio: Float? = null,
 ) {
     // 계산된 속성들
     val warmupIters: Int get() = (maxIters * warmupRatio).toInt()

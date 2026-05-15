@@ -96,3 +96,63 @@ class DataLoader(
         return Pair(inputSequences, targetSequences)
     }
 }
+
+/**
+ * 두 개 source(`primary`, `secondary`)를 가중 베르누이 sampling으로 섞는 DataLoader.
+ *
+ * batch 내 각 시퀀스는 독립적으로 secondary 확률 `secondaryProb`로 secondary stream에서,
+ * 나머지 확률(1 - secondaryProb)로 primary stream에서 random offset chunk를 뽑는다.
+ *
+ * CCMC-all v2 사용: primary=other(stories/dialogues/wiki/cause_seq/chained/counting),
+ * secondary=lemma_sentences, secondaryProb=0.1로 lemma chunk EOS 빈도 균형.
+ *
+ * @param primaryPath 메인 stream binary 경로 (예: train_other.bin)
+ * @param secondaryPath 가중치 낮출 stream binary 경로 (예: train_lemma.bin)
+ * @param secondaryProb 0.0~1.0, batch 시퀀스가 secondary에서 뽑힐 확률
+ * @param batchSize 배치 크기
+ * @param blockSize 시퀀스 길이
+ */
+class WeightedSourceDataLoader(
+    private val primaryPath: String,
+    private val secondaryPath: String,
+    private val secondaryProb: Float,
+    private val batchSize: Int,
+    private val blockSize: Int,
+) : BatchSource {
+    private lateinit var primaryData: IntArray
+    private lateinit var secondaryData: IntArray
+
+    init {
+        require(secondaryProb in 0.0f..1.0f) { "secondaryProb 범위는 [0,1], 받은 값: $secondaryProb" }
+        primaryData = readBinary(primaryPath)
+        println("Primary 데이터 로드 완료: ${primaryData.size} 토큰 ($primaryPath)")
+        secondaryData = readBinary(secondaryPath)
+        println("Secondary 데이터 로드 완료: ${secondaryData.size} 토큰 (secondaryProb=$secondaryProb, $secondaryPath)")
+    }
+
+    private fun readBinary(path: String): IntArray {
+        val bytes = File(path).readBytes()
+        val buffer = ByteBuffer.wrap(bytes).order(ByteOrder.BIG_ENDIAN)
+        val arr = IntArray(bytes.size / 4)
+        for (i in arr.indices) arr[i] = buffer.getInt()
+        return arr
+    }
+
+    override fun getBatch(): Pair<Array<IntArray>, Array<IntArray>> {
+        val inputSequences = Array(batchSize) { IntArray(blockSize) }
+        val targetSequences = Array(batchSize) { IntArray(blockSize) }
+        val margin = blockSize + 1
+
+        for (batchIndex in 0 until batchSize) {
+            val useSecondary = Random.nextFloat() < secondaryProb
+            val data = if (useSecondary) secondaryData else primaryData
+            val startPosition = Random.nextInt(0, data.size - margin)
+            for (sequenceIndex in 0 until blockSize) {
+                inputSequences[batchIndex][sequenceIndex] = data[startPosition + sequenceIndex]
+                targetSequences[batchIndex][sequenceIndex] = data[startPosition + sequenceIndex + 1]
+            }
+        }
+
+        return Pair(inputSequences, targetSequences)
+    }
+}

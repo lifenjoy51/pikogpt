@@ -312,16 +312,114 @@ tasks.register<JavaExec>("runTinyHelenTrainTurbo") {
 }
 
 tasks.register<JavaExec>("runWordStart4PrefixTrainTurbo") {
-    description = "Run WordStart4PrefixTrainTurbo (32k 파라미터, turbo 백엔드, 8코어)"
+    description = "Run WordStart4PrefixTrainTurbo (~300k 파라미터, turbo 백엔드, 12코어/worker 4)"
     mainClass.set("train.experiments.WordStart4PrefixTrainTurboKt")
     classpath = sourceSets.main.get().runtimeClasspath
     jvmArgs = listOf(
         "-Xmx4g",
         "--add-modules=jdk.incubator.vector",
         "-XX:+AlwaysPreTouch",
-        "-XX:ActiveProcessorCount=8",
-        "-Djava.util.concurrent.ForkJoinPool.common.parallelism=8",
+        "-XX:ActiveProcessorCount=12",
+        "-Djava.util.concurrent.ForkJoinPool.common.parallelism=12",
     )
+    environment("TURBO_MAX_WORKERS", "4")
+}
+
+tasks.register<JavaExec>("runCcmcAllV2048WiderTrainTurbo") {
+    description = "Run CcmcAllV2048WiderTrainTurbo (~485k 파라미터, v6 corpus, turbo 백엔드)"
+    mainClass.set("train.experiments.CcmcAllV2048WiderTrainTurboKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf(
+        "-Xmx4g",
+        "--add-modules=jdk.incubator.vector",
+        "-XX:+AlwaysPreTouch",
+        "-XX:ActiveProcessorCount=12",
+        "-Djava.util.concurrent.ForkJoinPool.common.parallelism=12",
+    )
+    environment("TURBO_MAX_WORKERS", "4")
+}
+
+tasks.register<JavaExec>("runCcmcAllV2048WiderH2TrainTurbo") {
+    description = "Run CcmcAllV2048WiderH2TrainTurbo (~485k 파라미터, v7 corpus + BOS/EOS, heads=2, turbo, workers=8)"
+    mainClass.set("train.experiments.CcmcAllV2048WiderH2TrainTurboKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf(
+        "-Xmx4g",
+        "--add-modules=jdk.incubator.vector",
+        "-XX:+AlwaysPreTouch",
+    )
+    environment("TURBO_MAX_WORKERS", "8")
+}
+
+tasks.register<JavaExec>("runCcmcAllV2048M1TrainTurbo") {
+    description = "Run CcmcAllV2048M1TrainTurbo (~986k 파라미터, v8 = v7 data + 1M 모델, heads=3, turbo, workers=8)"
+    mainClass.set("train.experiments.CcmcAllV2048M1TrainTurboKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf(
+        "-Xmx6g",
+        "--add-modules=jdk.incubator.vector",
+        "-XX:+AlwaysPreTouch",
+    )
+    environment("TURBO_MAX_WORKERS", "8")
+}
+
+tasks.register<JavaExec>("runCcmcLemmaV1024TrainTurbo") {
+    description = "ccmc-lemma-v1024 학습 (d=32 heads=2 L=5 blockSize=32, ~97k params, 10k iter)"
+    mainClass.set("train.experiments.CcmcLemmaV1024TrainTurboKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf(
+        "-Xmx2g",
+        "--add-modules=jdk.incubator.vector",
+        "-XX:+AlwaysPreTouch",
+    )
+    environment("TURBO_MAX_WORKERS", "4")
+}
+
+tasks.register<JavaExec>("runCcmcAllCompareElfTrainTurbo") {
+    description = "ELF vs pikogpt 비교용 학습 (Wider 485k @ v6, 10k iter, expName=compare-vs-elf)"
+    mainClass.set("train.experiments.CcmcAllCompareElfTrainTurboKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf(
+        "-Xmx4g",
+        "--add-modules=jdk.incubator.vector",
+        "-XX:+AlwaysPreTouch",
+    )
+    environment("TURBO_MAX_WORKERS", "4")
+}
+
+tasks.register<JavaExec>("runCompareSampler") {
+    description = "ELF vs pikogpt 비교용 turbo 샘플링 (compare-vs-elf ckpt에서 BOS 시작 생성)"
+    mainClass.set("sample.CompareSamplerMainKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf(
+        "-Xmx4g",
+        "--add-modules=jdk.incubator.vector",
+        "-XX:+AlwaysPreTouch",
+    )
+}
+
+tasks.register<JavaExec>("runCcmcAllV4096M1TrainTurbo") {
+    description = "Run CcmcAllV4096M1TrainTurbo (~1.07M 파라미터, v9 = vocab=4096 + 1M 모델 L=6 H=3, turbo, workers=4)"
+    mainClass.set("train.experiments.CcmcAllV4096M1TrainTurboKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf(
+        "-Xmx6g",
+        "--add-modules=jdk.incubator.vector",
+        "-XX:+AlwaysPreTouch",
+    )
+    environment("TURBO_MAX_WORKERS", "4")
+}
+
+tasks.register<JavaExec>("runCcmcAllV4096M1LemmaW10TrainTurbo") {
+    description = "Run CcmcAllV4096M1LemmaW10TrainTurbo (~1.07M 파라미터, v10 = v9 + lemma stream weight 0.1, turbo, workers=4)"
+    mainClass.set("train.experiments.CcmcAllV4096M1LemmaW10TrainTurboKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf(
+        "-Xmx6g",
+        "--add-modules=jdk.incubator.vector",
+        "-XX:+AlwaysPreTouch",
+    )
+    environment("TURBO_MAX_WORKERS", "4")
 }
 
 tasks.register<JavaExec>("runTinyHelenSampleTurbo") {
