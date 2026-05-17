@@ -11,6 +11,9 @@ data/alphabet/*
 # CCMC 합성 raw 데이터 (DeepSeek 자체 합성, 라이선스 자유) — commit
 !data/ccmc-all-raw/
 !data/ccmc-all-raw/**
+# Lemma anchor 5세 적합성 판정 결과 (LLM 판정 + 사용자 검수, 1.1MB) — commit
+!data/lemma-anchor-filter/
+!data/lemma-anchor-filter/**
 
 ### gradle
 .gradle
@@ -73,3 +76,9 @@ logs/
 **/__pycache__/
 *.pyc
 scripts/*.log
+
+# JVM crash dumps
+hs_err_pid*.log
+
+# 임시 작업 파일 (eval prompts 등)
+tmp/
