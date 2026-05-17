@@ -3,8 +3,8 @@ package turbo.layer
 import jdk.incubator.vector.FloatVector
 import turbo.TurboSimdMath
 import turbo.TurboTensor
-import turbo.ops.turboMatmul
-import turbo.transpose2D
+import turbo.TurboTransposeCache
+import turbo.ops.matmulImpl
 import turbo.turboTensorGaussian
 import turbo.turboTensorZeros
 
@@ -29,7 +29,7 @@ class TurboLinear(
             "TurboLinear 입력 shape 불일치: ${x.shape.contentToString()} vs inF=$inFeatures"
         }
         cachedInput = x
-        val y = turboMatmul(x, weight.transpose2D())
+        val y = matmulImpl(x, TurboTransposeCache.transposeOf(weight))
         if (bias != null) {
             for (i in 0 until y.rows) {
                 for (j in 0 until y.cols) {
@@ -82,7 +82,7 @@ class TurboLinear(
             }
         }
 
-        return turboMatmul(gy, weight)
+        return matmulImpl(gy, weight)
     }
 
     fun parameters(): List<TurboTensor> = listOfNotNull(weight, bias)

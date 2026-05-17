@@ -13,6 +13,7 @@ import train.WeightedSourceDataLoader
 import turbo.layer.TurboPikoGPT
 import turbo.ops.turboCrossEntropyBackward
 import turbo.ops.turboCrossEntropyForward
+import turbo.TurboTransposeCache
 import java.io.File
 import java.nio.ByteBuffer
 import kotlin.io.path.Path
@@ -71,6 +72,17 @@ class TurboTrainer(
     private var lastGradNorm: Float = 0.0f
     private var earlyStopCounter: Int = 0
 
+    /** 최근 5번의 (train+val)/2 평균을 보관해 noise outlier가 best를 잡지 못하도록 한다. */
+    private val recentLossWindow = mutableListOf<Double>()
+    private val recentLossWindowSize: Int = 5
+
+    /** plateau 판별용: 최근 N eval의 smoothed 값. 첫 smoothed 대비 0.1% 미만 감소 시 plateau. */
+    private val plateauWindow = mutableListOf<Double>()
+    private val plateauWindowSize: Int = 10
+    private val plateauRatio: Double = 0.001   // initial smoothed 대비 0.1%
+    private val plateauMinPatience: Int = 5    // false positive 방지: patience 최소 5
+    private var initialSmoothed: Double = 0.0
+
     fun train() {
         println("=== TurboPikoGPT (turbo 백엔드) 훈련 시작 ===")
         println("설정: $config")
@@ -90,7 +102,9 @@ class TurboTrainer(
 
         val totalSeqsPerIter = config.batchSize * config.gradientAccumulationSteps
         val cpuCount = Runtime.getRuntime().availableProcessors().coerceAtLeast(1)
-        val envCap = System.getenv("TURBO_MAX_WORKERS")?.toIntOrNull()?.coerceAtLeast(1)
+        // env 또는 system property (MpsBackend.enable이 동적으로 system property로 worker=1 강제)
+        val envCap = (System.getenv("TURBO_MAX_WORKERS") ?: System.getProperty("TURBO_MAX_WORKERS"))
+            ?.toIntOrNull()?.coerceAtLeast(1)
         // CPU core × 2/3로 default (JIT/GC/OS 및 다른 프로세스 여유 확보)
         val defaultCap = (cpuCount * 2 / 3).coerceAtLeast(1)
         val desiredWorkers = minOf(envCap ?: defaultCap, cpuCount, totalSeqsPerIter)
@@ -241,14 +255,28 @@ class TurboTrainer(
                 setTrainingMode(true)
 
                 val avg = (trainLoss + valLoss) / 2.0
+                // 최근 N개 평균 (smoothing) — 단발 outlier에 best를 빼앗기지 않도록.
+                recentLossWindow.add(avg)
+                if (recentLossWindow.size > recentLossWindowSize) recentLossWindow.removeAt(0)
+                val smoothed = recentLossWindow.average()
                 println(
                     "스텝 $iterationNumber: " +
                         "훈련 ${formatLoss(trainLoss)} | 검증 ${formatLoss(valLoss)} | 평균 $avg" +
+                        " | smoothed(${recentLossWindow.size}) ${"%.4f".format(smoothed)}" +
                         " | grad-norm ${"%.3f".format(lastGradNorm)}"
                 )
-                val isBest = avg < bestLoss
-                if (isBest) bestLoss = avg
+                val isBest = smoothed < bestLoss
+                if (isBest) bestLoss = smoothed
                 if (isBest || config.alwaysSaveCheckpoint) saveCheckpoint(isBest)
+
+                // plateau 판별: 최근 10 eval smoothed의 |first - last| < initial × 0.1%
+                if (initialSmoothed == 0.0) initialSmoothed = smoothed
+                plateauWindow.add(smoothed)
+                if (plateauWindow.size > plateauWindowSize) plateauWindow.removeAt(0)
+                val plateauThreshold = initialSmoothed * plateauRatio
+                val plateauDelta = if (plateauWindow.size >= plateauWindowSize) {
+                    kotlin.math.abs(plateauWindow.first() - plateauWindow.last())
+                } else Double.MAX_VALUE
 
                 if (config.earlyStopPatience > 0) {
                     if (isBest) {
@@ -257,11 +285,20 @@ class TurboTrainer(
                         earlyStopCounter++
                         if (earlyStopCounter >= config.earlyStopPatience) {
                             println(
-                                "Early stop: best 갱신 ${config.earlyStopPatience}회 연속 없음 — " +
+                                "Early stop (patience): best 갱신 ${config.earlyStopPatience}회 연속 없음 — " +
                                     "iter=${iterationNumber}에서 종료 (maxIters=${config.maxIters})"
                             )
                             break
                         }
+                    }
+                    // 0.1% plateau 판별 (patience >= 5 동시 만족 시 종료)
+                    if (plateauDelta < plateauThreshold && earlyStopCounter >= plateauMinPatience) {
+                        println(
+                            "Early stop (plateau): 최근 ${plateauWindowSize} eval Δ=${"%.4f".format(plateauDelta)} " +
+                                "< 임계 ${"%.4f".format(plateauThreshold)} (initial $initialSmoothed × 0.1%), " +
+                                "patience $earlyStopCounter — iter=${iterationNumber}에서 종료"
+                        )
+                        break
                     }
                 }
             }
@@ -272,6 +309,8 @@ class TurboTrainer(
             lastGradNorm = if (config.gradClip > 0.0f) clipGradients(config.gradClip) else computeGradNorm()
             optimizer.step()
             optimizer.zeroGrad()
+            // weight가 갱신됐으므로 transpose cache 무효화 — 다음 step 첫 forward에서 재생성.
+            TurboTransposeCache.clear()
 
             runningLoss = if (runningLoss == 0.0) stepLoss else 0.9 * runningLoss + 0.1 * stepLoss
             if (iterationNumber % config.logInterval == 0) {
@@ -484,7 +523,7 @@ class TurboTrainer(
         try {
             val sampleCfg = SampleConfig(
                 modelDirectoryPath = ckptDir.absolutePath,
-                numberOfSamples = 1,
+                numberOfSamples = 3,
                 maximumNewTokens = 80,
                 samplingTemperature = 0.5f,
                 topKFilteringSize = 40,
@@ -493,7 +532,7 @@ class TurboTrainer(
                 stopTokenIds = listOf(0),
             )
             val sampler = TurboSampler(sampleCfg)
-            println("--- 샘플 (5 prompt × 1 sample, T=0.5) ---")
+            println("--- 샘플 (5 prompt × 3 sample, T=0.5) ---")
             for (prompt in prompts) {
                 val samples = sampler.generate(prompt)
                 samples.forEach { s -> println("[$prompt] ${s.trim()}") }

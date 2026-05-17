@@ -3,8 +3,8 @@ package turbo.layer
 import turbo.TurboKVCache
 import turbo.TurboModelConfig
 import turbo.TurboTensor
-import turbo.ops.turboMatmul
-import turbo.transpose2D
+import turbo.TurboTransposeCache
+import turbo.ops.matmulImpl
 
 /**
  * turbo 백엔드 GPT 모델. Phase 1에서 TurboModelConfig 기반 — RMSNorm/GQA/qk-norm/fused QKV/z-loss
@@ -54,7 +54,7 @@ class TurboPikoGPT(val config: TurboModelConfig) {
             lmHead.forward(x)
         } else {
             cachedHeadInput = x
-            turboMatmul(x, tokenEmbedding.weight.transpose2D())
+            matmulImpl(x, TurboTransposeCache.transposeOf(tokenEmbedding.weight))
         }
     }
 
@@ -89,7 +89,7 @@ class TurboPikoGPT(val config: TurboModelConfig) {
         return if (lmHead != null) {
             lmHead.forward(x)
         } else {
-            turboMatmul(x, tokenEmbedding.weight.transpose2D())
+            matmulImpl(x, TurboTransposeCache.transposeOf(tokenEmbedding.weight))
         }
     }
 
@@ -99,7 +99,7 @@ class TurboPikoGPT(val config: TurboModelConfig) {
         } else {
             val x = cachedHeadInput ?: error("forward 없이 backward (tied head)")
             val w = tokenEmbedding.weight
-            val dx = turboMatmul(gLogits, w)
+            val dx = matmulImpl(gLogits, w)
             val wGrad = w.gradOrAlloc()
             val v = w.rows
             val c = w.cols

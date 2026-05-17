@@ -56,6 +56,22 @@ fun turboMatmul(a: TurboTensor, b: TurboTensor): TurboTensor {
     return c
 }
 
+/**
+ * MatMul 백엔드 dispatch toggle.
+ *
+ * 기본은 turboMatmul / turboMatmulBackward (CPU SIMD).
+ * `mps.MpsBackend.enable()`이 호출되면 Metal GPU 구현으로 교체된다.
+ *
+ * 함수 참조 방식: TurboLinear/TurboPikoGPT의 시그니처를 바꾸지 않으면서 백엔드 교체 가능.
+ */
+@Volatile
+var matmulImpl: (TurboTensor, TurboTensor) -> TurboTensor =
+    { a, b -> turboMatmul(a, b) }
+
+@Volatile
+var matmulBackwardImpl: (TurboTensor, TurboTensor, FloatArray) -> Unit =
+    { a, b, gy -> turboMatmulBackward(a, b, gy) }
+
 fun turboMatmulBackward(a: TurboTensor, b: TurboTensor, gyData: FloatArray) {
     val m = a.rows
     val k = a.cols

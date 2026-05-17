@@ -53,8 +53,109 @@ tasks.withType<JavaExec>().configureEach {
 
 tasks.test {
     useJUnitPlatform()
-    jvmArgs("--add-modules=jdk.incubator.vector")
+    // mps 테스트가 dylib를 필요로 함. macOS가 아니면 build*Lib가 skip되니 dependency만 걸어둠.
+    if (System.getProperty("os.name").lowercase().contains("mac")) {
+        dependsOn("buildMetalLib")
+        dependsOn("buildMpsGraphLib")
+    }
+    jvmArgs(
+        "--add-modules=jdk.incubator.vector",
+        "-Djava.library.path=${projectDir}/build/native",
+    )
 }
+
+// mps 백엔드 (Metal MatMul JNI) — clang으로 Objective-C bridge를 .dylib로 컴파일.
+// Metal shader는 runtime compile(newLibraryWithSource:)로 처리하므로 xcrun metal 불필요.
+val buildMetalLib by tasks.registering(Exec::class) {
+    description = "Compile MetalMatMulBridge.m → build/native/libpikogpt_metal.dylib (macOS arm64만)"
+    group = "build"
+
+    val srcFile = file("src/main/objc/MetalMatMulBridge.m")
+    val outDir = file("build/native")
+    val outFile = outDir.resolve("libpikogpt_metal.dylib")
+
+    inputs.file(srcFile)
+    outputs.file(outFile)
+
+    doFirst { outDir.mkdirs() }
+
+    val javaHome = System.getenv("JAVA_HOME")
+        ?: javaToolchains.compilerFor { languageVersion.set(JavaLanguageVersion.of(21)) }
+            .get().metadata.installationPath.asFile.absolutePath
+
+    val isMac = System.getProperty("os.name").lowercase().contains("mac")
+    onlyIf {
+        if (!isMac) {
+            logger.lifecycle("[mps] not macOS — skipping Metal lib build")
+        }
+        isMac
+    }
+
+    commandLine(
+        "clang",
+        "-O3",
+        "-arch", "arm64",
+        "-shared",
+        "-fobjc-arc",
+        "-fPIC",
+        "-I", "$javaHome/include",
+        "-I", "$javaHome/include/darwin",
+        "-framework", "Foundation",
+        "-framework", "Metal",
+        "-framework", "MetalPerformanceShaders",
+        srcFile.absolutePath,
+        "-o", outFile.absolutePath,
+    )
+}
+
+// MPSGraph 기반 GPU 100% residence 학습 backend. PoC matmul-only path와 별도 dylib.
+// Phase 1: skeleton (MTLDevice + MPSGraph init + JNI session). Phase 2~5에서 graph build/run 추가.
+val buildMpsGraphLib by tasks.registering(Exec::class) {
+    description = "Compile MpsGraphBridge.mm → build/native/libpikogpt_mpsgraph.dylib (macOS arm64만)"
+    group = "build"
+
+    val srcFile = file("src/main/objc/MpsGraphBridge.mm")
+    val outDir = file("build/native")
+    val outFile = outDir.resolve("libpikogpt_mpsgraph.dylib")
+
+    inputs.file(srcFile)
+    outputs.file(outFile)
+
+    doFirst { outDir.mkdirs() }
+
+    val javaHome = System.getenv("JAVA_HOME")
+        ?: javaToolchains.compilerFor { languageVersion.set(JavaLanguageVersion.of(21)) }
+            .get().metadata.installationPath.asFile.absolutePath
+
+    val isMac = System.getProperty("os.name").lowercase().contains("mac")
+    onlyIf {
+        if (!isMac) {
+            logger.lifecycle("[mps-graph] not macOS — skipping MPSGraph lib build")
+        }
+        isMac
+    }
+
+    commandLine(
+        "clang++",
+        "-O3",
+        "-arch", "arm64",
+        "-std=c++17",
+        "-shared",
+        "-fobjc-arc",
+        "-fPIC",
+        "-I", "$javaHome/include",
+        "-I", "$javaHome/include/darwin",
+        "-framework", "Foundation",
+        "-framework", "Metal",
+        "-framework", "MetalPerformanceShaders",
+        "-framework", "MetalPerformanceShadersGraph",
+        srcFile.absolutePath,
+        "-o", outFile.absolutePath,
+    )
+}
+
+// Kotlin compile은 Metal lib에 의존하지 않지만, 학습 진입점 실행 전에는 빌드돼 있어야 한다.
+// (tasks.named("compileKotlin") 의존은 일부러 걸지 않음 — 비macOS 빌드 차단 방지)
 
 // Main 함수들을 실행하는 Gradle 태스크들
 // 규약: 모든 실행 스크립트는 main 소스셋에 있고, JavaExec 태스크로 실행됨.
@@ -375,6 +476,20 @@ tasks.register<JavaExec>("runCcmcLemmaV1024TrainTurbo") {
     environment("TURBO_MAX_WORKERS", "4")
 }
 
+tasks.register<JavaExec>("runCcmcLemmaV1024MpsTrainTurbo") {
+    description = "ccmc-lemma-v1024 학습 — MatMul만 Metal GPU offload (mps 백엔드 PoC, 97k params)"
+    mainClass.set("train.experiments.CcmcLemmaV1024MpsTrainTurboKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    dependsOn(buildMetalLib)
+    jvmArgs = listOf(
+        "-Xmx2g",
+        "--add-modules=jdk.incubator.vector",
+        "-XX:+AlwaysPreTouch",
+        "-Djava.library.path=${projectDir}/build/native",
+    )
+    environment("TURBO_MAX_WORKERS", "4")
+}
+
 tasks.register<JavaExec>("runCcmcAllCompareElfTrainTurbo") {
     description = "ELF vs pikogpt 비교용 학습 (Wider 485k @ v6, 10k iter, expName=compare-vs-elf)"
     mainClass.set("train.experiments.CcmcAllCompareElfTrainTurboKt")
@@ -436,6 +551,18 @@ tasks.register<JavaExec>("runTurboBench") {
     jvmArgs = listOf("-Xmx2g", "--add-modules=jdk.incubator.vector")
 }
 
+tasks.register<JavaExec>("runTurboMpsCompareBench") {
+    description = "turbo CPU SIMD vs mps Metal GPU MatMul shape별 us 비교 (10M 모델 shape 위주)"
+    mainClass.set("turbo.bench.TurboMpsCompareMicroBenchKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    dependsOn(buildMetalLib)
+    jvmArgs = listOf(
+        "-Xmx2g",
+        "--add-modules=jdk.incubator.vector",
+        "-Djava.library.path=${projectDir}/build/native",
+    )
+}
+
 tasks.register<JavaExec>("runCcmcV2ProStage2TrainTurbo") {
     description = "Run CcmcV2ProStage2TrainTurbo (Stage 2 instruction finetune, turbo 백엔드)"
     mainClass.set("train.experiments.CcmcV2ProStage2TrainTurboKt")
@@ -448,6 +575,45 @@ tasks.register<JavaExec>("runBench10MTurbo") {
     mainClass.set("train.experiments.Bench10MTurboKt")
     classpath = sourceSets.main.get().runtimeClasspath
     jvmArgs = listOf("-Xmx8g", "--add-modules=jdk.incubator.vector", "-XX:+AlwaysPreTouch")
+}
+
+tasks.register<JavaExec>("runBench10MMpsTurbo") {
+    description = "Run Bench10MMpsTurbo — 10M params (turbo 동일 config, MatMul만 Metal GPU)"
+    mainClass.set("train.experiments.Bench10MMpsTurboKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    dependsOn(buildMetalLib)
+    jvmArgs = listOf(
+        "-Xmx8g",
+        "--add-modules=jdk.incubator.vector",
+        "-XX:+AlwaysPreTouch",
+        "-Djava.library.path=${projectDir}/build/native",
+    )
+}
+
+tasks.register<JavaExec>("runBench10MMpsGraphTrain") {
+    description = "Run Bench10MMpsGraphTrain — MPSGraph 기반 GPU 100% residence 학습 (forward+backward+AdamW 단일 graph)"
+    mainClass.set("train.experiments.Bench10MMpsGraphTrainKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    dependsOn(buildMpsGraphLib)
+    jvmArgs = listOf(
+        "-Xmx8g",
+        "--add-modules=jdk.incubator.vector",
+        "-XX:+AlwaysPreTouch",
+        "-Djava.library.path=${projectDir}/build/native",
+    )
+}
+
+tasks.register<JavaExec>("runBench10MMpsFp16Turbo") {
+    description = "Run Bench10MMpsFp16Turbo — 10M (forward fp16 mixed precision, backward fp32). 학습 안정성 사용자 검증."
+    mainClass.set("train.experiments.Bench10MMpsFp16TurboKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    dependsOn(buildMetalLib)
+    jvmArgs = listOf(
+        "-Xmx8g",
+        "--add-modules=jdk.incubator.vector",
+        "-XX:+AlwaysPreTouch",
+        "-Djava.library.path=${projectDir}/build/native",
+    )
 }
 
 tasks.register<JavaExec>("runCcmcV4TinyStoriesPrep") {
