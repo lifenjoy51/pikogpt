@@ -1,0 +1,1168 @@
+{"lemma": "acorn", "category": "plant", "reason": "도토리는 아이들이 쉽게 접하는 자연물", "batch": 1}
+{"lemma": "ankle", "category": "body", "reason": "발목은 아이들이 몸을 배울 때 익히는 부위", "batch": 1}
+{"lemma": "antler", "category": "animal", "reason": "사슴뿔은 동물 특징으로 배우기 좋음", "batch": 1}
+{"lemma": "applause", "category": "sound", "reason": "박수 소리는 아이들에게 친숙한 소리", "batch": 1}
+{"lemma": "arch", "category": "object", "reason": "아치 모양은 놀이와 구조물에서 흔함", "batch": 1}
+{"lemma": "armchair", "category": "object", "reason": "안락의자는 가정에서 흔히 보는 가구", "batch": 1}
+{"lemma": "artist", "category": "job", "reason": "예술가는 아이들이 꿈꾸는 직업 중 하나", "batch": 1}
+{"lemma": "asleep", "category": "feeling", "reason": "잠든 상태는 일상에서 자주 경험", "batch": 1}
+{"lemma": "astronaut", "category": "job", "reason": "우주비행사는 아이들의 인기 직업", "batch": 1}
+{"lemma": "autumn", "category": "time", "reason": "가을은 네 계절 중 하나로 기본 어휘", "batch": 1}
+{"lemma": "avocado", "category": "food", "reason": "아보카도는 건강 간식으로 흔함", "batch": 1}
+{"lemma": "awake", "category": "feeling", "reason": "깨어있는 상태는 수면과 반대 개념", "batch": 1}
+{"lemma": "babble", "category": "sound", "reason": "옹알이는 아기 소리로 친숙함", "batch": 1}
+{"lemma": "badge", "category": "object", "reason": "배지는 보상으로 아이들에게 익숙함", "batch": 1}
+{"lemma": "bakery", "category": "place", "reason": "빵집은 동네에서 자주 방문하는 곳", "batch": 1}
+{"lemma": "bald", "category": "property", "reason": "대머리는 외모 묘사에 사용", "batch": 1}
+{"lemma": "bamboo", "category": "plant", "reason": "대나무는 동물원이나 책에서 접함", "batch": 1}
+{"lemma": "bandana", "category": "clothing", "reason": "반다나는 머리나 목에 두르는 천", "batch": 1}
+{"lemma": "banjo", "category": "tool", "reason": "밴조는 음악 시간에 배울 수 있는 악기", "batch": 1}
+{"lemma": "barn", "category": "place", "reason": "헛간은 농장 이야기에 자주 등장", "batch": 1}
+{"lemma": "barrel", "category": "object", "reason": "통은 장난감이나 저장 용기로 흔함", "batch": 1}
+{"lemma": "basin", "category": "object", "reason": "세면대는 화장실에서 매일 사용", "batch": 1}
+{"lemma": "bass", "category": "animal", "reason": "농어는 낚시나 물고기 책에 나옴", "batch": 1}
+{"lemma": "baton", "category": "tool", "reason": "지휘봉은 음악이나 행진에서 사용", "batch": 1}
+{"lemma": "bead", "category": "object", "reason": "구슬은 공예 놀이에 자주 사용", "batch": 1}
+{"lemma": "beak", "category": "animal", "reason": "부리는 새의 특징으로 배움", "batch": 1}
+{"lemma": "beanbag", "category": "object", "reason": "빈백은 편안한 좌석으로 인기", "batch": 1}
+{"lemma": "beast", "category": "animal", "reason": "짐승은 동화나 이야기에 등장", "batch": 1}
+{"lemma": "beet", "category": "food", "reason": "비트는 채소로 색깔이 독특함", "batch": 1}
+{"lemma": "bellhop", "category": "job", "reason": "벨보이는 호텔 직업으로 소개 가능", "batch": 1}
+{"lemma": "belt", "category": "clothing", "reason": "벨트는 옷을 여미는 기본 액세서리", "batch": 1}
+{"lemma": "berry", "category": "food", "reason": "베리는 과일로 아이들 간식에 흔함", "batch": 1}
+{"lemma": "bib", "category": "clothing", "reason": "턱받이는 아기나 식사 때 사용", "batch": 1}
+{"lemma": "bingo", "category": "game", "reason": "빙고는 숫자 놀이로 유치원에서 함", "batch": 1}
+{"lemma": "bison", "category": "animal", "reason": "들소는 아메리카 동물로 배움", "batch": 1}
+{"lemma": "blade", "category": "tool", "reason": "칼날은 도구의 일부로 설명 가능", "batch": 1}
+{"lemma": "blazer", "category": "clothing", "reason": "블레이저는 단정한 겉옷", "batch": 1}
+{"lemma": "blimp", "category": "object", "reason": "소형 비행선은 하늘에 뜨는 물체", "batch": 1}
+{"lemma": "bliss", "category": "feeling", "reason": "더없는 행복은 기쁨의 강한 표현", "batch": 1}
+{"lemma": "blob", "category": "property", "reason": "방울 모양은 액체나 물감 놀이에서", "batch": 1}
+{"lemma": "bloomer", "category": "clothing", "reason": "블루머는 헐렁한 반바지", "batch": 1}
+{"lemma": "blot", "category": "object", "reason": "얼룩은 미술이나 실수로 생김", "batch": 1}
+{"lemma": "bluejay", "category": "animal", "reason": "파랑어치는 색깔 예쁜 새", "batch": 1}
+{"lemma": "bobcat", "category": "animal", "reason": "보브캣은 작은 야생 고양이", "batch": 1}
+{"lemma": "bold", "category": "property", "reason": "대담한 성격을 나타내는 형용사", "batch": 1}
+{"lemma": "bolt", "category": "object", "reason": "볼트는 기계나 가구 조립에 사용", "batch": 1}
+{"lemma": "bonfire", "category": "object", "reason": "모닥불은 캠핑이나 축제에서 봄", "batch": 1}
+{"lemma": "bonnet", "category": "clothing", "reason": "보닛은 아기나 옛날 모자", "batch": 1}
+{"lemma": "boogie", "category": "action", "reason": "춤추기는 신나는 동작", "batch": 1}
+{"lemma": "booth", "category": "place", "reason": "부스는 작은 공간이나 가판대", "batch": 1}
+{"lemma": "bop", "category": "action", "reason": "톡톡 치기는 가벼운 동작", "batch": 1}
+{"lemma": "boss", "category": "job", "reason": "보스는 일터의 책임자", "batch": 1}
+{"lemma": "boulder", "category": "nature", "reason": "큰 바위는 자연에서 볼 수 있음", "batch": 1}
+{"lemma": "braid", "category": "object", "reason": "땋은 머리는 헤어스타일", "batch": 1}
+{"lemma": "brake", "category": "tool", "reason": "브레이크는 멈추는 장치", "batch": 1}
+{"lemma": "brass", "category": "material", "reason": "놋쇠는 악기나 장식 재료", "batch": 1}
+{"lemma": "brawl", "category": "action", "reason": "싸움은 거친 행동 묘사", "batch": 1}
+{"lemma": "breeze", "category": "weather", "reason": "산들바람은 부드러운 바람", "batch": 1}
+{"lemma": "brew", "category": "action", "reason": "끓이기는 차나 커피 만들기", "batch": 1}
+{"lemma": "brim", "category": "object", "reason": "챙은 모자의 가장자리", "batch": 1}
+{"lemma": "broth", "category": "food", "reason": "육수는 국물 요리의 기본", "batch": 1}
+{"lemma": "bruise", "category": "body", "reason": "멍은 넘어져서 생기는 상처", "batch": 1}
+{"lemma": "bubblegum", "category": "food", "reason": "풍선껌은 아이들이 좋아하는 간식", "batch": 1}
+{"lemma": "bud", "category": "plant", "reason": "꽃봉오리는 봄에 피는 식물", "batch": 1}
+{"lemma": "buffalo", "category": "animal", "reason": "버팔로는 큰 초식 동물", "batch": 1}
+{"lemma": "buggy", "category": "object", "reason": "유모차는 아기 산책에 사용", "batch": 1}
+{"lemma": "bulb", "category": "plant", "reason": "구근은 식물의 뿌리 부분", "batch": 1}
+{"lemma": "bumpkin", "category": "name", "reason": "촌뜨기는 친근한 별명", "batch": 1}
+{"lemma": "bunny", "category": "animal", "reason": "토끼는 아이들이 사랑하는 동물", "batch": 1}
+{"lemma": "burp", "category": "sound", "reason": "트림은 소화 후 나는 소리", "batch": 1}
+{"lemma": "buzzard", "category": "animal", "reason": "말똥가리는 새의 한 종류", "batch": 1}
+{"lemma": "cab", "category": "object", "reason": "택시는 교통수단으로 흔함", "batch": 1}
+{"lemma": "cabin", "category": "place", "reason": "오두막은 숲속의 작은 집", "batch": 1}
+{"lemma": "cable", "category": "object", "reason": "케이블은 전기나 연결에 사용", "batch": 1}
+{"lemma": "cafe", "category": "place", "reason": "카페는 가족과 가는 장소", "batch": 1}
+{"lemma": "calf", "category": "animal", "reason": "송아지는 젖소의 새끼", "batch": 1}
+{"lemma": "camper", "category": "object", "reason": "캠핑카는 여행용 차량", "batch": 1}
+{"lemma": "canal", "category": "nature", "reason": "운하는 물길의 한 종류", "batch": 1}
+{"lemma": "cane", "category": "tool", "reason": "지팡이는 걷기를 도와줌", "batch": 1}
+{"lemma": "cap", "category": "clothing", "reason": "캡은 챙이 있는 모자", "batch": 1}
+{"lemma": "cape", "category": "clothing", "reason": "망토는 영웅 놀이에 필수", "batch": 1}
+{"lemma": "cargo", "category": "object", "reason": "화물은 운송되는 물건", "batch": 1}
+{"lemma": "carp", "category": "animal", "reason": "잉어는 연못에서 볼 수 있는 물고기", "batch": 1}
+{"lemma": "carrot", "category": "food", "reason": "당근은 흔한 채소 반찬", "batch": 1}
+{"lemma": "carton", "category": "object", "reason": "상자는 물건을 담는 용기", "batch": 1}
+{"lemma": "carve", "category": "action", "reason": "조각하기는 미술 활동", "batch": 1}
+{"lemma": "catalog", "category": "object", "reason": "카탈로그는 상품 책자", "batch": 1}
+{"lemma": "cave", "category": "nature", "reason": "동굴은 탐험 장소로 흥미로움", "batch": 1}
+{"lemma": "celery", "category": "food", "reason": "셀러리는 아삭한 채소", "batch": 1}
+{"lemma": "cellar", "category": "place", "reason": "지하실은 집 아래 공간", "batch": 1}
+{"lemma": "chap", "category": "name", "reason": "녀석은 친근한 호칭", "batch": 1}
+{"lemma": "cheek", "category": "body", "reason": "볼은 얼굴의 일부", "batch": 1}
+{"lemma": "chef", "category": "job", "reason": "요리사는 음식을 만드는 직업", "batch": 1}
+{"lemma": "chess", "category": "game", "reason": "체스는 전략 보드 게임", "batch": 1}
+{"lemma": "chestnut", "category": "plant", "reason": "밤나무 열매는 가을 간식", "batch": 1}
+{"lemma": "chick", "category": "animal", "reason": "병아리는 부화한 새끼 새", "batch": 1}
+{"lemma": "chime", "category": "sound", "reason": "차임은 맑은 종소리", "batch": 1}
+{"lemma": "chipmunk", "category": "animal", "reason": "다람쥐는 작은 설치류", "batch": 1}
+{"lemma": "chisel", "category": "tool", "reason": "끌은 조각 도구", "batch": 1}
+{"lemma": "chive", "category": "food", "reason": "차이브는 허브의 일종", "batch": 1}
+{"lemma": "chomp", "category": "sound", "reason": "우적우적 씹는 소리", "batch": 1}
+{"lemma": "cinder", "category": "material", "reason": "재는 불탄 후 남은 물질", "batch": 1}
+{"lemma": "citrus", "category": "food", "reason": "감귤류는 과일의 한 종류", "batch": 1}
+{"lemma": "clam", "category": "animal", "reason": "조개는 바다 동물", "batch": 1}
+{"lemma": "clang", "category": "sound", "reason": "쨍그랑 소리는 금속 충돌음", "batch": 1}
+{"lemma": "clasp", "category": "object", "reason": "걸쇠는 물건을 잠그는 장치", "batch": 1}
+{"lemma": "claw", "category": "animal", "reason": "발톱은 동물의 손톱", "batch": 1}
+{"lemma": "cleat", "category": "object", "reason": "클리트는 신발 바닥 돌기", "batch": 1}
+{"lemma": "cliff", "category": "nature", "reason": "절벽은 높은 바위 지형", "batch": 1}
+{"lemma": "clip", "category": "tool", "reason": "클립은 종이를 묶는 도구", "batch": 1}
+{"lemma": "cloak", "category": "clothing", "reason": "망토는 덮는 겉옷", "batch": 1}
+{"lemma": "clod", "category": "nature", "reason": "흙덩이는 땅의 일부", "batch": 1}
+{"lemma": "clog", "category": "clothing", "reason": "나막신은 나무 신발", "batch": 1}
+{"lemma": "clown", "category": "job", "reason": "광대는 서커스에서 웃기는 직업", "batch": 1}
+{"lemma": "club", "category": "tool", "reason": "곤봉은 무기나 스포츠 도구", "batch": 1}
+{"lemma": "clump", "category": "object", "reason": "무더기는 모여있는 덩어리", "batch": 1}
+{"lemma": "coal", "category": "material", "reason": "석탄은 연료 자원", "batch": 1}
+{"lemma": "coast", "category": "nature", "reason": "해안은 바닷가 지역", "batch": 1}
+{"lemma": "cob", "category": "food", "reason": "옥수수대는 옥수수 속대", "batch": 1}
+{"lemma": "cobbler", "category": "job", "reason": "구두 수선공은 신발 고치는 직업", "batch": 1}
+{"lemma": "cockatoo", "category": "animal", "reason": "앵무새는 말하는 새", "batch": 1}
+{"lemma": "cocoa", "category": "food", "reason": "코코아는 초콜릿 원료", "batch": 1}
+{"lemma": "coconut", "category": "food", "reason": "코코넛은 열대 과일", "batch": 1}
+{"lemma": "cod", "category": "animal", "reason": "대구는 바다 물고기", "batch": 1}
+{"lemma": "coffee", "category": "food", "reason": "커피는 어른들이 마시는 음료", "batch": 1}
+{"lemma": "coil", "category": "object", "reason": "코일은 감긴 모양", "batch": 1}
+{"lemma": "colt", "category": "animal", "reason": "망아지는 말의 새끼", "batch": 1}
+{"lemma": "comb", "category": "tool", "reason": "빗은 머리를 정리하는 도구", "batch": 1}
+{"lemma": "comet", "category": "nature", "reason": "혜성은 우주의 천체", "batch": 1}
+{"lemma": "comic", "category": "object", "reason": "만화는 그림 이야기 책", "batch": 1}
+{"lemma": "conch", "category": "animal", "reason": "소라는 바다 조개", "batch": 1}
+{"lemma": "cone", "category": "object", "reason": "원뿔은 도형의 하나", "batch": 1}
+{"lemma": "cookbook", "category": "object", "reason": "요리책은 레시피 모음", "batch": 1}
+{"lemma": "coop", "category": "place", "reason": "닭장은 닭을 키우는 곳", "batch": 1}
+{"lemma": "cop", "category": "job", "reason": "경찰은 안전을 지키는 직업", "batch": 1}
+{"lemma": "coral", "category": "nature", "reason": "산호는 바다 생물", "batch": 1}
+{"lemma": "cord", "category": "object", "reason": "끈은 묶는 데 사용", "batch": 1}
+{"lemma": "cork", "category": "material", "reason": "코르크는 병마개 재료", "batch": 1}
+{"lemma": "corm", "category": "plant", "reason": "알줄기는 식물의 저장 기관", "batch": 1}
+{"lemma": "cot", "category": "object", "reason": "간이침대는 작은 침대", "batch": 1}
+{"lemma": "cougar", "category": "animal", "reason": "퓨마는 큰 고양이과 동물", "batch": 1}
+{"lemma": "crate", "category": "object", "reason": "나무 상자는 운반 용기", "batch": 1}
+{"lemma": "crawl", "category": "action", "reason": "기기는 아기의 이동 방법", "batch": 1}
+{"lemma": "crayon", "category": "tool", "reason": "크레용은 그림 그리는 도구", "batch": 1}
+{"lemma": "creak", "category": "sound", "reason": "삐걱 소리는 문이나 바닥에서 남", "batch": 1}
+{"lemma": "creek", "category": "nature", "reason": "작은 시내는 흐르는 물", "batch": 1}
+{"lemma": "crepe", "category": "food", "reason": "크레이프는 얇은 팬케이크", "batch": 1}
+{"lemma": "crescent", "category": "object", "reason": "초승달은 달의 모양", "batch": 1}
+{"lemma": "crest", "category": "nature", "reason": "산마루는 산의 꼭대기", "batch": 1}
+{"lemma": "crib", "category": "object", "reason": "아기 침대는 영아용 침대", "batch": 1}
+{"lemma": "cricket", "category": "animal", "reason": "귀뚜라미는 우는 곤충", "batch": 1}
+{"lemma": "croak", "category": "sound", "reason": "개굴 소리는 개구리 울음", "batch": 1}
+{"lemma": "crook", "category": "tool", "reason": "지팡이는 구부러진 막대", "batch": 1}
+{"lemma": "crow", "category": "animal", "reason": "까마귀는 검은 새", "batch": 1}
+{"lemma": "crumb", "category": "food", "reason": "부스러기는 빵 조각", "batch": 1}
+{"lemma": "crunch", "category": "sound", "reason": "아삭 소리는 바삭한 음식 씹을 때", "batch": 1}
+{"lemma": "crybaby", "category": "name", "reason": "울보는 잘 우는 아이 별명", "batch": 1}
+{"lemma": "cubby", "category": "place", "reason": "작은 공간은 아이들 수납장", "batch": 1}
+{"lemma": "cuff", "category": "clothing", "reason": "소매단은 셔츠 끝부분", "batch": 1}
+{"lemma": "curd", "category": "food", "reason": "커드는 치즈의 응고물", "batch": 1}
+{"lemma": "curl", "category": "property", "reason": "곱슬머리는 둥글게 말린 모양", "batch": 1}
+{"lemma": "curtain", "category": "object", "reason": "커튼은 창문 가리개", "batch": 1}
+{"lemma": "custard", "category": "food", "reason": "커스터드는 달걀 디저트", "batch": 1}
+{"lemma": "dab", "category": "action", "reason": "톡톡 두드리기는 가벼운 접촉", "batch": 1}
+{"lemma": "dagger", "category": "tool", "reason": "단검은 짧은 칼", "batch": 1}
+{"lemma": "dale", "category": "nature", "reason": "골짜기는 산 사이의 낮은 곳", "batch": 1}
+{"lemma": "dam", "category": "object", "reason": "댐은 물을 막는 구조물", "batch": 1}
+{"lemma": "dandelion", "category": "plant", "reason": "민들레는 들판의 노란 꽃", "batch": 1}
+{"lemma": "dart", "category": "toy", "reason": "다트는 던지는 놀이 도구", "batch": 1}
+{"lemma": "dash", "category": "action", "reason": "돌진은 빠르게 달려감", "batch": 1}
+{"lemma": "daze", "category": "feeling", "reason": "멍한 상태는 놀라거나 혼란", "batch": 1}
+{"lemma": "decal", "category": "object", "reason": "데칼은 붙이는 스티커", "batch": 1}
+{"lemma": "deck", "category": "place", "reason": "갑판은 배의 바닥", "batch": 1}
+{"lemma": "deed", "category": "concept", "reason": "행위는 한 일이나 업적", "batch": 1}
+{"lemma": "deer", "category": "animal", "reason": "사슴은 숲속의 동물", "batch": 1}
+{"lemma": "delight", "category": "feeling", "reason": "기쁨은 즐거운 감정", "batch": 1}
+{"lemma": "den", "category": "place", "reason": "굴은 동물의 보금자리", "batch": 1}
+{"lemma": "dent", "category": "object", "reason": "움푹 들어간 곳은 찌그러진 자국", "batch": 1}
+{"lemma": "desert", "category": "nature", "reason": "사막은 모래가 많은 지역", "batch": 1}
+{"lemma": "dew", "category": "weather", "reason": "이슬은 아침에 맺힌 물방울", "batch": 1}
+{"lemma": "dial", "category": "object", "reason": "다이얼은 돌리는 판", "batch": 1}
+{"lemma": "dice", "category": "toy", "reason": "주사위는 게임 도구", "batch": 1}
+{"lemma": "dig", "category": "action", "reason": "파기는 땅을 파는 동작", "batch": 1}
+{"lemma": "dill", "category": "food", "reason": "딜은 허브의 한 종류", "batch": 1}
+{"lemma": "dimple", "category": "body", "reason": "보조개는 웃을 때 패는 곳", "batch": 1}
+{"lemma": "dinghy", "category": "object", "reason": "작은 보트는 노 젓는 배", "batch": 1}
+{"lemma": "dip", "category": "action", "reason": "찍기는 소스에 담그기", "batch": 1}
+{"lemma": "dish", "category": "object", "reason": "접시는 음식을 담는 그릇", "batch": 1}
+{"lemma": "disk", "category": "object", "reason": "디스크는 납작한 원형", "batch": 1}
+{"lemma": "ditch", "category": "nature", "reason": "도랑은 물이 흐르는 작은 길", "batch": 1}
+{"lemma": "dive", "category": "action", "reason": "다이빙은 물속으로 뛰어들기", "batch": 1}
+{"lemma": "dock", "category": "place", "reason": "부두는 배가 정박하는 곳", "batch": 1}
+{"lemma": "dodge", "category": "action", "reason": "피하기는 재빨리 비키기", "batch": 1}
+{"lemma": "doe", "category": "animal", "reason": "암사슴은 사슴의 암컷", "batch": 1}
+{"lemma": "dome", "category": "object", "reason": "돔은 반구형 지붕", "batch": 1}
+{"lemma": "donkey", "category": "animal", "reason": "당나귀는 말과 비슷한 동물", "batch": 1}
+{"lemma": "doodle", "category": "action", "reason": "낙서는 끄적이며 그리기", "batch": 1}
+{"lemma": "doorknob", "category": "object", "reason": "문손잡이는 문을 여는 손잡이", "batch": 1}
+{"lemma": "doughnut", "category": "food", "reason": "도넛은 구멍 뚫린 빵", "batch": 1}
+{"lemma": "dove", "category": "animal", "reason": "비둘기는 평화의 상징 새", "batch": 1}
+{"lemma": "downpour", "category": "weather", "reason": "폭우는 많이 내리는 비", "batch": 1}
+{"lemma": "doze", "category": "action", "reason": "졸기는 가볍게 잠들기", "batch": 1}
+{"lemma": "draft", "category": "concept", "reason": "초안은 첫 번째 시도나 계획", "batch": 1}
+{"lemma": "drain", "category": "object", "reason": "배수구는 물 빠지는 구멍", "batch": 1}
+{"lemma": "drape", "category": "object", "reason": "휘장은 천으로 덮기", "batch": 1}
+{"lemma": "drawer", "category": "object", "reason": "서랍은 밀어 넣는 수납함", "batch": 1}
+{"lemma": "dread", "category": "feeling", "reason": "두려움은 무서운 감정", "batch": 1}
+{"lemma": "dreidel", "category": "toy", "reason": "드레이들은 회전 장난감", "batch": 1}
+{"lemma": "drift", "category": "action", "reason": "표류는 물에 떠밀려감", "batch": 1}
+{"lemma": "drill", "category": "tool", "reason": "드릴은 구멍 뚫는 도구", "batch": 1}
+{"lemma": "drip", "category": "sound", "reason": "똑똑 소리는 물방울 떨어짐", "batch": 1}
+{"lemma": "drone", "category": "object", "reason": "드론은 날아다니는 기계", "batch": 1}
+{"lemma": "drool", "category": "action", "reason": "침흘리기는 아기에게 흔함", "batch": 1}
+{"lemma": "drought", "category": "weather", "reason": "가뭄은 비가 안 오는 상태", "batch": 1}
+{"lemma": "drowsy", "category": "feeling", "reason": "졸린 상태는 잠이 오는 느낌", "batch": 1}
+{"lemma": "drumstick", "category": "tool", "reason": "드럼스틱은 북 치는 막대", "batch": 1}
+{"lemma": "duckling", "category": "animal", "reason": "오리 새끼는 귀여운 물새", "batch": 1}
+{"lemma": "dude", "category": "name", "reason": "녀석은 친구 부르는 말", "batch": 1}
+{"lemma": "duffel", "category": "object", "reason": "더플백은 큰 가방", "batch": 1}
+{"lemma": "dugout", "category": "place", "reason": "파낸 배는 통나무 보트", "batch": 1}
+{"lemma": "dune", "category": "nature", "reason": "모래 언덕은 바람에 쌓인 모래", "batch": 1}
+{"lemma": "dusk", "category": "time", "reason": "땅거미는 해질녘 어스름", "batch": 1}
+{"lemma": "dwarf", "category": "concept", "reason": "난쟁이는 작은 상상의 존재", "batch": 1}
+{"lemma": "dye", "category": "material", "reason": "염료는 색을 입히는 물질", "batch": 1}
+{"lemma": "eager", "category": "feeling", "reason": "열망하는 간절한 마음", "batch": 1}
+{"lemma": "eagle", "category": "animal", "reason": "독수리는 큰 맹금류", "batch": 1}
+{"lemma": "earmuff", "category": "clothing", "reason": "귀마개는 추위에 귀 보호", "batch": 1}
+{"lemma": "earring", "category": "clothing", "reason": "귀걸이는 귀에 다는 장신구", "batch": 1}
+{"lemma": "easel", "category": "tool", "reason": "이젤은 그림 그릴 때 받침대", "batch": 1}
+{"lemma": "echo", "category": "sound", "reason": "메아리는 반사되는 소리", "batch": 1}
+{"lemma": "eel", "category": "animal", "reason": "장어는 길쭉한 물고기", "batch": 1}
+{"lemma": "eggnog", "category": "food", "reason": "에그노그는 달걀 음료", "batch": 1}
+{"lemma": "elbow", "category": "body", "reason": "팔꿈치는 팔의 관절", "batch": 1}
+{"lemma": "elm", "category": "plant", "reason": "느릅나무는 큰 나무", "batch": 1}
+{"lemma": "ember", "category": "material", "reason": "타다 남은 불씨", "batch": 1}
+{"lemma": "emerald", "category": "material", "reason": "에메랄드는 녹색 보석", "batch": 1}
+{"lemma": "emu", "category": "animal", "reason": "에뮤는 큰 날지 못하는 새", "batch": 1}
+{"lemma": "engine", "category": "object", "reason": "엔진은 동력을 만드는 기계", "batch": 1}
+{"lemma": "envelope", "category": "object", "reason": "봉투는 편지 담는 종이", "batch": 1}
+{"lemma": "epoch", "category": "time", "reason": "시대는 오랜 기간", "batch": 1}
+{"lemma": "eraser", "category": "tool", "reason": "지우개는 연필 자국 지움", "batch": 1}
+{"lemma": "ermine", "category": "animal", "reason": "흰담비는 겨울에 하얀 동물", "batch": 1}
+{"lemma": "etch", "category": "action", "reason": "새기기는 표면에 그리기", "batch": 1}
+{"lemma": "ewe", "category": "animal", "reason": "암양은 양의 암컷", "batch": 1}
+{"lemma": "fable", "category": "concept", "reason": "우화는 교훈이 있는 이야기", "batch": 1}
+{"lemma": "fabric", "category": "material", "reason": "직물은 옷감 재료", "batch": 1}
+{"lemma": "fairy", "category": "concept", "reason": "요정은 상상의 작은 존재", "batch": 1}
+{"lemma": "falcon", "category": "animal", "reason": "매는 빠른 사냥새", "batch": 1}
+{"lemma": "famine", "category": "concept", "reason": "기근은 식량 부족 상태", "batch": 1}
+{"lemma": "fang", "category": "body", "reason": "송곳니는 날카로운 이빨", "batch": 1}
+{"lemma": "farmer", "category": "job", "reason": "농부는 농사짓는 직업", "batch": 1}
+{"lemma": "faucet", "category": "object", "reason": "수도꼭지는 물 나오는 장치", "batch": 1}
+{"lemma": "fawn", "category": "animal", "reason": "새끼 사슴은 사슴의 아기", "batch": 1}
+{"lemma": "feast", "category": "food", "reason": "잔치는 풍성한 식사", "batch": 1}
+{"lemma": "felt", "category": "material", "reason": "펠트는 부드러운 천", "batch": 1}
+{"lemma": "fern", "category": "plant", "reason": "양치식물은 잎이 많은 식물", "batch": 1}
+{"lemma": "ferret", "category": "animal", "reason": "페럿은 긴 몸의 애완동물", "batch": 1}
+{"lemma": "ferry", "category": "object", "reason": "페리는 사람을 나르는 배", "batch": 1}
+{"lemma": "fiddle", "category": "tool", "reason": "바이올린은 현악기", "batch": 1}
+{"lemma": "fidget", "category": "action", "reason": "안절부절 못하는 움직임", "batch": 1}
+{"lemma": "fiery", "category": "property", "reason": "불 같은 성질이나 모양", "batch": 1}
+{"lemma": "fig", "category": "food", "reason": "무화과는 달콤한 과일", "batch": 1}
+{"lemma": "fillet", "category": "food", "reason": "필레는 뼈 없는 살코기", "batch": 1}
+{"lemma": "finch", "category": "animal", "reason": "되새는 작은 명금류", "batch": 1}
+{"lemma": "fir", "category": "plant", "reason": "전나무는 크리스마스 트리", "batch": 1}
+{"lemma": "firefly", "category": "animal", "reason": "반딧불이는 빛나는 곤충", "batch": 1}
+{"lemma": "fist", "category": "body", "reason": "주먹은 쥔 손", "batch": 1}
+{"lemma": "flag", "category": "object", "reason": "깃발은 상징을 나타내는 천", "batch": 1}
+{"lemma": "flake", "category": "object", "reason": "조각은 눈송이나 부스러기", "batch": 1}
+{"lemma": "flame", "category": "nature", "reason": "불꽃은 타오르는 불", "batch": 1}
+{"lemma": "flannel", "category": "material", "reason": "플란넬은 부드러운 직물", "batch": 1}
+{"lemma": "flap", "category": "action", "reason": "펄럭이기는 위아래로 움직임", "batch": 1}
+{"lemma": "flare", "category": "object", "reason": "조명탄은 밝은 빛 신호", "batch": 1}
+{"lemma": "flask", "category": "object", "reason": "플라스크는 실험용 병", "batch": 1}
+{"lemma": "flax", "category": "plant", "reason": "아마는 섬유 식물", "batch": 1}
+{"lemma": "flea", "category": "animal", "reason": "벼룩은 작은 곤충", "batch": 1}
+{"lemma": "fleece", "category": "material", "reason": "양털은 부드러운 섬유", "batch": 1}
+{"lemma": "fleet", "category": "object", "reason": "함대는 여러 척의 배", "batch": 1}
+{"lemma": "flick", "category": "action", "reason": "튕기기는 손가락으로 치기", "batch": 1}
+{"lemma": "flipper", "category": "body", "reason": "지느러미발은 수영용 오리발", "batch": 1}
+{"lemma": "flock", "category": "animal", "reason": "무리는 동물의 집단", "batch": 1}
+{"lemma": "flood", "category": "weather", "reason": "홍수는 물이 넘치는 재해", "batch": 1}
+{"lemma": "floss", "category": "tool", "reason": "치실은 이 사이 청소 도구", "batch": 1}
+{"lemma": "flour", "category": "food", "reason": "밀가루는 빵의 주재료", "batch": 1}
+{"lemma": "flue", "category": "object", "reason": "연통은 연기 빠지는 길", "batch": 1}
+{"lemma": "fluff", "category": "property", "reason": "보풀은 부드러운 솜털", "batch": 1}
+{"lemma": "flute", "category": "tool", "reason": "플루트는 관악기", "batch": 1}
+{"lemma": "foal", "category": "animal", "reason": "망아지는 말의 새끼", "batch": 1}
+{"lemma": "foam", "category": "material", "reason": "거품은 비누나 파도에서 생김", "batch": 1}
+{"lemma": "fog", "category": "weather", "reason": "안개는 시야를 흐리는 기상", "batch": 1}
+{"lemma": "foil", "category": "material", "reason": "호일은 얇은 금속 박", "batch": 1}
+{"lemma": "folder", "category": "object", "reason": "폴더는 서류 정리 도구", "batch": 1}
+{"lemma": "folly", "category": "concept", "reason": "어리석음은 지혜 부족", "batch": 1}
+{"lemma": "fond", "category": "feeling", "reason": "좋아하는 애정 어린 감정", "batch": 1}
+{"lemma": "font", "category": "object", "reason": "글꼴은 글자 모양", "batch": 1}
+{"lemma": "fool", "category": "name", "reason": "바보는 어리석은 사람", "batch": 1}
+{"lemma": "footprint", "category": "object", "reason": "발자국은 밟은 자리", "batch": 1}
+{"lemma": "forehead", "category": "body", "reason": "이마는 얼굴의 윗부분", "batch": 1}
+{"lemma": "forest", "category": "nature", "reason": "숲은 나무가 많은 곳", "batch": 1}
+{"lemma": "forge", "category": "place", "reason": "대장간은 금속 가열 장소", "batch": 1}
+{"lemma": "forklift", "category": "object", "reason": "지게차는 물건 들어올리는 차", "batch": 1}
+{"lemma": "fort", "category": "place", "reason": "요새는 방어 건물", "batch": 1}
+{"lemma": "fossil", "category": "nature", "reason": "화석은 옛날 생물 흔적", "batch": 1}
+{"lemma": "fountain", "category": "object", "reason": "분수는 물 뿜는 장식", "batch": 1}
+{"lemma": "fowl", "category": "animal", "reason": "가금은 집에서 키우는 새", "batch": 1}
+{"lemma": "foyer", "category": "place", "reason": "현관은 입구 홀", "batch": 1}
+{"lemma": "frame", "category": "object", "reason": "액자는 그림을 끼우는 틀", "batch": 1}
+{"lemma": "fray", "category": "action", "reason": "해어지기는 천이 닳음", "batch": 1}
+{"lemma": "freckle", "category": "body", "reason": "주근깨는 얼굴의 점", "batch": 1}
+{"lemma": "freeze", "category": "action", "reason": "얼리기는 차갑게 굳힘", "batch": 1}
+{"lemma": "freight", "category": "object", "reason": "화물은 운송 물품", "batch": 1}
+{"lemma": "fret", "category": "feeling", "reason": "애태우기는 걱정하는 마음", "batch": 1}
+{"lemma": "fridge", "category": "object", "reason": "냉장고는 음식 보관 기계", "batch": 1}
+{"lemma": "fringe", "category": "object", "reason": "술은 장식용 늘어진 실", "batch": 1}
+{"lemma": "frisbee", "category": "toy", "reason": "프리스비는 던지는 원반", "batch": 1}
+{"lemma": "frock", "category": "clothing", "reason": "드레스는 여아용 원피스", "batch": 1}
+{"lemma": "frost", "category": "weather", "reason": "서리는 차가운 수증기 결정", "batch": 1}
+{"lemma": "frown", "category": "action", "reason": "찡그리기는 얼굴 표정", "batch": 1}
+{"lemma": "fudge", "category": "food", "reason": "퍼지는 부드러운 초콜릿", "batch": 1}
+{"lemma": "fume", "category": "material", "reason": "연기는 기체나 증기", "batch": 1}
+{"lemma": "fur", "category": "material", "reason": "모피는 동물의 털", "batch": 1}
+{"lemma": "furnace", "category": "object", "reason": "용광로는 열을 내는 장치", "batch": 1}
+{"lemma": "fuse", "category": "object", "reason": "퓨즈는 전기 안전 장치", "batch": 1}
+{"lemma": "fuss", "category": "action", "reason": "야단법석은 소란스러움", "batch": 1}
+{"lemma": "gadget", "category": "tool", "reason": "장치는 작은 도구나 기계", "batch": 1}
+{"lemma": "gag", "category": "toy", "reason": "재갈은 장난용 입마개", "batch": 1}
+{"lemma": "gale", "category": "weather", "reason": "강풍은 세찬 바람", "batch": 1}
+{"lemma": "gallop", "category": "action", "reason": "갤럽은 말의 빠른 달리기", "batch": 1}
+{"lemma": "gang", "category": "name", "reason": "패거리는 친구 무리", "batch": 1}
+{"lemma": "gap", "category": "concept", "reason": "틈은 벌어진 공간", "batch": 1}
+{"lemma": "garb", "category": "clothing", "reason": "의복은 특정 복장", "batch": 1}
+{"lemma": "garlic", "category": "food", "reason": "마늘은 향신 채소", "batch": 1}
+{"lemma": "garnet", "category": "material", "reason": "가넷은 붉은 보석", "batch": 1}
+{"lemma": "gas", "category": "material", "reason": "가스는 기체 연료", "batch": 1}
+{"lemma": "gash", "category": "body", "reason": "깊은 상처는 베인 자국", "batch": 1}
+{"lemma": "gasp", "category": "sound", "reason": "헉 소리는 놀라서 들이쉬는 숨", "batch": 1}
+{"lemma": "gate", "category": "object", "reason": "대문은 출입구 문", "batch": 1}
+{"lemma": "gator", "category": "animal", "reason": "악어는 큰 파충류", "batch": 1}
+{"lemma": "gauze", "category": "material", "reason": "거즈는 얇은 천", "batch": 1}
+{"lemma": "gavel", "category": "tool", "reason": "망치는 판사가 두드리는 망치", "batch": 1}
+{"lemma": "gaze", "category": "action", "reason": "응시는 오래 바라보기", "batch": 1}
+{"lemma": "gecko", "category": "animal", "reason": "도마뱀붙이는 작은 도마뱀", "batch": 1}
+{"lemma": "gem", "category": "material", "reason": "보석은 귀한 돌", "batch": 1}
+{"lemma": "genie", "category": "concept", "reason": "지니는 마법의 요정", "batch": 1}
+{"lemma": "gent", "category": "name", "reason": "신사는 예의 바른 남자", "batch": 1}
+{"lemma": "gerbil", "category": "animal", "reason": "저빌은 작은 애완 설치류", "batch": 1}
+{"lemma": "geyser", "category": "nature", "reason": "간헐천은 뜨거운 물 분출", "batch": 1}
+{"lemma": "giant", "category": "concept", "reason": "거인은 아주 큰 상상 존재", "batch": 1}
+{"lemma": "giggle", "category": "sound", "reason": "킥킥 웃음은 작은 웃음소리", "batch": 1}
+{"lemma": "gill", "category": "body", "reason": "아가미는 물고기 호흡 기관", "batch": 1}
+{"lemma": "gimmick", "category": "concept", "reason": "술책은 재미있는 속임수", "batch": 1}
+{"lemma": "giraffe", "category": "animal", "reason": "기린은 목 긴 동물", "batch": 1}
+{"lemma": "glade", "category": "nature", "reason": "숲속 빈터는 나무 사이 공간", "batch": 1}
+{"lemma": "glare", "category": "action", "reason": "노려보기는 화난 눈빛", "batch": 1}
+{"lemma": "glaze", "category": "material", "reason": "유약은 도자기 코팅", "batch": 1}
+{"lemma": "gleam", "category": "property", "reason": "희미한 빛은 반짝임", "batch": 1}
+{"lemma": "glen", "category": "nature", "reason": "좁은 골짜기는 계곡", "batch": 1}
+{"lemma": "glide", "category": "action", "reason": "미끄러지기는 부드럽게 이동", "batch": 1}
+{"lemma": "glimmer", "category": "property", "reason": "희미한 빛은 약한 반짝임", "batch": 1}
+{"lemma": "glint", "category": "property", "reason": "반짝임은 순간 빛남", "batch": 1}
+{"lemma": "gloat", "category": "action", "reason": "흡족해하기는 뿌듯해함", "batch": 1}
+{"lemma": "glob", "category": "object", "reason": "덩어리는 작은 공 모양", "batch": 1}
+{"lemma": "gloom", "category": "feeling", "reason": "우울함은 어두운 기분", "batch": 1}
+{"lemma": "gloss", "category": "property", "reason": "광택은 빛나는 표면", "batch": 1}
+{"lemma": "glove", "category": "clothing", "reason": "장갑은 손 보호 용품", "batch": 1}
+{"lemma": "glow", "category": "property", "reason": "빛남은 은은한 불빛", "batch": 1}
+{"lemma": "glue", "category": "material", "reason": "풀은 붙이는 재료", "batch": 1}
+{"lemma": "gnat", "category": "animal", "reason": "작은 파리는 성가신 곤충", "batch": 1}
+{"lemma": "gnaw", "category": "action", "reason": "갉기는 이로 물어뜯음", "batch": 1}
+{"lemma": "gobble", "category": "sound", "reason": "칠면조 울음소리", "batch": 1}
+{"lemma": "goblet", "category": "object", "reason": "고블렛은 받침 있는 잔", "batch": 1}
+{"lemma": "goggle", "category": "clothing", "reason": "고글은 보호 안경", "batch": 1}
+{"lemma": "goldfish", "category": "animal", "reason": "금붕어는 애완 물고기", "batch": 1}
+{"lemma": "golf", "category": "game", "reason": "골프는 공 치는 스포츠", "batch": 1}
+{"lemma": "gong", "category": "tool", "reason": "징은 타악기", "batch": 1}
+{"lemma": "goo", "category": "material", "reason": "끈적한 물질은 점액", "batch": 1}
+{"lemma": "goose", "category": "animal", "reason": "거위는 큰 물새", "batch": 1}
+{"lemma": "gorge", "category": "nature", "reason": "협곡은 깊은 골짜기", "batch": 1}
+{"lemma": "gospel", "category": "religion", "reason": "복음은 기독교 메시지", "batch": 1}
+{"lemma": "gourd", "category": "plant", "reason": "박은 덩굴 식물 열매", "batch": 1}
+{"lemma": "gown", "category": "clothing", "reason": "가운은 긴 겉옷", "batch": 1}
+{"lemma": "grab", "category": "action", "reason": "잡기는 재빨리 쥠", "batch": 1}
+{"lemma": "grace", "category": "concept", "reason": "우아함은 아름다운 태도", "batch": 1}
+{"lemma": "grain", "category": "food", "reason": "곡물은 쌀, 밀 등 식량", "batch": 1}
+{"lemma": "gram", "category": "quantity", "reason": "그램은 무게 단위", "batch": 1}
+{"lemma": "grape", "category": "food", "reason": "포도는 작은 과일", "batch": 1}
+{"lemma": "graph", "category": "object", "reason": "그래프는 그림으로 된 표", "batch": 1}
+{"lemma": "grate", "category": "tool", "reason": "강판은 갈거나 긁는 도구", "batch": 1}
+{"lemma": "gravel", "category": "material", "reason": "자갈은 작은 돌", "batch": 1}
+{"lemma": "gravy", "category": "food", "reason": "그레이비는 고기 소스", "batch": 1}
+{"lemma": "gray", "category": "property", "reason": "회색은 색깔의 하나", "batch": 1}
+{"lemma": "graze", "category": "action", "reason": "풀 뜯기는 동물이 풀 먹기", "batch": 1}
+{"lemma": "grease", "category": "material", "reason": "기름은 미끄러운 물질", "batch": 1}
+{"lemma": "green", "category": "property", "reason": "초록색은 자연의 색", "batch": 1}
+{"lemma": "greet", "category": "action", "reason": "인사는 만날 때 하는 말", "batch": 1}
+{"lemma": "grey", "category": "property", "reason": "회색은 중간 색", "batch": 1}
+{"lemma": "grid", "category": "object", "reason": "격자는 바둑판 모양", "batch": 1}
+{"lemma": "grill", "category": "tool", "reason": "그릴은 고기 굽는 도구", "batch": 1}
+{"lemma": "grin", "category": "action", "reason": "활짝 웃기는 큰 미소", "batch": 1}
+{"lemma": "grip", "category": "action", "reason": "꽉 잡기는 단단히 쥠", "batch": 1}
+{"lemma": "grit", "category": "material", "reason": "모래알은 작은 입자", "batch": 1}
+{"lemma": "groan", "category": "sound", "reason": "신음 소리는 아플 때 내는 소리", "batch": 1}
+{"lemma": "grocer", "category": "job", "reason": "식료품점 주인은 장사 직업", "batch": 1}
+{"lemma": "groom", "category": "job", "reason": "신랑은 결혼하는 남자", "batch": 1}
+{"lemma": "grove", "category": "nature", "reason": "작은 숲은 나무들의 무리", "batch": 1}
+{"lemma": "growl", "category": "sound", "reason": "으르렁 소리는 개가 내는 소리", "batch": 1}
+{"lemma": "grub", "category": "animal", "reason": "애벌레는 곤충 유충", "batch": 1}
+{"lemma": "grunt", "category": "sound", "reason": "끙 소리는 힘쓸 때 내는 소리", "batch": 1}
+{"lemma": "guard", "category": "job", "reason": "경비원은 지키는 직업", "batch": 1}
+{"lemma": "guest", "category": "name", "reason": "손님은 방문하는 사람", "batch": 1}
+{"lemma": "guide", "category": "job", "reason": "안내자는 길을 알려주는 직업", "batch": 1}
+{"lemma": "guild", "category": "concept", "reason": "길드는 직업 집단", "batch": 1}
+{"lemma": "gulp", "category": "sound", "reason": "꿀꺽 소리는 삼키는 소리", "batch": 1}
+{"lemma": "gum", "category": "food", "reason": "껌은 씹는 과자", "batch": 1}
+{"lemma": "gush", "category": "action", "reason": "분출은 액체가 솟음", "batch": 1}
+{"lemma": "gust", "category": "weather", "reason": "돌풍은 갑작스런 강한 바람", "batch": 1}
+{"lemma": "gut", "category": "body", "reason": "배알이는 소화 기관", "batch": 1}
+{"lemma": "gutter", "category": "object", "reason": "홈통은 빗물 받이", "batch": 1}
+{"lemma": "gym", "category": "place", "reason": "체육관은 운동하는 장소", "batch": 1}
+{"lemma": "habit", "category": "concept", "reason": "습관은 반복되는 행동", "batch": 1}
+{"lemma": "hail", "category": "weather", "reason": "우박은 얼음 덩어리 비", "batch": 1}
+{"lemma": "hake", "category": "animal", "reason": "대구류는 바다 물고기", "batch": 1}
+{"lemma": "hall", "category": "place", "reason": "홀은 큰 방이나 복도", "batch": 1}
+{"lemma": "halo", "category": "object", "reason": "후광은 성스러운 빛 고리", "batch": 1}
+{"lemma": "halt", "category": "action", "reason": "멈추기는 정지함", "batch": 1}
+{"lemma": "ham", "category": "food", "reason": "햄은 돼지고기 가공품", "batch": 1}
+{"lemma": "hammer", "category": "tool", "reason": "망치는 못 박는 도구", "batch": 1}
+{"lemma": "hammock", "category": "object", "reason": "해먹은 매달린 침대", "batch": 1}
+{"lemma": "handbag", "category": "object", "reason": "핸드백은 손에 드는 가방", "batch": 1}
+{"lemma": "handle", "category": "object", "reason": "손잡이는 잡는 부분", "batch": 1}
+{"lemma": "harbor", "category": "place", "reason": "항구는 배 정박 장소", "batch": 1}
+{"lemma": "hare", "category": "animal", "reason": "산토끼는 긴 귀 토끼", "batch": 1}
+{"lemma": "harp", "category": "tool", "reason": "하프는 큰 현악기", "batch": 1}
+{"lemma": "harvest", "category": "action", "reason": "수확은 농작물 거둠", "batch": 1}
+{"lemma": "haste", "category": "manner", "reason": "서두름은 빠르게 함", "batch": 1}
+{"lemma": "hatch", "category": "action", "reason": "부화는 알에서 깨어남", "batch": 1}
+{"lemma": "haul", "category": "action", "reason": "끌기는 힘껏 당김", "batch": 1}
+{"lemma": "haunt", "category": "concept", "reason": "유령은 무서운 존재", "batch": 1}
+{"lemma": "haven", "category": "place", "reason": "안식처는 안전한 장소", "batch": 1}
+{"lemma": "hawk", "category": "animal", "reason": "매는 사냥하는 새", "batch": 1}
+{"lemma": "haze", "category": "weather", "reason": "안개는 뿌연 공기", "batch": 1}
+{"lemma": "headband", "category": "clothing", "reason": "머리띠는 이마에 두르는 띠", "batch": 1}
+{"lemma": "heal", "category": "action", "reason": "치유는 상처가 나음", "batch": 1}
+{"lemma": "heap", "category": "quantity", "reason": "무더기는 쌓인 더미", "batch": 1}
+{"lemma": "hedge", "category": "plant", "reason": "울타리용 나무는 생울타리", "batch": 1}
+{"lemma": "heel", "category": "body", "reason": "발뒤꿈치는 발의 뒤쪽", "batch": 1}
+{"lemma": "heir", "category": "concept", "reason": "상속인은 물려받는 사람", "batch": 1}
+{"lemma": "helm", "category": "object", "reason": "키는 배의 방향 조종 장치", "batch": 1}
+{"lemma": "hen", "category": "animal", "reason": "암탉은 닭의 암컷", "batch": 1}
+{"lemma": "herb", "category": "food", "reason": "허브는 향신 식물", "batch": 1}
+{"lemma": "herd", "category": "animal", "reason": "떼는 동물의 무리", "batch": 1}
+{"lemma": "hero", "category": "concept", "reason": "영웅은 용감한 사람", "batch": 1}
+{"lemma": "heron", "category": "animal", "reason": "왜가리는 긴 다리 새", "batch": 1}
+{"lemma": "hike", "category": "action", "reason": "하이킹은 도보 여행", "batch": 1}
+{"lemma": "hill", "category": "nature", "reason": "언덕은 낮은 산", "batch": 1}
+{"lemma": "hilt", "category": "object", "reason": "칼자루는 칼의 손잡이", "batch": 1}
+{"lemma": "hinge", "category": "object", "reason": "경첩은 문을 여닫는 철물", "batch": 1}
+{"lemma": "hint", "category": "concept", "reason": "힌트는 작은 단서", "batch": 1}
+{"lemma": "hip", "category": "body", "reason": "엉덩이는 골반 부위", "batch": 1}
+{"lemma": "hiss", "category": "sound", "reason": "쉿 소리는 뱀 소리", "batch": 1}
+{"lemma": "hive", "category": "object", "reason": "벌통은 꿀벌의 집", "batch": 1}
+{"lemma": "hoard", "category": "quantity", "reason": "비축은 모아둔 물건", "batch": 1}
+{"lemma": "hobbit", "category": "concept", "reason": "호빗은 작은 상상의 존재", "batch": 1}
+{"lemma": "hockey", "category": "game", "reason": "하키는 스틱 스포츠", "batch": 1}
+{"lemma": "hoe", "category": "tool", "reason": "괭이는 밭 가는 도구", "batch": 1}
+{"lemma": "hog", "category": "animal", "reason": "돼지는 가축 동물", "batch": 1}
+{"lemma": "hoist", "category": "action", "reason": "끌어올리기는 들어 올림", "batch": 1}
+{"lemma": "holiday", "category": "time", "reason": "휴일은 쉬는 날", "batch": 1}
+{"lemma": "holler", "category": "sound", "reason": "외치기는 큰 소리 지름", "batch": 1}
+{"lemma": "hollow", "category": "property", "reason": "빈 속은 안이 비어있음", "batch": 1}
+{"lemma": "holly", "category": "plant", "reason": "호랑가시나무는 뾰족한 잎", "batch": 1}
+{"lemma": "home", "category": "place", "reason": "집은 사는 곳", "batch": 1}
+{"lemma": "honk", "category": "sound", "reason": "빵빵 소리는 자동차 경적", "batch": 1}
+{"lemma": "hood", "category": "clothing", "reason": "후드는 머리 덮개", "batch": 1}
+{"lemma": "hoof", "category": "body", "reason": "발굽은 말이나 소의 발", "batch": 1}
+{"lemma": "hook", "category": "object", "reason": "갈고리는 걸거나 낚는 도구", "batch": 1}
+{"lemma": "hoop", "category": "toy", "reason": "훌라후프는 돌리는 고리", "batch": 1}
+{"lemma": "hoot", "category": "sound", "reason": "부엉 소리는 올빼미 울음", "batch": 1}
+{"lemma": "hop", "category": "action", "reason": "깡충 뛰기는 한 발로 뜀", "batch": 1}
+{"lemma": "horn", "category": "body", "reason": "뿔은 동물 머리의 돌기", "batch": 1}
+{"lemma": "hose", "category": "object", "reason": "호스는 물 나오는 관", "batch": 1}
+{"lemma": "host", "category": "job", "reason": "주인은 손님을 맞는 사람", "batch": 1}
+{"lemma": "hound", "category": "animal", "reason": "사냥개는 냄새 잘 맡는 개", "batch": 1}
+{"lemma": "hover", "category": "action", "reason": "맴돌기는 공중에 떠있음", "batch": 1}
+{"lemma": "howl", "category": "sound", "reason": "울부짖음은 늑대 소리", "batch": 1}
+{"lemma": "huddle", "category": "action", "reason": "옹기종기 모이기", "batch": 1}
+{"lemma": "hue", "category": "property", "reason": "색조는 색의 종류", "batch": 1}
+{"lemma": "huff", "category": "sound", "reason": "씩씩거림은 화난 숨소리", "batch": 1}
+{"lemma": "hug", "category": "action", "reason": "포옹은 껴안기", "batch": 1}
+{"lemma": "hull", "category": "object", "reason": "선체는 배의 몸통", "batch": 1}
+{"lemma": "hum", "category": "sound", "reason": "흥얼거림은 콧노래", "batch": 1}
+{"lemma": "hump", "category": "body", "reason": "혹은 낙타 등의 돌기", "batch": 1}
+{"lemma": "hunt", "category": "action", "reason": "사냥은 동물을 쫓음", "batch": 1}
+{"lemma": "hurdle", "category": "object", "reason": "허들은 뛰어넘는 장애물", "batch": 1}
+{"lemma": "hurl", "category": "action", "reason": "던지기는 세게 던짐", "batch": 1}
+{"lemma": "hush", "category": "sound", "reason": "쉿 소리는 조용히 시키는 소리", "batch": 1}
+{"lemma": "husk", "category": "plant", "reason": "껍질은 곡식의 겉껍질", "batch": 1}
+{"lemma": "hut", "category": "place", "reason": "오두막은 작은 집", "batch": 1}
+{"lemma": "hyena", "category": "animal", "reason": "하이에나는 웃음소리 동물", "batch": 1}
+{"lemma": "hymn", "category": "religion", "reason": "찬송가는 교회 노래", "batch": 1}
+{"lemma": "iceberg", "category": "nature", "reason": "빙산은 떠다니는 큰 얼음", "batch": 1}
+{"lemma": "icon", "category": "object", "reason": "아이콘은 작은 그림 상징", "batch": 1}
+{"lemma": "igloo", "category": "place", "reason": "이글루는 얼음 집", "batch": 1}
+{"lemma": "imp", "category": "concept", "reason": "꼬마 도깨비는 장난꾸러기", "batch": 1}
+{"lemma": "inch", "category": "quantity", "reason": "인치는 길이 단위", "batch": 1}
+{"lemma": "indigo", "category": "property", "reason": "남색은 파랑과 보라 사이 색", "batch": 1}
+{"lemma": "infant", "category": "name", "reason": "아기는 갓난아이", "batch": 1}
+{"lemma": "ink", "category": "material", "reason": "잉크는 쓰거나 그리는 액체", "batch": 1}
+{"lemma": "inn", "category": "place", "reason": "여관은 여행자 숙소", "batch": 1}
+{"lemma": "input", "category": "concept", "reason": "입력은 들어가는 정보", "batch": 1}
+{"lemma": "iris", "category": "plant", "reason": "붓꽃은 예쁜 꽃", "batch": 1}
+{"lemma": "iron", "category": "material", "reason": "철은 강한 금속", "batch": 1}
+{"lemma": "isle", "category": "nature", "reason": "섬은 물로 둘러싸인 땅", "batch": 1}
+{"lemma": "ivory", "category": "material", "reason": "상아는 코끼리 엄니", "batch": 1}
+{"lemma": "ivy", "category": "plant", "reason": "담쟁이는 벽에 붙는 식물", "batch": 1}
+{"lemma": "jab", "category": "action", "reason": "재빠른 펀치는 가볍게 침", "batch": 1}
+{"lemma": "jackal", "category": "animal", "reason": "자칼은 개와 비슷한 동물", "batch": 1}
+{"lemma": "jade", "category": "material", "reason": "비취는 녹색 보석", "batch": 1}
+{"lemma": "jaguar", "category": "animal", "reason": "재규어는 큰 고양이과 동물", "batch": 1}
+{"lemma": "jail", "category": "place", "reason": "감옥은 가두는 장소", "batch": 1}
+{"lemma": "jaw", "category": "body", "reason": "턱은 입 주변 뼈", "batch": 1}
+{"lemma": "jay", "category": "animal", "reason": "어치는 시끄러운 새", "batch": 1}
+{"lemma": "jeep", "category": "object", "reason": "지프는 작은 사륜차", "batch": 1}
+{"lemma": "jellybean", "category": "food", "reason": "젤리빈은 작은 젤리 사탕", "batch": 1}
+{"lemma": "jest", "category": "concept", "reason": "농담은 재미있는 말", "batch": 1}
+{"lemma": "jet", "category": "object", "reason": "제트기는 빠른 비행기", "batch": 1}
+{"lemma": "jewel", "category": "material", "reason": "보석은 귀중한 돌", "batch": 1}
+{"lemma": "jig", "category": "action", "reason": "지그 춤은 경쾌한 춤", "batch": 1}
+{"lemma": "jingle", "category": "sound", "reason": "딸랑딸랑 소리는 방울 소리", "batch": 1}
+{"lemma": "jog", "category": "action", "reason": "조깅은 천천히 달리기", "batch": 1}
+{"lemma": "jolt", "category": "action", "reason": "급정거는 갑자기 흔들림", "batch": 1}
+{"lemma": "journal", "category": "object", "reason": "일기는 매일 쓰는 책", "batch": 1}
+{"lemma": "joystick", "category": "toy", "reason": "조이스틱은 게임 컨트롤러", "batch": 1}
+{"lemma": "jug", "category": "object", "reason": "주전자는 액체 담는 용기", "batch": 1}
+{"lemma": "jumbo", "category": "property", "reason": "거대한은 아주 큰 크기", "batch": 1}
+{"lemma": "jump", "category": "action", "reason": "점프는 뛰어오르기", "batch": 1}
+{"lemma": "jungle", "category": "nature", "reason": "정글은 밀림 지역", "batch": 1}
+{"lemma": "junk", "category": "object", "reason": "쓰레기는 버리는 물건", "batch": 1}
+{"lemma": "kale", "category": "food", "reason": "케일은 잎채소", "batch": 1}
+{"lemma": "kayak", "category": "object", "reason": "카약은 작은 배", "batch": 1}
+{"lemma": "kebab", "category": "food", "reason": "케밥은 꼬치 구이", "batch": 1}
+{"lemma": "keel", "category": "object", "reason": "용골은 배의 밑바닥 뼈대", "batch": 1}
+{"lemma": "keg", "category": "object", "reason": "작은 통은 액체 저장 용기", "batch": 1}
+{"lemma": "kelp", "category": "plant", "reason": "다시마는 바다 식물", "batch": 1}
+{"lemma": "kennel", "category": "place", "reason": "개집은 개의 집", "batch": 1}
+{"lemma": "kernel", "category": "food", "reason": "낟알은 곡식의 알갱이", "batch": 1}
+{"lemma": "kettle", "category": "object", "reason": "주전자는 물 끓이는 도구", "batch": 1}
+{"lemma": "kid", "category": "name", "reason": "아이는 어린이", "batch": 1}
+{"lemma": "kidney", "category": "body", "reason": "콩팥은 몸속 장기", "batch": 1}
+{"lemma": "kin", "category": "family", "reason": "친척은 가족 구성원", "batch": 1}
+{"lemma": "kiss", "category": "action", "reason": "뽀뽀는 입 맞추기", "batch": 1}
+{"lemma": "kit", "category": "object", "reason": "키트는 도구 세트", "batch": 1}
+{"lemma": "kite", "category": "toy", "reason": "연은 하늘에 날리는 장난감", "batch": 1}
+{"lemma": "kitten", "category": "animal", "reason": "새끼 고양이는 아기 고양이", "batch": 1}
+{"lemma": "kiwi", "category": "food", "reason": "키위는 갈색 털 과일", "batch": 1}
+{"lemma": "knack", "category": "concept", "reason": "재주는 특별한 능력", "batch": 1}
+{"lemma": "knead", "category": "action", "reason": "반죽은 밀가루를 치댐", "batch": 1}
+{"lemma": "knee", "category": "body", "reason": "무릎은 다리 관절", "batch": 1}
+{"lemma": "knell", "category": "sound", "reason": "종소리는 슬픈 종 울림", "batch": 1}
+{"lemma": "knit", "category": "action", "reason": "뜨개질은 털실로 옷 만들기", "batch": 1}
+{"lemma": "knob", "category": "object", "reason": "손잡이는 문에 달린 동그란 것", "batch": 1}
+{"lemma": "knock", "category": "action", "reason": "노크는 문을 두드리기", "batch": 1}
+{"lemma": "knoll", "category": "nature", "reason": "작은 언덕은 야트막한 산", "batch": 1}
+{"lemma": "knot", "category": "object", "reason": "매듭은 끈을 묶은 것", "batch": 1}
+{"lemma": "koala", "category": "animal", "reason": "코알라는 유대 동물", "batch": 1}
+{"lemma": "kudo", "category": "concept", "reason": "칭찬은 잘했다는 말", "batch": 1}
+{"lemma": "lab", "category": "place", "reason": "연구실은 실험하는 곳", "batch": 1}
+{"lemma": "lace", "category": "material", "reason": "레이스는 구멍 뚫린 천", "batch": 1}
+{"lemma": "lad", "category": "name", "reason": "소년은 어린 남자아이", "batch": 1}
+{"lemma": "ladder", "category": "tool", "reason": "사다리는 오르내리는 도구", "batch": 1}
+{"lemma": "ladle", "category": "tool", "reason": "국자는 국 뜨는 도구", "batch": 1}
+{"lemma": "lagoon", "category": "nature", "reason": "석호는 바닷물 호수", "batch": 1}
+{"lemma": "lair", "category": "place", "reason": "은신처는 동물의 숨는 곳", "batch": 1}
+{"lemma": "lake", "category": "nature", "reason": "호수는 큰 물웅덩이", "batch": 1}
+{"lemma": "lamb", "category": "animal", "reason": "새끼 양은 양의 아기", "batch": 1}
+{"lemma": "lamp", "category": "object", "reason": "램프는 빛을 내는 기구", "batch": 1}
+{"lemma": "lance", "category": "tool", "reason": "창은 긴 무기", "batch": 1}
+{"lemma": "lane", "category": "place", "reason": "좁은 길은 작은 도로", "batch": 1}
+{"lemma": "lantern", "category": "object", "reason": "랜턴은 휴대용 등불", "batch": 1}
+{"lemma": "lap", "category": "body", "reason": "무릎 위는 앉은 자리", "batch": 1}
+{"lemma": "lard", "category": "food", "reason": "라드는 돼지 기름", "batch": 1}
+{"lemma": "lark", "category": "animal", "reason": "종다리는 노래하는 새", "batch": 1}
+{"lemma": "lasso", "category": "tool", "reason": "올가미는 던져 묶는 끈", "batch": 1}
+{"lemma": "latch", "category": "object", "reason": "걸쇠는 문 잠금 장치", "batch": 1}
+{"lemma": "lather", "category": "material", "reason": "비누 거품은 비누칠할 때 생김", "batch": 1}
+{"lemma": "latte", "category": "food", "reason": "라떼는 우유 커피", "batch": 1}
+{"lemma": "launch", "category": "action", "reason": "발사는 로켓을 쏘아 올림", "batch": 1}
+{"lemma": "lava", "category": "nature", "reason": "용암은 화산에서 나오는 뜨거운 액체", "batch": 1}
+{"lemma": "lawn", "category": "place", "reason": "잔디밭은 풀이 깔린 뜰", "batch": 1}
+{"lemma": "lax", "category": "property", "reason": "느슨함은 팽팽하지 않음", "batch": 1}
+{"lemma": "layer", "category": "object", "reason": "층은 겹쳐진 하나", "batch": 1}
+{"lemma": "lead", "category": "material", "reason": "납은 무거운 금속", "batch": 1}
+{"lemma": "leaf", "category": "plant", "reason": "잎사귀는 식물의 잎", "batch": 1}
+{"lemma": "leak", "category": "action", "reason": "새기는 물이나 공기가 샘", "batch": 1}
+{"lemma": "lean", "category": "property", "reason": "마른은 살이 적음", "batch": 1}
+{"lemma": "leap", "category": "action", "reason": "도약은 멀리 뛰기", "batch": 1}
+{"lemma": "leash", "category": "object", "reason": "목줄은 개를 묶는 끈", "batch": 1}
+{"lemma": "leather", "category": "material", "reason": "가죽은 동물 껍질 재료", "batch": 1}
+{"lemma": "ledge", "category": "object", "reason": "선반은 벽에 붙은 판", "batch": 1}
+{"lemma": "leek", "category": "food", "reason": "리크는 파처럼 생긴 채소", "batch": 1}
+{"lemma": "legend", "category": "concept", "reason": "전설은 오래된 이야기", "batch": 1}
+{"lemma": "lemonade", "category": "food", "reason": "레모네이드는 레몬 음료", "batch": 1}
+{"lemma": "lens", "category": "object", "reason": "렌즈는 빛을 모으는 유리", "batch": 1}
+{"lemma": "leopard", "category": "animal", "reason": "표범은 점박이 고양이과", "batch": 1}
+{"lemma": "lettuce", "category": "food", "reason": "상추는 샐러드 채소", "batch": 1}
+{"lemma": "lever", "category": "tool", "reason": "지렛대는 무거운 것 드는 도구", "batch": 1}
+{"lemma": "liberty", "category": "concept", "reason": "자유는 구속 없는 상태", "batch": 1}
+{"lemma": "lid", "category": "object", "reason": "뚜껑은 덮는 물건", "batch": 1}
+{"lemma": "lien", "category": "concept", "reason": "유치권은 담보 권리", "batch": 1}
+{"lemma": "lift", "category": "action", "reason": "들기는 위로 올림", "batch": 1}
+{"lemma": "lilac", "category": "plant", "reason": "라일락은 향기로운 꽃", "batch": 1}
+{"lemma": "lily", "category": "plant", "reason": "백합은 큰 꽃 식물", "batch": 1}
+{"lemma": "limb", "category": "body", "reason": "사지는 팔다리", "batch": 1}
+{"lemma": "lime", "category": "food", "reason": "라임은 신맛 과일", "batch": 1}
+{"lemma": "limit", "category": "concept", "reason": "한계는 정해진 범위", "batch": 1}
+{"lemma": "limp", "category": "action", "reason": "절뚝거리기는 다리를 저는 걸음", "batch": 1}
+{"lemma": "line", "category": "object", "reason": "선은 그어진 금", "batch": 1}
+{"lemma": "linen", "category": "material", "reason": "린넨은 아마 섬유 천", "batch": 1}
+{"lemma": "liner", "category": "object", "reason": "여객선은 큰 배", "batch": 1}
+{"lemma": "link", "category": "object", "reason": "고리는 사슬의 한 부분", "batch": 1}
+{"lemma": "lint", "category": "material", "reason": "보푸라기는 옷에 생기는 먼지", "batch": 1}
+{"lemma": "lip", "category": "body", "reason": "입술은 입의 가장자리", "batch": 1}
+{"lemma": "list", "category": "object", "reason": "목록은 적은 것들의 나열", "batch": 1}
+{"lemma": "litter", "category": "object", "reason": "쓰레기는 버려진 물건", "batch": 1}
+{"lemma": "liver", "category": "body", "reason": "간은 몸속 장기", "batch": 1}
+{"lemma": "lizard", "category": "animal", "reason": "도마뱀은 파충류", "batch": 1}
+{"lemma": "llama", "category": "animal", "reason": "라마는 남미 동물", "batch": 1}
+{"lemma": "loaf", "category": "food", "reason": "빵 한 덩이는 빵의 모양", "batch": 1}
+{"lemma": "loan", "category": "concept", "reason": "대출은 빌려줌", "batch": 1}
+{"lemma": "lob", "category": "action", "reason": "높이 던지기는 공을 위로 던짐", "batch": 1}
+{"lemma": "lobby", "category": "place", "reason": "로비는 건물 입구 홀", "batch": 1}
+{"lemma": "lobster", "category": "animal", "reason": "바닷가재는 큰 갑각류", "batch": 1}
+{"lemma": "lock", "category": "object", "reason": "자물쇠는 잠그는 장치", "batch": 1}
+{"lemma": "locust", "category": "animal", "reason": "메뚜기는 뛰는 곤충", "batch": 1}
+{"lemma": "lodge", "category": "place", "reason": "산장은 산속 숙소", "batch": 1}
+{"lemma": "loft", "category": "place", "reason": "다락은 천장 가까운 방", "batch": 1}
+{"lemma": "log", "category": "object", "reason": "통나무는 나무 토막", "batch": 1}
+{"lemma": "loom", "category": "tool", "reason": "베틀은 천 짜는 기계", "batch": 1}
+{"lemma": "loop", "category": "object", "reason": "고리는 둥근 테", "batch": 1}
+{"lemma": "loot", "category": "object", "reason": "전리품은 빼앗은 물건", "batch": 1}
+{"lemma": "lord", "category": "concept", "reason": "영주는 지배자", "batch": 1}
+{"lemma": "lotion", "category": "material", "reason": "로션은 바르는 액체", "batch": 1}
+{"lemma": "lotus", "category": "plant", "reason": "연꽃은 물에 피는 꽃", "batch": 1}
+{"lemma": "loud", "category": "property", "reason": "시끄러운은 소리가 큼", "batch": 1}
+{"lemma": "lounge", "category": "place", "reason": "휴게실은 쉬는 방", "batch": 1}
+{"lemma": "lout", "category": "name", "reason": "촌뜨기는 무례한 사람", "batch": 1}
+{"lemma": "love", "category": "feeling", "reason": "사랑은 아끼는 마음", "batch": 1}
+{"lemma": "lull", "category": "action", "reason": "달래기는 조용히 잠재움", "batch": 1}
+{"lemma": "lump", "category": "object", "reason": "덩어리는 작은 덩이", "batch": 1}
+{"lemma": "lunar", "category": "nature", "reason": "달의는 달에 관한", "batch": 1}
+{"lemma": "lung", "category": "body", "reason": "폐는 호흡 기관", "batch": 1}
+{"lemma": "lure", "category": "tool", "reason": "미끼는 유인하는 물건", "batch": 1}
+{"lemma": "lurk", "category": "action", "reason": "숨기는 몰래 숨어있음", "batch": 1}
+{"lemma": "lush", "category": "property", "reason": "무성한은 식물이 풍성함", "batch": 1}
+{"lemma": "lye", "category": "material", "reason": "잿물은 세척용 알칼리", "batch": 1}
+{"lemma": "lynx", "category": "animal", "reason": "스라소니는 귀에 털 난 고양이", "batch": 1}
+{"lemma": "mace", "category": "tool", "reason": "철퇴는 가시 달린 무기", "batch": 1}
+{"lemma": "macho", "category": "property", "reason": "남자다운은 강한 남성", "batch": 1}
+{"lemma": "mackerel", "category": "animal", "reason": "고등어는 등 푸른 물고기", "batch": 1}
+{"lemma": "madam", "category": "name", "reason": "부인은 여성 존칭", "batch": 1}
+{"lemma": "magma", "category": "nature", "reason": "마그마는 땅속 녹은 암석", "batch": 1}
+{"lemma": "magnet", "category": "object", "reason": "자석은 쇠붙이 끄는 물체", "batch": 1}
+{"lemma": "magnify", "category": "action", "reason": "확대는 크게 보이게 함", "batch": 1}
+{"lemma": "magpie", "category": "animal", "reason": "까치는 검은색과 흰색 새", "batch": 1}
+{"lemma": "maid", "category": "job", "reason": "하녀는 집안일 돕는 직업", "batch": 1}
+{"lemma": "mailbox", "category": "object", "reason": "우체통은 편지 넣는 통", "batch": 1}
+{"lemma": "maize", "category": "food", "reason": "옥수수는 노란 곡식", "batch": 1}
+{"lemma": "maker", "category": "job", "reason": "제작자는 만드는 사람", "batch": 1}
+{"lemma": "male", "category": "concept", "reason": "남성은 수컷 성별", "batch": 1}
+{"lemma": "mall", "category": "place", "reason": "쇼핑몰은 큰 상점 건물", "batch": 1}
+{"lemma": "malt", "category": "food", "reason": "엿기름은 곡식 발아시킨 것", "batch": 1}
+{"lemma": "mane", "category": "body", "reason": "갈기는 말이나 사자 목털", "batch": 1}
+{"lemma": "mango", "category": "food", "reason": "망고는 열대 과일", "batch": 1}
+{"lemma": "manor", "category": "place", "reason": "장원은 큰 저택", "batch": 1}
+{"lemma": "mansion", "category": "place", "reason": "대저택은 아주 큰 집", "batch": 1}
+{"lemma": "mantle", "category": "object", "reason": "망토는 어깨 걸침 옷", "batch": 1}
+{"lemma": "maple", "category": "plant", "reason": "단풍나무는 가을에 붉은 잎", "batch": 1}
+{"lemma": "marble", "category": "toy", "reason": "구슬은 작은 유리공", "batch": 1}
+{"lemma": "mare", "category": "animal", "reason": "암말은 말의 암컷", "batch": 1}
+{"lemma": "margin", "category": "object", "reason": "여백은 종이 가장자리", "batch": 1}
+{"lemma": "marine", "category": "nature", "reason": "바다의는 해양에 관한", "batch": 1}
+{"lemma": "mark", "category": "object", "reason": "표시는 표시한 자국", "batch": 1}
+{"lemma": "market", "category": "place", "reason": "시장은 물건 사고파는 곳", "batch": 1}
+{"lemma": "marmot", "category": "animal", "reason": "마멋은 큰 다람쥐류", "batch": 1}
+{"lemma": "maroon", "category": "property", "reason": "밤색은 적갈색", "batch": 1}
+{"lemma": "marsh", "category": "nature", "reason": "습지는 물 많은 땅", "batch": 1}
+{"lemma": "mascot", "category": "concept", "reason": "마스코트는 행운 상징", "batch": 1}
+{"lemma": "mash", "category": "action", "reason": "으깨기는 눌러 뭉갬", "batch": 1}
+{"lemma": "mask", "category": "clothing", "reason": "가면은 얼굴 가리개", "batch": 1}
+{"lemma": "mason", "category": "job", "reason": "석공은 돌 다루는 직업", "batch": 1}
+{"lemma": "mass", "category": "quantity", "reason": "무리는 큰 집단", "batch": 1}
+{"lemma": "mast", "category": "object", "reason": "돛대는 배의 기둥", "batch": 1}
+{"lemma": "mat", "category": "object", "reason": "매트는 바닥에 까는 것", "batch": 1}
+{"lemma": "mate", "category": "name", "reason": "친구는 짝꿍", "batch": 1}
+{"lemma": "mattress", "category": "object", "reason": "매트리스는 침대 요", "batch": 1}
+{"lemma": "mauve", "category": "property", "reason": "연보라는 옅은 보라색", "batch": 1}
+{"lemma": "maze", "category": "toy", "reason": "미로는 길 찾기 놀이", "batch": 1}
+{"lemma": "mead", "category": "food", "reason": "꿀술은 벌꿀 음료", "batch": 1}
+{"lemma": "meadow", "category": "nature", "reason": "초원은 풀밭", "batch": 1}
+{"lemma": "meal", "category": "food", "reason": "식사는 밥 먹는 것", "batch": 1}
+{"lemma": "meat", "category": "food", "reason": "고기는 동물 살코기", "batch": 1}
+{"lemma": "medal", "category": "object", "reason": "메달은 상으로 주는 금속", "batch": 1}
+{"lemma": "medium", "category": "concept", "reason": "매체는 전달 수단", "batch": 1}
+{"lemma": "meet", "category": "action", "reason": "만나기는 서로 봄", "batch": 1}
+{"lemma": "melon", "category": "food", "reason": "멜론은 달콤한 열매", "batch": 1}
+{"lemma": "melt", "category": "action", "reason": "녹이기는 고체가 액체로 됨", "batch": 1}
+{"lemma": "mend", "category": "action", "reason": "고치기는 수선함", "batch": 1}
+{"lemma": "menu", "category": "object", "reason": "메뉴는 음식 목록", "batch": 1}
+{"lemma": "mercy", "category": "concept", "reason": "자비는 용서하는 마음", "batch": 1}
+{"lemma": "merge", "category": "action", "reason": "합치기는 하나로 합함", "batch": 1}
+{"lemma": "merit", "category": "concept", "reason": "장점은 좋은 점", "batch": 1}
+{"lemma": "mermaid", "category": "concept", "reason": "인어는 물고기 꼬리 사람", "batch": 1}
+{"lemma": "merry", "category": "feeling", "reason": "즐거운은 기쁜 상태", "batch": 1}
+{"lemma": "mesh", "category": "object", "reason": "그물은 얽힌 망", "batch": 1}
+{"lemma": "mess", "category": "concept", "reason": "엉망은 지저분한 상태", "batch": 1}
+{"lemma": "metal", "category": "material", "reason": "금속은 단단한 재료", "batch": 1}
+{"lemma": "meteor", "category": "nature", "reason": "유성은 별똥별", "batch": 1}
+{"lemma": "meter", "category": "quantity", "reason": "미터는 길이 단위", "batch": 1}
+{"lemma": "methane", "category": "material", "reason": "메탄은 가스 연료", "batch": 1}
+{"lemma": "metro", "category": "object", "reason": "지하철은 도시 철도", "batch": 1}
+{"lemma": "mew", "category": "sound", "reason": "야옹 소리는 고양이 울음", "batch": 1}
+{"lemma": "midge", "category": "animal", "reason": "작은 모기는 성가신 곤충", "batch": 1}
+{"lemma": "midst", "category": "concept", "reason": "한가운데는 중간", "batch": 1}
+{"lemma": "might", "category": "concept", "reason": "힘은 강한 능력", "batch": 1}
+{"lemma": "mild", "category": "property", "reason": "순한은 부드러운 성질", "batch": 1}
+{"lemma": "mile", "category": "quantity", "reason": "마일은 거리 단위", "batch": 1}
+{"lemma": "milk", "category": "food", "reason": "우유는 소에서 나온 음료", "batch": 1}
+{"lemma": "mill", "category": "place", "reason": "방앗간은 곡식 가는 곳", "batch": 1}
+{"lemma": "mime", "category": "job", "reason": "무언극 배우는 말없이 연기", "batch": 1}
+{"lemma": "mince", "category": "action", "reason": "다지기는 잘게 썰기", "batch": 1}
+{"lemma": "mine", "category": "place", "reason": "광산은 자원 캐는 곳", "batch": 1}
+{"lemma": "mink", "category": "animal", "reason": "밍크는 작은 포유류", "batch": 1}
+{"lemma": "minor", "category": "property", "reason": "작은은 중요도가 낮음", "batch": 1}
+{"lemma": "mint", "category": "plant", "reason": "민트는 향기로운 허브", "batch": 1}
+{"lemma": "minute", "category": "time", "reason": "분은 60초 단위", "batch": 1}
+{"lemma": "miracle", "category": "concept", "reason": "기적은 놀라운 일", "batch": 1}
+{"lemma": "mirror", "category": "object", "reason": "거울은 비추는 물건", "batch": 1}
+{"lemma": "miso", "category": "food", "reason": "된장은 콩 발효 식품", "batch": 1}
+{"lemma": "mitt", "category": "clothing", "reason": "미트는 손에 끼는 장갑", "batch": 1}
+{"lemma": "mixer", "category": "tool", "reason": "믹서는 섞는 기계", "batch": 1}
+{"lemma": "moan", "category": "sound", "reason": "신음 소리는 아픈 소리", "batch": 1}
+{"lemma": "moat", "category": "object", "reason": "해자는 성 주변 물길", "batch": 1}
+{"lemma": "mob", "category": "name", "reason": "군중은 많은 사람들", "batch": 1}
+{"lemma": "mock", "category": "action", "reason": "놀리기는 흉내 내며 비웃음", "batch": 1}
+{"lemma": "mode", "category": "concept", "reason": "방식은 하는 방법", "batch": 1}
+{"lemma": "mold", "category": "material", "reason": "곰팡이는 습기에서 자람", "batch": 1}
+{"lemma": "mole", "category": "animal", "reason": "두더지는 땅속 동물", "batch": 1}
+{"lemma": "monk", "category": "religion", "reason": "수도사는 종교인", "batch": 1}
+{"lemma": "month", "category": "time", "reason": "달은 30일 단위", "batch": 1}
+{"lemma": "moo", "category": "sound", "reason": "음메 소리는 소 울음", "batch": 1}
+{"lemma": "moor", "category": "nature", "reason": "황야는 황량한 들판", "batch": 1}
+{"lemma": "moose", "category": "animal", "reason": "무스는 큰 사슴", "batch": 1}
+{"lemma": "mop", "category": "tool", "reason": "대걸레는 바닥 청소 도구", "batch": 1}
+{"lemma": "mope", "category": "feeling", "reason": "풀 죽기는 의기소침함", "batch": 1}
+{"lemma": "moss", "category": "plant", "reason": "이끼는 축축한 곳의 식물", "batch": 1}
+{"lemma": "moth", "category": "animal", "reason": "나방은 밤에 나는 곤충", "batch": 1}
+{"lemma": "motor", "category": "object", "reason": "모터는 전기 동력 장치", "batch": 1}
+{"lemma": "mound", "category": "nature", "reason": "둔덕은 흙더미", "batch": 1}
+{"lemma": "mount", "category": "action", "reason": "오르기는 위로 올라감", "batch": 1}
+{"lemma": "mourn", "category": "feeling", "reason": "슬퍼하기는 애도함", "batch": 1}
+{"lemma": "mud", "category": "material", "reason": "진흙은 물 섞인 흙", "batch": 1}
+{"lemma": "muffin", "category": "food", "reason": "머핀은 작은 빵", "batch": 1}
+{"lemma": "mule", "category": "animal", "reason": "노새는 말과 당나귀 교배종", "batch": 1}
+{"lemma": "mum", "category": "family", "reason": "엄마는 어머니", "batch": 1}
+{"lemma": "mumble", "category": "sound", "reason": "중얼거림은 작게 말함", "batch": 1}
+{"lemma": "munch", "category": "sound", "reason": "우적우적 씹는 소리", "batch": 1}
+{"lemma": "mural", "category": "object", "reason": "벽화는 벽에 그린 그림", "batch": 1}
+{"lemma": "muse", "category": "concept", "reason": "뮤즈는 영감 주는 존재", "batch": 1}
+{"lemma": "mush", "category": "food", "reason": "묽은 죽은 걸쭉한 음식", "batch": 1}
+{"lemma": "mussel", "category": "animal", "reason": "홍합은 바다 조개", "batch": 1}
+{"lemma": "mustang", "category": "animal", "reason": "머스탱은 야생마", "batch": 1}
+{"lemma": "mute", "category": "property", "reason": "무음은 소리가 없음", "batch": 1}
+{"lemma": "mutter", "category": "sound", "reason": "웅얼거림은 작은 불평", "batch": 1}
+{"lemma": "muzzle", "category": "object", "reason": "입마개는 동물 입에 씌움", "batch": 1}
+{"lemma": "myth", "category": "concept", "reason": "신화는 옛날 이야기", "batch": 1}
+{"lemma": "nab", "category": "action", "reason": "잡기는 붙잡음", "batch": 1}
+{"lemma": "nag", "category": "action", "reason": "잔소리는 계속 꾸중함", "batch": 1}
+{"lemma": "nail", "category": "tool", "reason": "못은 박는 철물", "batch": 1}
+{"lemma": "naive", "category": "property", "reason": "순진한은 천진난만함", "batch": 1}
+{"lemma": "napkin", "category": "object", "reason": "냅킨은 식탁 휴지", "batch": 1}
+{"lemma": "narrow", "category": "property", "reason": "좁은은 폭이 작음", "batch": 1}
+{"lemma": "nasty", "category": "property", "reason": "더러운은 불쾌한", "batch": 1}
+{"lemma": "navel", "category": "body", "reason": "배꼽은 배의 중앙", "batch": 1}
+{"lemma": "navy", "category": "concept", "reason": "해군은 바다 군대", "batch": 1}
+{"lemma": "neat", "category": "property", "reason": "깔끔한은 정리정돈 잘됨", "batch": 1}
+{"lemma": "neck", "category": "body", "reason": "목은 머리와 몸 연결", "batch": 1}
+{"lemma": "nectar", "category": "food", "reason": "꿀은 꽃의 단물", "batch": 1}
+{"lemma": "needle", "category": "tool", "reason": "바늘은 꿰매는 도구", "batch": 1}
+{"lemma": "negro", "category": "name", "reason": "흑인은 인종 호칭", "batch": 1}
+{"lemma": "neigh", "category": "sound", "reason": "히힝 소리는 말 울음", "batch": 1}
+{"lemma": "neon", "category": "material", "reason": "네온은 빛나는 기체", "batch": 1}
+{"lemma": "nerve", "category": "body", "reason": "신경은 감각 전달 기관", "batch": 1}
+{"lemma": "nest", "category": "object", "reason": "둥지는 새의 집", "batch": 1}
+{"lemma": "net", "category": "object", "reason": "그물은 실로 엮은 망", "batch": 1}
+{"lemma": "nib", "category": "object", "reason": "펜촉은 펜의 끝", "batch": 1}
+{"lemma": "nick", "category": "object", "reason": "작은 흠은 베인 자국", "batch": 1}
+{"lemma": "niece", "category": "family", "reason": "조카딸은 형제의 딸", "batch": 1}
+{"lemma": "nifty", "category": "property", "reason": "멋진은 훌륭한", "batch": 1}
+{"lemma": "nimble", "category": "property", "reason": "민첩한은 재빠름", "batch": 1}
+{"lemma": "nip", "category": "action", "reason": "살짝 물기는 가볍게 깨물기", "batch": 1}
+{"lemma": "noble", "category": "property", "reason": "고귀한은 훌륭한 성품", "batch": 1}
+{"lemma": "node", "category": "object", "reason": "마디는 연결 지점", "batch": 1}
+{"lemma": "noel", "category": "religion", "reason": "크리스마스는 성탄절", "batch": 1}
+{"lemma": "nomad", "category": "name", "reason": "유목민은 떠돌이 생활", "batch": 1}
+{"lemma": "nook", "category": "place", "reason": "구석은 방의 모퉁이", "batch": 1}
+{"lemma": "noon", "category": "time", "reason": "정오는 낮 12시", "batch": 1}
+{"lemma": "noose", "category": "object", "reason": "올가미는 매듭 고리", "batch": 1}
+{"lemma": "norm", "category": "concept", "reason": "규범은 표준", "batch": 1}
+{"lemma": "north", "category": "nature", "reason": "북쪽은 방위", "batch": 1}
+{"lemma": "nose", "category": "body", "reason": "코는 냄새 맡는 기관", "batch": 1}
+{"lemma": "notch", "category": "object", "reason": "눈금은 새긴 표시", "batch": 1}
+{"lemma": "note", "category": "object", "reason": "쪽지는 짧은 메모", "batch": 1}
+{"lemma": "noun", "category": "concept", "reason": "명사는 이름을 나타내는 말", "batch": 1}
+{"lemma": "nude", "category": "property", "reason": "벌거벗은은 옷을 안 입음", "batch": 1}
+{"lemma": "nudge", "category": "action", "reason": "살짝 찌르기는 주의 끌기", "batch": 1}
+{"lemma": "nun", "category": "religion", "reason": "수녀는 여성 수도자", "batch": 1}
+{"lemma": "nurse", "category": "job", "reason": "간호사는 환자 돌보는 직업", "batch": 1}
+{"lemma": "nutmeg", "category": "food", "reason": "육두구는 향신료", "batch": 1}
+{"lemma": "oak", "category": "plant", "reason": "참나무는 큰 나무", "batch": 1}
+{"lemma": "oar", "category": "tool", "reason": "노는 배 젓는 도구", "batch": 1}
+{"lemma": "oath", "category": "concept", "reason": "맹세는 약속의 말", "batch": 1}
+{"lemma": "oats", "category": "food", "reason": "귀리는 곡식", "batch": 1}
+{"lemma": "oboe", "category": "tool", "reason": "오보에는 관악기", "batch": 1}
+{"lemma": "odd", "category": "property", "reason": "이상한은 특이함", "batch": 1}
+{"lemma": "ode", "category": "concept", "reason": "송시는 기리는 시", "batch": 1}
+{"lemma": "odor", "category": "body", "reason": "냄새는 코로 맡는 감각", "batch": 1}
+{"lemma": "ogle", "category": "action", "reason": "곁눈질은 힐끗 봄", "batch": 1}
+{"lemma": "ogre", "category": "concept", "reason": "도깨비는 무서운 상상 존재", "batch": 1}
+{"lemma": "oil", "category": "material", "reason": "기름은 미끄러운 액체", "batch": 1}
+{"lemma": "oink", "category": "sound", "reason": "꿀꿀 소리는 돼지 울음", "batch": 1}
+{"lemma": "oldie", "category": "name", "reason": "옛날 것은 오래된 것", "batch": 1}
+{"lemma": "olive", "category": "food", "reason": "올리브는 작은 열매", "batch": 1}
+{"lemma": "omega", "category": "concept", "reason": "오메가는 마지막 글자", "batch": 1}
+{"lemma": "omen", "category": "concept", "reason": "징조는 미리 알리는 신호", "batch": 1}
+{"lemma": "omit", "category": "action", "reason": "빼기는 생략함", "batch": 1}
+{"lemma": "onion", "category": "food", "reason": "양파는 매운 채소", "batch": 1}
+{"lemma": "onyx", "category": "material", "reason": "줄무늬 마노는 보석", "batch": 1}
+{"lemma": "opal", "category": "material", "reason": "오팔은 빛나는 보석", "batch": 1}
+{"lemma": "open", "category": "action", "reason": "열기는 닫힌 것을 엶", "batch": 1}
+{"lemma": "opera", "category": "culture", "reason": "오페라는 음악극", "batch": 1}
+{"lemma": "orbit", "category": "nature", "reason": "궤도는 도는 길", "batch": 1}
+{"lemma": "orchid", "category": "plant", "reason": "난초는 예쁜 꽃", "batch": 1}
+{"lemma": "ore", "category": "material", "reason": "광석은 금속 원료 돌", "batch": 1}
+{"lemma": "organ", "category": "body", "reason": "장기는 몸속 기관", "batch": 1}
+{"lemma": "oriole", "category": "animal", "reason": "꾀꼬리는 노란 새", "batch": 1}
+{"lemma": "orphan", "category": "name", "reason": "고아는 부모 없는 아이", "batch": 1}
+{"lemma": "otter", "category": "animal", "reason": "수달은 물에서 사는 동물", "batch": 1}
+{"lemma": "ounce", "category": "quantity", "reason": "온스는 무게 단위", "batch": 1}
+{"lemma": "oval", "category": "property", "reason": "타원형은 길쭉한 원", "batch": 1}
+{"lemma": "oven", "category": "object", "reason": "오븐은 빵 굽는 기계", "batch": 1}
+{"lemma": "owl", "category": "animal", "reason": "올빼미는 밤의 새", "batch": 1}
+{"lemma": "oxbow", "category": "object", "reason": "U자형은 말굽 모양", "batch": 1}
+{"lemma": "oyster", "category": "animal", "reason": "굴은 바다 조개", "batch": 1}
+{"lemma": "ozone", "category": "material", "reason": "오존은 공기 중 기체", "batch": 1}
+{"lemma": "pace", "category": "manner", "reason": "속도는 걸음 빠르기", "batch": 1}
+{"lemma": "pack", "category": "object", "reason": "꾸러미는 묶은 물건", "batch": 1}
+{"lemma": "pact", "category": "concept", "reason": "협정은 약속", "batch": 1}
+{"lemma": "pad", "category": "object", "reason": "패드는 덧대는 것", "batch": 1}
+{"lemma": "paddle", "category": "tool", "reason": "노는 물속에서 젓는 도구", "batch": 1}
+{"lemma": "paddy", "category": "place", "reason": "논은 벼 재배지", "batch": 1}
+{"lemma": "padlock", "category": "object", "reason": "맹꽁이 자물쇠는 걸어 잠금", "batch": 1}
+{"lemma": "pagan", "category": "religion", "reason": "이교도는 다른 종교인", "batch": 1}
+{"lemma": "page", "category": "object", "reason": "페이지는 책의 한 면", "batch": 1}
+{"lemma": "pail", "category": "object", "reason": "양동이는 물 담는 통", "batch": 1}
+{"lemma": "painter", "category": "job", "reason": "화가는 그림 그리는 직업", "batch": 1}
+{"lemma": "palace", "category": "place", "reason": "궁전은 왕의 집", "batch": 1}
+{"lemma": "palm", "category": "plant", "reason": "야자수는 열대 나무", "batch": 1}
+{"lemma": "pan", "category": "tool", "reason": "팬은 요리 도구", "batch": 1}
+{"lemma": "panda", "category": "animal", "reason": "판다는 대나무 먹는 곰", "batch": 1}
+{"lemma": "pane", "category": "object", "reason": "유리창은 창문 유리 한 장", "batch": 1}
+{"lemma": "panel", "category": "object", "reason": "판은 평평한 조각", "batch": 1}
+{"lemma": "panic", "category": "feeling", "reason": "공포는 갑작스런 두려움", "batch": 1}
+{"lemma": "pansy", "category": "plant", "reason": "팬지는 작은 꽃", "batch": 1}
+{"lemma": "papa", "category": "family", "reason": "아빠는 아버지", "batch": 1}
+{"lemma": "parade", "category": "culture", "reason": "퍼레이드는 행진", "batch": 1}
+{"lemma": "parcel", "category": "object", "reason": "소포는 보내는 꾸러미", "batch": 1}
+{"lemma": "parch", "category": "action", "reason": "바싹 말리기는 건조시킴", "batch": 1}
+{"lemma": "park", "category": "place", "reason": "공원은 놀이터 있는 곳", "batch": 1}
+{"lemma": "parrot", "category": "animal", "reason": "앵무새는 말 따라 하는 새", "batch": 1}
+{"lemma": "parsnip", "category": "food", "reason": "파스닙은 뿌리채소", "batch": 1}
+{"lemma": "part", "category": "concept", "reason": "부분은 전체의 일부", "batch": 1}
+{"lemma": "party", "category": "culture", "reason": "파티는 축하 모임", "batch": 1}
+{"lemma": "pasta", "category": "food", "reason": "파스타는 이탈리아 면", "batch": 1}
+{"lemma": "paste", "category": "material", "reason": "풀은 붙이는 반죽", "batch": 1}
+{"lemma": "pat", "category": "action", "reason": "토닥이기는 가볍게 두드림", "batch": 1}
+{"lemma": "patch", "category": "object", "reason": "조각은 기워 붙인 천", "batch": 1}
+{"lemma": "path", "category": "place", "reason": "길은 다니는 통로", "batch": 1}
+{"lemma": "patio", "category": "place", "reason": "테라스는 집 밖 마당", "batch": 1}
+{"lemma": "pause", "category": "action", "reason": "멈춤은 잠시 쉼", "batch": 1}
+{"lemma": "pave", "category": "action", "reason": "포장은 길을 덮음", "batch": 1}
+{"lemma": "paw", "category": "body", "reason": "앞발은 동물의 발", "batch": 1}
+{"lemma": "pawn", "category": "toy", "reason": "졸은 체스 말", "batch": 1}
+{"lemma": "pea", "category": "food", "reason": "완두콩은 작은 콩", "batch": 1}
+{"lemma": "peach", "category": "food", "reason": "복숭아는 과일", "batch": 1}
+{"lemma": "peak", "category": "nature", "reason": "산꼭대기는 산의 정상", "batch": 1}
+{"lemma": "peanut", "category": "food", "reason": "땅콩은 견과류", "batch": 1}
+{"lemma": "pear", "category": "food", "reason": "배는 과일", "batch": 1}
+{"lemma": "pearl", "category": "material", "reason": "진주는 조개에서 나온 보석", "batch": 1}
+{"lemma": "pebble", "category": "nature", "reason": "자갈은 작은 돌", "batch": 1}
+{"lemma": "pecan", "category": "food", "reason": "피칸은 견과류", "batch": 1}
+{"lemma": "peck", "category": "action", "reason": "쪼기는 부리로 찍음", "batch": 1}
+{"lemma": "pedal", "category": "object", "reason": "페달은 발로 밟는 장치", "batch": 1}
+{"lemma": "peel", "category": "action", "reason": "껍질 벗기기는 껍질 제거", "batch": 1}
+{"lemma": "peep", "category": "sound", "reason": "삐악 소리는 병아리 울음", "batch": 1}
+{"lemma": "peer", "category": "name", "reason": "또래는 같은 나이 친구", "batch": 1}
+{"lemma": "peg", "category": "object", "reason": "못은 걸거나 박는 것", "batch": 1}
+{"lemma": "pelt", "category": "material", "reason": "가죽은 동물 껍질", "batch": 1}
+{"lemma": "pen", "category": "tool", "reason": "펜은 글씨 쓰는 도구", "batch": 1}
+{"lemma": "penny", "category": "object", "reason": "페니는 작은 돈", "batch": 1}
+{"lemma": "pepper", "category": "food", "reason": "후추는 매운 향신료", "batch": 1}
+{"lemma": "perch", "category": "object", "reason": "횃대는 새가 앉는 막대", "batch": 1}
+{"lemma": "perfume", "category": "material", "reason": "향수는 좋은 냄새 액체", "batch": 1}
+{"lemma": "peril", "category": "concept", "reason": "위험은 위태로운 상태", "batch": 1}
+{"lemma": "perk", "category": "action", "reason": "활기 띠기는 기운 남", "batch": 1}
+{"lemma": "permit", "category": "concept", "reason": "허가는 허락함", "batch": 1}
+{"lemma": "pest", "category": "name", "reason": "해충은 성가신 동물", "batch": 1}
+{"lemma": "petal", "category": "plant", "reason": "꽃잎은 꽃의 한 장", "batch": 1}
+{"lemma": "pew", "category": "object", "reason": "교회 의자는 긴 의자", "batch": 1}
+{"lemma": "pewter", "category": "material", "reason": "백랍은 금속 합금", "batch": 1}
+{"lemma": "phlox", "category": "plant", "reason": "플록스는 예쁜 꽃", "batch": 1}
+{"lemma": "phone", "category": "object", "reason": "전화기는 통화 기계", "batch": 1}
+{"lemma": "photo", "category": "object", "reason": "사진은 찍은 그림", "batch": 1}
+{"lemma": "piano", "category": "tool", "reason": "피아노는 건반 악기", "batch": 1}
+{"lemma": "pickle", "category": "food", "reason": "피클은 절인 채소", "batch": 1}
+{"lemma": "pie", "category": "food", "reason": "파이는 구운 과자", "batch": 1}
+{"lemma": "pier", "category": "place", "reason": "부두는 배 닿는 곳", "batch": 1}
+{"lemma": "piglet", "category": "animal", "reason": "새끼 돼지는 돼지 아기", "batch": 1}
+{"lemma": "pile", "category": "quantity", "reason": "더미는 쌓인 무더기", "batch": 1}
+{"lemma": "pill", "category": "object", "reason": "알약은 약", "batch": 1}
+{"lemma": "pillar", "category": "object", "reason": "기둥은 지지대", "batch": 1}
+{"lemma": "pillow", "category": "object", "reason": "베개는 머리 받침", "batch": 1}
+{"lemma": "pilot", "category": "job", "reason": "조종사는 비행기 운전사", "batch": 1}
+{"lemma": "pimple", "category": "body", "reason": "여드름은 얼굴 뾰루지", "batch": 1}
+{"lemma": "pin", "category": "tool", "reason": "핀은 고정하는 바늘", "batch": 1}
+{"lemma": "pinch", "category": "action", "reason": "꼬집기는 손가락으로 집음", "batch": 1}
+{"lemma": "pine", "category": "plant", "reason": "소나무는 바늘잎 나무", "batch": 1}
+{"lemma": "pink", "category": "property", "reason": "분홍색은 연한 빨강", "batch": 1}
+{"lemma": "pint", "category": "quantity", "reason": "파인트는 부피 단위", "batch": 1}
+{"lemma": "pioneer", "category": "name", "reason": "개척자는 먼저 하는 사람", "batch": 1}
+{"lemma": "pip", "category": "object", "reason": "씨는 과일 속 작은 씨앗", "batch": 1}
+{"lemma": "pipe", "category": "object", "reason": "파이프는 관", "batch": 1}
+{"lemma": "pirate", "category": "concept", "reason": "해적은 바다 도둑", "batch": 1}
+{"lemma": "pit", "category": "object", "reason": "구덩이는 파인 곳", "batch": 1}
+{"lemma": "pitch", "category": "action", "reason": "던지기는 공을 던짐", "batch": 1}
+{"lemma": "pith", "category": "plant", "reason": "속은 식물 줄기 안쪽", "batch": 1}
+{"lemma": "pity", "category": "feeling", "reason": "동정은 불쌍한 마음", "batch": 1}
+{"lemma": "pixel", "category": "object", "reason": "픽셀은 화면 작은 점", "batch": 1}
+{"lemma": "plaid", "category": "material", "reason": "체크무늬는 격자 무늬 천", "batch": 1}
+{"lemma": "plank", "category": "object", "reason": "판자는 널빤지", "batch": 1}
+{"lemma": "plaque", "category": "object", "reason": "명판은 새긴 판", "batch": 1}
+{"lemma": "plasma", "category": "material", "reason": "플라스마는 물질 상태", "batch": 1}
+{"lemma": "plaster", "category": "material", "reason": "석고는 벽 바르는 재료", "batch": 1}
+{"lemma": "plate", "category": "object", "reason": "접시는 음식 담는 그릇", "batch": 1}
+{"lemma": "plaza", "category": "place", "reason": "광장은 넓은 장소", "batch": 1}
+{"lemma": "plea", "category": "concept", "reason": "탄원은 간청함", "batch": 1}
+{"lemma": "plenty", "category": "quantity", "reason": "많음은 충분한 양", "batch": 1}
+{"lemma": "pliers", "category": "tool", "reason": "펜치는 집는 도구", "batch": 1}
+{"lemma": "plight", "category": "concept", "reason": "곤경은 어려운 상황", "batch": 1}
+{"lemma": "plod", "category": "action", "reason": "터벅터벅 걷기는 느림", "batch": 1}
+{"lemma": "plot", "category": "concept", "reason": "줄거리는 이야기 구성", "batch": 1}
+{"lemma": "plow", "category": "tool", "reason": "쟁기는 밭 가는 도구", "batch": 1}
+{"lemma": "ploy", "category": "concept", "reason": "계략은 꾀", "batch": 1}
+{"lemma": "pluck", "category": "action", "reason": "뽑기는 잡아당김", "batch": 1}
+{"lemma": "plug", "category": "object", "reason": "플러그는 전기 연결구", "batch": 1}
+{"lemma": "plum", "category": "food", "reason": "자두는 과일", "batch": 1}
+{"lemma": "plume", "category": "object", "reason": "깃털은 장식 깃", "batch": 1}
+{"lemma": "plump", "category": "property", "reason": "통통한은 살찐 모양", "batch": 1}
+{"lemma": "plunge", "category": "action", "reason": "뛰어들기는 갑자기 들어감", "batch": 1}
+{"lemma": "plush", "category": "material", "reason": "봉제는 부드러운 천", "batch": 1}
+{"lemma": "pocket", "category": "object", "reason": "주머니는 옷에 달린 자루", "batch": 1}
+{"lemma": "pod", "category": "plant", "reason": "꼬투리는 콩 깍지", "batch": 1}
+{"lemma": "poem", "category": "culture", "reason": "시는 운문 글", "batch": 1}
+{"lemma": "poet", "category": "job", "reason": "시인은 시 쓰는 사람", "batch": 1}
+{"lemma": "poke", "category": "action", "reason": "찌르기는 손가락으로 쿡", "batch": 1}
+{"lemma": "polar", "category": "nature", "reason": "극지의는 북극 남극", "batch": 1}
+{"lemma": "pole", "category": "object", "reason": "막대기는 긴 막대", "batch": 1}
+{"lemma": "polish", "category": "action", "reason": "닦기는 반짝이게 함", "batch": 1}
+{"lemma": "pollen", "category": "plant", "reason": "꽃가루는 꽃의 가루", "batch": 1}
+{"lemma": "pollock", "category": "animal", "reason": "명태는 바다 물고기", "batch": 1}
+{"lemma": "polo", "category": "game", "reason": "폴로는 말 타는 스포츠", "batch": 1}
+{"lemma": "pond", "category": "nature", "reason": "연못은 작은 물웅덩이", "batch": 1}
+{"lemma": "pony", "category": "animal", "reason": "조랑말은 작은 말", "batch": 1}
+{"lemma": "pooch", "category": "animal", "reason": "강아지는 개", "batch": 1}
+{"lemma": "poodle", "category": "animal", "reason": "푸들은 곱슬털 개", "batch": 1}
+{"lemma": "pool", "category": "place", "reason": "수영장은 물놀이 장소", "batch": 1}
+{"lemma": "poop", "category": "body", "reason": "똥은 배설물", "batch": 1}
+{"lemma": "popcorn", "category": "food", "reason": "팝콘은 튀긴 옥수수", "batch": 1}
+{"lemma": "pope", "category": "religion", "reason": "교황은 가톨릭 지도자", "batch": 1}
+{"lemma": "poppy", "category": "plant", "reason": "양귀비는 빨간 꽃", "batch": 1}
+{"lemma": "porch", "category": "place", "reason": "현관은 집 입구", "batch": 1}
+{"lemma": "pore", "category": "body", "reason": "모공은 피부 구멍", "batch": 1}
+{"lemma": "pork", "category": "food", "reason": "돼지고기는 고기", "batch": 1}
+{"lemma": "port", "category": "place", "reason": "항구는 배 정박지", "batch": 1}
+{"lemma": "pose", "category": "action", "reason": "포즈는 자세 취하기", "batch": 1}
+{"lemma": "post", "category": "object", "reason": "기둥은 세운 막대", "batch": 1}
+{"lemma": "pot", "category": "object", "reason": "냄비는 요리 도구", "batch": 1}
+{"lemma": "pouch", "category": "object", "reason": "주머니는 작은 가방", "batch": 1}
+{"lemma": "poultry", "category": "animal", "reason": "가금류는 집에서 키우는 새", "batch": 1}
+{"lemma": "pout", "category": "action", "reason": "삐죽거리기는 입을 내밈", "batch": 1}
+{"lemma": "prance", "category": "action", "reason": "뽐내며 걷기는 당당한 걸음", "batch": 1}
+{"lemma": "prank", "category": "action", "reason": "장난은 짓궂은 행동", "batch": 1}
+{"lemma": "prawn", "category": "animal", "reason": "새우는 작은 갑각류", "batch": 1}
+{"lemma": "pray", "category": "religion", "reason": "기도는 신에게 비는 것", "batch": 1}
+{"lemma": "preen", "category": "action", "reason": "단장은 깃털 다듬기", "batch": 1}
+{"lemma": "press", "category": "action", "reason": "누르기는 힘을 가함", "batch": 1}
+{"lemma": "prey", "category": "animal", "reason": "먹잇감은 사냥 대상", "batch": 1}
+{"lemma": "price", "category": "concept", "reason": "가격은 물건 값", "batch": 1}
+{"lemma": "prick", "category": "action", "reason": "찌르기는 바늘로 찍음", "batch": 1}
+{"lemma": "pride", "category": "feeling", "reason": "자랑은 뿌듯한 마음", "batch": 1}
+{"lemma": "priest", "category": "religion", "reason": "사제는 종교 지도자", "batch": 1}
+{"lemma": "prim", "category": "property", "reason": "딱딱한은 엄격함", "batch": 1}
+{"lemma": "prime", "category": "property", "reason": "으뜸은 최고", "batch": 1}
+{"lemma": "prince", "category": "concept", "reason": "왕자는 왕의 아들", "batch": 1}
+{"lemma": "print", "category": "object", "reason": "인쇄물은 찍은 글", "batch": 1}
+{"lemma": "prism", "category": "object", "reason": "프리즘은 빛 분산 유리", "batch": 1}
+{"lemma": "prize", "category": "object", "reason": "상은 주는 선물", "batch": 1}
+{"lemma": "probe", "category": "tool", "reason": "탐침은 조사 도구", "batch": 1}
+{"lemma": "prong", "category": "object", "reason": "갈퀴는 뾰족한 부분", "batch": 1}
+{"lemma": "proof", "category": "concept", "reason": "증거는 증명하는 것", "batch": 1}
+{"lemma": "prop", "category": "object", "reason": "받침대는 지지 물건", "batch": 1}
+{"lemma": "prowl", "category": "action", "reason": "배회는 살금살금 돌아다님", "batch": 1}
+{"lemma": "prune", "category": "food", "reason": "말린 자두는 건과일", "batch": 1}
+{"lemma": "pry", "category": "action", "reason": "비집어 열기는 힘으로 엶", "batch": 1}
+{"lemma": "pub", "category": "place", "reason": "선술집은 음료 파는 곳", "batch": 1}
+{"lemma": "puck", "category": "toy", "reason": "퍽은 하키에서 치는 원반", "batch": 1}
+{"lemma": "puff", "category": "sound", "reason": "훅 소리는 바람 소리", "batch": 1}
+{"lemma": "pulp", "category": "material", "reason": "펄프는 과육이나 종이 원료", "batch": 1}
+{"lemma": "puma", "category": "animal", "reason": "퓨마는 큰 고양이과", "batch": 1}
+{"lemma": "pump", "category": "tool", "reason": "펌프는 공기나 물 주입기", "batch": 1}
+{"lemma": "punch", "category": "action", "reason": "주먹질은 때리기", "batch": 1}
+{"lemma": "punk", "category": "name", "reason": "불량배는 반항아", "batch": 1}
+{"lemma": "pup", "category": "animal", "reason": "강아지는 개 새끼", "batch": 1}
+{"lemma": "pupil", "category": "body", "reason": "동공은 눈의 검은 부분", "batch": 1}
+{"lemma": "puppet", "category": "toy", "reason": "인형극 인형은 조종 인형", "batch": 1}
+{"lemma": "pure", "category": "property", "reason": "순수한은 깨끗함", "batch": 1}
+{"lemma": "purge", "category": "action", "reason": "정화는 깨끗이 함", "batch": 1}
+{"lemma": "purr", "category": "sound", "reason": "그르렁 소리는 고양이 소리", "batch": 1}
+{"lemma": "purse", "category": "object", "reason": "지갑은 돈 넣는 주머니", "batch": 1}
+{"lemma": "push", "category": "action", "reason": "밀기는 앞으로 밈", "batch": 1}
+{"lemma": "putt", "category": "action", "reason": "퍼팅은 골프 가볍게 침", "batch": 1}
+{"lemma": "pygmy", "category": "name", "reason": "피그미는 작은 종족", "batch": 1}
+{"lemma": "quack", "category": "sound", "reason": "꽥꽥 소리는 오리 울음", "batch": 1}
+{"lemma": "quad", "category": "place", "reason": "네모 뜰은 사각형 마당", "batch": 1}
+{"lemma": "quail", "category": "animal", "reason": "메추라기는 작은 새", "batch": 1}
+{"lemma": "quake", "category": "action", "reason": "흔들림은 지진 진동", "batch": 1}
+{"lemma": "qualm", "category": "feeling", "reason": "불안은 걱정되는 마음", "batch": 1}
+{"lemma": "quarry", "category": "place", "reason": "채석장은 돌 캐는 곳", "batch": 1}
+{"lemma": "quart", "category": "quantity", "reason": "쿼트는 부피 단위", "batch": 1}
+{"lemma": "quartz", "category": "material", "reason": "석영은 단단한 광물", "batch": 1}
+{"lemma": "quay", "category": "place", "reason": "부두는 배 대는 곳", "batch": 1}
+{"lemma": "queen", "category": "concept", "reason": "여왕은 여자 왕", "batch": 1}
+{"lemma": "quest", "category": "concept", "reason": "탐구는 찾아 나섬", "batch": 1}
+{"lemma": "queue", "category": "concept", "reason": "줄은 기다리는 열", "batch": 1}
+{"lemma": "quiche", "category": "food", "reason": "키슈는 달걀 파이", "batch": 1}
+{"lemma": "quilt", "category": "object", "reason": "퀼트는 누빈 이불", "batch": 1}
+{"lemma": "quince", "category": "food", "reason": "마르멜로는 과일", "batch": 1}
+{"lemma": "quirk", "category": "concept", "reason": "별남은 특이한 점", "batch": 1}
+{"lemma": "quiver", "category": "object", "reason": "화살통은 화살 넣는 통", "batch": 1}
+{"lemma": "quiz", "category": "concept", "reason": "퀴즈는 질문 놀이", "batch": 1}
+{"lemma": "quota", "category": "quantity", "reason": "할당량은 정해진 양", "batch": 1}
+{"lemma": "quote", "category": "concept", "reason": "인용은 남의 말 따옴", "batch": 1}
+{"lemma": "rabbi", "category": "religion", "reason": "랍비는 유대교 지도자", "batch": 1}
+{"lemma": "raccoon", "category": "animal", "reason": "너구리는 줄무늬 꼬리 동물", "batch": 1}
+{"lemma": "race", "category": "action", "reason": "달리기는 경주", "batch": 1}
+{"lemma": "rack", "category": "object", "reason": "선반은 걸거나 얹는 틀", "batch": 1}
+{"lemma": "radar", "category": "object", "reason": "레이더는 전파 탐지기", "batch": 1}
+{"lemma": "raft", "category": "object", "reason": "뗏목은 통나무 배", "batch": 1}
+{"lemma": "rag", "category": "material", "reason": "걸레는 닦는 천", "batch": 1}
+{"lemma": "rage", "category": "feeling", "reason": "분노는 화난 감정", "batch": 1}
+{"lemma": "rail", "category": "object", "reason": "난간은 붙잡는 가로대", "batch": 1}
+{"lemma": "rain", "category": "weather", "reason": "비는 하늘에서 내리는 물", "batch": 1}
+{"lemma": "raise", "category": "action", "reason": "올리기는 위로 듦", "batch": 1}
+{"lemma": "raisin", "category": "food", "reason": "건포도는 말린 포도", "batch": 1}
+{"lemma": "rake", "category": "tool", "reason": "갈퀴는 긁어모으는 도구", "batch": 1}
+{"lemma": "rally", "category": "action", "reason": "집회는 모이는 행사", "batch": 1}
+{"lemma": "ram", "category": "animal", "reason": "숫양은 양의 수컷", "batch": 1}
+{"lemma": "ramp", "category": "object", "reason": "경사로는 비탈길", "batch": 1}
+{"lemma": "ranch", "category": "place", "reason": "목장은 가축 키우는 곳", "batch": 1}
+{"lemma": "range", "category": "concept", "reason": "범위는 영역", "batch": 1}
+{"lemma": "rank", "category": "concept", "reason": "등급은 순위", "batch": 1}
+{"lemma": "rant", "category": "sound", "reason": "고함은 큰 소리 불평", "batch": 1}
+{"lemma": "rap", "category": "sound", "reason": "톡톡 소리는 가볍게 두드림", "batch": 1}
+{"lemma": "rash", "category": "body", "reason": "발진은 피부 붉은 반점", "batch": 1}
+{"lemma": "rasp", "category": "tool", "reason": "줄은 갈거나 다듬는 도구", "batch": 1}
+{"lemma": "rat", "category": "animal", "reason": "쥐는 작은 설치류", "batch": 1}
+{"lemma": "rate", "category": "concept", "reason": "비율은 정도", "batch": 1}
+{"lemma": "ratio", "category": "concept", "reason": "비율은 비교 값", "batch": 1}
+{"lemma": "rattle", "category": "toy", "reason": "딸랑이는 아기 장난감", "batch": 1}
+{"lemma": "raven", "category": "animal", "reason": "큰까마귀는 검은 새", "batch": 1}
+{"lemma": "raw", "category": "property", "reason": "날것은 익히지 않음", "batch": 1}
+{"lemma": "ray", "category": "nature", "reason": "광선은 빛줄기", "batch": 1}
+{"lemma": "razor", "category": "tool", "reason": "면도기는 털 깎는 도구", "batch": 1}
+{"lemma": "ream", "category": "quantity", "reason": "연은 종이 묶음 단위", "batch": 1}
+{"lemma": "reap", "category": "action", "reason": "수확은 거둠", "batch": 1}
+{"lemma": "rear", "category": "place", "reason": "뒤는 후면", "batch": 1}
+{"lemma": "rebel", "category": "name", "reason": "반역자는 저항하는 사람", "batch": 1}
+{"lemma": "reef", "category": "nature", "reason": "암초는 바다 속 바위", "batch": 1}
+{"lemma": "reel", "category": "object", "reason": "릴은 감는 틀", "batch": 1}
+{"lemma": "regal", "category": "property", "reason": "왕다운은 위엄 있음", "batch": 1}
+{"lemma": "reign", "category": "concept", "reason": "통치는 다스림", "batch": 1}
+{"lemma": "rein", "category": "tool", "reason": "고삐는 말 조종 끈", "batch": 1}
+{"lemma": "relish", "category": "food", "reason": "양념은 맛을 더하는 소스", "batch": 1}
+{"lemma": "rely", "category": "action", "reason": "의지하기는 믿고 맡김", "batch": 1}
+{"lemma": "remix", "category": "culture", "reason": "리믹스는 다시 편곡", "batch": 1}
+{"lemma": "rent", "category": "concept", "reason": "임대료는 빌리는 값", "batch": 1}
+{"lemma": "repel", "category": "action", "reason": "쫓기는 밀쳐냄", "batch": 1}
+{"lemma": "resin", "category": "material", "reason": "수지는 나무 진액", "batch": 1}
+{"lemma": "rest", "category": "action", "reason": "휴식은 쉼", "batch": 1}
+{"lemma": "retch", "category": "action", "reason": "구역질은 토할 듯함", "batch": 1}
+{"lemma": "rev", "category": "sound", "reason": "엔진 소리는 모터 회전음", "batch": 1}
+{"lemma": "rhino", "category": "animal", "reason": "코뿔소는 뿔 있는 동물", "batch": 1}
+{"lemma": "rhyme", "category": "culture", "reason": "운은 시의 각운", "batch": 1}
+{"lemma": "rib", "category": "body", "reason": "갈비뼈는 가슴 뼈", "batch": 1}
+{"lemma": "rice", "category": "food", "reason": "쌀은 주식 곡물", "batch": 1}
+{"lemma": "riddle", "category": "concept", "reason": "수수께끼는 맞히는 문제", "batch": 1}
+{"lemma": "ridge", "category": "nature", "reason": "산등성이는 산의 등줄기", "batch": 1}
+{"lemma": "rift", "category": "concept", "reason": "갈라진 틈은 벌어진 곳", "batch": 1}
+{"lemma": "rig", "category": "object", "reason": "장비는 특수 장치", "batch": 1}
+{"lemma": "right", "category": "concept", "reason": "권리는 당연한 것", "batch": 1}
+{"lemma": "rim", "category": "object", "reason": "테두리는 가장자리", "batch": 1}
+{"lemma": "rind", "category": "food", "reason": "껍질은 과일 겉면", "batch": 1}
+{"lemma": "riot", "category": "concept", "reason": "폭동은 난폭한 소요", "batch": 1}
+{"lemma": "rip", "category": "action", "reason": "찢기는 갈라짐", "batch": 1}
+{"lemma": "ripple", "category": "nature", "reason": "잔물결은 작은 파도", "batch": 1}
+{"lemma": "rise", "category": "action", "reason": "오르기는 위로 감", "batch": 1}
+{"lemma": "risk", "category": "concept", "reason": "위험은 위태로움", "batch": 1}
+{"lemma": "rite", "category": "culture", "reason": "의식은 정해진 행사", "batch": 1}
+{"lemma": "rival", "category": "name", "reason": "경쟁자는 겨루는 상대", "batch": 1}
+{"lemma": "roam", "category": "action", "reason": "돌아다니기는 배회함", "batch": 1}
+{"lemma": "roar", "category": "sound", "reason": "으르렁 소리는 사자 울음", "batch": 1}
+{"lemma": "roast", "category": "action", "reason": "굽기는 오븐에 익힘", "batch": 1}
+{"lemma": "rob", "category": "action", "reason": "훔치기는 빼앗음", "batch": 1}
+{"lemma": "robe", "category": "clothing", "reason": "가운은 긴 옷", "batch": 1}
+{"lemma": "robin", "category": "animal", "reason": "울새는 가슴 붉은 새", "batch": 1}
+{"lemma": "robot", "category": "toy", "reason": "로봇은 기계 장난감", "batch": 1}
+{"lemma": "rock", "category": "nature", "reason": "바위는 큰 돌", "batch": 1}
+{"lemma": "rocket", "category": "object", "reason": "로켓은 우주선 발사체", "batch": 1}
+{"lemma": "rod", "category": "object", "reason": "막대는 가는 막대기", "batch": 1}
+{"lemma": "rodent", "category": "animal", "reason": "설치류는 쥐 종류", "batch": 1}
+{"lemma": "rodeo", "category": "culture", "reason": "로데오는 카우보이 경기", "batch": 1}
+{"lemma": "roe", "category": "food", "reason": "어란은 물고기 알", "batch": 1}
+{"lemma": "rogue", "category": "name", "reason": "악당은 나쁜 사람", "batch": 1}
+{"lemma": "role", "category": "concept", "reason": "역할은 맡은 일", "batch": 1}
+{"lemma": "roll", "category": "action", "reason": "구르기는 돌아감", "batch": 1}
+{"lemma": "romp", "category": "action", "reason": "뛰놀기는 즐겁게 놈", "batch": 1}
+{"lemma": "roof", "category": "object", "reason": "지붕은 집 꼭대기", "batch": 1}
+{"lemma": "rook", "category": "toy", "reason": "룩은 체스 말", "batch": 1}
+{"lemma": "room", "category": "place", "reason": "방은 공간", "batch": 1}
+{"lemma": "roost", "category": "object", "reason": "횃대는 새가 앉는 곳", "batch": 1}
+{"lemma": "root", "category": "plant", "reason": "뿌리는 식물 밑부분", "batch": 1}
+{"lemma": "rope", "category": "object", "reason": "밧줄은 굵은 끈", "batch": 1}
+{"lemma": "rose", "category": "plant", "reason": "장미는 예쁜 꽃", "batch": 1}
+{"lemma": "rot", "category": "action", "reason": "썩기는 부패함", "batch": 1}
+{"lemma": "rouge", "category": "material", "reason": "연지는 붉은 화장품", "batch": 1}
+{"lemma": "round", "category": "property", "reason": "둥근은 원 모양", "batch": 1}
+{"lemma": "rout", "category": "action", "reason": "패주는 도망침", "batch": 1}
+{"lemma": "rove", "category": "action", "reason": "방랑은 떠돌아다님", "batch": 1}
+{"lemma": "row", "category": "action", "reason": "노 젓기는 배를 저음", "batch": 1}
+{"lemma": "rub", "category": "action", "reason": "문지르기는 비빔", "batch": 1}
+{"lemma": "ruby", "category": "material", "reason": "루비는 빨간 보석", "batch": 1}
+{"lemma": "rudder", "category": "object", "reason": "키는 방향 조종판", "batch": 1}
+{"lemma": "ruff", "category": "clothing", "reason": "주름 깃은 목 장식", "batch": 1}
+{"lemma": "rug", "category": "object", "reason": "깔개는 바닥에 까는 천", "batch": 1}
+{"lemma": "ruin", "category": "concept", "reason": "폐허는 무너진 곳", "batch": 1}
+{"lemma": "rule", "category": "concept", "reason": "규칙은 지켜야 할 것", "batch": 1}
+{"lemma": "rum", "category": "food", "reason": "럼은 사탕수수 술", "batch": 1}
+{"lemma": "rump", "category": "body", "reason": "엉덩이는 뒤쪽 살", "batch": 1}
+{"lemma": "rune", "category": "concept", "reason": "룬 문자는 옛날 글자", "batch": 1}

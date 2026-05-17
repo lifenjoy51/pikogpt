@@ -57,6 +57,9 @@ def main():
         ("stories.txt", None),
         ("dialogues.txt", None),
         ("wiki.txt", normalize_wiki_line),
+        ("cause_seq.txt", None),
+        ("chained.txt", None),
+        ("counting.txt", None),
     ]:
         path = RAW / name
         if not path.exists():
@@ -71,7 +74,7 @@ def main():
                     line = transform(line)
                     if not line:
                         continue
-                records.append(line)
+                records.append(f"<|bos|> {line} <|eos|>")
                 n += 1
             counts[name] = n
 

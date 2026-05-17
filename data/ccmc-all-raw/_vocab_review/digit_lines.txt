@@ -1,0 +1,39 @@
+=== lemma_sentences.txt ===
+L19: The address is on the envelope. I can write my address on the package. I remember my address. My friend's address is long. I told the mail carrier the address. I will put the address on the box. The h
+L90: April is my favorite month. I like April a lot. My birthday is in April. In April, we go to the park. It rains often in April. April days get longer. April is a month in spring. April days can be warm
+L92: Arabic numerals help us count. I write arabic numerals on my paper. This is an arabic numeral: 5. Arabic numerals, Roman numerals, and words are all ways to write numbers. Arabic numerals, plus sign, 
+L461: The discrete blocks are in the box. I like discrete pieces of fruit in my bowl. This is a discrete button, not a long zipper. Count the discrete steps from the door to the bed. Are these discrete bead
+L480: The dollar is on the table. I have a dollar in my hand. My dollar is green. I give a dollar to the cashier. She gave me a dollar. This is my dollar. The dollar's value is one hundred cents. I need a d
+=== stories.txt ===
+L738: I see a new dimensional picture in my book. The picture looks 3D and cool. I see the dimensional lines and shapes. My dad shows me a new way to see dimensional things. The new dimensional picture is f
+L775: I must remember my phone number. It is important to know it. I wrote the number on a paper to help me remember. The number is 555 - 1234. Remembering it is important for safety. Now I can call my mom 
+L1339: I help Mom make cookies. She says to turn the oven on to 350 degrees. After the oven is hot, we put the cookies inside. Then we wait until the oven says they are ready. When the timer goes off, we tur
+L1408: We learn about prime numbers in school. Prime numbers are numbers like 2, 3, and 5. It is important to know what a prime is. We learn that prime numbers have only two factors. The teacher says prime n
+L1585: My grandpa says age is just a number. He feels young even at age 70. Every day he feels happy and plays with me. I feel that age does not matter. He is young at heart. We feel lucky to have him.
+=== dialogues.txt ===
+L49: Who was Abraham Lincoln? <|turn|> Abraham Lincoln was the 16th president of the United States.
+L53: When did Abraham Lincoln live? <|turn|> Abraham Lincoln lived a long time ago, in the 1800s.
+L61: When was the Achaemenid Empire strong? <|turn|> The Achaemenid Empire was strong a very long time ago, more than 2000 years.
+L87: When did Adolf Hitler live? <|turn|> Adolf Hitler lived in the 1900s, around the time of your great-grandparents.
+L274: How many letters are in the alphabet? <|turn|> There are 26 letters in the alphabet.
+=== wiki.txt ===
+L2: South America\n\nSouth America is a big piece of land on Earth. It is south of North America. There are 12 countries in South America. Some of them are Brazil, Argentina, and Peru. The Amazon rain for
+L13: Leap year\n\nA leap year is a year with one extra day. Most years have 365 days, but a leap year has 366 days. The extra day is added to February, so February has 29 days instead of 28. We have leap y
+L14: Launch vehicle\n\nA launch vehicle is a big rocket that carries things from Earth up into space. It can take things like satellites or people to other places in space. Some launch vehicles can only be
+L15: Grill (cooking)\n\nA grill is a thing people use to cook food outside. Some grills burn wood or charcoal, and that makes smoke that gives the food a special taste. Other grills use gas. The heat can c
+L22: London Underground\n\nThe London Underground is a train system that runs under the ground in London. It is the oldest underground train system in the world. It started in 1863. Even though it is calle
+=== cause_seq.txt ===
+L3: First, you put on special glasses. Then, the picture looks like it pops out. So you can see things in 3D.
+L39: First, you have 2 blocks. Then, you add 1 more block. Last, you have 3 blocks.
+L41: If a person plays video games all day, he might get an addiction. So his family sets a timer for game time. First, he plays for 30 minutes. Then, the timer rings and he stops. Last, he goes outside to
+L221: First, we learn the numbers 1, 2, and 3. Then, we practice writing them on paper. Last, we can count toys using arabic numerals.
+L339: First, you set up the board with 15 checkers each. Then, you roll the dice and move your checkers. If you land on an opponent's checker, you send it back to the start. Last, you race to get all your c
+=== chained.txt ===
+L2: Lily listened to 20th-century classical music on her small radio. She tapped her foot to the fast piano sounds. It made her feel like dancing around the room. She closed her eyes and let the music fil
+L3: Tom got a pair of 3D glasses for his birthday. He put them on to watch a movie about dinosaurs. The dinosaurs looked like they were right in front of him. He reached out to touch one, but his hand wen
+L44: Lily found a small paper with an address on it. She asked her mom to help her read it. The address said 123 Maple Street. Lily walked to that street with her mom. She saw a red door at that address. A
+L507: Lily played bingo with her grandma on a rainy day. She held her bingo card tight and looked at the numbers. Grandma called out "B-7," and Lily put a red chip on it. She smiled when she saw three chips
+L728: Lily got a small calculator from her dad. She pressed the buttons and watched the numbers pop up. It helped her count her toy cars. She pushed 2 plus 3 and saw 5 on the screen. It made her feel very s
+=== counting.txt ===
+L1233: There are two tall mountains called K2. One mountain is very high. Two mountains are fewer than ten mountains in the range.
+L1873: I see four place values in the number 1234. The first place value is one thousand. The last place value is four ones. One thousand is more than four ones. Altogether, they make the number 1234.

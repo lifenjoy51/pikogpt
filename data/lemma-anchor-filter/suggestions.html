@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8">
+<title>Lemma Anchor Suggestions — 기존 3047개에 없는 신규 추천</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 16px; color: #1f2937; }
+  h1 { font-size: 18px; margin: 0 0 12px 0; }
+  .summary { display: flex; gap: 16px; margin-bottom: 12px; padding: 10px 14px; background: #f3f4f6; border-radius: 6px; font-size: 13px; flex-wrap: wrap; }
+  .summary .stat b { font-size: 16px; margin-right: 4px; }
+  .cats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 12px; max-width: 900px; }
+  .bar { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+  .bar-label { width: 90px; color: #444; }
+  .bar-fill { background: #93c5fd; padding: 2px 6px; border-radius: 3px; color: #1e3a8a; text-align: right; min-width: 24px; }
+  .filters { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; align-items: center; font-size: 13px; }
+  input[type=text] { padding: 6px 10px; width: 260px; font-size: 13px; }
+  select { padding: 6px; font-size: 13px; }
+  button { padding: 5px 10px; cursor: pointer; font-size: 12px; border: 1px solid #d1d5db; background: white; border-radius: 4px; }
+  button.primary { background: #2563eb; color: white; border-color: #2563eb; }
+  #count { margin-left: auto; color: #6b7280; font-size: 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { padding: 6px 8px; border-bottom: 1px solid #eee; vertical-align: middle; text-align: left; }
+  th { background: #f9fafb; cursor: pointer; user-select: none; }
+  .lemma { font-weight: 500; font-family: ui-monospace, monospace; }
+  .cat { background: #e0e7ff; color: #3730a3; padding: 1px 5px; border-radius: 3px; font-size: 11px; }
+  .reason { color: #374151; }
+  tr.kept { background: #ecfdf5; }
+  tr.rejected { background: #fef2f2; opacity: 0.5; }
+  #output { margin-top: 12px; padding: 10px; background: #f3f4f6; border-radius: 6px; font-family: ui-monospace, monospace; font-size: 12px; white-space: pre-wrap; max-height: 200px; overflow: auto; }
+</style></head><body>
+
+<h1>Lemma Anchor Suggestions — 기존 3,047개에 없는 신규 추천</h1>
+
+<div class="summary">
+  <div class="stat"><b>63</b> suggestions</div>
+  <div class="stat">23 categories</div>
+  <div class="stat">model: deepseek-v4-flash (1 batch, requested 1000, returned 104→63 unique)</div>
+</div>
+
+<div class="cats"><div class="bar"><span class="bar-label">animal</span><span class="bar-fill" style="width:100.0%">6</span></div><div class="bar"><span class="bar-label">plant</span><span class="bar-fill" style="width:66.7%">4</span></div><div class="bar"><span class="bar-label">body</span><span class="bar-fill" style="width:66.7%">4</span></div><div class="bar"><span class="bar-label">object</span><span class="bar-fill" style="width:66.7%">4</span></div><div class="bar"><span class="bar-label">place</span><span class="bar-fill" style="width:66.7%">4</span></div><div class="bar"><span class="bar-label">family</span><span class="bar-fill" style="width:66.7%">4</span></div><div class="bar"><span class="bar-label">nature</span><span class="bar-fill" style="width:50.0%">3</span></div><div class="bar"><span class="bar-label">weather</span><span class="bar-fill" style="width:50.0%">3</span></div><div class="bar"><span class="bar-label">tool</span><span class="bar-fill" style="width:50.0%">3</span></div><div class="bar"><span class="bar-label">toy</span><span class="bar-fill" style="width:50.0%">3</span></div><div class="bar"><span class="bar-label">time</span><span class="bar-fill" style="width:50.0%">3</span></div><div class="bar"><span class="bar-label">religion</span><span class="bar-fill" style="width:50.0%">3</span></div><div class="bar"><span class="bar-label">food</span><span class="bar-fill" style="width:33.3%">2</span></div><div class="bar"><span class="bar-label">feeling</span><span class="bar-fill" style="width:33.3%">2</span></div><div class="bar"><span class="bar-label">property</span><span class="bar-fill" style="width:33.3%">2</span></div><div class="bar"><span class="bar-label">clothing</span><span class="bar-fill" style="width:33.3%">2</span></div><div class="bar"><span class="bar-label">job</span><span class="bar-fill" style="width:33.3%">2</span></div><div class="bar"><span class="bar-label">concept</span><span class="bar-fill" style="width:33.3%">2</span></div><div class="bar"><span class="bar-label">name</span><span class="bar-fill" style="width:33.3%">2</span></div><div class="bar"><span class="bar-label">other</span><span class="bar-fill" style="width:33.3%">2</span></div><div class="bar"><span class="bar-label">manner</span><span class="bar-fill" style="width:16.7%">1</span></div><div class="bar"><span class="bar-label">quantity</span><span class="bar-fill" style="width:16.7%">1</span></div><div class="bar"><span class="bar-label">culture</span><span class="bar-fill" style="width:16.7%">1</span></div></div>
+
+<div class="filters">
+  <input id="q" placeholder="lemma / reason 검색...">
+  <select id="cat"><option value="">all categories</option></select>
+  <button id="keepAll">전체 KEEP</button>
+  <button id="clearAll">전체 해제</button>
+  <button id="export" class="primary">선택 export (clipboard)</button>
+  <span id="count"></span>
+</div>
+
+<table id="tbl">
+  <thead><tr>
+    <th>KEEP</th>
+    <th data-sort="lemma">lemma</th>
+    <th data-sort="category">category</th>
+    <th data-sort="reason">reason</th>
+  </tr></thead>
+  <tbody></tbody>
+</table>
+
+<div id="output"></div>
+
+<script>
+const ROWS = [{"lemma": "elk", "category": "animal", "reason": "큰사슴, 5세 수준 동물 어휘"}, {"lemma": "mule", "category": "animal", "reason": "노새, 어린이에게 친숙한 동물"}, {"lemma": "cricket", "category": "animal", "reason": "귀뚜라미, 흔한 곤충 이름"}, {"lemma": "parakeet", "category": "animal", "reason": "잉꼬, 반려조로 잘 알려짐"}, {"lemma": "starling", "category": "animal", "reason": "찌르레기, 흔한 새 이름"}, {"lemma": "tadpole", "category": "animal", "reason": "올챙이, 동물 성장 과정 어휘"}, {"lemma": "vine", "category": "plant", "reason": "덩굴식물, 자연 어휘 확장"}, {"lemma": "thistle", "category": "plant", "reason": "엉겅퀴, 가시 있는 식물"}, {"lemma": "fern", "category": "plant", "reason": "고사리, 흔한 식물 이름"}, {"lemma": "iris", "category": "plant", "reason": "붓꽃, 꽃 이름 배우기"}, {"lemma": "eyelash", "category": "body", "reason": "속눈썹, 세부 신체 부위"}, {"lemma": "knuckle", "category": "body", "reason": "손가락 마디, 신체 어휘"}, {"lemma": "hip", "category": "body", "reason": "엉덩이, 신체 부위 명칭"}, {"lemma": "nostril", "category": "body", "reason": "콧구멍, 코의 세부 명칭"}, {"lemma": "cliff", "category": "nature", "reason": "절벽, 자연 지형 어휘"}, {"lemma": "creek", "category": "nature", "reason": "개울, 작은 물줄기"}, {"lemma": "meadow", "category": "nature", "reason": "초원, 넓은 들판"}, {"lemma": "drizzle", "category": "weather", "reason": "이슬비, 날씨 표현 확장"}, {"lemma": "thunderstorm", "category": "weather", "reason": "뇌우, 강한 날씨 현상"}, {"lemma": "blizzard", "category": "weather", "reason": "눈보라, 강한 눈 날씨"}, {"lemma": "hairbrush", "category": "object", "reason": "헤어브러시, 일상용품"}, {"lemma": "broom", "category": "object", "reason": "빗자루, 청소 도구"}, {"lemma": "mug", "category": "object", "reason": "머그컵, 음료 용기"}, {"lemma": "toaster", "category": "object", "reason": "토스터기, 주방 가전"}, {"lemma": "oatmeal", "category": "food", "reason": "오트밀, 아침 식사 음식"}, {"lemma": "pretzel", "category": "food", "reason": "프레즐, 간식 종류"}, {"lemma": "parlor", "category": "place", "reason": "응접실, 장소 이름 확장"}, {"lemma": "dock", "category": "place", "reason": "부두, 항구 시설"}, {"lemma": "playpen", "category": "place", "reason": "놀이방 울타리, 아기 공간"}, {"lemma": "nursery", "category": "place", "reason": "보육원, 어린이 장소"}, {"lemma": "nephew", "category": "family", "reason": "조카, 가족 관계 어휘"}, {"lemma": "niece", "category": "family", "reason": "조카딸, 가족 관계 어휘"}, {"lemma": "in-law", "category": "family", "reason": "사돈, 가족 관계 확장"}, {"lemma": "stepmother", "category": "family", "reason": "새어머니, 가족 구성원"}, {"lemma": "lonely", "category": "feeling", "reason": "외로운, 감정 표현"}, {"lemma": "grateful", "category": "feeling", "reason": "감사한, 긍정 감정"}, {"lemma": "sparkly", "category": "property", "reason": "반짝이는, 사물 특징"}, {"lemma": "sturdy", "category": "property", "reason": "튼튼한, 사물 특징"}, {"lemma": "vest", "category": "clothing", "reason": "조끼, 옷 종류"}, {"lemma": "sandal", "category": "clothing", "reason": "샌들, 신발 종류"}, {"lemma": "tongs", "category": "tool", "reason": "집게, 부엌 도구"}, {"lemma": "strainer", "category": "tool", "reason": "체, 주방 도구"}, {"lemma": "ladle", "category": "tool", "reason": "국자, 요리 도구"}, {"lemma": "pogo", "category": "toy", "reason": "포고스틱, 장난감 이름"}, {"lemma": "jump rope", "category": "toy", "reason": "줄넘기, 놀이 도구"}, {"lemma": "slingshot", "category": "toy", "reason": "새총, 장난감 종류"}, {"lemma": "politely", "category": "manner", "reason": "예의 바르게, 행동 방식"}, {"lemma": "dozen", "category": "quantity", "reason": "12개, 수량 단위"}, {"lemma": "dawn", "category": "time", "reason": "새벽, 시간 표현"}, {"lemma": "dusk", "category": "time", "reason": "해질녘, 시간 표현"}, {"lemma": "midnight", "category": "time", "reason": "자정, 시간 표현"}, {"lemma": "plumber", "category": "job", "reason": "배관공, 직업 이름"}, {"lemma": "carpenter", "category": "job", "reason": "목수, 직업 이름"}, {"lemma": "courage", "category": "concept", "reason": "용기, 추상 명사"}, {"lemma": "patience", "category": "concept", "reason": "인내, 추상 개념"}, {"lemma": "lantern", "category": "culture", "reason": "등불, 문화적 물건"}, {"lemma": "altar", "category": "religion", "reason": "제단, 종교 관련 어휘"}, {"lemma": "sermon", "category": "religion", "reason": "설교, 종교 활동"}, {"lemma": "chant", "category": "religion", "reason": "성가, 종교 의식"}, {"lemma": "bob", "category": "name", "reason": "밥, 흔한 영어 이름"}, {"lemma": "tim", "category": "name", "reason": "팀, 흔한 영어 이름"}, {"lemma": "snore", "category": "other", "reason": "코골다, 잠자는 소리"}, {"lemma": "stomp", "category": "other", "reason": "쿵쿵 밟다, 행동"}];
+const tbody = document.querySelector("#tbl tbody");
+const countEl = document.querySelector("#count");
+const qInput = document.querySelector("#q");
+const catSel = document.querySelector("#cat");
+const out = document.querySelector("#output");
+
+const cats = [...new Set(ROWS.map(r => r.category).filter(Boolean))].sort();
+for (const c of cats) {
+  const o = document.createElement("option"); o.value = c; o.textContent = c; catSel.appendChild(o);
+}
+
+const kept = new Set(ROWS.map(r => r.lemma));  // 기본 전체 keep (사용자가 reject만 표시)
+let sortKey = "category", sortDesc = false;
+
+function render() {
+  const q = qInput.value.trim().toLowerCase();
+  const cat = catSel.value;
+  const filtered = ROWS.filter(r => {
+    if (cat && r.category !== cat) return false;
+    if (q && !(r.lemma + " " + r.category + " " + r.reason).toLowerCase().includes(q)) return false;
+    return true;
+  });
+  filtered.sort((a, b) => {
+    const av = a[sortKey] || "", bv = b[sortKey] || "";
+    const r = String(av).localeCompare(String(bv));
+    return sortDesc ? -r : r;
+  });
+  tbody.innerHTML = filtered.map(r => {
+    const k = kept.has(r.lemma);
+    return `<tr class="${k ? 'kept' : 'rejected'}">
+      <td><input type="checkbox" data-lemma="${r.lemma}" ${k ? 'checked' : ''}></td>
+      <td class="lemma">${r.lemma}</td>
+      <td><span class="cat">${r.category || ''}</span></td>
+      <td class="reason">${r.reason || ''}</td>
+    </tr>`;
+  }).join("");
+  for (const cb of tbody.querySelectorAll('input[type=checkbox]')) {
+    cb.addEventListener("change", () => {
+      const l = cb.dataset.lemma;
+      if (cb.checked) kept.add(l); else kept.delete(l);
+      cb.closest("tr").className = cb.checked ? "kept" : "rejected";
+      updateCount();
+    });
+  }
+  updateCount();
+}
+
+function updateCount() {
+  countEl.textContent = `${kept.size}/${ROWS.length} kept`;
+}
+
+qInput.addEventListener("input", render);
+catSel.addEventListener("change", render);
+document.querySelector("#keepAll").addEventListener("click", () => { ROWS.forEach(r => kept.add(r.lemma)); render(); });
+document.querySelector("#clearAll").addEventListener("click", () => { kept.clear(); render(); });
+document.querySelector("#export").addEventListener("click", () => {
+  const list = ROWS.filter(r => kept.has(r.lemma)).map(r => r.lemma);
+  const text = list.join(" ");
+  navigator.clipboard.writeText(text).then(() => {
+    out.textContent = `${list.length} lemmas copied to clipboard:\n${text}`;
+  });
+});
+
+for (const th of document.querySelectorAll("th[data-sort]")) {
+  th.addEventListener("click", () => {
+    const k = th.dataset.sort;
+    if (sortKey === k) sortDesc = !sortDesc; else { sortKey = k; sortDesc = false; }
+    render();
+  });
+}
+render();
+</script>
+</body></html>

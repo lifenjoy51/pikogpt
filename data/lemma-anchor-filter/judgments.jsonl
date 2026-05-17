@@ -1,0 +1,1330 @@
+{"id": 1, "lemma": "ben", "keep": false, "category": null, "reason": "특정 인명", "freq": 160}
+{"id": 2, "lemma": "private", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 12}
+{"id": 3, "lemma": "abstract", "keep": false, "category": null, "reason": "추상적 개념", "freq": 33}
+{"id": 4, "lemma": "plat", "keep": false, "category": null, "reason": "드문 단어", "freq": 228}
+{"id": 5, "lemma": "lick", "keep": true, "category": "action", "reason": "핥기, 일상 동작", "freq": 35}
+{"id": 6, "lemma": "clap", "keep": true, "category": "action", "reason": "박수, 쉬운 동작", "freq": 343}
+{"id": 7, "lemma": "string", "keep": true, "category": "object", "reason": "끈, 구체적 사물", "freq": 118}
+{"id": 8, "lemma": "sat", "keep": false, "category": null, "reason": "sit의 과거형", "freq": 634}
+{"id": 9, "lemma": "caterpillar", "keep": true, "category": "animal", "reason": "애벌레, 그림책 흔함", "freq": 19}
+{"id": 10, "lemma": "invisible", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 15}
+{"id": 11, "lemma": "cough", "keep": true, "category": "action", "reason": "기침, 일상 행동", "freq": 116}
+{"id": 12, "lemma": "sip", "keep": true, "category": "action", "reason": "조금 마시기", "freq": 26}
+{"id": 13, "lemma": "shopkeeper", "keep": true, "category": "other", "reason": "가게 주인", "freq": 14}
+{"id": 14, "lemma": "leader", "keep": false, "category": null, "reason": "추상적 직함", "freq": 193}
+{"id": 15, "lemma": "clown", "keep": true, "category": "other", "reason": "광대, 친숙함", "freq": 116}
+{"id": 16, "lemma": "kid", "keep": true, "category": "family", "reason": "아이, 일상어", "freq": 1714}
+{"id": 17, "lemma": "british", "keep": false, "category": null, "reason": "국적, 추상적", "freq": 65}
+{"id": 18, "lemma": "llama", "keep": true, "category": "animal", "reason": "라마, 동물원 동물", "freq": 11}
+{"id": 19, "lemma": "spread", "keep": true, "category": "action", "reason": "펴다/바르다", "freq": 56}
+{"id": 20, "lemma": "explain", "keep": false, "category": null, "reason": "추상적 동사", "freq": 113}
+{"id": 21, "lemma": "classmate", "keep": true, "category": "other", "reason": "반 친구", "freq": 10}
+{"id": 22, "lemma": "giraffe", "keep": true, "category": "animal", "reason": "기린, 유명 동물", "freq": 47}
+{"id": 23, "lemma": "cloth", "keep": true, "category": "object", "reason": "천, 구체적 사물", "freq": 416}
+{"id": 24, "lemma": "blew", "keep": false, "category": null, "reason": "blow의 과거형", "freq": 31}
+{"id": 25, "lemma": "beak", "keep": true, "category": "body", "reason": "새 부리", "freq": 23}
+{"id": 26, "lemma": "hammer", "keep": true, "category": "tool", "reason": "망치, 도구", "freq": 70}
+{"id": 27, "lemma": "zip", "keep": true, "category": "action", "reason": "지퍼 잠그기", "freq": 13}
+{"id": 28, "lemma": "slimy", "keep": true, "category": "property", "reason": "끈적한 느낌", "freq": 15}
+{"id": 29, "lemma": "tale", "keep": true, "category": "other", "reason": "이야기, 동화", "freq": 127}
+{"id": 30, "lemma": "feet", "keep": false, "category": null, "reason": "foot의 복수형", "freq": 500}
+{"id": 31, "lemma": "palace", "keep": true, "category": "place", "reason": "궁전, 동화 속 장소", "freq": 29}
+{"id": 32, "lemma": "stiff", "keep": true, "category": "property", "reason": "뻣뻣한 느낌", "freq": 12}
+{"id": 33, "lemma": "harbor", "keep": true, "category": "place", "reason": "항구, 장소", "freq": 10}
+{"id": 34, "lemma": "cave", "keep": true, "category": "place", "reason": "동굴, 장소", "freq": 72}
+{"id": 35, "lemma": "mommy", "keep": true, "category": "family", "reason": "엄마 호칭", "freq": 54}
+{"id": 36, "lemma": "lip", "keep": true, "category": "body", "reason": "입술, 신체 부위", "freq": 18}
+{"id": 37, "lemma": "hike", "keep": true, "category": "action", "reason": "걷기/등산", "freq": 10}
+{"id": 38, "lemma": "discussion", "keep": false, "category": null, "reason": "추상적 개념", "freq": 27}
+{"id": 39, "lemma": "keeper", "keep": false, "category": null, "reason": "직업, 추상적", "freq": 12}
+{"id": 40, "lemma": "subtract", "keep": false, "category": null, "reason": "수학 용어", "freq": 14}
+{"id": 41, "lemma": "surprise", "keep": true, "category": "feeling", "reason": "놀람, 감정", "freq": 85}
+{"id": 42, "lemma": "sign", "keep": true, "category": "object", "reason": "표지판, 구체적", "freq": 273}
+{"id": 43, "lemma": "slowly", "keep": false, "category": null, "reason": "부사, 앵커 부적합", "freq": 963}
+{"id": 44, "lemma": "lobster", "keep": true, "category": "animal", "reason": "바닷가재", "freq": 14}
+{"id": 45, "lemma": "church", "keep": true, "category": "place", "reason": "교회, 장소", "freq": 297}
+{"id": 46, "lemma": "tractor", "keep": true, "category": "object", "reason": "트랙터, 탈것", "freq": 61}
+{"id": 47, "lemma": "poem", "keep": true, "category": "other", "reason": "시, 짧은 글", "freq": 42}
+{"id": 48, "lemma": "cartoon", "keep": true, "category": "other", "reason": "만화, 친숙함", "freq": 94}
+{"id": 49, "lemma": "watermelon", "keep": true, "category": "food", "reason": "수박, 과일", "freq": 21}
+{"id": 50, "lemma": "blow", "keep": true, "category": "action", "reason": "불다, 동작", "freq": 191}
+{"id": 51, "lemma": "collection", "keep": false, "category": null, "reason": "추상적 개념", "freq": 26}
+{"id": 52, "lemma": "trunk", "keep": true, "category": "body", "reason": "코끼리 코/나무 줄기", "freq": 43}
+{"id": 53, "lemma": "ant", "keep": true, "category": "animal", "reason": "개미, 흔한 곤충", "freq": 117}
+{"id": 54, "lemma": "wipe", "keep": true, "category": "action", "reason": "닦기, 일상 동작", "freq": 43}
+{"id": 55, "lemma": "ours", "keep": false, "category": null, "reason": "대명사, 앵커 부적합", "freq": 23}
+{"id": 56, "lemma": "pain", "keep": true, "category": "feeling", "reason": "아픔, 감정", "freq": 62}
+{"id": 57, "lemma": "bhagavad", "keep": false, "category": null, "reason": "종교 용어", "freq": 56}
+{"id": 58, "lemma": "bill", "keep": false, "category": null, "reason": "다의어, 추상적", "freq": 39}
+{"id": 59, "lemma": "shin", "keep": true, "category": "body", "reason": "정강이, 신체 부위", "freq": 207}
+{"id": 60, "lemma": "ding", "keep": false, "category": null, "reason": "의성어, 앵커 부적합", "freq": 22}
+{"id": 61, "lemma": "coach", "keep": false, "category": null, "reason": "추상적 직업", "freq": 52}
+{"id": 62, "lemma": "monk", "keep": false, "category": null, "reason": "종교적 직업", "freq": 28}
+{"id": 63, "lemma": "trumpet", "keep": true, "category": "object", "reason": "트럼펫, 악기", "freq": 23}
+{"id": 64, "lemma": "jam", "keep": true, "category": "food", "reason": "잼, 음식", "freq": 28}
+{"id": 65, "lemma": "camp", "keep": true, "category": "place", "reason": "캠프, 장소", "freq": 31}
+{"id": 66, "lemma": "onto", "keep": false, "category": null, "reason": "전치사, 앵커 부적합", "freq": 55}
+{"id": 67, "lemma": "splash", "keep": true, "category": "action", "reason": "튀기다, 동작", "freq": 83}
+{"id": 68, "lemma": "friedrich", "keep": false, "category": null, "reason": "특정 인명", "freq": 12}
+{"id": 69, "lemma": "beam", "keep": true, "category": "object", "reason": "광선/들보", "freq": 14}
+{"id": 70, "lemma": "pilot", "keep": true, "category": "other", "reason": "조종사, 직업", "freq": 17}
+{"id": 71, "lemma": "smile", "keep": true, "category": "feeling", "reason": "미소, 흔한 표정", "freq": 3245}
+{"id": 72, "lemma": "ottoman", "keep": false, "category": null, "reason": "역사 용어", "freq": 20}
+{"id": 73, "lemma": "loudly", "keep": false, "category": null, "reason": "부사, 앵커 부적합", "freq": 19}
+{"id": 74, "lemma": "scissor", "keep": true, "category": "tool", "reason": "가위, 도구", "freq": 71}
+{"id": 75, "lemma": "pull", "keep": true, "category": "action", "reason": "당기기, 동작", "freq": 390}
+{"id": 76, "lemma": "bitter", "keep": true, "category": "property", "reason": "쓴 맛", "freq": 32}
+{"id": 77, "lemma": "length", "keep": false, "category": null, "reason": "추상적 측정", "freq": 25}
+{"id": 78, "lemma": "mushroom", "keep": true, "category": "plant", "reason": "버섯, 식물", "freq": 15}
+{"id": 79, "lemma": "hola", "keep": false, "category": null, "reason": "외국어 인사", "freq": 21}
+{"id": 80, "lemma": "fort", "keep": true, "category": "place", "reason": "요새, 장소", "freq": 74}
+{"id": 81, "lemma": "ceiling", "keep": true, "category": "object", "reason": "천장, 구체적", "freq": 47}
+{"id": 82, "lemma": "wet", "keep": true, "category": "property", "reason": "젖은 상태", "freq": 815}
+{"id": 83, "lemma": "kill", "keep": false, "category": null, "reason": "민감한 단어", "freq": 16}
+{"id": 84, "lemma": "stock", "keep": false, "category": null, "reason": "추상적, 다의어", "freq": 211}
+{"id": 85, "lemma": "stone", "keep": true, "category": "object", "reason": "돌, 구체적 사물", "freq": 826}
+{"id": 86, "lemma": "fizz", "keep": true, "category": "sound", "reason": "쉭쉭 소리", "freq": 17}
+{"id": 87, "lemma": "pal", "keep": true, "category": "family", "reason": "친구, 일상어", "freq": 11}
+{"id": 88, "lemma": "gran", "keep": true, "category": "family", "reason": "할머니 호칭", "freq": 16}
+{"id": 89, "lemma": "already", "keep": false, "category": null, "reason": "부사, 앵커 부적합", "freq": 54}
+{"id": 90, "lemma": "pat", "keep": true, "category": "action", "reason": "토닥이다, 동작", "freq": 22}
+{"id": 91, "lemma": "height", "keep": false, "category": null, "reason": "추상적 측정", "freq": 27}
+{"id": 92, "lemma": "painter", "keep": true, "category": "other", "reason": "화가, 직업", "freq": 67}
+{"id": 93, "lemma": "invention", "keep": false, "category": null, "reason": "추상적 개념", "freq": 10}
+{"id": 94, "lemma": "carefully", "keep": false, "category": null, "reason": "부사, 앵커 부적합", "freq": 317}
+{"id": 95, "lemma": "scrub", "keep": true, "category": "action", "reason": "문지르다, 동작", "freq": 10}
+{"id": 96, "lemma": "pretend", "keep": true, "category": "action", "reason": "가장하다, 놀이", "freq": 88}
+{"id": 97, "lemma": "arabia", "keep": false, "category": null, "reason": "지역명, 추상적", "freq": 42}
+{"id": 98, "lemma": "barn", "keep": true, "category": "place", "reason": "헛간, 장소", "freq": 79}
+{"id": 99, "lemma": "crayon", "keep": true, "category": "toy", "reason": "크레용, 장난감", "freq": 597}
+{"id": 100, "lemma": "sandcastle", "keep": true, "category": "object", "reason": "모래성, 놀이", "freq": 91}
+{"id": 101, "lemma": "remove", "keep": false, "category": null, "reason": "추상적 동사", "freq": 15}
+{"id": 102, "lemma": "straight", "keep": true, "category": "property", "reason": "곧은, 성질", "freq": 196}
+{"id": 103, "lemma": "performance", "keep": false, "category": null, "reason": "추상적 개념", "freq": 34}
+{"id": 104, "lemma": "turtle", "keep": true, "category": "animal", "reason": "거북이, 동물", "freq": 92}
+{"id": 105, "lemma": "ink", "keep": true, "category": "object", "reason": "잉크, 물질", "freq": 22}
+{"id": 106, "lemma": "lava", "keep": true, "category": "nature", "reason": "용암, 자연 현상", "freq": 32}
+{"id": 107, "lemma": "stack", "keep": true, "category": "object", "reason": "쌓인 더미", "freq": 29}
+{"id": 108, "lemma": "gita", "keep": false, "category": null, "reason": "종교 경전", "freq": 56}
+{"id": 109, "lemma": "composer", "keep": false, "category": null, "reason": "추상적 직업", "freq": 20}
+{"id": 110, "lemma": "stir", "keep": true, "category": "action", "reason": "젓다, 동작", "freq": 79}
+{"id": 111, "lemma": "journey", "keep": true, "category": "action", "reason": "여행, 경험", "freq": 28}
+{"id": 112, "lemma": "straw", "keep": true, "category": "object", "reason": "빨대, 구체적", "freq": 17}
+{"id": 113, "lemma": "whale", "keep": true, "category": "animal", "reason": "고래, 유명 동물", "freq": 56}
+{"id": 114, "lemma": "worth", "keep": false, "category": null, "reason": "추상적 개념", "freq": 38}
+{"id": 115, "lemma": "tray", "keep": true, "category": "object", "reason": "쟁반, 사물", "freq": 39}
+{"id": 116, "lemma": "cheetah", "keep": true, "category": "animal", "reason": "치타, 동물", "freq": 11}
+{"id": 117, "lemma": "bench", "keep": true, "category": "object", "reason": "벤치, 가구", "freq": 255}
+{"id": 118, "lemma": "gauss", "keep": false, "category": null, "reason": "특정 인명", "freq": 12}
+{"id": 119, "lemma": "freezer", "keep": true, "category": "object", "reason": "냉동고, 가전", "freq": 22}
+{"id": 120, "lemma": "trick", "keep": true, "category": "action", "reason": "속임수/재주", "freq": 101}
+{"id": 121, "lemma": "lab", "keep": false, "category": null, "reason": "추상적 장소", "freq": 74}
+{"id": 122, "lemma": "ripe", "keep": true, "category": "property", "reason": "익은, 과일 상태", "freq": 31}
+{"id": 123, "lemma": "might", "keep": false, "category": null, "reason": "조동사, 앵커 부적합", "freq": 162}
+{"id": 124, "lemma": "sidewalk", "keep": true, "category": "place", "reason": "인도, 장소", "freq": 33}
+{"id": 125, "lemma": "cub", "keep": true, "category": "animal", "reason": "새끼 동물", "freq": 25}
+{"id": 126, "lemma": "figure", "keep": false, "category": null, "reason": "추상적, 다의어", "freq": 14}
+{"id": 127, "lemma": "decoration", "keep": true, "category": "object", "reason": "장식, 구체적", "freq": 18}
+{"id": 128, "lemma": "polar", "keep": false, "category": null, "reason": "추상적 형용사", "freq": 55}
+{"id": 129, "lemma": "reach", "keep": true, "category": "action", "reason": "닿다, 동작", "freq": 129}
+{"id": 130, "lemma": "bit", "keep": false, "category": null, "reason": "다의어, 추상적", "freq": 359}
+{"id": 131, "lemma": "sixty", "keep": true, "category": "other", "reason": "숫자 60", "freq": 10}
+{"id": 132, "lemma": "beetle", "keep": true, "category": "animal", "reason": "딱정벌레, 곤충", "freq": 17}
+{"id": 133, "lemma": "sneeze", "keep": true, "category": "action", "reason": "재채기, 동작", "freq": 32}
+{"id": 134, "lemma": "max", "keep": false, "category": null, "reason": "이름, 고유명사", "freq": 86}
+{"id": 135, "lemma": "round", "keep": true, "category": "property", "reason": "동그란 모양, 기본형용사", "freq": 966}
+{"id": 136, "lemma": "chest", "keep": true, "category": "body", "reason": "가슴, 신체 부위", "freq": 69}
+{"id": 137, "lemma": "symbol", "keep": false, "category": null, "reason": "추상적 개념, 5세 어려움", "freq": 23}
+{"id": 138, "lemma": "forever", "keep": false, "category": null, "reason": "추상 부사, 앵커 부적합", "freq": 155}
+{"id": 139, "lemma": "soccer", "keep": true, "category": "action", "reason": "축구, 아이들 친숙", "freq": 95}
+{"id": 140, "lemma": "silly", "keep": true, "category": "feeling", "reason": "바보 같은, 감정 표현", "freq": 122}
+{"id": 141, "lemma": "tummy", "keep": true, "category": "body", "reason": "배, 유아어로 흔함", "freq": 200}
+{"id": 142, "lemma": "pond", "keep": true, "category": "nature", "reason": "연못, 자연 장소", "freq": 239}
+{"id": 143, "lemma": "corner", "keep": true, "category": "place", "reason": "모퉁이, 구체적 장소", "freq": 203}
+{"id": 144, "lemma": "accident", "keep": true, "category": "other", "reason": "사고, 일상 경험", "freq": 35}
+{"id": 145, "lemma": "armstrong", "keep": false, "category": null, "reason": "특정 인명", "freq": 34}
+{"id": 146, "lemma": "seller", "keep": false, "category": null, "reason": "직업, 5세에 덜 친숙", "freq": 19}
+{"id": 147, "lemma": "fetch", "keep": true, "category": "action", "reason": "가져오다, 동작 동사", "freq": 14}
+{"id": 148, "lemma": "scratchy", "keep": true, "category": "property", "reason": "까칠한, 촉감 형용사", "freq": 16}
+{"id": 149, "lemma": "purr", "keep": true, "category": "sound", "reason": "고양이 소리, 의성어", "freq": 33}
+{"id": 150, "lemma": "priest", "keep": false, "category": null, "reason": "직업, 5세에 추상적", "freq": 14}
+{"id": 151, "lemma": "chaplin", "keep": false, "category": null, "reason": "특정 인명", "freq": 37}
+{"id": 152, "lemma": "eiffel", "keep": false, "category": null, "reason": "고유명사(탑 이름)", "freq": 61}
+{"id": 153, "lemma": "plain", "keep": true, "category": "property", "reason": "평범한, 기본 형용사", "freq": 34}
+{"id": 154, "lemma": "boom", "keep": true, "category": "sound", "reason": "쿵 소리, 의성어", "freq": 69}
+{"id": 155, "lemma": "pharaoh", "keep": false, "category": null, "reason": "역사 용어, 5세 어려움", "freq": 11}
+{"id": 156, "lemma": "rusty", "keep": true, "category": "property", "reason": "녹슨, 구체적 형용사", "freq": 21}
+{"id": 157, "lemma": "since", "keep": false, "category": null, "reason": "접속사, 앵커 부적합", "freq": 10}
+{"id": 158, "lemma": "gentle", "keep": true, "category": "feeling", "reason": "부드러운, 감정 형용사", "freq": 52}
+{"id": 159, "lemma": "attic", "keep": true, "category": "place", "reason": "다락방, 구체적 장소", "freq": 29}
+{"id": 160, "lemma": "southeast", "keep": false, "category": null, "reason": "방위, 5세에 추상적", "freq": 58}
+{"id": 161, "lemma": "pour", "keep": true, "category": "action", "reason": "따르다, 일상 동작", "freq": 162}
+{"id": 162, "lemma": "crumbly", "keep": true, "category": "property", "reason": "부서지기 쉬운, 형용사", "freq": 12}
+{"id": 163, "lemma": "chose", "keep": false, "category": null, "reason": "choose의 과거형", "freq": 121}
+{"id": 164, "lemma": "rose", "keep": true, "category": "plant", "reason": "장미, 흔한 꽃", "freq": 18}
+{"id": 165, "lemma": "breeze", "keep": true, "category": "weather", "reason": "산들바람, 날씨", "freq": 38}
+{"id": 166, "lemma": "roof", "keep": true, "category": "object", "reason": "지붕, 집의 일부", "freq": 225}
+{"id": 167, "lemma": "airplane", "keep": true, "category": "object", "reason": "비행기, 아이들 친숙", "freq": 22}
+{"id": 168, "lemma": "bead", "keep": true, "category": "toy", "reason": "구슬, 장난감 재료", "freq": 31}
+{"id": 169, "lemma": "librarian", "keep": false, "category": null, "reason": "직업, 5세에 다소 추상적", "freq": 74}
+{"id": 170, "lemma": "crane", "keep": true, "category": "tool", "reason": "기중기, 건설 장비", "freq": 21}
+{"id": 171, "lemma": "chew", "keep": true, "category": "action", "reason": "씹다, 일상 동작", "freq": 62}
+{"id": 172, "lemma": "stave", "keep": false, "category": null, "reason": "드문 단어, 5세 부적합", "freq": 109}
+{"id": 173, "lemma": "cover", "keep": true, "category": "action", "reason": "덮다, 기본 동사", "freq": 380}
+{"id": 174, "lemma": "peck", "keep": true, "category": "action", "reason": "쪼다, 새 동작", "freq": 15}
+{"id": 175, "lemma": "pear", "keep": true, "category": "food", "reason": "배, 흔한 과일", "freq": 13}
+{"id": 176, "lemma": "inventor", "keep": false, "category": null, "reason": "직업, 5세에 추상적", "freq": 16}
+{"id": 177, "lemma": "direction", "keep": true, "category": "other", "reason": "방향, 기본 개념", "freq": 46}
+{"id": 178, "lemma": "king", "keep": true, "category": "other", "reason": "왕, 동화 속 인물", "freq": 630}
+{"id": 179, "lemma": "snowball", "keep": true, "category": "toy", "reason": "눈덩이, 놀이 소재", "freq": 16}
+{"id": 180, "lemma": "pyjama", "keep": true, "category": "clothing", "reason": "잠옷, 옷 종류", "freq": 10}
+{"id": 181, "lemma": "thirsty", "keep": true, "category": "feeling", "reason": "목마른, 감정", "freq": 44}
+{"id": 182, "lemma": "treasure", "keep": true, "category": "object", "reason": "보물, 동화 소재", "freq": 93}
+{"id": 183, "lemma": "dimension", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 26}
+{"id": 184, "lemma": "crunch", "keep": true, "category": "sound", "reason": "아삭 소리, 의성어", "freq": 15}
+{"id": 185, "lemma": "strip", "keep": true, "category": "action", "reason": "벗기다, 동작 동사", "freq": 45}
+{"id": 186, "lemma": "flap", "keep": true, "category": "action", "reason": "퍼덕이다, 동작 동사", "freq": 13}
+{"id": 187, "lemma": "wollstonecraft", "keep": false, "category": null, "reason": "특정 인명", "freq": 18}
+{"id": 188, "lemma": "fee", "keep": false, "category": null, "reason": "요금, 5세에 추상적", "freq": 100}
+{"id": 189, "lemma": "came", "keep": false, "category": null, "reason": "come의 과거형", "freq": 962}
+{"id": 190, "lemma": "monkey", "keep": true, "category": "animal", "reason": "원숭이, 흔한 동물", "freq": 184}
+{"id": 191, "lemma": "mane", "keep": true, "category": "body", "reason": "갈기, 동물 신체", "freq": 18}
+{"id": 192, "lemma": "extra", "keep": false, "category": null, "reason": "형용사, 앵커 부적합", "freq": 19}
+{"id": 193, "lemma": "bow", "keep": true, "category": "object", "reason": "활/리본, 구체적 사물", "freq": 58}
+{"id": 194, "lemma": "stinky", "keep": true, "category": "property", "reason": "냄새나는, 형용사", "freq": 11}
+{"id": 195, "lemma": "soap", "keep": true, "category": "object", "reason": "비누, 일상 물건", "freq": 439}
+{"id": 196, "lemma": "giant", "keep": true, "category": "other", "reason": "거인, 동화 속 존재", "freq": 27}
+{"id": 197, "lemma": "julius", "keep": false, "category": null, "reason": "특정 인명", "freq": 35}
+{"id": 198, "lemma": "runner", "keep": true, "category": "other", "reason": "달리는 사람, 기본 명사", "freq": 46}
+{"id": 199, "lemma": "storybook", "keep": true, "category": "object", "reason": "동화책, 아이들 친숙", "freq": 52}
+{"id": 200, "lemma": "melody", "keep": true, "category": "sound", "reason": "멜로디, 음악 개념", "freq": 20}
+{"id": 201, "lemma": "met", "keep": false, "category": null, "reason": "meet의 과거형", "freq": 91}
+{"id": 202, "lemma": "pip", "keep": true, "category": "plant", "reason": "씨앗, 과일 속 씨", "freq": 20}
+{"id": 203, "lemma": "root", "keep": true, "category": "plant", "reason": "뿌리, 식물 부분", "freq": 26}
+{"id": 204, "lemma": "gutenberg", "keep": false, "category": null, "reason": "특정 인명", "freq": 45}
+{"id": 205, "lemma": "hit", "keep": true, "category": "action", "reason": "때리다, 기본 동사", "freq": 331}
+{"id": 206, "lemma": "score", "keep": true, "category": "action", "reason": "점수 내다, 게임 용어", "freq": 62}
+{"id": 207, "lemma": "hunter", "keep": false, "category": null, "reason": "직업, 5세에 다소 추상적", "freq": 14}
+{"id": 208, "lemma": "shadow", "keep": true, "category": "nature", "reason": "그림자, 자연 현상", "freq": 55}
+{"id": 209, "lemma": "grew", "keep": false, "category": null, "reason": "grow의 과거형", "freq": 107}
+{"id": 210, "lemma": "narrow", "keep": true, "category": "property", "reason": "좁은, 기본 형용사", "freq": 12}
+{"id": 211, "lemma": "galileo", "keep": false, "category": null, "reason": "특정 인명", "freq": 19}
+{"id": 212, "lemma": "stage", "keep": true, "category": "place", "reason": "무대, 공연 장소", "freq": 175}
+{"id": 213, "lemma": "comb", "keep": true, "category": "tool", "reason": "빗, 일상 도구", "freq": 15}
+{"id": 214, "lemma": "italian", "keep": false, "category": null, "reason": "국적, 5세에 추상적", "freq": 13}
+{"id": 215, "lemma": "wide", "keep": true, "category": "property", "reason": "넓은, 기본 형용사", "freq": 179}
+{"id": 216, "lemma": "shout", "keep": true, "category": "action", "reason": "외치다, 동작 동사", "freq": 90}
+{"id": 217, "lemma": "closely", "keep": false, "category": null, "reason": "부사, 앵커 부적합", "freq": 30}
+{"id": 218, "lemma": "toothbrush", "keep": true, "category": "tool", "reason": "칫솔, 일상 도구", "freq": 29}
+{"id": 219, "lemma": "hong", "keep": false, "category": null, "reason": "이름 일부, 고유명사", "freq": 52}
+{"id": 220, "lemma": "collect", "keep": true, "category": "action", "reason": "모으다, 기본 동사", "freq": 27}
+{"id": 221, "lemma": "thunder", "keep": true, "category": "weather", "reason": "천둥, 날씨 현상", "freq": 44}
+{"id": 222, "lemma": "hall", "keep": true, "category": "place", "reason": "복도/홀, 장소", "freq": 112}
+{"id": 223, "lemma": "tube", "keep": true, "category": "object", "reason": "관/튜브, 구체적 사물", "freq": 58}
+{"id": 224, "lemma": "crown", "keep": true, "category": "object", "reason": "왕관, 동화 속 물건", "freq": 71}
+{"id": 225, "lemma": "imagination", "keep": true, "category": "feeling", "reason": "상상력, 기본 개념", "freq": 42}
+{"id": 226, "lemma": "incense", "keep": false, "category": null, "reason": "향, 5세에 덜 친숙", "freq": 15}
+{"id": 227, "lemma": "middle", "keep": true, "category": "other", "reason": "중간, 위치 개념", "freq": 235}
+{"id": 228, "lemma": "trust", "keep": true, "category": "feeling", "reason": "신뢰, 감정 개념", "freq": 12}
+{"id": 229, "lemma": "muddy", "keep": true, "category": "property", "reason": "진흙투성이, 형용사", "freq": 28}
+{"id": 230, "lemma": "winner", "keep": true, "category": "other", "reason": "승자, 기본 명사", "freq": 10}
+{"id": 231, "lemma": "john", "keep": false, "category": null, "reason": "특정 인명", "freq": 12}
+{"id": 232, "lemma": "kindness", "keep": true, "category": "feeling", "reason": "친절, 감정 개념", "freq": 56}
+{"id": 233, "lemma": "hut", "keep": true, "category": "place", "reason": "오두막, 장소", "freq": 15}
+{"id": 234, "lemma": "clearly", "keep": false, "category": null, "reason": "부사, 앵커 부적합", "freq": 33}
+{"id": 235, "lemma": "gupta", "keep": false, "category": null, "reason": "특정 인명", "freq": 34}
+{"id": 236, "lemma": "antoine", "keep": false, "category": null, "reason": "특정 인명", "freq": 12}
+{"id": 237, "lemma": "celebrate", "keep": true, "category": "action", "reason": "축하하다, 기본 동사", "freq": 39}
+{"id": 238, "lemma": "flu", "keep": true, "category": "feeling", "reason": "독감, 아픈 상태", "freq": 18}
+{"id": 239, "lemma": "disney", "keep": false, "category": null, "reason": "브랜드/회사명", "freq": 59}
+{"id": 240, "lemma": "lisa", "keep": false, "category": null, "reason": "특정 인명", "freq": 38}
+{"id": 241, "lemma": "smoky", "keep": true, "category": "property", "reason": "연기 나는, 형용사", "freq": 11}
+{"id": 242, "lemma": "threw", "keep": false, "category": null, "reason": "throw의 과거형", "freq": 20}
+{"id": 243, "lemma": "chef", "keep": true, "category": "other", "reason": "요리사, 직업 명사", "freq": 11}
+{"id": 244, "lemma": "tower", "keep": true, "category": "place", "reason": "탑, 건축물", "freq": 643}
+{"id": 245, "lemma": "tip", "keep": true, "category": "object", "reason": "끝/팁, 구체적 명사", "freq": 43}
+{"id": 246, "lemma": "tape", "keep": true, "category": "tool", "reason": "테이프, 일상 도구", "freq": 43}
+{"id": 247, "lemma": "hay", "keep": true, "category": "plant", "reason": "건초, 식물 재료", "freq": 32}
+{"id": 248, "lemma": "treat", "keep": true, "category": "action", "reason": "대접하다, 기본 동사", "freq": 187}
+{"id": 249, "lemma": "careful", "keep": true, "category": "feeling", "reason": "조심하는, 감정 형용사", "freq": 324}
+{"id": 250, "lemma": "adolf", "keep": false, "category": null, "reason": "특정 인명", "freq": 21}
+{"id": 251, "lemma": "glove", "keep": true, "category": "clothing", "reason": "장갑, 옷 종류", "freq": 81}
+{"id": 252, "lemma": "roll", "keep": true, "category": "action", "reason": "굴리다, 기본 동사", "freq": 170}
+{"id": 253, "lemma": "crumb", "keep": true, "category": "food", "reason": "부스러기, 음식 조각", "freq": 12}
+{"id": 254, "lemma": "mat", "keep": true, "category": "object", "reason": "매트, 일상 물건", "freq": 95}
+{"id": 255, "lemma": "mailman", "keep": true, "category": "other", "reason": "우편배달부, 직업", "freq": 12}
+{"id": 256, "lemma": "shell", "keep": true, "category": "nature", "reason": "조개껍질, 자연물", "freq": 308}
+{"id": 257, "lemma": "childhood", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 29}
+{"id": 258, "lemma": "peel", "keep": true, "category": "action", "reason": "껍질 벗기다, 동작", "freq": 43}
+{"id": 259, "lemma": "puppet", "keep": true, "category": "toy", "reason": "인형, 장난감", "freq": 28}
+{"id": 260, "lemma": "cupboard", "keep": true, "category": "object", "reason": "찬장, 가구", "freq": 65}
+{"id": 261, "lemma": "pump", "keep": true, "category": "tool", "reason": "펌프, 도구", "freq": 28}
+{"id": 262, "lemma": "fence", "keep": true, "category": "object", "reason": "울타리, 구조물", "freq": 153}
+{"id": 263, "lemma": "cage", "keep": true, "category": "object", "reason": "새장, 우리", "freq": 27}
+{"id": 264, "lemma": "sale", "keep": false, "category": null, "reason": "판매, 5세에 추상적", "freq": 51}
+{"id": 265, "lemma": "cozy", "keep": true, "category": "feeling", "reason": "아늑한, 감정 형용사", "freq": 85}
+{"id": 266, "lemma": "blanket", "keep": true, "category": "object", "reason": "담요, 일상 물건", "freq": 401}
+{"id": 267, "lemma": "brand", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 10}
+{"id": 268, "lemma": "clay", "keep": true, "category": "object", "reason": "찰흙, 만들기 활동", "freq": 181}
+{"id": 269, "lemma": "fair", "keep": true, "category": "other", "reason": "공정한/축제, 5세 가능", "freq": 260}
+{"id": 270, "lemma": "step", "keep": true, "category": "action", "reason": "걸음, 동작", "freq": 442}
+{"id": 271, "lemma": "non", "keep": false, "category": null, "reason": "부정 접두사, 앵커 부적합", "freq": 66}
+{"id": 272, "lemma": "likely", "keep": false, "category": null, "reason": "부사, 앵커 부적합", "freq": 16}
+{"id": 273, "lemma": "kaaba", "keep": false, "category": null, "reason": "특정 종교 장소", "freq": 13}
+{"id": 274, "lemma": "spoon", "keep": true, "category": "object", "reason": "숟가락, 일상 물건", "freq": 516}
+{"id": 275, "lemma": "sushi", "keep": true, "category": "food", "reason": "음식, 5세 친숙", "freq": 11}
+{"id": 276, "lemma": "skull", "keep": false, "category": null, "reason": "무서운 주제, 5세 부적합", "freq": 12}
+{"id": 277, "lemma": "mendeleev", "keep": false, "category": null, "reason": "특정 인명", "freq": 15}
+{"id": 278, "lemma": "thought", "keep": false, "category": null, "reason": "think의 과거형", "freq": 50}
+{"id": 279, "lemma": "bubble", "keep": true, "category": "object", "reason": "비눗방울, 놀이", "freq": 182}
+{"id": 280, "lemma": "postcard", "keep": true, "category": "object", "reason": "엽서, 편지", "freq": 25}
+{"id": 281, "lemma": "bake", "keep": true, "category": "action", "reason": "굽다, 요리 활동", "freq": 221}
+{"id": 282, "lemma": "firefighter", "keep": true, "category": "other", "reason": "직업, 5세 친숙", "freq": 38}
+{"id": 283, "lemma": "flour", "keep": true, "category": "food", "reason": "밀가루, 요리 재료", "freq": 130}
+{"id": 284, "lemma": "ate", "keep": false, "category": null, "reason": "eat의 과거형", "freq": 611}
+{"id": 285, "lemma": "circulatory", "keep": false, "category": null, "reason": "전문 과학 용어", "freq": 61}
+{"id": 286, "lemma": "wheelchair", "keep": true, "category": "object", "reason": "휠체어, 일상 물건", "freq": 20}
+{"id": 287, "lemma": "castle", "keep": true, "category": "place", "reason": "성, 동화 속 장소", "freq": 298}
+{"id": 288, "lemma": "became", "keep": false, "category": null, "reason": "become의 과거형", "freq": 98}
+{"id": 289, "lemma": "plus", "keep": true, "category": "other", "reason": "더하기, 수학 개념", "freq": 26}
+{"id": 290, "lemma": "proud", "keep": true, "category": "feeling", "reason": "자랑스러운 감정", "freq": 211}
+{"id": 291, "lemma": "mop", "keep": true, "category": "tool", "reason": "대걸레, 청소 도구", "freq": 26}
+{"id": 292, "lemma": "pill", "keep": false, "category": null, "reason": "약, 5세 민감 주제", "freq": 48}
+{"id": 293, "lemma": "intellectual", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 17}
+{"id": 294, "lemma": "indigenous", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 33}
+{"id": 295, "lemma": "throne", "keep": true, "category": "object", "reason": "왕좌, 동화 속 물건", "freq": 11}
+{"id": 296, "lemma": "chore", "keep": true, "category": "action", "reason": "집안일, 일상 활동", "freq": 18}
+{"id": 297, "lemma": "hitler", "keep": false, "category": null, "reason": "특정 인명, 민감", "freq": 21}
+{"id": 298, "lemma": "nut", "keep": true, "category": "food", "reason": "견과류, 간식", "freq": 47}
+{"id": 299, "lemma": "knob", "keep": true, "category": "object", "reason": "손잡이, 일상 물건", "freq": 18}
+{"id": 300, "lemma": "cap", "keep": true, "category": "clothing", "reason": "모자, 옷", "freq": 34}
+{"id": 301, "lemma": "traditional", "keep": false, "category": null, "reason": "추상적 형용사", "freq": 33}
+{"id": 302, "lemma": "protect", "keep": true, "category": "action", "reason": "보호하다, 일상 동사", "freq": 54}
+{"id": 303, "lemma": "buddhism", "keep": false, "category": null, "reason": "특정 종교", "freq": 59}
+{"id": 304, "lemma": "sleepy", "keep": true, "category": "feeling", "reason": "졸린 상태", "freq": 93}
+{"id": 305, "lemma": "explore", "keep": true, "category": "action", "reason": "탐험하다, 5세 가능", "freq": 38}
+{"id": 306, "lemma": "martin", "keep": false, "category": null, "reason": "특정 인명", "freq": 15}
+{"id": 307, "lemma": "beauty", "keep": true, "category": "property", "reason": "아름다움, 5세 가능", "freq": 30}
+{"id": 308, "lemma": "gorilla", "keep": true, "category": "animal", "reason": "고릴라, 동물", "freq": 12}
+{"id": 309, "lemma": "slide", "keep": true, "category": "toy", "reason": "미끄럼틀, 놀이터", "freq": 456}
+{"id": 310, "lemma": "pie", "keep": true, "category": "food", "reason": "파이, 음식", "freq": 55}
+{"id": 311, "lemma": "tame", "keep": true, "category": "property", "reason": "길들인, 5세 가능", "freq": 18}
+{"id": 312, "lemma": "excite", "keep": true, "category": "feeling", "reason": "신나다, 감정", "freq": 4657}
+{"id": 313, "lemma": "press", "keep": true, "category": "action", "reason": "누르다, 동작", "freq": 149}
+{"id": 314, "lemma": "smooth", "keep": true, "category": "property", "reason": "매끄러운, 촉감", "freq": 736}
+{"id": 315, "lemma": "hop", "keep": true, "category": "action", "reason": "깡충 뛰다, 동작", "freq": 135}
+{"id": 316, "lemma": "drum", "keep": true, "category": "toy", "reason": "북, 악기/장난감", "freq": 240}
+{"id": 317, "lemma": "operation", "keep": false, "category": null, "reason": "수술, 5세 민감", "freq": 12}
+{"id": 318, "lemma": "nikola", "keep": false, "category": null, "reason": "특정 인명", "freq": 38}
+{"id": 319, "lemma": "ray", "keep": true, "category": "nature", "reason": "광선, 자연 현상", "freq": 17}
+{"id": 320, "lemma": "others", "keep": false, "category": null, "reason": "대명사, 앵커 부적합", "freq": 500}
+{"id": 321, "lemma": "stamp", "keep": true, "category": "object", "reason": "우표, 일상 물건", "freq": 44}
+{"id": 322, "lemma": "italy", "keep": true, "category": "place", "reason": "국가명, 5세 가능", "freq": 23}
+{"id": 323, "lemma": "sword", "keep": true, "category": "object", "reason": "칼, 동화 속 물건", "freq": 80}
+{"id": 324, "lemma": "popcorn", "keep": true, "category": "food", "reason": "팝콘, 간식", "freq": 75}
+{"id": 325, "lemma": "shade", "keep": true, "category": "nature", "reason": "그늘, 자연", "freq": 43}
+{"id": 326, "lemma": "sky", "keep": true, "category": "nature", "reason": "하늘, 자연", "freq": 1975}
+{"id": 327, "lemma": "fit", "keep": true, "category": "property", "reason": "맞다, 5세 가능", "freq": 242}
+{"id": 328, "lemma": "tap", "keep": true, "category": "object", "reason": "수도꼭지, 일상", "freq": 161}
+{"id": 329, "lemma": "mughal", "keep": false, "category": null, "reason": "특정 왕조명", "freq": 37}
+{"id": 330, "lemma": "bare", "keep": true, "category": "property", "reason": "맨, 5세 가능", "freq": 13}
+{"id": 331, "lemma": "across", "keep": false, "category": null, "reason": "전치사, 앵커 부적합", "freq": 218}
+{"id": 332, "lemma": "wed", "keep": false, "category": null, "reason": "결혼, 5세 어려움", "freq": 10}
+{"id": 333, "lemma": "lullaby", "keep": true, "category": "sound", "reason": "자장가, 노래", "freq": 20}
+{"id": 334, "lemma": "prim", "keep": false, "category": null, "reason": "드문 단어, 5세 어려움", "freq": 18}
+{"id": 335, "lemma": "dolphin", "keep": true, "category": "animal", "reason": "돌고래, 동물", "freq": 48}
+{"id": 336, "lemma": "cry", "keep": true, "category": "feeling", "reason": "울다, 감정 표현", "freq": 225}
+{"id": 337, "lemma": "snap", "keep": true, "category": "action", "reason": "딱 소리내다, 동작", "freq": 25}
+{"id": 338, "lemma": "dragon", "keep": true, "category": "animal", "reason": "용, 동화 속 동물", "freq": 135}
+{"id": 339, "lemma": "george", "keep": false, "category": null, "reason": "특정 인명", "freq": 54}
+{"id": 340, "lemma": "piggy", "keep": true, "category": "animal", "reason": "돼지, 애칭", "freq": 50}
+{"id": 341, "lemma": "asleep", "keep": true, "category": "feeling", "reason": "잠든 상태", "freq": 112}
+{"id": 342, "lemma": "bright", "keep": true, "category": "property", "reason": "밝은, 5세 가능", "freq": 1351}
+{"id": 343, "lemma": "rabindranath", "keep": false, "category": null, "reason": "특정 인명", "freq": 48}
+{"id": 344, "lemma": "tent", "keep": true, "category": "object", "reason": "텐트, 캠핑", "freq": 60}
+{"id": 345, "lemma": "mona", "keep": false, "category": null, "reason": "특정 인명", "freq": 23}
+{"id": 346, "lemma": "wow", "keep": false, "category": null, "reason": "감탄사, 앵커 부적합", "freq": 12177}
+{"id": 347, "lemma": "dull", "keep": true, "category": "property", "reason": "둔한/지루한, 5세 가능", "freq": 47}
+{"id": 348, "lemma": "heat", "keep": true, "category": "nature", "reason": "열, 자연 현상", "freq": 155}
+{"id": 349, "lemma": "curve", "keep": true, "category": "property", "reason": "곡선, 5세 가능", "freq": 28}
+{"id": 350, "lemma": "pancake", "keep": true, "category": "food", "reason": "팬케이크, 음식", "freq": 97}
+{"id": 351, "lemma": "clam", "keep": true, "category": "animal", "reason": "조개, 동물", "freq": 16}
+{"id": 352, "lemma": "emma", "keep": false, "category": null, "reason": "특정 인명", "freq": 56}
+{"id": 353, "lemma": "spear", "keep": true, "category": "tool", "reason": "창, 도구", "freq": 10}
+{"id": 354, "lemma": "guest", "keep": true, "category": "family", "reason": "손님, 일상", "freq": 28}
+{"id": 355, "lemma": "finger", "keep": true, "category": "body", "reason": "손가락, 신체", "freq": 366}
+{"id": 356, "lemma": "trouble", "keep": true, "category": "feeling", "reason": "곤란, 5세 가능", "freq": 19}
+{"id": 357, "lemma": "william", "keep": false, "category": null, "reason": "특정 인명", "freq": 34}
+{"id": 358, "lemma": "whole", "keep": true, "category": "property", "reason": "전체, 5세 가능", "freq": 543}
+{"id": 359, "lemma": "connect", "keep": true, "category": "action", "reason": "연결하다, 동작", "freq": 47}
+{"id": 360, "lemma": "steady", "keep": true, "category": "property", "reason": "안정된, 5세 가능", "freq": 11}
+{"id": 361, "lemma": "weight", "keep": true, "category": "property", "reason": "무게, 5세 가능", "freq": 47}
+{"id": 362, "lemma": "erupt", "keep": true, "category": "action", "reason": "분출하다, 자연", "freq": 18}
+{"id": 363, "lemma": "robot", "keep": true, "category": "toy", "reason": "로봇, 장난감", "freq": 217}
+{"id": 364, "lemma": "horn", "keep": true, "category": "object", "reason": "뿔/경적, 물건", "freq": 48}
+{"id": 365, "lemma": "crawl", "keep": true, "category": "action", "reason": "기다, 동작", "freq": 28}
+{"id": 366, "lemma": "began", "keep": false, "category": null, "reason": "begin의 과거형", "freq": 72}
+{"id": 367, "lemma": "mr", "keep": false, "category": null, "reason": "호칭, 앵커 부적합", "freq": 19}
+{"id": 368, "lemma": "shy", "keep": true, "category": "feeling", "reason": "수줍은, 감정", "freq": 18}
+{"id": 369, "lemma": "dough", "keep": true, "category": "food", "reason": "반죽, 요리 재료", "freq": 56}
+{"id": 370, "lemma": "medal", "keep": true, "category": "object", "reason": "메달, 상", "freq": 17}
+{"id": 371, "lemma": "sink", "keep": true, "category": "object", "reason": "싱크대, 가구", "freq": 187}
+{"id": 372, "lemma": "belt", "keep": true, "category": "clothing", "reason": "벨트, 옷", "freq": 28}
+{"id": 373, "lemma": "backpack", "keep": true, "category": "object", "reason": "배낭, 물건", "freq": 27}
+{"id": 374, "lemma": "shake", "keep": true, "category": "action", "reason": "흔들다, 동작", "freq": 171}
+{"id": 375, "lemma": "monster", "keep": true, "category": "animal", "reason": "괴물, 동화", "freq": 53}
+{"id": 376, "lemma": "pasteur", "keep": false, "category": null, "reason": "특정 인명", "freq": 33}
+{"id": 377, "lemma": "bandage", "keep": true, "category": "object", "reason": "붕대, 일상", "freq": 77}
+{"id": 378, "lemma": "thick", "keep": true, "category": "property", "reason": "두꺼운, 5세 가능", "freq": 191}
+{"id": 379, "lemma": "comfortable", "keep": true, "category": "property", "reason": "편안한, 5세 가능", "freq": 16}
+{"id": 380, "lemma": "knight", "keep": true, "category": "other", "reason": "기사, 동화 속 직업", "freq": 112}
+{"id": 381, "lemma": "bore", "keep": true, "category": "feeling", "reason": "지루하게 하다, 감정", "freq": 788}
+{"id": 382, "lemma": "meow", "keep": false, "category": null, "reason": "의성어, 앵커 부적합", "freq": 48}
+{"id": 383, "lemma": "indian", "keep": true, "category": "other", "reason": "인도/인디언, 5세 가능", "freq": 66}
+{"id": 384, "lemma": "safety", "keep": true, "category": "property", "reason": "안전, 5세 가능", "freq": 60}
+{"id": 385, "lemma": "scratch", "keep": true, "category": "action", "reason": "긁다, 동작", "freq": 24}
+{"id": 386, "lemma": "darwin", "keep": false, "category": null, "reason": "특정 인명", "freq": 39}
+{"id": 387, "lemma": "panel", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 69}
+{"id": 388, "lemma": "term", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 10}
+{"id": 389, "lemma": "sandbox", "keep": true, "category": "toy", "reason": "모래놀이, 장난감", "freq": 49}
+{"id": 390, "lemma": "paw", "keep": true, "category": "body", "reason": "동물 발, 신체", "freq": 40}
+{"id": 391, "lemma": "warmth", "keep": true, "category": "feeling", "reason": "따뜻함, 감각", "freq": 11}
+{"id": 392, "lemma": "helper", "keep": true, "category": "other", "reason": "도우미, 역할", "freq": 147}
+{"id": 393, "lemma": "mold", "keep": true, "category": "object", "reason": "곰팡이/틀, 5세 가능", "freq": 13}
+{"id": 394, "lemma": "fully", "keep": false, "category": null, "reason": "부사, 앵커 부적합", "freq": 12}
+{"id": 395, "lemma": "pea", "keep": true, "category": "food", "reason": "완두콩, 음식", "freq": 36}
+{"id": 396, "lemma": "boo", "keep": false, "category": null, "reason": "감탄사, 앵커 부적합", "freq": 10}
+{"id": 397, "lemma": "thomas", "keep": false, "category": null, "reason": "특정 인명", "freq": 41}
+{"id": 398, "lemma": "saudi", "keep": false, "category": null, "reason": "국가명, 5세 어려움", "freq": 42}
+{"id": 399, "lemma": "bolt", "keep": true, "category": "object", "reason": "볼트/빗장, 물건", "freq": 11}
+{"id": 400, "lemma": "snack", "keep": true, "category": "food", "reason": "간식, 5세에게 친숙", "freq": 635}
+{"id": 401, "lemma": "rope", "keep": true, "category": "object", "reason": "밧줄, 구체적 사물", "freq": 68}
+{"id": 402, "lemma": "don", "keep": false, "category": null, "reason": "이름/의미 모호", "freq": 386}
+{"id": 403, "lemma": "penguin", "keep": true, "category": "animal", "reason": "펭귄, 동물원 흔함", "freq": 50}
+{"id": 404, "lemma": "keyboard", "keep": true, "category": "object", "reason": "키보드, 일상 사물", "freq": 10}
+{"id": 405, "lemma": "shovel", "keep": true, "category": "tool", "reason": "삽, 놀이도구", "freq": 59}
+{"id": 406, "lemma": "damp", "keep": true, "category": "property", "reason": "축축한, 감각적", "freq": 15}
+{"id": 407, "lemma": "dentist", "keep": true, "category": "other", "reason": "치과의사, 직업", "freq": 63}
+{"id": 408, "lemma": "respect", "keep": false, "category": null, "reason": "추상적 개념", "freq": 25}
+{"id": 409, "lemma": "standard", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 30}
+{"id": 410, "lemma": "petal", "keep": true, "category": "plant", "reason": "꽃잎, 구체적", "freq": 67}
+{"id": 411, "lemma": "cloudy", "keep": true, "category": "weather", "reason": "흐린 날씨", "freq": 20}
+{"id": 412, "lemma": "sang", "keep": false, "category": null, "reason": "sing의 과거형", "freq": 185}
+{"id": 413, "lemma": "twinkle", "keep": true, "category": "action", "reason": "반짝임, 동요", "freq": 19}
+{"id": 414, "lemma": "race", "keep": true, "category": "action", "reason": "달리기 경주", "freq": 269}
+{"id": 415, "lemma": "borrow", "keep": true, "category": "action", "reason": "빌리다, 일상 행동", "freq": 24}
+{"id": 416, "lemma": "stethoscope", "keep": false, "category": null, "reason": "전문 의료 용어", "freq": 13}
+{"id": 417, "lemma": "flavor", "keep": true, "category": "property", "reason": "맛, 감각적", "freq": 17}
+{"id": 418, "lemma": "mississippi", "keep": false, "category": null, "reason": "지명, 고유명사", "freq": 38}
+{"id": 419, "lemma": "jack", "keep": false, "category": null, "reason": "이름/고유명사", "freq": 20}
+{"id": 420, "lemma": "shia", "keep": false, "category": null, "reason": "종파명, 고유명사", "freq": 48}
+{"id": 421, "lemma": "sniff", "keep": true, "category": "action", "reason": "냄새 맡기", "freq": 13}
+{"id": 422, "lemma": "dust", "keep": true, "category": "object", "reason": "먼지, 구체적", "freq": 99}
+{"id": 423, "lemma": "analytical", "keep": false, "category": null, "reason": "추상적, 전문 용어", "freq": 38}
+{"id": 424, "lemma": "vinci", "keep": false, "category": null, "reason": "특정 인명", "freq": 79}
+{"id": 425, "lemma": "couch", "keep": true, "category": "object", "reason": "소파, 가구", "freq": 10}
+{"id": 426, "lemma": "itself", "keep": false, "category": null, "reason": "대명사, 앵커 부적합", "freq": 54}
+{"id": 427, "lemma": "adam", "keep": false, "category": null, "reason": "특정 인명", "freq": 11}
+{"id": 428, "lemma": "social", "keep": false, "category": null, "reason": "추상적 개념", "freq": 84}
+{"id": 429, "lemma": "artist", "keep": true, "category": "other", "reason": "예술가, 직업", "freq": 124}
+{"id": 430, "lemma": "shampoo", "keep": true, "category": "object", "reason": "샴푸, 일상 용품", "freq": 11}
+{"id": 431, "lemma": "wonder", "keep": true, "category": "feeling", "reason": "궁금함, 감정", "freq": 35}
+{"id": 432, "lemma": "hiss", "keep": true, "category": "sound", "reason": "쉿 소리, 의성어", "freq": 23}
+{"id": 433, "lemma": "sideways", "keep": false, "category": null, "reason": "부사, 앵커 부적합", "freq": 15}
+{"id": 434, "lemma": "marble", "keep": true, "category": "toy", "reason": "구슬, 장난감", "freq": 17}
+{"id": 435, "lemma": "charge", "keep": false, "category": null, "reason": "의미 다양, 추상적", "freq": 35}
+{"id": 436, "lemma": "grind", "keep": true, "category": "action", "reason": "갈기, 일상 동작", "freq": 926}
+{"id": 437, "lemma": "thinker", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 51}
+{"id": 438, "lemma": "hers", "keep": false, "category": null, "reason": "대명사, 앵커 부적합", "freq": 30}
+{"id": 439, "lemma": "illness", "keep": false, "category": null, "reason": "추상적 개념", "freq": 10}
+{"id": 440, "lemma": "loop", "keep": true, "category": "object", "reason": "고리, 구체적", "freq": 23}
+{"id": 441, "lemma": "pointer", "keep": true, "category": "object", "reason": "가리키는 도구", "freq": 15}
+{"id": 442, "lemma": "pot", "keep": true, "category": "object", "reason": "냄비, 주방 도구", "freq": 556}
+{"id": 443, "lemma": "tag", "keep": true, "category": "object", "reason": "꼬리표, 놀이", "freq": 78}
+{"id": 444, "lemma": "dy", "keep": false, "category": null, "reason": "의미 불명, 축약어", "freq": 10}
+{"id": 445, "lemma": "thump", "keep": true, "category": "sound", "reason": "쿵 소리, 의성어", "freq": 17}
+{"id": 446, "lemma": "peaceful", "keep": true, "category": "feeling", "reason": "평화로운, 감정", "freq": 31}
+{"id": 447, "lemma": "scene", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 32}
+{"id": 448, "lemma": "torch", "keep": true, "category": "object", "reason": "횃불, 구체적", "freq": 12}
+{"id": 449, "lemma": "colorful", "keep": true, "category": "property", "reason": "다채로운, 시각적", "freq": 236}
+{"id": 450, "lemma": "sunlight", "keep": true, "category": "nature", "reason": "햇빛, 자연 현상", "freq": 19}
+{"id": 451, "lemma": "korea", "keep": true, "category": "place", "reason": "국가명, KEEP", "freq": 51}
+{"id": 452, "lemma": "beaver", "keep": true, "category": "animal", "reason": "비버, 동물", "freq": 30}
+{"id": 453, "lemma": "claw", "keep": true, "category": "body", "reason": "발톱, 신체 부위", "freq": 18}
+{"id": 454, "lemma": "drank", "keep": false, "category": null, "reason": "drink의 과거형", "freq": 67}
+{"id": 455, "lemma": "sarah", "keep": false, "category": null, "reason": "특정 인명", "freq": 11}
+{"id": 456, "lemma": "chat", "keep": true, "category": "action", "reason": "수다 떨기", "freq": 13}
+{"id": 457, "lemma": "playroom", "keep": true, "category": "place", "reason": "놀이방, 장소", "freq": 32}
+{"id": 458, "lemma": "mozart", "keep": false, "category": null, "reason": "특정 인명", "freq": 21}
+{"id": 459, "lemma": "ladybug", "keep": true, "category": "animal", "reason": "무당벌레, 곤충", "freq": 23}
+{"id": 460, "lemma": "thermometer", "keep": false, "category": null, "reason": "전문 도구, 5세 어려움", "freq": 24}
+{"id": 461, "lemma": "fur", "keep": true, "category": "body", "reason": "털, 동물 특징", "freq": 220}
+{"id": 462, "lemma": "cowboy", "keep": true, "category": "other", "reason": "카우보이, 직업", "freq": 58}
+{"id": 463, "lemma": "walt", "keep": false, "category": null, "reason": "특정 인명", "freq": 59}
+{"id": 464, "lemma": "sore", "keep": true, "category": "feeling", "reason": "아픈, 감각", "freq": 31}
+{"id": 465, "lemma": "neolithic", "keep": false, "category": null, "reason": "전문 역사 용어", "freq": 33}
+{"id": 466, "lemma": "indus", "keep": false, "category": null, "reason": "지명/문명명", "freq": 35}
+{"id": 467, "lemma": "spot", "keep": true, "category": "property", "reason": "점, 구체적", "freq": 359}
+{"id": 468, "lemma": "marker", "keep": true, "category": "tool", "reason": "마커, 필기구", "freq": 18}
+{"id": 469, "lemma": "vet", "keep": true, "category": "other", "reason": "수의사, 직업", "freq": 35}
+{"id": 470, "lemma": "shakespeare", "keep": false, "category": null, "reason": "특정 인명", "freq": 33}
+{"id": 471, "lemma": "soldier", "keep": true, "category": "other", "reason": "군인, 직업", "freq": 60}
+{"id": 472, "lemma": "lemonade", "keep": true, "category": "food", "reason": "레모네이드, 음료", "freq": 67}
+{"id": 473, "lemma": "amaze", "keep": true, "category": "feeling", "reason": "놀라게 하다, 감정", "freq": 2543}
+{"id": 474, "lemma": "syrup", "keep": true, "category": "food", "reason": "시럽, 음식 재료", "freq": 14}
+{"id": 475, "lemma": "astronaut", "keep": true, "category": "other", "reason": "우주비행사, 직업", "freq": 27}
+{"id": 476, "lemma": "builder", "keep": true, "category": "other", "reason": "건축가, 직업", "freq": 30}
+{"id": 477, "lemma": "sunni", "keep": false, "category": null, "reason": "종파명, 고유명사", "freq": 28}
+{"id": 478, "lemma": "badly", "keep": false, "category": null, "reason": "부사, 앵커 부적합", "freq": 18}
+{"id": 479, "lemma": "mansa", "keep": false, "category": null, "reason": "특정 인명/칭호", "freq": 28}
+{"id": 480, "lemma": "poster", "keep": true, "category": "object", "reason": "포스터, 사물", "freq": 55}
+{"id": 481, "lemma": "sara", "keep": false, "category": null, "reason": "특정 인명", "freq": 79}
+{"id": 482, "lemma": "suit", "keep": true, "category": "clothing", "reason": "정장, 옷", "freq": 19}
+{"id": 483, "lemma": "mix", "keep": true, "category": "action", "reason": "섞기, 일상 동작", "freq": 400}
+{"id": 484, "lemma": "continue", "keep": false, "category": null, "reason": "추상적 동사", "freq": 11}
+{"id": 485, "lemma": "low", "keep": true, "category": "property", "reason": "낮은, 속성", "freq": 198}
+{"id": 486, "lemma": "knock", "keep": true, "category": "action", "reason": "노크, 행동", "freq": 60}
+{"id": 487, "lemma": "brave", "keep": true, "category": "feeling", "reason": "용감한, 성격", "freq": 184}
+{"id": 488, "lemma": "sock", "keep": true, "category": "clothing", "reason": "양말, 옷", "freq": 179}
+{"id": 489, "lemma": "lift", "keep": true, "category": "action", "reason": "들어올리기", "freq": 269}
+{"id": 490, "lemma": "pocket", "keep": true, "category": "clothing", "reason": "주머니, 옷", "freq": 229}
+{"id": 491, "lemma": "deal", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 14}
+{"id": 492, "lemma": "yours", "keep": false, "category": null, "reason": "대명사, 앵커 부적합", "freq": 28}
+{"id": 493, "lemma": "cherry", "keep": true, "category": "food", "reason": "체리, 과일", "freq": 22}
+{"id": 494, "lemma": "folder", "keep": true, "category": "object", "reason": "폴더, 사물", "freq": 13}
+{"id": 495, "lemma": "fight", "keep": true, "category": "action", "reason": "싸움, 행동", "freq": 225}
+{"id": 496, "lemma": "swam", "keep": false, "category": null, "reason": "swim의 과거형", "freq": 52}
+{"id": 497, "lemma": "spill", "keep": true, "category": "action", "reason": "엎지르다, 행동", "freq": 65}
+{"id": 498, "lemma": "instead", "keep": false, "category": null, "reason": "부사, 앵커 부적합", "freq": 106}
+{"id": 499, "lemma": "bun", "keep": true, "category": "food", "reason": "빵, 음식", "freq": 17}
+{"id": 500, "lemma": "differently", "keep": false, "category": null, "reason": "부사, 앵커 부적합", "freq": 16}
+{"id": 501, "lemma": "clue", "keep": true, "category": "other", "reason": "단서, 놀이", "freq": 28}
+{"id": 502, "lemma": "drawer", "keep": true, "category": "object", "reason": "서랍, 가구", "freq": 129}
+{"id": 503, "lemma": "transmit", "keep": false, "category": null, "reason": "전문 용어", "freq": 20}
+{"id": 504, "lemma": "crab", "keep": true, "category": "animal", "reason": "게, 동물", "freq": 81}
+{"id": 505, "lemma": "deep", "keep": true, "category": "property", "reason": "깊은, 속성", "freq": 295}
+{"id": 506, "lemma": "separate", "keep": false, "category": null, "reason": "추상적 동사", "freq": 15}
+{"id": 507, "lemma": "taste", "keep": true, "category": "action", "reason": "맛보다, 감각", "freq": 1205}
+{"id": 508, "lemma": "shelf", "keep": true, "category": "object", "reason": "선반, 가구", "freq": 679}
+{"id": 509, "lemma": "yogurt", "keep": true, "category": "food", "reason": "요구르트, 음식", "freq": 32}
+{"id": 510, "lemma": "camel", "keep": true, "category": "animal", "reason": "낙타, 동물", "freq": 50}
+{"id": 511, "lemma": "highway", "keep": true, "category": "place", "reason": "고속도로, 장소", "freq": 14}
+{"id": 512, "lemma": "treehouse", "keep": true, "category": "place", "reason": "나무집, 장소", "freq": 19}
+{"id": 513, "lemma": "wolf", "keep": true, "category": "animal", "reason": "늑대, 동물", "freq": 51}
+{"id": 514, "lemma": "stripe", "keep": true, "category": "property", "reason": "줄무늬, 속성", "freq": 10}
+{"id": 515, "lemma": "playtime", "keep": true, "category": "other", "reason": "놀이시간, 일상", "freq": 49}
+{"id": 516, "lemma": "chapter", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 30}
+{"id": 517, "lemma": "ache", "keep": true, "category": "feeling", "reason": "아픔, 감각", "freq": 11}
+{"id": 518, "lemma": "goat", "keep": true, "category": "animal", "reason": "염소, 동물", "freq": 39}
+{"id": 519, "lemma": "empty", "keep": true, "category": "property", "reason": "빈, 속성", "freq": 206}
+{"id": 520, "lemma": "learner", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 11}
+{"id": 521, "lemma": "pas", "keep": false, "category": null, "reason": "의미 불명, 외래어", "freq": 51}
+{"id": 522, "lemma": "wooden", "keep": true, "category": "property", "reason": "나무로 만든, 속성", "freq": 111}
+{"id": 523, "lemma": "visitor", "keep": true, "category": "other", "reason": "방문객, 사람", "freq": 20}
+{"id": 524, "lemma": "pack", "keep": true, "category": "action", "reason": "싸다, 행동", "freq": 111}
+{"id": 525, "lemma": "pin", "keep": true, "category": "object", "reason": "핀, 사물", "freq": 19}
+{"id": 526, "lemma": "belong", "keep": false, "category": null, "reason": "추상적 동사", "freq": 15}
+{"id": 527, "lemma": "ham", "keep": true, "category": "food", "reason": "햄, 음식", "freq": 31}
+{"id": 528, "lemma": "stretchy", "keep": true, "category": "property", "reason": "늘어나는, 속성", "freq": 11}
+{"id": 529, "lemma": "karl", "keep": false, "category": null, "reason": "특정 인명", "freq": 29}
+{"id": 530, "lemma": "item", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 33}
+{"id": 531, "lemma": "choo", "keep": false, "category": null, "reason": "의성어, 앵커 부적합", "freq": 10}
+{"id": 532, "lemma": "glue", "keep": true, "category": "tool", "reason": "풀, 도구", "freq": 91}
+{"id": 533, "lemma": "source", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 21}
+{"id": 534, "lemma": "puppy", "keep": true, "category": "animal", "reason": "강아지, 5세 친숙", "freq": 192}
+{"id": 535, "lemma": "noon", "keep": true, "category": "nature", "reason": "정오, 시간 개념", "freq": 47}
+{"id": 536, "lemma": "ann", "keep": false, "category": null, "reason": "고유명사", "freq": 13}
+{"id": 537, "lemma": "nod", "keep": true, "category": "action", "reason": "고개 끄덕임 동작", "freq": 29}
+{"id": 538, "lemma": "stretch", "keep": true, "category": "action", "reason": "기지개 켜기 동작", "freq": 54}
+{"id": 539, "lemma": "beatles", "keep": false, "category": null, "reason": "밴드명, 고유명사", "freq": 46}
+{"id": 540, "lemma": "feed", "keep": true, "category": "action", "reason": "먹이 주기 동작", "freq": 48}
+{"id": 541, "lemma": "globe", "keep": true, "category": "object", "reason": "지구본, 구체적 사물", "freq": 43}
+{"id": 542, "lemma": "shore", "keep": true, "category": "nature", "reason": "물가, 해변 장소", "freq": 19}
+{"id": 543, "lemma": "sight", "keep": false, "category": null, "reason": "추상적 의미, 앵커 부적합", "freq": 47}
+{"id": 544, "lemma": "cheek", "keep": true, "category": "body", "reason": "볼, 신체 부위", "freq": 34}
+{"id": 545, "lemma": "creature", "keep": true, "category": "animal", "reason": "생명체, 동물 포함", "freq": 17}
+{"id": 546, "lemma": "surface", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 19}
+{"id": 547, "lemma": "lunchbox", "keep": true, "category": "object", "reason": "도시락통, 구체적", "freq": 10}
+{"id": 548, "lemma": "brick", "keep": true, "category": "object", "reason": "벽돌, 구체적 사물", "freq": 117}
+{"id": 549, "lemma": "factor", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 16}
+{"id": 550, "lemma": "archaeologist", "keep": false, "category": null, "reason": "전문 직업, 어려움", "freq": 10}
+{"id": 551, "lemma": "hose", "keep": true, "category": "tool", "reason": "호스, 구체적 도구", "freq": 27}
+{"id": 552, "lemma": "myself", "keep": false, "category": null, "reason": "재귀대명사, 앵커 부적합", "freq": 197}
+{"id": 553, "lemma": "speaker", "keep": true, "category": "object", "reason": "스피커, 구체적 사물", "freq": 17}
+{"id": 554, "lemma": "pebble", "keep": true, "category": "nature", "reason": "작은 돌, 구체적", "freq": 25}
+{"id": 555, "lemma": "safely", "keep": false, "category": null, "reason": "부사, 앵커 부적합", "freq": 63}
+{"id": 556, "lemma": "mark", "keep": true, "category": "action", "reason": "표시하다, 동작 가능", "freq": 153}
+{"id": 557, "lemma": "sofa", "keep": true, "category": "object", "reason": "소파, 가구", "freq": 194}
+{"id": 558, "lemma": "rest", "keep": true, "category": "action", "reason": "쉬다, 기본 동작", "freq": 502}
+{"id": 559, "lemma": "ha", "keep": false, "category": null, "reason": "감탄사, 앵커 부적합", "freq": 11896}
+{"id": 560, "lemma": "mosque", "keep": false, "category": null, "reason": "종교 건물, 고유명사", "freq": 43}
+{"id": 561, "lemma": "fin", "keep": true, "category": "body", "reason": "지느러미, 동물 부위", "freq": 14}
+{"id": 562, "lemma": "fix", "keep": true, "category": "action", "reason": "고치다, 일상 동작", "freq": 451}
+{"id": 563, "lemma": "prize", "keep": true, "category": "object", "reason": "상품, 구체적 사물", "freq": 44}
+{"id": 564, "lemma": "heater", "keep": true, "category": "object", "reason": "히터, 가전제품", "freq": 13}
+{"id": 565, "lemma": "mary", "keep": false, "category": null, "reason": "고유명사", "freq": 21}
+{"id": 566, "lemma": "flag", "keep": true, "category": "object", "reason": "깃발, 구체적 사물", "freq": 284}
+{"id": 567, "lemma": "drip", "keep": true, "category": "action", "reason": "똑똑 떨어지다", "freq": 14}
+{"id": 568, "lemma": "avoid", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 13}
+{"id": 569, "lemma": "balance", "keep": true, "category": "action", "reason": "균형 잡기 동작", "freq": 21}
+{"id": 570, "lemma": "decision", "keep": false, "category": null, "reason": "추상적 개념", "freq": 12}
+{"id": 571, "lemma": "heal", "keep": true, "category": "action", "reason": "낫다, 치유 동작", "freq": 25}
+{"id": 572, "lemma": "jungle", "keep": true, "category": "nature", "reason": "정글, 자연 장소", "freq": 42}
+{"id": 573, "lemma": "ladder", "keep": true, "category": "tool", "reason": "사다리, 도구", "freq": 31}
+{"id": 574, "lemma": "faith", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 26}
+{"id": 575, "lemma": "flush", "keep": true, "category": "action", "reason": "물 내리다, 동작", "freq": 11}
+{"id": 576, "lemma": "oil", "keep": true, "category": "food", "reason": "기름, 일상 물질", "freq": 52}
+{"id": 577, "lemma": "lavoisier", "keep": false, "category": null, "reason": "고유명사", "freq": 12}
+{"id": 578, "lemma": "sort", "keep": true, "category": "action", "reason": "분류하다, 동작", "freq": 18}
+{"id": 579, "lemma": "trash", "keep": true, "category": "object", "reason": "쓰레기, 구체적", "freq": 59}
+{"id": 580, "lemma": "kong", "keep": false, "category": null, "reason": "고유명사(킹콩)", "freq": 52}
+{"id": 581, "lemma": "core", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 23}
+{"id": 582, "lemma": "hero", "keep": true, "category": "other", "reason": "영웅, 개념 가능", "freq": 160}
+{"id": 583, "lemma": "grill", "keep": true, "category": "tool", "reason": "그릴, 조리 도구", "freq": 12}
+{"id": 584, "lemma": "musa", "keep": false, "category": null, "reason": "고유명사", "freq": 28}
+{"id": 585, "lemma": "app", "keep": false, "category": null, "reason": "기술 용어, 5세 어려움", "freq": 15}
+{"id": 586, "lemma": "garage", "keep": true, "category": "place", "reason": "차고, 장소", "freq": 60}
+{"id": 587, "lemma": "region", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 13}
+{"id": 588, "lemma": "mosquito", "keep": true, "category": "animal", "reason": "모기, 흔한 곤충", "freq": 35}
+{"id": 589, "lemma": "account", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 11}
+{"id": 590, "lemma": "nap", "keep": true, "category": "action", "reason": "낮잠 자다, 동작", "freq": 46}
+{"id": 591, "lemma": "wise", "keep": true, "category": "property", "reason": "현명한, 성질", "freq": 50}
+{"id": 592, "lemma": "bunny", "keep": true, "category": "animal", "reason": "토끼, 5세 친숙", "freq": 62}
+{"id": 593, "lemma": "empire", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 460}
+{"id": 594, "lemma": "charlie", "keep": false, "category": null, "reason": "고유명사", "freq": 37}
+{"id": 595, "lemma": "dice", "keep": true, "category": "toy", "reason": "주사위, 장난감", "freq": 23}
+{"id": 596, "lemma": "polite", "keep": true, "category": "property", "reason": "예의 바른, 성질", "freq": 19}
+{"id": 597, "lemma": "puddle", "keep": true, "category": "nature", "reason": "물웅덩이, 자연", "freq": 79}
+{"id": 598, "lemma": "mice", "keep": false, "category": null, "reason": "mouse의 복수형", "freq": 10}
+{"id": 599, "lemma": "politics", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 10}
+{"id": 600, "lemma": "tie", "keep": true, "category": "action", "reason": "묶다, 동작 가능", "freq": 98}
+{"id": 601, "lemma": "amount", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 30}
+{"id": 602, "lemma": "crowd", "keep": true, "category": "other", "reason": "군중, 개념 가능", "freq": 41}
+{"id": 603, "lemma": "american", "keep": true, "category": "other", "reason": "미국인, 국적", "freq": 40}
+{"id": 604, "lemma": "experiment", "keep": true, "category": "action", "reason": "실험, 동작 가능", "freq": 108}
+{"id": 605, "lemma": "christmas", "keep": false, "category": null, "reason": "명절, 고유명사", "freq": 45}
+{"id": 606, "lemma": "icy", "keep": true, "category": "property", "reason": "얼음의, 성질", "freq": 13}
+{"id": 607, "lemma": "lizard", "keep": true, "category": "animal", "reason": "도마뱀, 동물", "freq": 44}
+{"id": 608, "lemma": "jumper", "keep": true, "category": "clothing", "reason": "점퍼, 옷", "freq": 11}
+{"id": 609, "lemma": "dry", "keep": true, "category": "property", "reason": "마른, 성질", "freq": 645}
+{"id": 610, "lemma": "rid", "keep": true, "category": "action", "reason": "없애다, 동작", "freq": 145}
+{"id": 611, "lemma": "fluffy", "keep": true, "category": "property", "reason": "보송보송한, 성질", "freq": 219}
+{"id": 612, "lemma": "act", "keep": true, "category": "action", "reason": "행동하다, 동작", "freq": 76}
+{"id": 613, "lemma": "flip", "keep": true, "category": "action", "reason": "뒤집다, 동작", "freq": 11}
+{"id": 614, "lemma": "hooray", "keep": false, "category": null, "reason": "감탄사, 앵커 부적합", "freq": 14}
+{"id": 615, "lemma": "vinegar", "keep": true, "category": "food", "reason": "식초, 음식 재료", "freq": 12}
+{"id": 616, "lemma": "useful", "keep": true, "category": "property", "reason": "유용한, 성질", "freq": 30}
+{"id": 617, "lemma": "bumpy", "keep": true, "category": "property", "reason": "울퉁불퉁한, 성질", "freq": 454}
+{"id": 618, "lemma": "somewhere", "keep": false, "category": null, "reason": "부사, 앵커 부적합", "freq": 10}
+{"id": 619, "lemma": "seat", "keep": true, "category": "object", "reason": "좌석, 구체적 사물", "freq": 235}
+{"id": 620, "lemma": "rob", "keep": false, "category": null, "reason": "부정적, 5세 부적합", "freq": 10}
+{"id": 621, "lemma": "weed", "keep": true, "category": "plant", "reason": "잡초, 식물", "freq": 15}
+{"id": 622, "lemma": "member", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 19}
+{"id": 623, "lemma": "stair", "keep": true, "category": "object", "reason": "계단, 구체적", "freq": 41}
+{"id": 624, "lemma": "cheer", "keep": true, "category": "action", "reason": "응원하다, 동작", "freq": 70}
+{"id": 625, "lemma": "gently", "keep": false, "category": null, "reason": "부사, 앵커 부적합", "freq": 58}
+{"id": 626, "lemma": "tunnel", "keep": true, "category": "place", "reason": "터널, 장소", "freq": 34}
+{"id": 627, "lemma": "save", "keep": true, "category": "action", "reason": "구하다, 동작", "freq": 266}
+{"id": 628, "lemma": "nest", "keep": true, "category": "nature", "reason": "둥지, 자연물", "freq": 75}
+{"id": 629, "lemma": "bump", "keep": true, "category": "action", "reason": "부딪히다, 동작", "freq": 60}
+{"id": 630, "lemma": "mar", "keep": false, "category": null, "reason": "고유명사 가능성", "freq": 21}
+{"id": 631, "lemma": "mali", "keep": false, "category": null, "reason": "국가명, 고유명사", "freq": 39}
+{"id": 632, "lemma": "wool", "keep": true, "category": "material", "reason": "양모, 재료", "freq": 59}
+{"id": 633, "lemma": "adventure", "keep": true, "category": "other", "reason": "모험, 개념 가능", "freq": 117}
+{"id": 634, "lemma": "toast", "keep": true, "category": "food", "reason": "토스트, 음식", "freq": 75}
+{"id": 635, "lemma": "fountain", "keep": true, "category": "nature", "reason": "분수, 구체적", "freq": 16}
+{"id": 636, "lemma": "amadeus", "keep": false, "category": null, "reason": "고유명사", "freq": 20}
+{"id": 637, "lemma": "texas", "keep": false, "category": null, "reason": "지역명, 고유명사", "freq": 17}
+{"id": 638, "lemma": "shaman", "keep": false, "category": null, "reason": "전문 용어, 5세 어려움", "freq": 14}
+{"id": 639, "lemma": "sunset", "keep": true, "category": "nature", "reason": "일몰, 자연 현상", "freq": 90}
+{"id": 640, "lemma": "pit", "keep": true, "category": "nature", "reason": "구덩이, 자연물", "freq": 11}
+{"id": 641, "lemma": "caesar", "keep": false, "category": null, "reason": "고유명사", "freq": 35}
+{"id": 642, "lemma": "neat", "keep": true, "category": "property", "reason": "깔끔한, 성질", "freq": 43}
+{"id": 643, "lemma": "windy", "keep": true, "category": "weather", "reason": "바람 부는, 날씨", "freq": 27}
+{"id": 644, "lemma": "swimsuit", "keep": true, "category": "clothing", "reason": "수영복, 옷", "freq": 14}
+{"id": 645, "lemma": "whisker", "keep": true, "category": "body", "reason": "수염, 동물 부위", "freq": 14}
+{"id": 646, "lemma": "truth", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 43}
+{"id": 647, "lemma": "carl", "keep": false, "category": null, "reason": "고유명사", "freq": 13}
+{"id": 648, "lemma": "creation", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 11}
+{"id": 649, "lemma": "glad", "keep": true, "category": "feeling", "reason": "기쁜, 감정", "freq": 308}
+{"id": 650, "lemma": "twice", "keep": false, "category": null, "reason": "부사, 앵커 부적합", "freq": 32}
+{"id": 651, "lemma": "sheet", "keep": true, "category": "object", "reason": "시트, 구체적 사물", "freq": 19}
+{"id": 652, "lemma": "cyrus", "keep": false, "category": null, "reason": "고유명사", "freq": 63}
+{"id": 653, "lemma": "silk", "keep": true, "category": "material", "reason": "비단, 재료", "freq": 93}
+{"id": 654, "lemma": "alike", "keep": false, "category": null, "reason": "부사, 앵커 부적합", "freq": 13}
+{"id": 655, "lemma": "queen", "keep": true, "category": "other", "reason": "여왕, 역할", "freq": 160}
+{"id": 656, "lemma": "balloon", "keep": true, "category": "toy", "reason": "풍선, 장난감", "freq": 295}
+{"id": 657, "lemma": "sunny", "keep": true, "category": "weather", "reason": "화창한, 날씨", "freq": 453}
+{"id": 658, "lemma": "peak", "keep": true, "category": "nature", "reason": "산봉우리, 자연", "freq": 14}
+{"id": 659, "lemma": "upset", "keep": true, "category": "feeling", "reason": "속상한, 감정", "freq": 10}
+{"id": 660, "lemma": "timer", "keep": true, "category": "tool", "reason": "타이머, 도구", "freq": 32}
+{"id": 661, "lemma": "buddhist", "keep": false, "category": null, "reason": "종교명, 고유명사", "freq": 14}
+{"id": 662, "lemma": "birdhouse", "keep": true, "category": "object", "reason": "새집, 구체적", "freq": 42}
+{"id": 663, "lemma": "branch", "keep": true, "category": "plant", "reason": "나뭇가지, 식물", "freq": 98}
+{"id": 664, "lemma": "duck", "keep": true, "category": "animal", "reason": "오리, 동물", "freq": 301}
+{"id": 665, "lemma": "khan", "keep": false, "category": null, "reason": "고유명사", "freq": 41}
+{"id": 666, "lemma": "pick", "keep": true, "category": "action", "reason": "고르다, 일상 동작", "freq": 922}
+{"id": 667, "lemma": "holy", "keep": false, "category": null, "reason": "종교적, 추상적 의미", "freq": 52}
+{"id": 668, "lemma": "worry", "keep": true, "category": "feeling", "reason": "걱정, 5세 감정", "freq": 34}
+{"id": 669, "lemma": "newton", "keep": false, "category": null, "reason": "특정 인명", "freq": 12}
+{"id": 670, "lemma": "spray", "keep": true, "category": "action", "reason": "뿌리다, 일상 동작", "freq": 20}
+{"id": 671, "lemma": "dioxide", "keep": false, "category": null, "reason": "과학 용어", "freq": 62}
+{"id": 672, "lemma": "seesaw", "keep": true, "category": "toy", "reason": "시소, 놀이터 장난감", "freq": 10}
+{"id": 673, "lemma": "stem", "keep": true, "category": "plant", "reason": "식물 줄기", "freq": 41}
+{"id": 674, "lemma": "knew", "keep": false, "category": null, "reason": "know의 과거형", "freq": 87}
+{"id": 675, "lemma": "maria", "keep": false, "category": null, "reason": "특정 인명", "freq": 24}
+{"id": 676, "lemma": "cause", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 24}
+{"id": 677, "lemma": "leash", "keep": true, "category": "tool", "reason": "개 목줄, 일상 물건", "freq": 14}
+{"id": 678, "lemma": "helmet", "keep": true, "category": "clothing", "reason": "헬멧, 보호 장비", "freq": 36}
+{"id": 679, "lemma": "marry", "keep": true, "category": "action", "reason": "결혼하다, 일상 개념", "freq": 56}
+{"id": 680, "lemma": "gandhi", "keep": false, "category": null, "reason": "특정 인명", "freq": 29}
+{"id": 681, "lemma": "shield", "keep": true, "category": "tool", "reason": "방패, 그림책 흔함", "freq": 28}
+{"id": 682, "lemma": "raw", "keep": true, "category": "property", "reason": "날것, 음식 상태", "freq": 67}
+{"id": 683, "lemma": "wing", "keep": true, "category": "body", "reason": "날개, 동물 신체", "freq": 211}
+{"id": 684, "lemma": "wavy", "keep": true, "category": "property", "reason": "물결 모양", "freq": 14}
+{"id": 685, "lemma": "fork", "keep": true, "category": "object", "reason": "포크, 식기", "freq": 82}
+{"id": 686, "lemma": "england", "keep": true, "category": "place", "reason": "국가명, 지리", "freq": 24}
+{"id": 687, "lemma": "integrate", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 32}
+{"id": 688, "lemma": "chance", "keep": false, "category": null, "reason": "추상적 개념", "freq": 30}
+{"id": 689, "lemma": "hill", "keep": true, "category": "nature", "reason": "언덕, 자연 지형", "freq": 416}
+{"id": 690, "lemma": "lace", "keep": true, "category": "clothing", "reason": "레이스, 옷 장식", "freq": 17}
+{"id": 691, "lemma": "colour", "keep": true, "category": "property", "reason": "색깔, 기본 개념", "freq": 159}
+{"id": 692, "lemma": "rust", "keep": true, "category": "property", "reason": "녹, 물체 상태", "freq": 17}
+{"id": 693, "lemma": "magnify", "keep": false, "category": null, "reason": "과학적, 5세 어려움", "freq": 14}
+{"id": 694, "lemma": "tight", "keep": true, "category": "property", "reason": "꽉 조인, 느낌", "freq": 154}
+{"id": 695, "lemma": "mama", "keep": true, "category": "family", "reason": "엄마, 가족 호칭", "freq": 25}
+{"id": 696, "lemma": "deer", "keep": true, "category": "animal", "reason": "사슴, 동물", "freq": 40}
+{"id": 697, "lemma": "tesla", "keep": false, "category": null, "reason": "특정 인명", "freq": 39}
+{"id": 698, "lemma": "strange", "keep": true, "category": "property", "reason": "이상한, 느낌 표현", "freq": 52}
+{"id": 699, "lemma": "mental", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 69}
+{"id": 700, "lemma": "math", "keep": true, "category": "other", "reason": "수학, 학교 과목", "freq": 442}
+{"id": 701, "lemma": "racket", "keep": true, "category": "tool", "reason": "라켓, 운동 도구", "freq": 27}
+{"id": 702, "lemma": "playground", "keep": true, "category": "place", "reason": "놀이터, 장소", "freq": 367}
+{"id": 703, "lemma": "lit", "keep": false, "category": null, "reason": "light의 과거형", "freq": 11}
+{"id": 704, "lemma": "runny", "keep": true, "category": "property", "reason": "흐르는, 콧물 등", "freq": 25}
+{"id": 705, "lemma": "hum", "keep": true, "category": "sound", "reason": "콧노래 소리", "freq": 55}
+{"id": 706, "lemma": "size", "keep": true, "category": "property", "reason": "크기, 기본 개념", "freq": 102}
+{"id": 707, "lemma": "robe", "keep": true, "category": "clothing", "reason": "가운, 옷", "freq": 17}
+{"id": 708, "lemma": "bush", "keep": true, "category": "plant", "reason": "덤불, 식물", "freq": 65}
+{"id": 709, "lemma": "mongol", "keep": false, "category": null, "reason": "민족명, 5세 부적합", "freq": 62}
+{"id": 710, "lemma": "care", "keep": true, "category": "feeling", "reason": "관심, 돌봄 감정", "freq": 462}
+{"id": 711, "lemma": "shot", "keep": false, "category": null, "reason": "shoot의 과거형", "freq": 49}
+{"id": 712, "lemma": "yummy", "keep": true, "category": "property", "reason": "맛있는, 음식 표현", "freq": 349}
+{"id": 713, "lemma": "roar", "keep": true, "category": "sound", "reason": "포효, 동물 소리", "freq": 60}
+{"id": 714, "lemma": "pray", "keep": false, "category": null, "reason": "종교적 행위", "freq": 106}
+{"id": 715, "lemma": "record", "keep": true, "category": "object", "reason": "기록, 음반 등", "freq": 16}
+{"id": 716, "lemma": "fresh", "keep": true, "category": "property", "reason": "신선한, 상태", "freq": 476}
+{"id": 717, "lemma": "uniform", "keep": true, "category": "clothing", "reason": "교복, 제복", "freq": 17}
+{"id": 718, "lemma": "sandy", "keep": true, "category": "property", "reason": "모래의, 성질", "freq": 24}
+{"id": 719, "lemma": "edison", "keep": false, "category": null, "reason": "특정 인명", "freq": 38}
+{"id": 720, "lemma": "hercules", "keep": false, "category": null, "reason": "신화 인물", "freq": 15}
+{"id": 721, "lemma": "chimney", "keep": true, "category": "object", "reason": "굴뚝, 집 구조", "freq": 23}
+{"id": 722, "lemma": "stomach", "keep": true, "category": "body", "reason": "배, 신체 부위", "freq": 40}
+{"id": 723, "lemma": "clang", "keep": true, "category": "sound", "reason": "쨍그랑 소리", "freq": 11}
+{"id": 724, "lemma": "finally", "keep": false, "category": null, "reason": "부사, 앵커 부적합", "freq": 1426}
+{"id": 725, "lemma": "beat", "keep": true, "category": "action", "reason": "두드리다, 동작", "freq": 110}
+{"id": 726, "lemma": "count", "keep": true, "category": "action", "reason": "세다, 기본 동작", "freq": 401}
+{"id": 727, "lemma": "nicely", "keep": false, "category": null, "reason": "부사, 앵커 부적합", "freq": 61}
+{"id": 728, "lemma": "bloom", "keep": true, "category": "action", "reason": "꽃피다, 식물 동작", "freq": 10}
+{"id": 729, "lemma": "lunchtime", "keep": true, "category": "other", "reason": "점심시간, 일상", "freq": 15}
+{"id": 730, "lemma": "smell", "keep": true, "category": "action", "reason": "냄새 맡다, 감각", "freq": 1653}
+{"id": 731, "lemma": "divide", "keep": true, "category": "action", "reason": "나누다, 기본 동작", "freq": 19}
+{"id": 732, "lemma": "tom", "keep": false, "category": null, "reason": "특정 인명", "freq": 1120}
+{"id": 733, "lemma": "recipe", "keep": true, "category": "other", "reason": "요리법, 일상", "freq": 44}
+{"id": 734, "lemma": "curtain", "keep": true, "category": "object", "reason": "커튼, 집 물건", "freq": 22}
+{"id": 735, "lemma": "tidy", "keep": true, "category": "action", "reason": "정리하다, 동작", "freq": 44}
+{"id": 736, "lemma": "huge", "keep": true, "category": "property", "reason": "거대한, 크기", "freq": 37}
+{"id": 737, "lemma": "fridge", "keep": true, "category": "object", "reason": "냉장고, 가전", "freq": 281}
+{"id": 738, "lemma": "central", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 93}
+{"id": 739, "lemma": "exactly", "keep": false, "category": null, "reason": "부사, 앵커 부적합", "freq": 11}
+{"id": 740, "lemma": "president", "keep": false, "category": null, "reason": "추상적 직위", "freq": 38}
+{"id": 741, "lemma": "toward", "keep": false, "category": null, "reason": "전치사, 앵커 부적합", "freq": 10}
+{"id": 742, "lemma": "fold", "keep": true, "category": "action", "reason": "접다, 기본 동작", "freq": 69}
+{"id": 743, "lemma": "industrial", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 17}
+{"id": 744, "lemma": "bracelet", "keep": true, "category": "clothing", "reason": "팔찌, 액세서리", "freq": 35}
+{"id": 745, "lemma": "albert", "keep": false, "category": null, "reason": "특정 인명", "freq": 46}
+{"id": 746, "lemma": "mess", "keep": true, "category": "property", "reason": "지저분함, 상태", "freq": 73}
+{"id": 747, "lemma": "sticker", "keep": true, "category": "toy", "reason": "스티커, 장난감", "freq": 132}
+{"id": 748, "lemma": "kite", "keep": true, "category": "toy", "reason": "연, 장난감", "freq": 150}
+{"id": 749, "lemma": "lay", "keep": true, "category": "action", "reason": "눕히다, 동작", "freq": 44}
+{"id": 750, "lemma": "happily", "keep": false, "category": null, "reason": "부사, 앵커 부적합", "freq": 28}
+{"id": 751, "lemma": "mahatma", "keep": false, "category": null, "reason": "특정 인명", "freq": 29}
+{"id": 752, "lemma": "pipe", "keep": true, "category": "object", "reason": "파이프, 물건", "freq": 31}
+{"id": 753, "lemma": "tongue", "keep": true, "category": "body", "reason": "혀, 신체 부위", "freq": 64}
+{"id": 754, "lemma": "carpet", "keep": true, "category": "object", "reason": "카펫, 집 물건", "freq": 67}
+{"id": 755, "lemma": "judge", "keep": false, "category": null, "reason": "추상적 직업", "freq": 16}
+{"id": 756, "lemma": "width", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 11}
+{"id": 757, "lemma": "howl", "keep": true, "category": "sound", "reason": "울부짖음, 소리", "freq": 10}
+{"id": 758, "lemma": "bounce", "keep": true, "category": "action", "reason": "튀다, 동작", "freq": 54}
+{"id": 759, "lemma": "charles", "keep": false, "category": null, "reason": "특정 인명", "freq": 43}
+{"id": 760, "lemma": "equal", "keep": true, "category": "property", "reason": "같은, 기본 개념", "freq": 22}
+{"id": 761, "lemma": "knot", "keep": true, "category": "object", "reason": "매듭, 물건", "freq": 12}
+{"id": 762, "lemma": "shed", "keep": true, "category": "object", "reason": "창고, 건물", "freq": 43}
+{"id": 763, "lemma": "zipper", "keep": true, "category": "clothing", "reason": "지퍼, 옷 부속", "freq": 13}
+{"id": 764, "lemma": "soapy", "keep": true, "category": "property", "reason": "비누의, 성질", "freq": 11}
+{"id": 765, "lemma": "jupiter", "keep": true, "category": "nature", "reason": "목성, 행성 이름", "freq": 10}
+{"id": 766, "lemma": "media", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 42}
+{"id": 767, "lemma": "mad", "keep": true, "category": "feeling", "reason": "화난, 감정", "freq": 21}
+{"id": 768, "lemma": "internal", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 58}
+{"id": 769, "lemma": "slice", "keep": true, "category": "action", "reason": "자르다, 동작", "freq": 56}
+{"id": 770, "lemma": "palm", "keep": true, "category": "body", "reason": "손바닥, 신체", "freq": 11}
+{"id": 771, "lemma": "nuclear", "keep": false, "category": null, "reason": "과학 용어", "freq": 46}
+{"id": 772, "lemma": "sum", "keep": true, "category": "other", "reason": "합계, 수학 개념", "freq": 27}
+{"id": 773, "lemma": "bedtime", "keep": true, "category": "other", "reason": "취침 시간, 일상", "freq": 118}
+{"id": 774, "lemma": "stool", "keep": true, "category": "object", "reason": "의자, 가구", "freq": 10}
+{"id": 775, "lemma": "thief", "keep": true, "category": "other", "reason": "도둑, 역할", "freq": 10}
+{"id": 776, "lemma": "chip", "keep": true, "category": "food", "reason": "감자칩, 음식", "freq": 55}
+{"id": 777, "lemma": "erase", "keep": true, "category": "action", "reason": "지우다, 동작", "freq": 19}
+{"id": 778, "lemma": "lee", "keep": false, "category": null, "reason": "특정 인명", "freq": 40}
+{"id": 779, "lemma": "siren", "keep": true, "category": "sound", "reason": "사이렌, 경고음", "freq": 10}
+{"id": 780, "lemma": "mount", "keep": true, "category": "action", "reason": "오르다, 동작", "freq": 17}
+{"id": 781, "lemma": "marx", "keep": false, "category": null, "reason": "특정 인명", "freq": 30}
+{"id": 782, "lemma": "bang", "keep": true, "category": "sound", "reason": "쾅, 소리", "freq": 61}
+{"id": 783, "lemma": "seek", "keep": true, "category": "action", "reason": "찾다, 동작", "freq": 41}
+{"id": 784, "lemma": "tiny", "keep": true, "category": "property", "reason": "아주 작은, 크기", "freq": 537}
+{"id": 785, "lemma": "yet", "keep": false, "category": null, "reason": "부사, 앵커 부적합", "freq": 176}
+{"id": 786, "lemma": "edge", "keep": true, "category": "property", "reason": "가장자리, 위치", "freq": 69}
+{"id": 787, "lemma": "softly", "keep": false, "category": null, "reason": "부사, 앵커 부적합", "freq": 60}
+{"id": 788, "lemma": "along", "keep": false, "category": null, "reason": "전치사, 앵커 부적합", "freq": 139}
+{"id": 789, "lemma": "degree", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 11}
+{"id": 790, "lemma": "bouncy", "keep": true, "category": "property", "reason": "탄력 있는, 성질", "freq": 16}
+{"id": 791, "lemma": "hold", "keep": true, "category": "action", "reason": "잡다, 기본 동작", "freq": 1241}
+{"id": 792, "lemma": "block", "keep": true, "category": "toy", "reason": "블록, 장난감", "freq": 842}
+{"id": 793, "lemma": "revolution", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 108}
+{"id": 794, "lemma": "pacific", "keep": true, "category": "nature", "reason": "태평양, 지명", "freq": 66}
+{"id": 795, "lemma": "leather", "keep": true, "category": "property", "reason": "가죽, 재료", "freq": 23}
+{"id": 796, "lemma": "tire", "keep": true, "category": "object", "reason": "타이어, 물건", "freq": 1552}
+{"id": 797, "lemma": "steal", "keep": true, "category": "action", "reason": "훔치다, 동작", "freq": 39}
+{"id": 798, "lemma": "flow", "keep": true, "category": "action", "reason": "흐르다, 동작", "freq": 80}
+{"id": 799, "lemma": "scare", "keep": true, "category": "feeling", "reason": "두려움 감정, 5세 가능", "freq": 13}
+{"id": 800, "lemma": "teddy", "keep": true, "category": "toy", "reason": "곰인형, 흔한 장난감", "freq": 200}
+{"id": 801, "lemma": "yawn", "keep": true, "category": "action", "reason": "하품, 일상 동작", "freq": 17}
+{"id": 802, "lemma": "inca", "keep": false, "category": null, "reason": "특정 문명명", "freq": 41}
+{"id": 803, "lemma": "windmill", "keep": true, "category": "object", "reason": "풍차, 그림책 흔함", "freq": 13}
+{"id": 804, "lemma": "golf", "keep": true, "category": "action", "reason": "골프, 운동 이름", "freq": 17}
+{"id": 805, "lemma": "slip", "keep": true, "category": "action", "reason": "미끄러지다, 일상 동작", "freq": 14}
+{"id": 806, "lemma": "towel", "keep": true, "category": "object", "reason": "수건, 일상 물건", "freq": 135}
+{"id": 807, "lemma": "clear", "keep": true, "category": "property", "reason": "맑은, 투명한 성질", "freq": 266}
+{"id": 808, "lemma": "thirty", "keep": true, "category": "other", "reason": "숫자 30, 기초 수", "freq": 19}
+{"id": 809, "lemma": "dusty", "keep": true, "category": "property", "reason": "먼지 낀 상태", "freq": 56}
+{"id": 810, "lemma": "kingdom", "keep": true, "category": "place", "reason": "왕국, 동화에 흔함", "freq": 68}
+{"id": 811, "lemma": "float", "keep": true, "category": "action", "reason": "뜨다, 물/공기", "freq": 162}
+{"id": 812, "lemma": "rough", "keep": true, "category": "property", "reason": "거친 촉감", "freq": 97}
+{"id": 813, "lemma": "rocky", "keep": true, "category": "property", "reason": "바위 많은, 형용사", "freq": 73}
+{"id": 814, "lemma": "olive", "keep": true, "category": "food", "reason": "올리브, 음식 이름", "freq": 10}
+{"id": 815, "lemma": "sam", "keep": false, "category": null, "reason": "특정 인명", "freq": 337}
+{"id": 816, "lemma": "goal", "keep": true, "category": "other", "reason": "골/목표, 놀이 용어", "freq": 47}
+{"id": 817, "lemma": "shiny", "keep": true, "category": "property", "reason": "반짝이는 성질", "freq": 1058}
+{"id": 818, "lemma": "bookshelf", "keep": true, "category": "object", "reason": "책장, 가구 이름", "freq": 10}
+{"id": 819, "lemma": "layer", "keep": false, "category": null, "reason": "추상적 개념, 5세 어려움", "freq": 18}
+{"id": 820, "lemma": "flute", "keep": true, "category": "tool", "reason": "플루트, 악기 이름", "freq": 28}
+{"id": 821, "lemma": "owner", "keep": true, "category": "other", "reason": "주인, 일상 개념", "freq": 45}
+{"id": 822, "lemma": "mud", "keep": true, "category": "nature", "reason": "진흙, 자연물", "freq": 204}
+{"id": 823, "lemma": "corn", "keep": true, "category": "food", "reason": "옥수수, 흔한 음식", "freq": 59}
+{"id": 824, "lemma": "sue", "keep": false, "category": null, "reason": "특정 인명", "freq": 11}
+{"id": 825, "lemma": "net", "keep": true, "category": "object", "reason": "그물, 일상 물건", "freq": 64}
+{"id": 826, "lemma": "seal", "keep": true, "category": "animal", "reason": "물개, 동물 이름", "freq": 23}
+{"id": 827, "lemma": "egyptian", "keep": false, "category": null, "reason": "특정 국적 형용사", "freq": 13}
+{"id": 828, "lemma": "trail", "keep": true, "category": "nature", "reason": "오솔길, 자연 장소", "freq": 10}
+{"id": 829, "lemma": "shoulder", "keep": true, "category": "body", "reason": "어깨, 신체 부위", "freq": 22}
+{"id": 830, "lemma": "gun", "keep": false, "category": null, "reason": "민감한 무기", "freq": 29}
+{"id": 831, "lemma": "brush", "keep": true, "category": "tool", "reason": "솔/붓, 일상 도구", "freq": 459}
+{"id": 832, "lemma": "counter", "keep": true, "category": "object", "reason": "카운터/계산대", "freq": 39}
+{"id": 833, "lemma": "bos", "keep": false, "category": null, "reason": "의미 불명, 드문 단어", "freq": 32}
+{"id": 834, "lemma": "gift", "keep": true, "category": "object", "reason": "선물, 일상 물건", "freq": 384}
+{"id": 835, "lemma": "customer", "keep": true, "category": "other", "reason": "손님, 일상 역할", "freq": 16}
+{"id": 836, "lemma": "mirror", "keep": true, "category": "object", "reason": "거울, 일상 물건", "freq": 109}
+{"id": 837, "lemma": "einstein", "keep": false, "category": null, "reason": "특정 인명", "freq": 59}
+{"id": 838, "lemma": "sharp", "keep": true, "category": "property", "reason": "날카로운 성질", "freq": 219}
+{"id": 839, "lemma": "penny", "keep": true, "category": "object", "reason": "동전, 화폐 단위", "freq": 18}
+{"id": 840, "lemma": "woof", "keep": false, "category": null, "reason": "의성어, 앵커 부적합", "freq": 18}
+{"id": 841, "lemma": "easily", "keep": false, "category": null, "reason": "부사, 앵커 부적합", "freq": 89}
+{"id": 842, "lemma": "candle", "keep": true, "category": "object", "reason": "양초, 일상 물건", "freq": 137}
+{"id": 843, "lemma": "kitten", "keep": true, "category": "animal", "reason": "새끼 고양이", "freq": 91}
+{"id": 844, "lemma": "french", "keep": false, "category": null, "reason": "특정 국적 형용사", "freq": 122}
+{"id": 845, "lemma": "didn", "keep": false, "category": null, "reason": "축약형, 불완전 단어", "freq": 10}
+{"id": 846, "lemma": "honey", "keep": true, "category": "food", "reason": "꿀, 음식 이름", "freq": 90}
+{"id": 847, "lemma": "sens", "keep": false, "category": null, "reason": "의미 불명, 드문 단어", "freq": 50}
+{"id": 848, "lemma": "lamp", "keep": true, "category": "object", "reason": "램프, 일상 물건", "freq": 162}
+{"id": 849, "lemma": "crack", "keep": true, "category": "action", "reason": "금가다/깨지다", "freq": 101}
+{"id": 850, "lemma": "glow", "keep": true, "category": "property", "reason": "빛나다, 시각적", "freq": 60}
+{"id": 851, "lemma": "bathtub", "keep": true, "category": "object", "reason": "욕조, 일상 물건", "freq": 20}
+{"id": 852, "lemma": "parrot", "keep": true, "category": "animal", "reason": "앵무새, 동물 이름", "freq": 48}
+{"id": 853, "lemma": "mask", "keep": true, "category": "object", "reason": "가면/마스크", "freq": 27}
+{"id": 854, "lemma": "scary", "keep": true, "category": "feeling", "reason": "무서운 느낌", "freq": 153}
+{"id": 855, "lemma": "beep", "keep": false, "category": null, "reason": "의성어, 앵커 부적합", "freq": 43}
+{"id": 856, "lemma": "sexually", "keep": false, "category": null, "reason": "민감한 성인 용어", "freq": 20}
+{"id": 857, "lemma": "pumpkin", "keep": true, "category": "food", "reason": "호박, 음식 이름", "freq": 31}
+{"id": 858, "lemma": "lead", "keep": true, "category": "action", "reason": "이끌다, 기본 동사", "freq": 39}
+{"id": 859, "lemma": "envelope", "keep": true, "category": "object", "reason": "봉투, 일상 물건", "freq": 47}
+{"id": 860, "lemma": "qin", "keep": false, "category": null, "reason": "특정 인명/왕조", "freq": 15}
+{"id": 861, "lemma": "pointy", "keep": true, "category": "property", "reason": "뾰족한 성질", "freq": 48}
+{"id": 862, "lemma": "breath", "keep": true, "category": "body", "reason": "숨, 신체 기능", "freq": 131}
+{"id": 863, "lemma": "rex", "keep": false, "category": null, "reason": "특정 이름/공룡명", "freq": 29}
+{"id": 864, "lemma": "pillow", "keep": true, "category": "object", "reason": "베개, 일상 물건", "freq": 191}
+{"id": 865, "lemma": "fireplace", "keep": true, "category": "object", "reason": "벽난로, 가정 물건", "freq": 11}
+{"id": 866, "lemma": "odd", "keep": true, "category": "property", "reason": "이상한, 성질", "freq": 10}
+{"id": 867, "lemma": "include", "keep": false, "category": null, "reason": "추상 동사, 5세 어려움", "freq": 39}
+{"id": 868, "lemma": "cute", "keep": true, "category": "property", "reason": "귀여운, 흔한 형용사", "freq": 63}
+{"id": 869, "lemma": "whisper", "keep": true, "category": "action", "reason": "속삭이다, 동작", "freq": 84}
+{"id": 870, "lemma": "growth", "keep": false, "category": null, "reason": "추상 명사, 5세 어려움", "freq": 10}
+{"id": 871, "lemma": "grape", "keep": true, "category": "food", "reason": "포도, 흔한 과일", "freq": 87}
+{"id": 872, "lemma": "freeze", "keep": true, "category": "action", "reason": "얼다, 일상 동작", "freq": 40}
+{"id": 873, "lemma": "soda", "keep": true, "category": "food", "reason": "탄산음료, 음식", "freq": 28}
+{"id": 874, "lemma": "disappear", "keep": true, "category": "action", "reason": "사라지다, 동작", "freq": 13}
+{"id": 875, "lemma": "depression", "keep": false, "category": null, "reason": "성인 정신 건강 용어", "freq": 28}
+{"id": 876, "lemma": "sparkle", "keep": true, "category": "property", "reason": "반짝이다, 시각적", "freq": 30}
+{"id": 877, "lemma": "leaf", "keep": true, "category": "plant", "reason": "나뭇잎, 자연물", "freq": 1166}
+{"id": 878, "lemma": "magic", "keep": true, "category": "other", "reason": "마법, 동화 개념", "freq": 126}
+{"id": 879, "lemma": "password", "keep": true, "category": "other", "reason": "비밀번호, 일상 용어", "freq": 12}
+{"id": 880, "lemma": "golden", "keep": true, "category": "property", "reason": "금빛의, 색깔", "freq": 43}
+{"id": 881, "lemma": "dirt", "keep": true, "category": "nature", "reason": "흙, 자연물", "freq": 275}
+{"id": 882, "lemma": "online", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 46}
+{"id": 883, "lemma": "nobody", "keep": false, "category": null, "reason": "대명사, 앵커 부적합", "freq": 17}
+{"id": 884, "lemma": "worm", "keep": true, "category": "animal", "reason": "지렁이, 동물 이름", "freq": 71}
+{"id": 885, "lemma": "hmm", "keep": false, "category": null, "reason": "감탄사, 앵커 부적합", "freq": 135}
+{"id": 886, "lemma": "civilisation", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 33}
+{"id": 887, "lemma": "sleeve", "keep": true, "category": "clothing", "reason": "소매, 옷 부분", "freq": 19}
+{"id": 888, "lemma": "fell", "keep": false, "category": null, "reason": "fall의 과거형", "freq": 232}
+{"id": 889, "lemma": "catholic", "keep": false, "category": null, "reason": "특정 종교명", "freq": 81}
+{"id": 890, "lemma": "herself", "keep": false, "category": null, "reason": "재귀대명사, 앵커 부적합", "freq": 14}
+{"id": 891, "lemma": "khwarizmi", "keep": false, "category": null, "reason": "특정 인명", "freq": 23}
+{"id": 892, "lemma": "hurry", "keep": true, "category": "action", "reason": "서두르다, 동작", "freq": 29}
+{"id": 893, "lemma": "wild", "keep": true, "category": "property", "reason": "야생의, 성질", "freq": 95}
+{"id": 894, "lemma": "greece", "keep": true, "category": "place", "reason": "그리스, 국가명", "freq": 58}
+{"id": 895, "lemma": "costume", "keep": true, "category": "clothing", "reason": "의상, 옷 종류", "freq": 25}
+{"id": 896, "lemma": "craft", "keep": true, "category": "action", "reason": "만들기, 활동", "freq": 29}
+{"id": 897, "lemma": "ana", "keep": false, "category": null, "reason": "특정 인명", "freq": 25}
+{"id": 898, "lemma": "neck", "keep": true, "category": "body", "reason": "목, 신체 부위", "freq": 62}
+{"id": 899, "lemma": "stick", "keep": true, "category": "object", "reason": "막대기, 일상 물건", "freq": 433}
+{"id": 900, "lemma": "wolfgang", "keep": false, "category": null, "reason": "특정 인명", "freq": 20}
+{"id": 901, "lemma": "backyard", "keep": true, "category": "place", "reason": "뒷마당, 장소", "freq": 20}
+{"id": 902, "lemma": "cocoa", "keep": true, "category": "food", "reason": "코코아, 음료 이름", "freq": 20}
+{"id": 903, "lemma": "chase", "keep": true, "category": "action", "reason": "쫓다, 놀이 동작", "freq": 32}
+{"id": 904, "lemma": "milky", "keep": true, "category": "property", "reason": "우유빛의, 성질", "freq": 58}
+{"id": 905, "lemma": "emperor", "keep": true, "category": "other", "reason": "황제, 동화 속 직위", "freq": 13}
+{"id": 906, "lemma": "snowman", "keep": true, "category": "object", "reason": "눈사람, 겨울 물건", "freq": 77}
+{"id": 907, "lemma": "helpful", "keep": true, "category": "property", "reason": "도움이 되는, 성질", "freq": 30}
+{"id": 908, "lemma": "deeply", "keep": false, "category": null, "reason": "부사, 앵커 부적합", "freq": 10}
+{"id": 909, "lemma": "islam", "keep": false, "category": null, "reason": "특정 종교명", "freq": 95}
+{"id": 910, "lemma": "burger", "keep": true, "category": "food", "reason": "햄버거, 흔한 음식", "freq": 10}
+{"id": 911, "lemma": "cushion", "keep": true, "category": "object", "reason": "쿠션, 일상 물건", "freq": 10}
+{"id": 912, "lemma": "lap", "keep": true, "category": "body", "reason": "무릎 위, 신체 부위", "freq": 40}
+{"id": 913, "lemma": "frog", "keep": true, "category": "animal", "reason": "개구리, 동물 이름", "freq": 309}
+{"id": 914, "lemma": "yay", "keep": false, "category": null, "reason": "감탄사, 앵커 부적합", "freq": 22}
+{"id": 915, "lemma": "puff", "keep": true, "category": "action", "reason": "후 불기, 동작", "freq": 13}
+{"id": 916, "lemma": "loud", "keep": true, "category": "property", "reason": "시끄러운, 성질", "freq": 1522}
+{"id": 917, "lemma": "top", "keep": true, "category": "property", "reason": "위/최고, 위치", "freq": 774}
+{"id": 918, "lemma": "squishy", "keep": true, "category": "property", "reason": "말랑한, 촉감", "freq": 57}
+{"id": 919, "lemma": "stream", "keep": true, "category": "nature", "reason": "시내, 자연 장소", "freq": 33}
+{"id": 920, "lemma": "turing", "keep": false, "category": null, "reason": "특정 인명", "freq": 22}
+{"id": 921, "lemma": "quietly", "keep": false, "category": null, "reason": "부사, 앵커 부적합", "freq": 93}
+{"id": 922, "lemma": "lock", "keep": true, "category": "object", "reason": "자물쇠, 일상 물건", "freq": 64}
+{"id": 923, "lemma": "faraway", "keep": true, "category": "property", "reason": "먼, 거리 형용사", "freq": 34}
+{"id": 924, "lemma": "screen", "keep": true, "category": "object", "reason": "화면, 일상 물건", "freq": 266}
+{"id": 925, "lemma": "dessert", "keep": true, "category": "food", "reason": "디저트, 음식 종류", "freq": 44}
+{"id": 926, "lemma": "curie", "keep": false, "category": null, "reason": "특정 인명", "freq": 23}
+{"id": 927, "lemma": "wire", "keep": true, "category": "object", "reason": "철사, 일상 물건", "freq": 109}
+{"id": 928, "lemma": "jackson", "keep": false, "category": null, "reason": "특정 인명", "freq": 43}
+{"id": 929, "lemma": "episode", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 17}
+{"id": 930, "lemma": "hang", "keep": true, "category": "action", "reason": "걸다, 기본 동사", "freq": 147}
+{"id": 931, "lemma": "throat", "keep": true, "category": "body", "reason": "목구멍, 신체 부위", "freq": 29}
+{"id": 932, "lemma": "rainbow", "keep": true, "category": "nature", "reason": "무지개, 5세에게 친숙함", "freq": 145}
+{"id": 933, "lemma": "tune", "keep": true, "category": "sound", "reason": "노래 가락, 쉽게 설명 가능", "freq": 70}
+{"id": 934, "lemma": "chain", "keep": true, "category": "object", "reason": "사슬, 구체적 사물", "freq": 38}
+{"id": 935, "lemma": "less", "keep": false, "category": null, "reason": "추상적 비교 부사", "freq": 253}
+{"id": 936, "lemma": "measure", "keep": false, "category": null, "reason": "추상 동사, 5세 어려움", "freq": 64}
+{"id": 937, "lemma": "hook", "keep": true, "category": "object", "reason": "갈고리, 구체적 사물", "freq": 42}
+{"id": 938, "lemma": "statue", "keep": true, "category": "object", "reason": "동상, 그림으로 설명 가능", "freq": 154}
+{"id": 939, "lemma": "silent", "keep": true, "category": "property", "reason": "조용한, 감각적 속성", "freq": 12}
+{"id": 940, "lemma": "ahead", "keep": false, "category": null, "reason": "부사, 주제 앵커 부적합", "freq": 16}
+{"id": 941, "lemma": "grain", "keep": true, "category": "food", "reason": "곡물, 구체적 사물", "freq": 56}
+{"id": 942, "lemma": "valley", "keep": true, "category": "nature", "reason": "계곡, 자연 지형", "freq": 45}
+{"id": 943, "lemma": "appear", "keep": false, "category": null, "reason": "추상 동사, 5세 어려움", "freq": 10}
+{"id": 944, "lemma": "peach", "keep": true, "category": "food", "reason": "복숭아, 흔한 과일", "freq": 13}
+{"id": 945, "lemma": "spaceship", "keep": true, "category": "object", "reason": "우주선, 그림책 흔함", "freq": 11}
+{"id": 946, "lemma": "noisy", "keep": true, "category": "property", "reason": "시끄러운, 감각적 속성", "freq": 65}
+{"id": 947, "lemma": "firework", "keep": true, "category": "object", "reason": "불꽃놀이, 구체적 사물", "freq": 37}
+{"id": 948, "lemma": "steep", "keep": true, "category": "property", "reason": "가파른, 쉽게 설명 가능", "freq": 10}
+{"id": 949, "lemma": "playdate", "keep": true, "category": "other", "reason": "놀이 약속, 5세 경험", "freq": 24}
+{"id": 950, "lemma": "frown", "keep": true, "category": "feeling", "reason": "찡그림, 표정 설명", "freq": 14}
+{"id": 951, "lemma": "knee", "keep": true, "category": "body", "reason": "무릎, 신체 부위", "freq": 121}
+{"id": 952, "lemma": "level", "keep": false, "category": null, "reason": "추상적 개념, 5세 어려움", "freq": 17}
+{"id": 953, "lemma": "normal", "keep": false, "category": null, "reason": "추상 형용사, 5세 어려움", "freq": 16}
+{"id": 954, "lemma": "spicy", "keep": true, "category": "property", "reason": "매운 맛, 감각적 속성", "freq": 31}
+{"id": 955, "lemma": "someday", "keep": false, "category": null, "reason": "부사, 주제 앵커 부적합", "freq": 120}
+{"id": 956, "lemma": "pyramid", "keep": true, "category": "place", "reason": "피라미드, 그림으로 설명", "freq": 104}
+{"id": 957, "lemma": "melt", "keep": true, "category": "action", "reason": "녹다, 일상 동작", "freq": 102}
+{"id": 958, "lemma": "raincoat", "keep": true, "category": "clothing", "reason": "비옷, 구체적 옷", "freq": 11}
+{"id": 959, "lemma": "refrigerator", "keep": true, "category": "object", "reason": "냉장고, 가전제품", "freq": 21}
+{"id": 960, "lemma": "superhero", "keep": true, "category": "other", "reason": "슈퍼히어로, 5세 친숙", "freq": 23}
+{"id": 961, "lemma": "pattern", "keep": true, "category": "property", "reason": "무늬, 시각적 속성", "freq": 45}
+{"id": 962, "lemma": "bengali", "keep": false, "category": null, "reason": "언어명, 5세 부적합", "freq": 11}
+{"id": 963, "lemma": "necklace", "keep": true, "category": "clothing", "reason": "목걸이, 액세서리", "freq": 97}
+{"id": 964, "lemma": "germ", "keep": true, "category": "other", "reason": "세균, 건강 개념", "freq": 109}
+{"id": 965, "lemma": "sexual", "keep": false, "category": null, "reason": "민감한 주제", "freq": 17}
+{"id": 966, "lemma": "bulb", "keep": true, "category": "object", "reason": "전구, 구체적 사물", "freq": 31}
+{"id": 967, "lemma": "basket", "keep": true, "category": "object", "reason": "바구니, 구체적 사물", "freq": 120}
+{"id": 968, "lemma": "huang", "keep": false, "category": null, "reason": "특정 인명", "freq": 15}
+{"id": 969, "lemma": "push", "keep": true, "category": "action", "reason": "밀다, 일상 동작", "freq": 609}
+{"id": 970, "lemma": "rectangle", "keep": true, "category": "property", "reason": "직사각형, 도형", "freq": 20}
+{"id": 971, "lemma": "bear", "keep": true, "category": "animal", "reason": "곰, 흔한 동물", "freq": 689}
+{"id": 972, "lemma": "slippery", "keep": true, "category": "property", "reason": "미끄러운, 감각적 속성", "freq": 22}
+{"id": 973, "lemma": "grade", "keep": false, "category": null, "reason": "추상적 개념, 5세 어려움", "freq": 24}
+{"id": 974, "lemma": "needle", "keep": true, "category": "tool", "reason": "바늘, 구체적 도구", "freq": 45}
+{"id": 975, "lemma": "fan", "keep": true, "category": "object", "reason": "선풍기/부채, 구체적", "freq": 56}
+{"id": 976, "lemma": "pedal", "keep": true, "category": "object", "reason": "페달, 자전거 부품", "freq": 32}
+{"id": 977, "lemma": "luther", "keep": false, "category": null, "reason": "특정 인명", "freq": 15}
+{"id": 978, "lemma": "made", "keep": false, "category": null, "reason": "make의 과거형", "freq": 3500}
+{"id": 979, "lemma": "held", "keep": false, "category": null, "reason": "hold의 과거형", "freq": 135}
+{"id": 980, "lemma": "snail", "keep": true, "category": "animal", "reason": "달팽이, 5세 친숙", "freq": 87}
+{"id": 981, "lemma": "orthodox", "keep": false, "category": null, "reason": "종교 용어, 5세 부적합", "freq": 35}
+{"id": 982, "lemma": "gracias", "keep": false, "category": null, "reason": "외국어, 영어 아님", "freq": 11}
+{"id": 983, "lemma": "gate", "keep": true, "category": "place", "reason": "문, 구체적 장소", "freq": 135}
+{"id": 984, "lemma": "army", "keep": false, "category": null, "reason": "추상적 집단, 5세 어려움", "freq": 23}
+{"id": 985, "lemma": "cube", "keep": true, "category": "property", "reason": "정육면체, 도형", "freq": 63}
+{"id": 986, "lemma": "michael", "keep": false, "category": null, "reason": "특정 인명", "freq": 62}
+{"id": 987, "lemma": "sticky", "keep": true, "category": "property", "reason": "끈적한, 감각적 속성", "freq": 108}
+{"id": 988, "lemma": "cucumber", "keep": true, "category": "food", "reason": "오이, 흔한 채소", "freq": 24}
+{"id": 989, "lemma": "blink", "keep": true, "category": "action", "reason": "눈 깜빡임, 일상 동작", "freq": 12}
+{"id": 990, "lemma": "serious", "keep": false, "category": null, "reason": "추상 형용사, 5세 어려움", "freq": 12}
+{"id": 991, "lemma": "slave", "keep": false, "category": null, "reason": "민감한 주제", "freq": 24}
+{"id": 992, "lemma": "puzzle", "keep": true, "category": "toy", "reason": "퍼즐, 5세 장난감", "freq": 343}
+{"id": 993, "lemma": "baker", "keep": true, "category": "other", "reason": "제빵사, 직업", "freq": 33}
+{"id": 994, "lemma": "tomb", "keep": false, "category": null, "reason": "무덤, 5세 부적합", "freq": 13}
+{"id": 995, "lemma": "scarf", "keep": true, "category": "clothing", "reason": "목도리, 옷", "freq": 40}
+{"id": 996, "lemma": "tablet", "keep": true, "category": "object", "reason": "태블릿, 전자기기", "freq": 122}
+{"id": 997, "lemma": "value", "keep": false, "category": null, "reason": "추상적 개념, 5세 어려움", "freq": 10}
+{"id": 998, "lemma": "grandma", "keep": true, "category": "family", "reason": "할머니, 가족 호칭", "freq": 2089}
+{"id": 999, "lemma": "lie", "keep": true, "category": "action", "reason": "거짓말, 일상 행동", "freq": 102}
+{"id": 1000, "lemma": "washington", "keep": false, "category": null, "reason": "지명/인명, 5세 부적합", "freq": 55}
+{"id": 1001, "lemma": "noodle", "keep": true, "category": "food", "reason": "국수, 흔한 음식", "freq": 39}
+{"id": 1002, "lemma": "calm", "keep": true, "category": "feeling", "reason": "차분한, 감정 상태", "freq": 363}
+{"id": 1003, "lemma": "goodnight", "keep": true, "category": "other", "reason": "인사말, 일상 표현", "freq": 47}
+{"id": 1004, "lemma": "swish", "keep": true, "category": "sound", "reason": "휙 소리, 의성어", "freq": 12}
+{"id": 1005, "lemma": "anna", "keep": false, "category": null, "reason": "특정 인명", "freq": 320}
+{"id": 1006, "lemma": "subatomic", "keep": false, "category": null, "reason": "과학 용어, 5세 부적합", "freq": 29}
+{"id": 1007, "lemma": "wag", "keep": true, "category": "action", "reason": "꼬리 흔듦, 동작", "freq": 87}
+{"id": 1008, "lemma": "everywhere", "keep": false, "category": null, "reason": "부사, 주제 앵커 부적합", "freq": 196}
+{"id": 1009, "lemma": "tank", "keep": true, "category": "object", "reason": "탱크/수조, 구체적", "freq": 111}
+{"id": 1010, "lemma": "remind", "keep": false, "category": null, "reason": "추상 동사, 5세 어려움", "freq": 18}
+{"id": 1011, "lemma": "trouser", "keep": true, "category": "clothing", "reason": "바지, 옷", "freq": 593}
+{"id": 1012, "lemma": "unite", "keep": false, "category": null, "reason": "추상 동사, 5세 어려움", "freq": 144}
+{"id": 1013, "lemma": "officer", "keep": false, "category": null, "reason": "직업, 5세 추상적", "freq": 103}
+{"id": 1014, "lemma": "sand", "keep": true, "category": "nature", "reason": "모래, 자연물", "freq": 941}
+{"id": 1015, "lemma": "broccoli", "keep": true, "category": "food", "reason": "브로콜리, 채소", "freq": 13}
+{"id": 1016, "lemma": "zero", "keep": true, "category": "other", "reason": "숫자 0, 기초 개념", "freq": 30}
+{"id": 1017, "lemma": "kangaroo", "keep": true, "category": "animal", "reason": "캥거루, 동물", "freq": 39}
+{"id": 1018, "lemma": "toe", "keep": true, "category": "body", "reason": "발가락, 신체 부위", "freq": 77}
+{"id": 1019, "lemma": "berry", "keep": true, "category": "food", "reason": "베리, 과일", "freq": 28}
+{"id": 1020, "lemma": "achaemenid", "keep": false, "category": null, "reason": "역사 용어, 5세 부적합", "freq": 35}
+{"id": 1021, "lemma": "task", "keep": false, "category": null, "reason": "추상 명사, 5세 어려움", "freq": 39}
+{"id": 1022, "lemma": "messy", "keep": true, "category": "property", "reason": "지저분한, 상태", "freq": 65}
+{"id": 1023, "lemma": "lump", "keep": true, "category": "property", "reason": "덩어리, 구체적", "freq": 14}
+{"id": 1024, "lemma": "forth", "keep": false, "category": null, "reason": "부사, 주제 앵커 부적합", "freq": 22}
+{"id": 1025, "lemma": "pinch", "keep": true, "category": "action", "reason": "꼬집다, 일상 동작", "freq": 11}
+{"id": 1026, "lemma": "habit", "keep": false, "category": null, "reason": "추상 명사, 5세 어려움", "freq": 66}
+{"id": 1027, "lemma": "crash", "keep": true, "category": "action", "reason": "충돌, 일상 동작", "freq": 32}
+{"id": 1028, "lemma": "focus", "keep": false, "category": null, "reason": "추상 동사, 5세 어려움", "freq": 15}
+{"id": 1029, "lemma": "seem", "keep": false, "category": null, "reason": "추상 동사, 5세 어려움", "freq": 84}
+{"id": 1030, "lemma": "grey", "keep": true, "category": "property", "reason": "회색, 색깔", "freq": 60}
+{"id": 1031, "lemma": "shoot", "keep": false, "category": null, "reason": "폭력적, 5세 부적합", "freq": 33}
+{"id": 1032, "lemma": "hurt", "keep": true, "category": "feeling", "reason": "아픔, 감각", "freq": 444}
+{"id": 1033, "lemma": "stuff", "keep": false, "category": null, "reason": "추상 명사, 5세 어려움", "freq": 86}
+{"id": 1034, "lemma": "chin", "keep": true, "category": "body", "reason": "턱, 신체 부위", "freq": 23}
+{"id": 1035, "lemma": "pad", "keep": true, "category": "object", "reason": "패드, 구체적 사물", "freq": 11}
+{"id": 1036, "lemma": "spider", "keep": true, "category": "animal", "reason": "거미, 흔한 동물", "freq": 57}
+{"id": 1037, "lemma": "playhouse", "keep": true, "category": "place", "reason": "놀이집, 5세 친숙", "freq": 15}
+{"id": 1038, "lemma": "path", "keep": true, "category": "place", "reason": "길, 장소", "freq": 297}
+{"id": 1039, "lemma": "celebration", "keep": true, "category": "other", "reason": "축하, 일상 경험", "freq": 20}
+{"id": 1040, "lemma": "tolstoy", "keep": false, "category": null, "reason": "특정 인명", "freq": 40}
+{"id": 1041, "lemma": "guy", "keep": false, "category": null, "reason": "추상적, 5세 부적합", "freq": 16}
+{"id": 1042, "lemma": "site", "keep": false, "category": null, "reason": "추상 명사, 5세 어려움", "freq": 57}
+{"id": 1043, "lemma": "squeeze", "keep": true, "category": "action", "reason": "짜다, 일상 동작", "freq": 21}
+{"id": 1044, "lemma": "athlete", "keep": false, "category": null, "reason": "직업, 5세 추상적", "freq": 11}
+{"id": 1045, "lemma": "boil", "keep": true, "category": "action", "reason": "끓이다, 일상 동작", "freq": 27}
+{"id": 1046, "lemma": "autumn", "keep": true, "category": "nature", "reason": "가을, 계절", "freq": 16}
+{"id": 1047, "lemma": "hood", "keep": true, "category": "clothing", "reason": "후드, 옷", "freq": 16}
+{"id": 1048, "lemma": "notebook", "keep": true, "category": "object", "reason": "공책, 구체적 사물", "freq": 125}
+{"id": 1049, "lemma": "dim", "keep": true, "category": "property", "reason": "어두운, 감각적 속성", "freq": 12}
+{"id": 1050, "lemma": "drill", "keep": true, "category": "tool", "reason": "드릴, 도구", "freq": 11}
+{"id": 1051, "lemma": "panda", "keep": true, "category": "animal", "reason": "판다, 동물", "freq": 23}
+{"id": 1052, "lemma": "jar", "keep": true, "category": "object", "reason": "항아리, 구체적 사물", "freq": 195}
+{"id": 1053, "lemma": "launch", "keep": false, "category": null, "reason": "추상 동사, 5세 어려움", "freq": 18}
+{"id": 1054, "lemma": "lollipop", "keep": true, "category": "food", "reason": "막대사탕, 간식", "freq": 17}
+{"id": 1055, "lemma": "rug", "keep": true, "category": "object", "reason": "깔개, 구체적 사물", "freq": 77}
+{"id": 1056, "lemma": "closet", "keep": true, "category": "place", "reason": "옷장, 장소", "freq": 82}
+{"id": 1057, "lemma": "creak", "keep": true, "category": "sound", "reason": "삐걱 소리, 의성어", "freq": 17}
+{"id": 1058, "lemma": "parade", "keep": true, "category": "other", "reason": "퍼레이드, 행사", "freq": 26}
+{"id": 1059, "lemma": "clinic", "keep": false, "category": null, "reason": "장소, 5세 추상적", "freq": 20}
+{"id": 1060, "lemma": "voice", "keep": true, "category": "sound", "reason": "목소리, 소리", "freq": 569}
+{"id": 1061, "lemma": "bee", "keep": true, "category": "animal", "reason": "벌, 흔한 곤충", "freq": 64}
+{"id": 1062, "lemma": "pant", "keep": true, "category": "action", "reason": "헐떡이다, 동작", "freq": 336}
+{"id": 1063, "lemma": "strawberry", "keep": true, "category": "food", "reason": "딸기, 과일", "freq": 43}
+{"id": 1064, "lemma": "candy", "keep": true, "category": "food", "reason": "사탕, 간식", "freq": 368}
+{"id": 1065, "lemma": "myocardial", "keep": false, "category": null, "reason": "전문 의학 용어", "freq": 18}
+{"id": 1066, "lemma": "against", "keep": false, "category": null, "reason": "전치사, 앵커 부적합", "freq": 24}
+{"id": 1067, "lemma": "solve", "keep": true, "category": "action", "reason": "문제 해결 동작", "freq": 159}
+{"id": 1068, "lemma": "shiver", "keep": true, "category": "action", "reason": "추울 때 떨기", "freq": 18}
+{"id": 1069, "lemma": "battle", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 13}
+{"id": 1070, "lemma": "explorer", "keep": true, "category": "other", "reason": "탐험가 직업", "freq": 11}
+{"id": 1071, "lemma": "sponge", "keep": true, "category": "object", "reason": "스펀지, 친숙함", "freq": 35}
+{"id": 1072, "lemma": "alan", "keep": false, "category": null, "reason": "고유 인명", "freq": 22}
+{"id": 1073, "lemma": "bug", "keep": true, "category": "animal", "reason": "벌레, 흔한 단어", "freq": 419}
+{"id": 1074, "lemma": "jean", "keep": true, "category": "clothing", "reason": "청바지 옷", "freq": 287}
+{"id": 1075, "lemma": "flame", "keep": true, "category": "nature", "reason": "불꽃, 시각적", "freq": 37}
+{"id": 1076, "lemma": "freud", "keep": false, "category": null, "reason": "특정 인명", "freq": 18}
+{"id": 1077, "lemma": "lettuce", "keep": true, "category": "food", "reason": "상추, 음식", "freq": 40}
+{"id": 1078, "lemma": "hug", "keep": true, "category": "action", "reason": "포옹 동작", "freq": 793}
+{"id": 1079, "lemma": "tail", "keep": true, "category": "body", "reason": "동물 꼬리", "freq": 375}
+{"id": 1080, "lemma": "handle", "keep": true, "category": "object", "reason": "손잡이, 물체", "freq": 85}
+{"id": 1081, "lemma": "hid", "keep": false, "category": null, "reason": "hide의 과거형", "freq": 21}
+{"id": 1082, "lemma": "square", "keep": true, "category": "property", "reason": "네모 모양", "freq": 271}
+{"id": 1083, "lemma": "mediterranean", "keep": false, "category": null, "reason": "지명, 추상적", "freq": 36}
+{"id": 1084, "lemma": "squirrel", "keep": true, "category": "animal", "reason": "다람쥐 동물", "freq": 25}
+{"id": 1085, "lemma": "hen", "keep": true, "category": "animal", "reason": "암탉 동물", "freq": 17}
+{"id": 1086, "lemma": "bowl", "keep": true, "category": "object", "reason": "그릇 물건", "freq": 476}
+{"id": 1087, "lemma": "kit", "keep": true, "category": "object", "reason": "세트 도구", "freq": 43}
+{"id": 1088, "lemma": "crib", "keep": true, "category": "object", "reason": "아기 침대", "freq": 14}
+{"id": 1089, "lemma": "friendly", "keep": true, "category": "feeling", "reason": "친근한 성격", "freq": 177}
+{"id": 1090, "lemma": "scar", "keep": true, "category": "body", "reason": "흉터, 몸", "freq": 199}
+{"id": 1091, "lemma": "malay", "keep": false, "category": null, "reason": "민족/언어명", "freq": 37}
+{"id": 1092, "lemma": "rumble", "keep": true, "category": "sound", "reason": "우르릉 소리", "freq": 11}
+{"id": 1093, "lemma": "joke", "keep": true, "category": "action", "reason": "농담 말하기", "freq": 293}
+{"id": 1094, "lemma": "himself", "keep": false, "category": null, "reason": "재귀대명사", "freq": 13}
+{"id": 1095, "lemma": "cardboard", "keep": true, "category": "object", "reason": "판지 재료", "freq": 11}
+{"id": 1096, "lemma": "magnet", "keep": true, "category": "object", "reason": "자석 장난감", "freq": 111}
+{"id": 1097, "lemma": "bite", "keep": true, "category": "action", "reason": "물기 동작", "freq": 179}
+{"id": 1098, "lemma": "tick", "keep": true, "category": "sound", "reason": "똑딱 소리", "freq": 41}
+{"id": 1099, "lemma": "especially", "keep": false, "category": null, "reason": "부사, 앵커 부적합", "freq": 15}
+{"id": 1100, "lemma": "men", "keep": false, "category": null, "reason": "man의 복수형", "freq": 88}
+{"id": 1101, "lemma": "burn", "keep": true, "category": "action", "reason": "태우다 동작", "freq": 199}
+{"id": 1102, "lemma": "scale", "keep": true, "category": "object", "reason": "저울/비늘", "freq": 42}
+{"id": 1103, "lemma": "genghis", "keep": false, "category": null, "reason": "고유 인명", "freq": 41}
+{"id": 1104, "lemma": "process", "keep": false, "category": null, "reason": "추상적 개념", "freq": 35}
+{"id": 1105, "lemma": "role", "keep": false, "category": null, "reason": "추상적 역할", "freq": 12}
+{"id": 1106, "lemma": "nail", "keep": true, "category": "object", "reason": "못/손톱", "freq": 69}
+{"id": 1107, "lemma": "gave", "keep": false, "category": null, "reason": "give의 과거형", "freq": 1319}
+{"id": 1108, "lemma": "mitten", "keep": true, "category": "clothing", "reason": "벙어리 장갑", "freq": 10}
+{"id": 1109, "lemma": "scooter", "keep": true, "category": "toy", "reason": "스쿠터 장난감", "freq": 15}
+{"id": 1110, "lemma": "faraday", "keep": false, "category": null, "reason": "특정 인명", "freq": 19}
+{"id": 1111, "lemma": "periodic", "keep": false, "category": null, "reason": "추상적, 과학 용어", "freq": 19}
+{"id": 1112, "lemma": "choice", "keep": true, "category": "other", "reason": "선택 행위", "freq": 185}
+{"id": 1113, "lemma": "tasty", "keep": true, "category": "property", "reason": "맛있는 표현", "freq": 88}
+{"id": 1114, "lemma": "feather", "keep": true, "category": "body", "reason": "새 깃털", "freq": 143}
+{"id": 1115, "lemma": "mayor", "keep": false, "category": null, "reason": "직업, 5세 어려움", "freq": 10}
+{"id": 1116, "lemma": "squeak", "keep": true, "category": "sound", "reason": "찍찍 소리", "freq": 10}
+{"id": 1117, "lemma": "curly", "keep": true, "category": "property", "reason": "곱슬머리 속성", "freq": 28}
+{"id": 1118, "lemma": "postman", "keep": true, "category": "other", "reason": "우편배달부 직업", "freq": 10}
+{"id": 1119, "lemma": "pile", "keep": true, "category": "other", "reason": "더미 쌓기", "freq": 63}
+{"id": 1120, "lemma": "lamb", "keep": true, "category": "animal", "reason": "어린 양 동물", "freq": 14}
+{"id": 1121, "lemma": "sweetie", "keep": true, "category": "feeling", "reason": "애칭, 친근함", "freq": 18}
+{"id": 1122, "lemma": "button", "keep": true, "category": "clothing", "reason": "단추 옷", "freq": 248}
+{"id": 1123, "lemma": "lady", "keep": true, "category": "family", "reason": "숙녀 호칭", "freq": 197}
+{"id": 1124, "lemma": "tear", "keep": true, "category": "body", "reason": "눈물 감정", "freq": 57}
+{"id": 1125, "lemma": "sigmund", "keep": false, "category": null, "reason": "고유 인명", "freq": 18}
+{"id": 1126, "lemma": "click", "keep": true, "category": "sound", "reason": "딸깍 소리", "freq": 59}
+{"id": 1127, "lemma": "wrap", "keep": true, "category": "action", "reason": "포장 동작", "freq": 32}
+{"id": 1128, "lemma": "clink", "keep": true, "category": "sound", "reason": "짤랑 소리", "freq": 22}
+{"id": 1129, "lemma": "view", "keep": true, "category": "other", "reason": "경치 보기", "freq": 65}
+{"id": 1130, "lemma": "tub", "keep": true, "category": "object", "reason": "통 욕조", "freq": 16}
+{"id": 1131, "lemma": "thin", "keep": true, "category": "property", "reason": "얇은 속성", "freq": 263}
+{"id": 1132, "lemma": "secret", "keep": true, "category": "feeling", "reason": "비밀 감정", "freq": 99}
+{"id": 1133, "lemma": "louis", "keep": false, "category": null, "reason": "고유 인명", "freq": 67}
+{"id": 1134, "lemma": "daisy", "keep": true, "category": "plant", "reason": "데이지 꽃", "freq": 12}
+{"id": 1135, "lemma": "toad", "keep": true, "category": "animal", "reason": "두꺼비 동물", "freq": 12}
+{"id": 1136, "lemma": "guide", "keep": true, "category": "other", "reason": "안내자 역할", "freq": 42}
+{"id": 1137, "lemma": "vote", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 132}
+{"id": 1138, "lemma": "teeth", "keep": false, "category": null, "reason": "tooth의 복수형", "freq": 366}
+{"id": 1139, "lemma": "dome", "keep": true, "category": "place", "reason": "둥근 지붕", "freq": 14}
+{"id": 1140, "lemma": "elephant", "keep": true, "category": "animal", "reason": "코끼리 동물", "freq": 220}
+{"id": 1141, "lemma": "hundred", "keep": true, "category": "other", "reason": "숫자 100", "freq": 26}
+{"id": 1142, "lemma": "pole", "keep": true, "category": "object", "reason": "막대 기둥", "freq": 14}
+{"id": 1143, "lemma": "thud", "keep": true, "category": "sound", "reason": "쿵 소리", "freq": 20}
+{"id": 1144, "lemma": "anymore", "keep": false, "category": null, "reason": "부사, 앵커 부적합", "freq": 312}
+{"id": 1145, "lemma": "infarction", "keep": false, "category": null, "reason": "전문 의학 용어", "freq": 18}
+{"id": 1146, "lemma": "tim", "keep": false, "category": null, "reason": "고유 인명", "freq": 63}
+{"id": 1147, "lemma": "single", "keep": true, "category": "property", "reason": "하나의 속성", "freq": 24}
+{"id": 1148, "lemma": "surfboard", "keep": true, "category": "tool", "reason": "서핑보드 도구", "freq": 25}
+{"id": 1149, "lemma": "thumb", "keep": true, "category": "body", "reason": "엄지손가락", "freq": 15}
+{"id": 1150, "lemma": "theater", "keep": true, "category": "place", "reason": "극장 장소", "freq": 15}
+{"id": 1151, "lemma": "joy", "keep": true, "category": "feeling", "reason": "기쁨 감정", "freq": 92}
+{"id": 1152, "lemma": "bark", "keep": true, "category": "sound", "reason": "짖는 소리", "freq": 111}
+{"id": 1153, "lemma": "grab", "keep": true, "category": "action", "reason": "잡기 동작", "freq": 19}
+{"id": 1154, "lemma": "track", "keep": true, "category": "place", "reason": "길/선로", "freq": 89}
+{"id": 1155, "lemma": "underground", "keep": true, "category": "place", "reason": "지하 장소", "freq": 15}
+{"id": 1156, "lemma": "crackle", "keep": true, "category": "sound", "reason": "타닥 소리", "freq": 11}
+{"id": 1157, "lemma": "few", "keep": false, "category": null, "reason": "수량 형용사, 앵커 부적합", "freq": 152}
+{"id": 1158, "lemma": "remote", "keep": true, "category": "object", "reason": "리모컨 물건", "freq": 70}
+{"id": 1159, "lemma": "diary", "keep": true, "category": "object", "reason": "일기장 물건", "freq": 22}
+{"id": 1160, "lemma": "sail", "keep": true, "category": "action", "reason": "항해 동작", "freq": 55}
+{"id": 1161, "lemma": "okay", "keep": false, "category": null, "reason": "감탄사, 앵커 부적합", "freq": 4577}
+{"id": 1162, "lemma": "whoosh", "keep": false, "category": null, "reason": "의성어, 앵커 부적합", "freq": 17}
+{"id": 1163, "lemma": "teaching", "keep": false, "category": null, "reason": "teach의 동명사형", "freq": 18}
+{"id": 1164, "lemma": "dot", "keep": true, "category": "property", "reason": "점 모양", "freq": 211}
+{"id": 1165, "lemma": "johannes", "keep": false, "category": null, "reason": "고유 인명", "freq": 45}
+{"id": 1166, "lemma": "roman", "keep": false, "category": null, "reason": "고유 민족명", "freq": 33}
+{"id": 1167, "lemma": "case", "keep": true, "category": "object", "reason": "케이스 상자", "freq": 103}
+{"id": 1168, "lemma": "inhaler", "keep": true, "category": "tool", "reason": "흡입기 도구", "freq": 12}
+{"id": 1169, "lemma": "shi", "keep": false, "category": null, "reason": "고유 인명/언어", "freq": 15}
+{"id": 1170, "lemma": "whiteboard", "keep": true, "category": "object", "reason": "화이트보드", "freq": 11}
+{"id": 1171, "lemma": "drop", "keep": true, "category": "action", "reason": "떨어뜨리기", "freq": 225}
+{"id": 1172, "lemma": "clip", "keep": true, "category": "object", "reason": "클립 물건", "freq": 21}
+{"id": 1173, "lemma": "copy", "keep": true, "category": "action", "reason": "복사 동작", "freq": 43}
+{"id": 1174, "lemma": "soft", "keep": true, "category": "property", "reason": "부드러운 속성", "freq": 2720}
+{"id": 1175, "lemma": "apart", "keep": false, "category": null, "reason": "부사, 앵커 부적합", "freq": 37}
+{"id": 1176, "lemma": "coin", "keep": true, "category": "object", "reason": "동전 물건", "freq": 464}
+{"id": 1177, "lemma": "fever", "keep": true, "category": "feeling", "reason": "열 감정/상태", "freq": 45}
+{"id": 1178, "lemma": "dmitri", "keep": false, "category": null, "reason": "고유 인명", "freq": 15}
+{"id": 1179, "lemma": "cookie", "keep": true, "category": "food", "reason": "쿠키 음식", "freq": 343}
+{"id": 1180, "lemma": "sandcastles", "keep": false, "category": null, "reason": "복수형, sandcastle이 기본", "freq": 36}
+{"id": 1181, "lemma": "fry", "keep": true, "category": "action", "reason": "튀기기 동작", "freq": 14}
+{"id": 1182, "lemma": "blade", "keep": true, "category": "object", "reason": "날/칼날", "freq": 28}
+{"id": 1183, "lemma": "moss", "keep": true, "category": "plant", "reason": "이끼 식물", "freq": 11}
+{"id": 1184, "lemma": "tagore", "keep": false, "category": null, "reason": "고유 인명", "freq": 48}
+{"id": 1185, "lemma": "skip", "keep": true, "category": "action", "reason": "뛰어넘기 동작", "freq": 25}
+{"id": 1186, "lemma": "york", "keep": false, "category": null, "reason": "지명, 고유명사", "freq": 60}
+{"id": 1187, "lemma": "buzz", "keep": true, "category": "sound", "reason": "윙윙 소리", "freq": 28}
+{"id": 1188, "lemma": "lid", "keep": true, "category": "object", "reason": "뚜껑 물건", "freq": 112}
+{"id": 1189, "lemma": "discus", "keep": false, "category": null, "reason": "스포츠 용어, 5세 어려움", "freq": 1666}
+{"id": 1190, "lemma": "mia", "keep": false, "category": null, "reason": "고유 인명", "freq": 121}
+{"id": 1191, "lemma": "zebra", "keep": true, "category": "animal", "reason": "얼룩말 동물", "freq": 19}
+{"id": 1192, "lemma": "sauce", "keep": true, "category": "food", "reason": "소스 음식", "freq": 37}
+{"id": 1193, "lemma": "yucky", "keep": true, "category": "feeling", "reason": "역겨운 느낌", "freq": 16}
+{"id": 1194, "lemma": "marie", "keep": false, "category": null, "reason": "고유 인명", "freq": 25}
+{"id": 1195, "lemma": "among", "keep": false, "category": null, "reason": "전치사, 앵커 부적합", "freq": 20}
+{"id": 1196, "lemma": "sweep", "keep": true, "category": "action", "reason": "청소 동작", "freq": 10}
+{"id": 1197, "lemma": "material", "keep": true, "category": "property", "reason": "재료 속성", "freq": 36}
+{"id": 1198, "lemma": "tin", "keep": true, "category": "object", "reason": "깡통, 5세도 아는 물건", "freq": 13}
+{"id": 1199, "lemma": "ali", "keep": false, "category": null, "reason": "고유명사", "freq": 26}
+{"id": 1200, "lemma": "shut", "keep": true, "category": "action", "reason": "닫다, 일상 동작", "freq": 38}
+{"id": 1201, "lemma": "clever", "keep": true, "category": "property", "reason": "똑똑한, 5세 가능", "freq": 38}
+{"id": 1202, "lemma": "log", "keep": true, "category": "nature", "reason": "통나무, 구체적 사물", "freq": 28}
+{"id": 1203, "lemma": "belly", "keep": true, "category": "body", "reason": "배, 신체 부위", "freq": 26}
+{"id": 1204, "lemma": "mostly", "keep": false, "category": null, "reason": "부사, 앵커 부적합", "freq": 26}
+{"id": 1205, "lemma": "alive", "keep": true, "category": "property", "reason": "살아있는, 기본 형용사", "freq": 106}
+{"id": 1206, "lemma": "lucy", "keep": false, "category": null, "reason": "고유명사", "freq": 44}
+{"id": 1207, "lemma": "jump", "keep": true, "category": "action", "reason": "뛰다, 기본 동작", "freq": 873}
+{"id": 1208, "lemma": "nervous", "keep": true, "category": "feeling", "reason": "긴장된 감정", "freq": 28}
+{"id": 1209, "lemma": "carve", "keep": true, "category": "action", "reason": "조각하다, 활동", "freq": 10}
+{"id": 1210, "lemma": "fairness", "keep": false, "category": null, "reason": "추상적 개념", "freq": 21}
+{"id": 1211, "lemma": "pre", "keep": false, "category": null, "reason": "접두사, 의미 없음", "freq": 22}
+{"id": 1212, "lemma": "tricky", "keep": true, "category": "property", "reason": "까다로운, 일상어", "freq": 12}
+{"id": 1213, "lemma": "sunflower", "keep": true, "category": "plant", "reason": "해바라기, 구체적 식물", "freq": 44}
+{"id": 1214, "lemma": "trace", "keep": true, "category": "action", "reason": "따라가다, 활동", "freq": 17}
+{"id": 1215, "lemma": "label", "keep": true, "category": "object", "reason": "라벨, 일상 물건", "freq": 17}
+{"id": 1216, "lemma": "turbine", "keep": false, "category": null, "reason": "기술 용어", "freq": 14}
+{"id": 1217, "lemma": "hide", "keep": true, "category": "action", "reason": "숨다, 기본 동작", "freq": 217}
+{"id": 1218, "lemma": "violin", "keep": true, "category": "object", "reason": "바이올린, 악기", "freq": 24}
+{"id": 1219, "lemma": "kiss", "keep": true, "category": "action", "reason": "키스, 일상 행동", "freq": 91}
+{"id": 1220, "lemma": "heavy", "keep": true, "category": "property", "reason": "무거운, 기본 형용사", "freq": 1136}
+{"id": 1221, "lemma": "sweat", "keep": true, "category": "body", "reason": "땀, 신체 경험", "freq": 10}
+{"id": 1222, "lemma": "gogh", "keep": false, "category": null, "reason": "고유명사", "freq": 41}
+{"id": 1223, "lemma": "crunchy", "keep": true, "category": "property", "reason": "바삭한, 감각 형용사", "freq": 141}
+{"id": 1224, "lemma": "cactus", "keep": true, "category": "plant", "reason": "선인장, 구체적 식물", "freq": 10}
+{"id": 1225, "lemma": "fuzzy", "keep": true, "category": "property", "reason": "보송보송한, 감각어", "freq": 23}
+{"id": 1226, "lemma": "signal", "keep": true, "category": "object", "reason": "신호, 일상 개념", "freq": 14}
+{"id": 1227, "lemma": "shine", "keep": true, "category": "action", "reason": "빛나다, 기본 동사", "freq": 98}
+{"id": 1228, "lemma": "galilei", "keep": false, "category": null, "reason": "고유명사", "freq": 18}
+{"id": 1229, "lemma": "powder", "keep": true, "category": "object", "reason": "가루, 일상 물질", "freq": 51}
+{"id": 1230, "lemma": "evil", "keep": true, "category": "property", "reason": "사악한, 동화 속 형용사", "freq": 42}
+{"id": 1231, "lemma": "contemporary", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 32}
+{"id": 1232, "lemma": "hamster", "keep": true, "category": "animal", "reason": "햄스터, 반려동물", "freq": 14}
+{"id": 1233, "lemma": "bin", "keep": true, "category": "object", "reason": "쓰레기통, 일상 물건", "freq": 64}
+{"id": 1234, "lemma": "loose", "keep": true, "category": "property", "reason": "느슨한, 기본 형용사", "freq": 21}
+{"id": 1235, "lemma": "arrow", "keep": true, "category": "object", "reason": "화살, 구체적 물건", "freq": 12}
+{"id": 1236, "lemma": "fog", "keep": true, "category": "weather", "reason": "안개, 날씨 현상", "freq": 15}
+{"id": 1237, "lemma": "frame", "keep": true, "category": "object", "reason": "액자/틀, 일상 물건", "freq": 40}
+{"id": 1238, "lemma": "crust", "keep": true, "category": "food", "reason": "빵껍질, 음식 부분", "freq": 19}
+{"id": 1239, "lemma": "raise", "keep": true, "category": "action", "reason": "올리다, 기본 동작", "freq": 38}
+{"id": 1240, "lemma": "rabbit", "keep": true, "category": "animal", "reason": "토끼, 친숙한 동물", "freq": 314}
+{"id": 1241, "lemma": "sew", "keep": true, "category": "action", "reason": "바느질하다, 활동", "freq": 15}
+{"id": 1242, "lemma": "catherine", "keep": false, "category": null, "reason": "고유명사", "freq": 61}
+{"id": 1243, "lemma": "moo", "keep": true, "category": "sound", "reason": "음매, 동물 소리", "freq": 18}
+{"id": 1244, "lemma": "manage", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 10}
+{"id": 1245, "lemma": "jake", "keep": false, "category": null, "reason": "고유명사", "freq": 19}
+{"id": 1246, "lemma": "leo", "keep": false, "category": null, "reason": "고유명사", "freq": 58}
+{"id": 1247, "lemma": "pass", "keep": true, "category": "action", "reason": "지나가다, 기본 동사", "freq": 45}
+{"id": 1248, "lemma": "wiggle", "keep": true, "category": "action", "reason": "꼼지락대다, 동작", "freq": 14}
+{"id": 1249, "lemma": "lucky", "keep": true, "category": "feeling", "reason": "운 좋은, 감정 표현", "freq": 25}
+{"id": 1250, "lemma": "mailbox", "keep": true, "category": "object", "reason": "우편함, 일상 물건", "freq": 12}
+{"id": 1251, "lemma": "pajama", "keep": true, "category": "clothing", "reason": "잠옷, 옷 종류", "freq": 12}
+{"id": 1252, "lemma": "sour", "keep": true, "category": "property", "reason": "신맛, 기본 맛", "freq": 194}
+{"id": 1253, "lemma": "aloud", "keep": false, "category": null, "reason": "부사, 앵커 부적합", "freq": 15}
+{"id": 1254, "lemma": "mango", "keep": true, "category": "food", "reason": "망고, 과일", "freq": 24}
+{"id": 1255, "lemma": "flash", "keep": true, "category": "nature", "reason": "번쩍임, 자연 현상", "freq": 37}
+{"id": 1256, "lemma": "swing", "keep": true, "category": "toy", "reason": "그네, 놀이기구", "freq": 542}
+{"id": 1257, "lemma": "sweater", "keep": true, "category": "clothing", "reason": "스웨터, 옷", "freq": 20}
+{"id": 1258, "lemma": "fizzy", "keep": true, "category": "property", "reason": "톡톡 튀는, 감각어", "freq": 15}
+{"id": 1259, "lemma": "bakery", "keep": true, "category": "place", "reason": "빵집, 장소", "freq": 40}
+{"id": 1260, "lemma": "condor", "keep": false, "category": null, "reason": "생소한 동물", "freq": 10}
+{"id": 1261, "lemma": "drawing", "keep": true, "category": "action", "reason": "그림 그리기, 활동", "freq": 161}
+{"id": 1262, "lemma": "onion", "keep": true, "category": "food", "reason": "양파, 음식 재료", "freq": 15}
+{"id": 1263, "lemma": "super", "keep": true, "category": "property", "reason": "최고의, 일상 형용사", "freq": 16}
+{"id": 1264, "lemma": "dip", "keep": true, "category": "action", "reason": "찍다, 기본 동작", "freq": 19}
+{"id": 1265, "lemma": "field", "keep": true, "category": "nature", "reason": "들판, 자연 장소", "freq": 405}
+{"id": 1266, "lemma": "swimmer", "keep": true, "category": "other", "reason": "수영하는 사람", "freq": 15}
+{"id": 1267, "lemma": "third", "keep": true, "category": "other", "reason": "셋째, 순서 개념", "freq": 22}
+{"id": 1268, "lemma": "felt", "keep": false, "category": null, "reason": "feel의 과거형", "freq": 1195}
+{"id": 1269, "lemma": "musician", "keep": true, "category": "other", "reason": "음악가, 직업", "freq": 22}
+{"id": 1270, "lemma": "rattle", "keep": true, "category": "toy", "reason": "딸랑이, 장난감", "freq": 16}
+{"id": 1271, "lemma": "sickness", "keep": true, "category": "feeling", "reason": "아픔, 상태", "freq": 132}
+{"id": 1272, "lemma": "advice", "keep": true, "category": "other", "reason": "조언, 일상 개념", "freq": 17}
+{"id": 1273, "lemma": "discover", "keep": true, "category": "action", "reason": "발견하다, 동작", "freq": 21}
+{"id": 1274, "lemma": "anyway", "keep": false, "category": null, "reason": "부사, 앵커 부적합", "freq": 31}
+{"id": 1275, "lemma": "danger", "keep": true, "category": "feeling", "reason": "위험, 기본 개념", "freq": 12}
+{"id": 1276, "lemma": "fox", "keep": true, "category": "animal", "reason": "여우, 친숙한 동물", "freq": 76}
+{"id": 1277, "lemma": "fabric", "keep": true, "category": "object", "reason": "천, 일상 물질", "freq": 14}
+{"id": 1278, "lemma": "none", "keep": false, "category": null, "reason": "대명사, 앵커 부적합", "freq": 18}
+{"id": 1279, "lemma": "spin", "keep": true, "category": "action", "reason": "돌다, 기본 동작", "freq": 143}
+{"id": 1280, "lemma": "whistle", "keep": true, "category": "sound", "reason": "휘파람, 소리", "freq": 30}
+{"id": 1281, "lemma": "promise", "keep": true, "category": "action", "reason": "약속하다, 행동", "freq": 65}
+{"id": 1282, "lemma": "juicy", "keep": true, "category": "property", "reason": "즙 많은, 감각어", "freq": 24}
+{"id": 1283, "lemma": "freedom", "keep": false, "category": null, "reason": "추상적 개념", "freq": 22}
+{"id": 1284, "lemma": "touch", "keep": true, "category": "action", "reason": "만지다, 기본 동작", "freq": 918}
+{"id": 1285, "lemma": "spell", "keep": true, "category": "action", "reason": "철자 말하다, 활동", "freq": 20}
+{"id": 1286, "lemma": "cluck", "keep": true, "category": "sound", "reason": "꼬꼬, 닭 소리", "freq": 14}
+{"id": 1287, "lemma": "imago", "keep": false, "category": null, "reason": "전문 생물 용어", "freq": 78}
+{"id": 1288, "lemma": "temple", "keep": true, "category": "place", "reason": "사원, 장소", "freq": 151}
+{"id": 1289, "lemma": "dial", "keep": true, "category": "object", "reason": "다이얼, 물건", "freq": 12}
+{"id": 1290, "lemma": "pan", "keep": true, "category": "object", "reason": "팬, 주방 도구", "freq": 153}
+{"id": 1291, "lemma": "bell", "keep": true, "category": "object", "reason": "종, 일상 물건", "freq": 281}
+{"id": 1292, "lemma": "shape", "keep": true, "category": "property", "reason": "모양, 기본 개념", "freq": 1046}
+{"id": 1293, "lemma": "anywhere", "keep": false, "category": null, "reason": "부사, 앵커 부적합", "freq": 19}
+{"id": 1294, "lemma": "rise", "keep": true, "category": "action", "reason": "올라가다, 기본 동사", "freq": 84}
+{"id": 1295, "lemma": "columbian", "keep": false, "category": null, "reason": "고유 형용사", "freq": 22}
+{"id": 1296, "lemma": "side", "keep": true, "category": "other", "reason": "옆/쪽, 위치 개념", "freq": 513}
+{"id": 1297, "lemma": "pasta", "keep": true, "category": "food", "reason": "파스타, 음식", "freq": 67}
+{"id": 1298, "lemma": "princess", "keep": true, "category": "other", "reason": "공주, 동화 속 인물", "freq": 21}
+{"id": 1299, "lemma": "court", "keep": true, "category": "place", "reason": "법원/운동장, 장소", "freq": 30}
+{"id": 1300, "lemma": "zetian", "keep": false, "category": null, "reason": "고유명사", "freq": 41}
+{"id": 1301, "lemma": "bunch", "keep": true, "category": "other", "reason": "다발, 묶음 개념", "freq": 11}
+{"id": 1302, "lemma": "switch", "keep": true, "category": "action", "reason": "켜다/끄다, 동작", "freq": 33}
+{"id": 1303, "lemma": "bend", "keep": true, "category": "action", "reason": "구부리다, 기본 동작", "freq": 77}
+{"id": 1304, "lemma": "chirp", "keep": true, "category": "sound", "reason": "짹짹, 새 소리", "freq": 19}
+{"id": 1305, "lemma": "ran", "keep": false, "category": null, "reason": "run의 과거형", "freq": 474}
+{"id": 1306, "lemma": "favourite", "keep": true, "category": "feeling", "reason": "가장 좋아하는, 감정", "freq": 49}
+{"id": 1307, "lemma": "chick", "keep": true, "category": "animal", "reason": "병아리, 동물", "freq": 15}
+{"id": 1308, "lemma": "cooky", "keep": true, "category": "food", "reason": "쿠키, 과자", "freq": 518}
+{"id": 1309, "lemma": "lemon", "keep": true, "category": "food", "reason": "레몬, 과일", "freq": 136}
+{"id": 1310, "lemma": "grandpa", "keep": true, "category": "family", "reason": "할아버지, 가족", "freq": 1441}
+{"id": 1311, "lemma": "patient", "keep": true, "category": "property", "reason": "참을성 있는, 성격", "freq": 26}
+{"id": 1312, "lemma": "dancer", "keep": true, "category": "other", "reason": "춤추는 사람", "freq": 45}
+{"id": 1313, "lemma": "plug", "keep": true, "category": "object", "reason": "플러그, 물건", "freq": 28}
+{"id": 1314, "lemma": "barber", "keep": true, "category": "other", "reason": "이발사, 직업", "freq": 31}
+{"id": 1315, "lemma": "campfire", "keep": true, "category": "nature", "reason": "캠프파이어, 활동", "freq": 12}
+{"id": 1316, "lemma": "dead", "keep": true, "category": "property", "reason": "죽은, 기본 형용사", "freq": 33}
+{"id": 1317, "lemma": "laundry", "keep": true, "category": "action", "reason": "빨래, 일상 활동", "freq": 10}
+{"id": 1318, "lemma": "fairly", "keep": false, "category": null, "reason": "부사, 앵커 부적합", "freq": 15}
+{"id": 1319, "lemma": "digit", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 10}
+{"id": 1320, "lemma": "tickle", "keep": true, "category": "action", "reason": "간지럽히다, 동작", "freq": 20}
+{"id": 1321, "lemma": "wallet", "keep": true, "category": "object", "reason": "지갑, 일상 물건", "freq": 14}
+{"id": 1322, "lemma": "mummy", "keep": true, "category": "family", "reason": "엄마, 가족 호칭", "freq": 27}
+{"id": 1323, "lemma": "dangerous", "keep": true, "category": "property", "reason": "위험한, 기본 형용사", "freq": 50}
+{"id": 1324, "lemma": "recycle", "keep": true, "category": "action", "reason": "재활용하다, 활동", "freq": 10}
+{"id": 1325, "lemma": "truly", "keep": false, "category": null, "reason": "부사, 앵커 부적합", "freq": 56}
+{"id": 1326, "lemma": "lincoln", "keep": false, "category": null, "reason": "고유명사", "freq": 53}
+{"id": 1327, "lemma": "salty", "keep": true, "category": "property", "reason": "짠맛, 기본 맛", "freq": 87}
+{"id": 1328, "lemma": "cast", "keep": true, "category": "action", "reason": "던지다, 기본 동사", "freq": 14}
+{"id": 1329, "lemma": "waterfall", "keep": true, "category": "nature", "reason": "폭포, 자연 장소", "freq": 17}
+{"id": 1330, "lemma": "ramesses", "keep": false, "category": null, "reason": "고유명사", "freq": 54}

@@ -1,0 +1,414 @@
+{"id": 1, "lemma": "carefully", "keep": true, "category": "manner", "reason": "행동 묘사 부사", "freq": 317}
+{"id": 2, "lemma": "beatles", "keep": true, "category": "culture", "reason": "유명 밴드, 친숙", "freq": 46}
+{"id": 3, "lemma": "width", "keep": true, "category": "property", "reason": "넓이, 기본 개념", "freq": 11}
+{"id": 4, "lemma": "choo", "keep": true, "category": "sound", "reason": "기차 소리, 흔함", "freq": 10}
+{"id": 5, "lemma": "mia", "keep": false, "category": null, "reason": "낯선 인명", "freq": 121}
+{"id": 6, "lemma": "sexual", "keep": false, "category": null, "reason": "민감한 주제", "freq": 17}
+{"id": 7, "lemma": "hitler", "keep": false, "category": null, "reason": "민감한 인물", "freq": 21}
+{"id": 8, "lemma": "hunter", "keep": true, "category": "job", "reason": "사냥꾼, 직업", "freq": 14}
+{"id": 9, "lemma": "blew", "keep": false, "category": null, "reason": "blow의 과거형", "freq": 31}
+{"id": 10, "lemma": "tim", "keep": false, "category": null, "reason": "낯선 인명", "freq": 63}
+{"id": 11, "lemma": "length", "keep": true, "category": "property", "reason": "길이, 기본 개념", "freq": 25}
+{"id": 12, "lemma": "qin", "keep": false, "category": null, "reason": "낯선 인명/왕조", "freq": 15}
+{"id": 13, "lemma": "level", "keep": true, "category": "property", "reason": "수준, 기본 개념", "freq": 17}
+{"id": 14, "lemma": "internal", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 58}
+{"id": 15, "lemma": "subatomic", "keep": false, "category": null, "reason": "전문 과학 용어", "freq": 29}
+{"id": 16, "lemma": "whoosh", "keep": true, "category": "sound", "reason": "바람 소리, 흔함", "freq": 17}
+{"id": 17, "lemma": "invention", "keep": true, "category": "concept", "reason": "발명, 풀이 가능", "freq": 10}
+{"id": 18, "lemma": "likely", "keep": true, "category": "quantity", "reason": "아마도, 흔한 부사", "freq": 16}
+{"id": 19, "lemma": "buddhism", "keep": true, "category": "religion", "reason": "종교, 5세 노출", "freq": 59}
+{"id": 20, "lemma": "sara", "keep": false, "category": null, "reason": "낯선 인명", "freq": 79}
+{"id": 21, "lemma": "julius", "keep": false, "category": null, "reason": "낯선 인명", "freq": 35}
+{"id": 22, "lemma": "mar", "keep": false, "category": null, "reason": "낯선 약어/인명", "freq": 21}
+{"id": 23, "lemma": "ali", "keep": false, "category": null, "reason": "낯선 인명", "freq": 26}
+{"id": 24, "lemma": "yours", "keep": true, "category": "other", "reason": "소유 대명사, 흔함", "freq": 28}
+{"id": 25, "lemma": "bit", "keep": true, "category": "quantity", "reason": "조금, 기본 양", "freq": 359}
+{"id": 26, "lemma": "max", "keep": true, "category": "quantity", "reason": "최대, 기본 개념", "freq": 86}
+{"id": 27, "lemma": "ate", "keep": false, "category": null, "reason": "eat의 과거형", "freq": 611}
+{"id": 28, "lemma": "alan", "keep": false, "category": null, "reason": "낯선 인명", "freq": 22}
+{"id": 29, "lemma": "shi", "keep": false, "category": null, "reason": "낯선 인명/단어", "freq": 15}
+{"id": 30, "lemma": "contemporary", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 32}
+{"id": 31, "lemma": "gandhi", "keep": true, "category": "name", "reason": "유명 인물, 친숙", "freq": 29}
+{"id": 32, "lemma": "mostly", "keep": true, "category": "quantity", "reason": "대부분, 흔한 부사", "freq": 26}
+{"id": 33, "lemma": "task", "keep": true, "category": "concept", "reason": "과제, 풀이 가능", "freq": 39}
+{"id": 34, "lemma": "remove", "keep": true, "category": "action", "reason": "제거하다, 기본 동사", "freq": 15}
+{"id": 35, "lemma": "michael", "keep": false, "category": null, "reason": "낯선 인명", "freq": 62}
+{"id": 36, "lemma": "traditional", "keep": true, "category": "concept", "reason": "전통의, 풀이 가능", "freq": 33}
+{"id": 37, "lemma": "lit", "keep": false, "category": null, "reason": "light의 과거형", "freq": 11}
+{"id": 38, "lemma": "musa", "keep": false, "category": null, "reason": "낯선 인명", "freq": 28}
+{"id": 39, "lemma": "tom", "keep": true, "category": "name", "reason": "흔한 이름, 친숙", "freq": 1120}
+{"id": 40, "lemma": "inca", "keep": true, "category": "culture", "reason": "문명, 5세 노출", "freq": 41}
+{"id": 41, "lemma": "deeply", "keep": true, "category": "manner", "reason": "깊이, 행동 묘사", "freq": 10}
+{"id": 42, "lemma": "achaemenid", "keep": false, "category": null, "reason": "낯선 왕조명", "freq": 35}
+{"id": 43, "lemma": "measure", "keep": true, "category": "action", "reason": "측정하다, 기본 동사", "freq": 64}
+{"id": 44, "lemma": "private", "keep": true, "category": "concept", "reason": "개인의, 풀이 가능", "freq": 12}
+{"id": 45, "lemma": "wed", "keep": false, "category": null, "reason": "낯선 약어/동사", "freq": 10}
+{"id": 46, "lemma": "turing", "keep": false, "category": null, "reason": "낯선 인명", "freq": 22}
+{"id": 47, "lemma": "southeast", "keep": true, "category": "place", "reason": "방향, 기본 개념", "freq": 58}
+{"id": 48, "lemma": "mahatma", "keep": false, "category": null, "reason": "낯선 호칭", "freq": 29}
+{"id": 49, "lemma": "mali", "keep": false, "category": null, "reason": "낯선 국가명", "freq": 39}
+{"id": 50, "lemma": "cyrus", "keep": false, "category": null, "reason": "낯선 인명", "freq": 63}
+{"id": 51, "lemma": "role", "keep": true, "category": "concept", "reason": "역할, 풀이 가능", "freq": 12}
+{"id": 52, "lemma": "meow", "keep": true, "category": "sound", "reason": "고양이 소리, 흔함", "freq": 48}
+{"id": 53, "lemma": "across", "keep": true, "category": "time", "reason": "가로질러, 공간 부사", "freq": 218}
+{"id": 54, "lemma": "ran", "keep": false, "category": null, "reason": "run의 과거형", "freq": 474}
+{"id": 55, "lemma": "bos", "keep": false, "category": null, "reason": "낯선 약어/인명", "freq": 32}
+{"id": 56, "lemma": "surface", "keep": true, "category": "nature", "reason": "표면, 기본 개념", "freq": 19}
+{"id": 57, "lemma": "antoine", "keep": false, "category": null, "reason": "낯선 인명", "freq": 12}
+{"id": 58, "lemma": "politics", "keep": true, "category": "concept", "reason": "정치, 풀이 가능", "freq": 10}
+{"id": 59, "lemma": "wolfgang", "keep": false, "category": null, "reason": "낯선 인명", "freq": 20}
+{"id": 60, "lemma": "seller", "keep": true, "category": "job", "reason": "판매자, 직업", "freq": 19}
+{"id": 61, "lemma": "freud", "keep": false, "category": null, "reason": "낯선 인명", "freq": 18}
+{"id": 62, "lemma": "italian", "keep": true, "category": "culture", "reason": "이탈리아, 문화", "freq": 13}
+{"id": 63, "lemma": "feet", "keep": true, "category": "body", "reason": "발, 신체 부위", "freq": 500}
+{"id": 64, "lemma": "alike", "keep": true, "category": "quantity", "reason": "같이, 흔한 부사", "freq": 13}
+{"id": 65, "lemma": "everywhere", "keep": true, "category": "time", "reason": "어디나, 공간 부사", "freq": 196}
+{"id": 66, "lemma": "apart", "keep": true, "category": "time", "reason": "떨어져, 공간 부사", "freq": 37}
+{"id": 67, "lemma": "thought", "keep": false, "category": null, "reason": "think의 과거형", "freq": 50}
+{"id": 68, "lemma": "infarction", "keep": false, "category": null, "reason": "전문 의학 용어", "freq": 18}
+{"id": 69, "lemma": "keeper", "keep": true, "category": "job", "reason": "지키는 사람, 직업", "freq": 12}
+{"id": 70, "lemma": "decision", "keep": true, "category": "concept", "reason": "결정, 풀이 가능", "freq": 12}
+{"id": 71, "lemma": "felt", "keep": false, "category": null, "reason": "feel의 과거형", "freq": 1195}
+{"id": 72, "lemma": "badly", "keep": true, "category": "manner", "reason": "나쁘게, 행동 묘사", "freq": 18}
+{"id": 73, "lemma": "item", "keep": true, "category": "object", "reason": "물건, 기본 명사", "freq": 33}
+{"id": 74, "lemma": "catherine", "keep": false, "category": null, "reason": "낯선 인명", "freq": 61}
+{"id": 75, "lemma": "emma", "keep": false, "category": null, "reason": "낯선 인명", "freq": 56}
+{"id": 76, "lemma": "stock", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 211}
+{"id": 77, "lemma": "rob", "keep": true, "category": "action", "reason": "훔치다, 기본 동사", "freq": 10}
+{"id": 78, "lemma": "hooray", "keep": true, "category": "sound", "reason": "환호 소리, 흔함", "freq": 14}
+{"id": 79, "lemma": "became", "keep": false, "category": null, "reason": "become의 과거형", "freq": 98}
+{"id": 80, "lemma": "leo", "keep": true, "category": "name", "reason": "흔한 이름, 친숙", "freq": 58}
+{"id": 81, "lemma": "columbian", "keep": false, "category": null, "reason": "낯선 지명 형용사", "freq": 22}
+{"id": 82, "lemma": "periodic", "keep": false, "category": null, "reason": "전문 과학 용어", "freq": 19}
+{"id": 83, "lemma": "came", "keep": false, "category": null, "reason": "come의 과거형", "freq": 962}
+{"id": 84, "lemma": "gupta", "keep": false, "category": null, "reason": "낯선 왕조명", "freq": 34}
+{"id": 85, "lemma": "pas", "keep": false, "category": null, "reason": "낯선 외래어", "freq": 51}
+{"id": 86, "lemma": "began", "keep": false, "category": null, "reason": "begin의 과거형", "freq": 72}
+{"id": 87, "lemma": "circulatory", "keep": false, "category": null, "reason": "전문 과학 용어", "freq": 61}
+{"id": 88, "lemma": "turbine", "keep": false, "category": null, "reason": "전문 기술 용어", "freq": 14}
+{"id": 89, "lemma": "sale", "keep": true, "category": "concept", "reason": "판매, 풀이 가능", "freq": 51}
+{"id": 90, "lemma": "gracias", "keep": false, "category": null, "reason": "낯선 외국어", "freq": 11}
+{"id": 91, "lemma": "egyptian", "keep": true, "category": "culture", "reason": "이집트, 문화", "freq": 13}
+{"id": 92, "lemma": "onto", "keep": true, "category": "time", "reason": "위로, 공간 부사", "freq": 55}
+{"id": 93, "lemma": "saudi", "keep": false, "category": null, "reason": "낯선 국가명", "freq": 42}
+{"id": 94, "lemma": "extra", "keep": true, "category": "quantity", "reason": "추가, 기본 양", "freq": 19}
+{"id": 95, "lemma": "dioxide", "keep": false, "category": null, "reason": "전문 과학 용어", "freq": 62}
+{"id": 96, "lemma": "york", "keep": false, "category": null, "reason": "낯선 지명", "freq": 60}
+{"id": 97, "lemma": "fairness", "keep": true, "category": "concept", "reason": "공정함, 풀이 가능", "freq": 21}
+{"id": 98, "lemma": "pre", "keep": false, "category": null, "reason": "낯선 접두사", "freq": 22}
+{"id": 99, "lemma": "lincoln", "keep": true, "category": "name", "reason": "유명 인물, 친숙", "freq": 53}
+{"id": 100, "lemma": "non", "keep": false, "category": null, "reason": "낯선 접두사", "freq": 66}
+{"id": 101, "lemma": "few", "keep": true, "category": "quantity", "reason": "적은, 기본 양", "freq": 152}
+{"id": 102, "lemma": "safely", "keep": true, "category": "manner", "reason": "안전히, 행동 묘사", "freq": 63}
+{"id": 103, "lemma": "charles", "keep": false, "category": null, "reason": "낯선 인명", "freq": 43}
+{"id": 104, "lemma": "khan", "keep": false, "category": null, "reason": "낯선 인명/칭호", "freq": 41}
+{"id": 105, "lemma": "myself", "keep": true, "category": "other", "reason": "재귀 대명사, 흔함", "freq": 197}
+{"id": 106, "lemma": "intellectual", "keep": false, "category": null, "reason": "추상적, 5세 어려움", "freq": 17}
+{"id": 107, "lemma": "christmas", "keep": true, "category": "culture", "reason": "명절, 5세 노출", "freq": 45}
+{"id": 108, "lemma": "online", "keep": true, "category": "concept", "reason": "인터넷, 풀이 가능", "freq": 46}
+{"id": 109, "lemma": "pill", "keep": true, "category": "object", "reason": "알약, 기본 명사", "freq": 48}
+{"id": 110, "lemma": "bengali", "keep": false, "category": null, "reason": "낯선 언어/민족", "freq": 11}
+{"id": 111, "lemma": "adam", "keep": false, "category": null, "reason": "낯선 인명", "freq": 11}
+{"id": 112, "lemma": "army", "keep": true, "category": "concept", "reason": "군대, 풀이 가능", "freq": 23}
+{"id": 113, "lemma": "gave", "keep": false, "category": null, "reason": "give의 과거형", "freq": 1319}
+{"id": 114, "lemma": "don", "keep": false, "category": null, "reason": "낯선 인명/동사", "freq": 386}
+{"id": 115, "lemma": "might", "keep": true, "category": "quantity", "reason": "~할지도, 흔한 조동사", "freq": 162}
+{"id": 116, "lemma": "lisa", "keep": false, "category": null, "reason": "낯선 인명", "freq": 38}
+{"id": 117, "lemma": "teeth", "keep": true, "category": "body", "reason": "이빨, 신체 부위", "freq": 366}
+{"id": 118, "lemma": "woof", "keep": true, "category": "sound", "reason": "개 짖는 소리, 흔함", "freq": 18}
+{"id": 119, "lemma": "gutenberg", "keep": false, "category": null, "reason": "낯선 인명", "freq": 45}
+{"id": 120, "lemma": "discus", "keep": false, "category": null, "reason": "낯선 스포츠 용어", "freq": 1666}
+{"id": 121, "lemma": "british", "keep": true, "category": "culture", "reason": "영국, 문화", "freq": 65}
+{"id": 122, "lemma": "scene", "keep": true, "category": "concept", "reason": "장면, 풀이 가능", "freq": 32}
+{"id": 123, "lemma": "wollstonecraft", "keep": false, "category": null, "reason": "낯선 인명", "freq": 18}
+{"id": 124, "lemma": "composer", "keep": true, "category": "job", "reason": "작곡가, 직업", "freq": 20}
+{"id": 125, "lemma": "kong", "keep": false, "category": null, "reason": "낯선 인명/캐릭터", "freq": 52}
+{"id": 126, "lemma": "islam", "keep": true, "category": "religion", "reason": "종교, 5세 노출", "freq": 95}
+{"id": 127, "lemma": "guy", "keep": true, "category": "other", "reason": "사람, 기본 명사", "freq": 16}
+{"id": 128, "lemma": "wow", "keep": true, "category": "sound", "reason": "감탄사, 흔함", "freq": 12177}
+{"id": 129, "lemma": "yet", "keep": true, "category": "time", "reason": "아직, 흔한 부사", "freq": 176}
+{"id": 130, "lemma": "buddhist", "keep": true, "category": "religion", "reason": "불교, 종교", "freq": 14}
+{"id": 131, "lemma": "others", "keep": true, "category": "quantity", "reason": "다른 것들, 기본", "freq": 500}
+{"id": 132, "lemma": "texas", "keep": false, "category": null, "reason": "낯선 지명", "freq": 17}
+{"id": 133, "lemma": "normal", "keep": true, "category": "property", "reason": "정상, 기본 개념", "freq": 16}
+{"id": 134, "lemma": "closely", "keep": true, "category": "manner", "reason": "행동 묘사 부사", "freq": 30}
+{"id": 135, "lemma": "made", "keep": false, "category": null, "reason": "make의 과거형", "freq": 3500}
+{"id": 136, "lemma": "continue", "keep": true, "category": "action", "reason": "계속하다, 동작", "freq": 11}
+{"id": 137, "lemma": "drank", "keep": false, "category": null, "reason": "drink의 과거형", "freq": 67}
+{"id": 138, "lemma": "adolf", "keep": false, "category": null, "reason": "낯선 인명", "freq": 21}
+{"id": 139, "lemma": "panel", "keep": true, "category": "concept", "reason": "집단, 토론 모임", "freq": 69}
+{"id": 140, "lemma": "johannes", "keep": false, "category": null, "reason": "낯선 인명", "freq": 45}
+{"id": 141, "lemma": "launch", "keep": true, "category": "action", "reason": "시작하다, 발사", "freq": 18}
+{"id": 142, "lemma": "toward", "keep": true, "category": "time", "reason": "방향, 전치사", "freq": 10}
+{"id": 143, "lemma": "anywhere", "keep": true, "category": "quantity", "reason": "어디든, 공간 부사", "freq": 19}
+{"id": 144, "lemma": "ottoman", "keep": false, "category": null, "reason": "낯선 제국명", "freq": 20}
+{"id": 145, "lemma": "clearly", "keep": true, "category": "manner", "reason": "분명히, 부사", "freq": 33}
+{"id": 146, "lemma": "sunni", "keep": true, "category": "religion", "reason": "이슬람 분파, 종교", "freq": 28}
+{"id": 147, "lemma": "deal", "keep": true, "category": "action", "reason": "거래, 처리하다", "freq": 14}
+{"id": 148, "lemma": "karl", "keep": false, "category": null, "reason": "낯선 인명", "freq": 29}
+{"id": 149, "lemma": "mozart", "keep": true, "category": "name", "reason": "유명 음악가", "freq": 21}
+{"id": 150, "lemma": "john", "keep": true, "category": "name", "reason": "흔한 이름", "freq": 12}
+{"id": 151, "lemma": "childhood", "keep": true, "category": "concept", "reason": "어린 시절", "freq": 29}
+{"id": 152, "lemma": "factor", "keep": false, "category": null, "reason": "전문 용어", "freq": 16}
+{"id": 153, "lemma": "forever", "keep": true, "category": "time", "reason": "영원히, 흔한 부사", "freq": 155}
+{"id": 154, "lemma": "khwarizmi", "keep": false, "category": null, "reason": "낯선 인명", "freq": 23}
+{"id": 155, "lemma": "sat", "keep": false, "category": null, "reason": "sit의 과거형", "freq": 634}
+{"id": 156, "lemma": "shia", "keep": true, "category": "religion", "reason": "이슬람 분파, 종교", "freq": 48}
+{"id": 157, "lemma": "pray", "keep": true, "category": "action", "reason": "기도하다, 행동", "freq": 106}
+{"id": 158, "lemma": "darwin", "keep": true, "category": "name", "reason": "유명 과학자", "freq": 39}
+{"id": 159, "lemma": "friedrich", "keep": false, "category": null, "reason": "낯선 인명", "freq": 12}
+{"id": 160, "lemma": "hers", "keep": true, "category": "other", "reason": "소유 대명사", "freq": 30}
+{"id": 161, "lemma": "lab", "keep": true, "category": "place", "reason": "과학실, 장소", "freq": 74}
+{"id": 162, "lemma": "kill", "keep": false, "category": null, "reason": "민감한 단어", "freq": 16}
+{"id": 163, "lemma": "source", "keep": true, "category": "concept", "reason": "출처, 근원", "freq": 21}
+{"id": 164, "lemma": "catholic", "keep": true, "category": "religion", "reason": "가톨릭, 종교", "freq": 81}
+{"id": 165, "lemma": "mediterranean", "keep": true, "category": "place", "reason": "지역명, 바다", "freq": 36}
+{"id": 166, "lemma": "none", "keep": true, "category": "quantity", "reason": "아무도, 양 부사", "freq": 18}
+{"id": 167, "lemma": "figure", "keep": true, "category": "object", "reason": "숫자, 모양", "freq": 14}
+{"id": 168, "lemma": "eiffel", "keep": true, "category": "name", "reason": "유명 탑 이름", "freq": 61}
+{"id": 169, "lemma": "social", "keep": true, "category": "concept", "reason": "사회적, 친구", "freq": 84}
+{"id": 170, "lemma": "men", "keep": false, "category": null, "reason": "man의 복수형", "freq": 88}
+{"id": 171, "lemma": "bhagavad", "keep": true, "category": "culture", "reason": "힌두 경전", "freq": 56}
+{"id": 172, "lemma": "monk", "keep": true, "category": "job", "reason": "수도자, 직업", "freq": 28}
+{"id": 173, "lemma": "stave", "keep": false, "category": null, "reason": "낯선 단어", "freq": 109}
+{"id": 174, "lemma": "tesla", "keep": true, "category": "name", "reason": "유명 과학자", "freq": 39}
+{"id": 175, "lemma": "anna", "keep": true, "category": "name", "reason": "흔한 이름", "freq": 320}
+{"id": 176, "lemma": "curie", "keep": true, "category": "name", "reason": "유명 과학자", "freq": 23}
+{"id": 177, "lemma": "mona", "keep": true, "category": "name", "reason": "유명 그림 이름", "freq": 23}
+{"id": 178, "lemma": "seem", "keep": true, "category": "action", "reason": "보이다, 동사", "freq": 84}
+{"id": 179, "lemma": "stethoscope", "keep": true, "category": "tool", "reason": "청진기, 도구", "freq": 13}
+{"id": 180, "lemma": "shakespeare", "keep": true, "category": "name", "reason": "유명 작가", "freq": 33}
+{"id": 181, "lemma": "nuclear", "keep": false, "category": null, "reason": "전문 용어", "freq": 46}
+{"id": 182, "lemma": "stuff", "keep": true, "category": "concept", "reason": "물건, 것들", "freq": 86}
+{"id": 183, "lemma": "gita", "keep": true, "category": "culture", "reason": "힌두 경전", "freq": 56}
+{"id": 184, "lemma": "armstrong", "keep": true, "category": "name", "reason": "유명 인물", "freq": 34}
+{"id": 185, "lemma": "illness", "keep": true, "category": "concept", "reason": "아픔, 질병", "freq": 10}
+{"id": 186, "lemma": "core", "keep": true, "category": "concept", "reason": "중심, 핵심", "freq": 23}
+{"id": 187, "lemma": "anymore", "keep": true, "category": "time", "reason": "더 이상, 부사", "freq": 312}
+{"id": 188, "lemma": "malay", "keep": true, "category": "culture", "reason": "말레이 문화", "freq": 37}
+{"id": 189, "lemma": "already", "keep": true, "category": "time", "reason": "이미, 흔한 부사", "freq": 54}
+{"id": 190, "lemma": "discussion", "keep": true, "category": "concept", "reason": "토론, 대화", "freq": 27}
+{"id": 191, "lemma": "finally", "keep": true, "category": "time", "reason": "마침내, 흔한 부사", "freq": 1426}
+{"id": 192, "lemma": "ding", "keep": true, "category": "sound", "reason": "딩, 소리", "freq": 22}
+{"id": 193, "lemma": "someday", "keep": true, "category": "time", "reason": "언젠가, 부사", "freq": 120}
+{"id": 194, "lemma": "region", "keep": true, "category": "place", "reason": "지역, 장소", "freq": 13}
+{"id": 195, "lemma": "mr", "keep": true, "category": "other", "reason": "~씨, 호칭", "freq": 19}
+{"id": 196, "lemma": "subtract", "keep": true, "category": "action", "reason": "빼기, 수학 동작", "freq": 14}
+{"id": 197, "lemma": "fairly", "keep": true, "category": "manner", "reason": "공평히, 부사", "freq": 15}
+{"id": 198, "lemma": "chaplin", "keep": true, "category": "name", "reason": "유명 배우", "freq": 37}
+{"id": 199, "lemma": "mughal", "keep": true, "category": "culture", "reason": "무굴 제국 문화", "freq": 37}
+{"id": 200, "lemma": "nikola", "keep": false, "category": null, "reason": "낯선 인명", "freq": 38}
+{"id": 201, "lemma": "itself", "keep": true, "category": "other", "reason": "그 자체, 대명사", "freq": 54}
+{"id": 202, "lemma": "remind", "keep": true, "category": "action", "reason": "상기시키다, 동사", "freq": 18}
+{"id": 203, "lemma": "ana", "keep": true, "category": "name", "reason": "흔한 이름", "freq": 25}
+{"id": 204, "lemma": "arabia", "keep": true, "category": "place", "reason": "아라비아, 지역", "freq": 42}
+{"id": 205, "lemma": "tagore", "keep": false, "category": null, "reason": "낯선 인명", "freq": 48}
+{"id": 206, "lemma": "term", "keep": true, "category": "concept", "reason": "용어, 기간", "freq": 10}
+{"id": 207, "lemma": "sarah", "keep": true, "category": "name", "reason": "흔한 이름", "freq": 11}
+{"id": 208, "lemma": "civilisation", "keep": true, "category": "concept", "reason": "문명, 개념", "freq": 33}
+{"id": 209, "lemma": "gauss", "keep": false, "category": null, "reason": "낯선 인명", "freq": 12}
+{"id": 210, "lemma": "empire", "keep": true, "category": "concept", "reason": "큰 나라, 풀이 가능", "freq": 460}
+{"id": 211, "lemma": "holy", "keep": true, "category": "property", "reason": "신성한, 형용사", "freq": 52}
+{"id": 212, "lemma": "truth", "keep": true, "category": "concept", "reason": "진실, 개념", "freq": 43}
+{"id": 213, "lemma": "analytical", "keep": false, "category": null, "reason": "전문 용어", "freq": 38}
+{"id": 214, "lemma": "grade", "keep": true, "category": "concept", "reason": "학년, 등급", "freq": 24}
+{"id": 215, "lemma": "sue", "keep": false, "category": null, "reason": "민감한 법적 용어", "freq": 11}
+{"id": 216, "lemma": "mary", "keep": true, "category": "name", "reason": "흔한 이름", "freq": 21}
+{"id": 217, "lemma": "differently", "keep": true, "category": "manner", "reason": "다르게, 부사", "freq": 16}
+{"id": 218, "lemma": "aloud", "keep": true, "category": "manner", "reason": "소리 내어, 부사", "freq": 15}
+{"id": 219, "lemma": "along", "keep": true, "category": "time", "reason": "함께, 전치사", "freq": 139}
+{"id": 220, "lemma": "serious", "keep": true, "category": "property", "reason": "진지한, 형용사", "freq": 12}
+{"id": 221, "lemma": "huang", "keep": false, "category": null, "reason": "낯선 인명", "freq": 15}
+{"id": 222, "lemma": "exactly", "keep": true, "category": "manner", "reason": "정확히, 부사", "freq": 11}
+{"id": 223, "lemma": "symbol", "keep": true, "category": "concept", "reason": "상징, 개념", "freq": 23}
+{"id": 224, "lemma": "rabindranath", "keep": false, "category": null, "reason": "낯선 인명", "freq": 48}
+{"id": 225, "lemma": "sexually", "keep": false, "category": null, "reason": "민감한 단어", "freq": 20}
+{"id": 226, "lemma": "belong", "keep": true, "category": "action", "reason": "속하다, 동사", "freq": 15}
+{"id": 227, "lemma": "dimension", "keep": false, "category": null, "reason": "전문 용어", "freq": 26}
+{"id": 228, "lemma": "judge", "keep": true, "category": "job", "reason": "판사, 직업", "freq": 16}
+{"id": 229, "lemma": "carl", "keep": false, "category": null, "reason": "낯선 인명", "freq": 13}
+{"id": 230, "lemma": "walt", "keep": true, "category": "name", "reason": "유명 인물", "freq": 59}
+{"id": 231, "lemma": "respect", "keep": true, "category": "concept", "reason": "존경, 개념", "freq": 25}
+{"id": 232, "lemma": "ramesses", "keep": false, "category": null, "reason": "낯선 인명", "freq": 54}
+{"id": 233, "lemma": "dmitri", "keep": false, "category": null, "reason": "낯선 인명", "freq": 15}
+{"id": 234, "lemma": "site", "keep": true, "category": "place", "reason": "장소, 위치", "freq": 57}
+{"id": 235, "lemma": "grew", "keep": false, "category": null, "reason": "grow의 과거형", "freq": 107}
+{"id": 236, "lemma": "mental", "keep": true, "category": "property", "reason": "정신의, 형용사", "freq": 69}
+{"id": 237, "lemma": "manage", "keep": true, "category": "action", "reason": "관리하다, 동사", "freq": 10}
+{"id": 238, "lemma": "vote", "keep": true, "category": "action", "reason": "투표, 행동", "freq": 132}
+{"id": 239, "lemma": "performance", "keep": true, "category": "concept", "reason": "공연, 성과", "freq": 34}
+{"id": 240, "lemma": "charge", "keep": true, "category": "action", "reason": "요금, 책임", "freq": 35}
+{"id": 241, "lemma": "herself", "keep": true, "category": "other", "reason": "그녀 자신, 대명사", "freq": 14}
+{"id": 242, "lemma": "against", "keep": true, "category": "time", "reason": "반대, 전치사", "freq": 24}
+{"id": 243, "lemma": "vinci", "keep": true, "category": "name", "reason": "유명 인물", "freq": 79}
+{"id": 244, "lemma": "avoid", "keep": true, "category": "action", "reason": "피하다, 동사", "freq": 13}
+{"id": 245, "lemma": "fully", "keep": true, "category": "manner", "reason": "완전히, 부사", "freq": 12}
+{"id": 246, "lemma": "sandcastles", "keep": true, "category": "object", "reason": "모래성, 장난감", "freq": 36}
+{"id": 247, "lemma": "bill", "keep": true, "category": "name", "reason": "흔한 이름", "freq": 39}
+{"id": 248, "lemma": "slave", "keep": false, "category": null, "reason": "민감한 단어", "freq": 24}
+{"id": 249, "lemma": "focus", "keep": true, "category": "action", "reason": "집중하다, 동사", "freq": 15}
+{"id": 250, "lemma": "hong", "keep": true, "category": "name", "reason": "지역명, 홍콩", "freq": 52}
+{"id": 251, "lemma": "ben", "keep": true, "category": "name", "reason": "흔한 이름", "freq": 160}
+{"id": 252, "lemma": "yay", "keep": true, "category": "sound", "reason": "야! 환호 소리", "freq": 22}
+{"id": 253, "lemma": "app", "keep": true, "category": "object", "reason": "앱, 프로그램", "freq": 15}
+{"id": 254, "lemma": "digit", "keep": true, "category": "concept", "reason": "숫자, 개념", "freq": 10}
+{"id": 255, "lemma": "luther", "keep": false, "category": null, "reason": "낯선 인명", "freq": 15}
+{"id": 256, "lemma": "among", "keep": true, "category": "time", "reason": "~사이에, 전치사", "freq": 20}
+{"id": 257, "lemma": "sideways", "keep": true, "category": "manner", "reason": "옆으로, 부사", "freq": 15}
+{"id": 258, "lemma": "loudly", "keep": true, "category": "manner", "reason": "시끄럽게, 부사", "freq": 19}
+{"id": 259, "lemma": "french", "keep": true, "category": "culture", "reason": "프랑스 문화", "freq": 122}
+{"id": 260, "lemma": "sam", "keep": true, "category": "name", "reason": "흔한 이름", "freq": 337}
+{"id": 261, "lemma": "held", "keep": false, "category": null, "reason": "hold의 과거형", "freq": 135}
+{"id": 262, "lemma": "jack", "keep": true, "category": "name", "reason": "흔한 이름", "freq": 20}
+{"id": 263, "lemma": "shaman", "keep": true, "category": "job", "reason": "무당, 직업", "freq": 14}
+{"id": 264, "lemma": "george", "keep": true, "category": "name", "reason": "흔한 이름", "freq": 54}
+{"id": 265, "lemma": "amount", "keep": true, "category": "quantity", "reason": "양, 수량", "freq": 30}
+{"id": 266, "lemma": "met", "keep": false, "category": null, "reason": "meet의 과거형", "freq": 91}
+{"id": 267, "lemma": "abstract", "keep": false, "category": null, "reason": "추상적, 5세 난해", "freq": 33}
+{"id": 268, "lemma": "fee", "keep": true, "category": "concept", "reason": "돈 내는 것, 일상어", "freq": 100}
+{"id": 269, "lemma": "nobody", "keep": true, "category": "quantity", "reason": "아무도, 흔한 부정어", "freq": 17}
+{"id": 270, "lemma": "separate", "keep": true, "category": "action", "reason": "나누다, 구체 동사", "freq": 15}
+{"id": 271, "lemma": "degree", "keep": false, "category": null, "reason": "온도/학위, 5세 어려움", "freq": 11}
+{"id": 272, "lemma": "washington", "keep": true, "category": "name", "reason": "지명/대통령, 친숙", "freq": 55}
+{"id": 273, "lemma": "mongol", "keep": true, "category": "culture", "reason": "몽골, 문화권", "freq": 62}
+{"id": 274, "lemma": "learner", "keep": true, "category": "concept", "reason": "배우는 사람, 쉬움", "freq": 11}
+{"id": 275, "lemma": "rex", "keep": true, "category": "name", "reason": "티라노사우루스 렉스", "freq": 29}
+{"id": 276, "lemma": "instead", "keep": true, "category": "quantity", "reason": "대신, 흔한 부사", "freq": 106}
+{"id": 277, "lemma": "swam", "keep": false, "category": null, "reason": "swim의 과거형", "freq": 52}
+{"id": 278, "lemma": "charlie", "keep": true, "category": "name", "reason": "흔한 이름, 친숙", "freq": 37}
+{"id": 279, "lemma": "gogh", "keep": false, "category": null, "reason": "화가 성, 5세 낯섦", "freq": 41}
+{"id": 280, "lemma": "member", "keep": true, "category": "concept", "reason": "구성원, 쉬운 개념", "freq": 19}
+{"id": 281, "lemma": "galileo", "keep": true, "category": "name", "reason": "과학자, 유명 인물", "freq": 19}
+{"id": 282, "lemma": "tomb", "keep": false, "category": null, "reason": "무덤, 5세 어려움", "freq": 13}
+{"id": 283, "lemma": "mayor", "keep": true, "category": "job", "reason": "시장, 직업", "freq": 10}
+{"id": 284, "lemma": "account", "keep": false, "category": null, "reason": "계좌/설명, 5세 난해", "freq": 11}
+{"id": 285, "lemma": "marie", "keep": true, "category": "name", "reason": "흔한 이름, 친숙", "freq": 25}
+{"id": 286, "lemma": "integrate", "keep": false, "category": null, "reason": "통합하다, 전문 용어", "freq": 32}
+{"id": 287, "lemma": "teaching", "keep": true, "category": "action", "reason": "가르침, 동작", "freq": 18}
+{"id": 288, "lemma": "dy", "keep": false, "category": null, "reason": "불완전한 단어", "freq": 10}
+{"id": 289, "lemma": "lee", "keep": true, "category": "name", "reason": "흔한 성씨, 친숙", "freq": 40}
+{"id": 290, "lemma": "softly", "keep": true, "category": "manner", "reason": "부드럽게, 행동 부사", "freq": 60}
+{"id": 291, "lemma": "hmm", "keep": true, "category": "sound", "reason": "생각 소리, 흔함", "freq": 135}
+{"id": 292, "lemma": "worth", "keep": true, "category": "concept", "reason": "가치, 쉬운 개념", "freq": 38}
+{"id": 293, "lemma": "unite", "keep": true, "category": "action", "reason": "하나되다, 사회적 동사", "freq": 144}
+{"id": 294, "lemma": "disney", "keep": true, "category": "name", "reason": "만화 회사, 친숙", "freq": 59}
+{"id": 295, "lemma": "clinic", "keep": true, "category": "place", "reason": "작은 병원, 장소", "freq": 20}
+{"id": 296, "lemma": "sigmund", "keep": false, "category": null, "reason": "프로이트, 낯선 인명", "freq": 18}
+{"id": 297, "lemma": "neolithic", "keep": false, "category": null, "reason": "신석기, 전문 용어", "freq": 33}
+{"id": 298, "lemma": "genghis", "keep": true, "category": "name", "reason": "칭기즈 칸, 유명", "freq": 41}
+{"id": 299, "lemma": "himself", "keep": true, "category": "quantity", "reason": "그 자신, 재귀대명사", "freq": 13}
+{"id": 300, "lemma": "twice", "keep": true, "category": "quantity", "reason": "두 번, 흔한 부사", "freq": 32}
+{"id": 301, "lemma": "especially", "keep": true, "category": "manner", "reason": "특히, 흔한 부사", "freq": 15}
+{"id": 302, "lemma": "incense", "keep": false, "category": null, "reason": "향, 5세 다소 낯섦", "freq": 15}
+{"id": 303, "lemma": "industrial", "keep": false, "category": null, "reason": "산업의, 5세 난해", "freq": 17}
+{"id": 304, "lemma": "standard", "keep": true, "category": "concept", "reason": "기준, 쉬운 개념", "freq": 30}
+{"id": 305, "lemma": "thermometer", "keep": true, "category": "tool", "reason": "온도계, 구체 도구", "freq": 24}
+{"id": 306, "lemma": "archaeologist", "keep": true, "category": "job", "reason": "고고학자, 직업", "freq": 10}
+{"id": 307, "lemma": "zetian", "keep": false, "category": null, "reason": "낯선 인명", "freq": 41}
+{"id": 308, "lemma": "operation", "keep": false, "category": null, "reason": "수술/작전, 5세 난해", "freq": 12}
+{"id": 309, "lemma": "cause", "keep": true, "category": "concept", "reason": "원인, 쉬운 개념", "freq": 24}
+{"id": 310, "lemma": "appear", "keep": true, "category": "action", "reason": "나타나다, 동사", "freq": 10}
+{"id": 311, "lemma": "didn", "keep": false, "category": null, "reason": "did not 축약, 불완전", "freq": 10}
+{"id": 312, "lemma": "myocardial", "keep": false, "category": null, "reason": "심근, 전문 의학 용어", "freq": 18}
+{"id": 313, "lemma": "hercules", "keep": true, "category": "name", "reason": "헤라클레스, 유명", "freq": 15}
+{"id": 314, "lemma": "transmit", "keep": false, "category": null, "reason": "전송하다, 전문 용어", "freq": 20}
+{"id": 315, "lemma": "hola", "keep": true, "category": "sound", "reason": "스페인어 인사, 흔함", "freq": 21}
+{"id": 316, "lemma": "shoot", "keep": true, "category": "action", "reason": "쏘다, 구체 동사", "freq": 33}
+{"id": 317, "lemma": "prim", "keep": false, "category": null, "reason": "격식 차린, 5세 낯섦", "freq": 18}
+{"id": 318, "lemma": "albert", "keep": true, "category": "name", "reason": "알버트, 흔한 이름", "freq": 46}
+{"id": 319, "lemma": "jake", "keep": true, "category": "name", "reason": "흔한 이름, 친숙", "freq": 19}
+{"id": 320, "lemma": "okay", "keep": true, "category": "sound", "reason": "응, 흔한 동의 표현", "freq": 4577}
+{"id": 321, "lemma": "william", "keep": true, "category": "name", "reason": "흔한 이름, 친숙", "freq": 34}
+{"id": 322, "lemma": "galilei", "keep": false, "category": null, "reason": "갈릴레이 성, 낯섦", "freq": 18}
+{"id": 323, "lemma": "fell", "keep": false, "category": null, "reason": "fall의 과거형", "freq": 232}
+{"id": 324, "lemma": "amadeus", "keep": false, "category": null, "reason": "모차르트, 5세 낯섦", "freq": 20}
+{"id": 325, "lemma": "quietly", "keep": true, "category": "manner", "reason": "조용히, 행동 부사", "freq": 93}
+{"id": 326, "lemma": "jackson", "keep": true, "category": "name", "reason": "흔한 성, 친숙", "freq": 43}
+{"id": 327, "lemma": "polar", "keep": true, "category": "nature", "reason": "극지의, 자연 관련", "freq": 55}
+{"id": 328, "lemma": "einstein", "keep": true, "category": "name", "reason": "천재 별명, 친숙", "freq": 59}
+{"id": 329, "lemma": "creation", "keep": true, "category": "concept", "reason": "창조, 쉬운 개념", "freq": 11}
+{"id": 330, "lemma": "chapter", "keep": true, "category": "concept", "reason": "장, 책의 부분", "freq": 30}
+{"id": 331, "lemma": "lucy", "keep": true, "category": "name", "reason": "흔한 이름, 친숙", "freq": 44}
+{"id": 332, "lemma": "shot", "keep": false, "category": null, "reason": "shoot의 과거/명사, 혼동", "freq": 49}
+{"id": 333, "lemma": "easily", "keep": true, "category": "manner", "reason": "쉽게, 행동 부사", "freq": 89}
+{"id": 334, "lemma": "mansa", "keep": false, "category": null, "reason": "만사 무사, 낯선 인명", "freq": 28}
+{"id": 335, "lemma": "condor", "keep": true, "category": "animal", "reason": "콘도르, 동물", "freq": 10}
+{"id": 336, "lemma": "priest", "keep": true, "category": "job", "reason": "성직자, 직업", "freq": 14}
+{"id": 337, "lemma": "athlete", "keep": true, "category": "job", "reason": "운동선수, 직업", "freq": 11}
+{"id": 338, "lemma": "officer", "keep": true, "category": "job", "reason": "장교/경찰, 직업", "freq": 103}
+{"id": 339, "lemma": "revolution", "keep": true, "category": "concept", "reason": "혁명, 사회 개념", "freq": 108}
+{"id": 340, "lemma": "central", "keep": true, "category": "property", "reason": "중앙의, 위치 형용사", "freq": 93}
+{"id": 341, "lemma": "coach", "keep": true, "category": "job", "reason": "코치, 직업", "freq": 52}
+{"id": 342, "lemma": "beep", "keep": true, "category": "sound", "reason": "삐 소리, 흔한 의성어", "freq": 43}
+{"id": 343, "lemma": "faraday", "keep": false, "category": null, "reason": "과학자, 5세 낯섦", "freq": 19}
+{"id": 344, "lemma": "invisible", "keep": true, "category": "property", "reason": "보이지 않는, 형용사", "freq": 15}
+{"id": 345, "lemma": "habit", "keep": true, "category": "concept", "reason": "습관, 쉬운 개념", "freq": 66}
+{"id": 346, "lemma": "maria", "keep": true, "category": "name", "reason": "흔한 이름, 친숙", "freq": 24}
+{"id": 347, "lemma": "layer", "keep": true, "category": "concept", "reason": "층, 쉬운 개념", "freq": 18}
+{"id": 348, "lemma": "inventor", "keep": true, "category": "job", "reason": "발명가, 직업", "freq": 16}
+{"id": 349, "lemma": "media", "keep": true, "category": "concept", "reason": "미디어, 일상 개념", "freq": 42}
+{"id": 350, "lemma": "magnify", "keep": true, "category": "action", "reason": "확대하다, 구체 동사", "freq": 14}
+{"id": 351, "lemma": "ha", "keep": true, "category": "sound", "reason": "웃음 소리, 흔함", "freq": 11896}
+{"id": 352, "lemma": "less", "keep": true, "category": "quantity", "reason": "더 적은, 양 부사", "freq": 253}
+{"id": 353, "lemma": "mendeleev", "keep": false, "category": null, "reason": "멘델레예프, 낯선 인명", "freq": 15}
+{"id": 354, "lemma": "louis", "keep": true, "category": "name", "reason": "루이, 흔한 이름", "freq": 67}
+{"id": 355, "lemma": "happily", "keep": true, "category": "manner", "reason": "행복하게, 행동 부사", "freq": 28}
+{"id": 356, "lemma": "chose", "keep": false, "category": null, "reason": "choose의 과거형", "freq": 121}
+{"id": 357, "lemma": "lavoisier", "keep": false, "category": null, "reason": "라부아지에, 낯선 인명", "freq": 12}
+{"id": 358, "lemma": "martin", "keep": true, "category": "name", "reason": "마틴, 흔한 이름", "freq": 15}
+{"id": 359, "lemma": "caesar", "keep": true, "category": "name", "reason": "시저, 유명 인물", "freq": 35}
+{"id": 360, "lemma": "newton", "keep": true, "category": "name", "reason": "뉴턴, 유명 과학자", "freq": 12}
+{"id": 361, "lemma": "hid", "keep": false, "category": null, "reason": "hide의 과거형", "freq": 21}
+{"id": 362, "lemma": "explain", "keep": true, "category": "action", "reason": "설명하다, 동사", "freq": 113}
+{"id": 363, "lemma": "freedom", "keep": true, "category": "concept", "reason": "자유, 쉬운 개념", "freq": 22}
+{"id": 364, "lemma": "growth", "keep": true, "category": "concept", "reason": "성장, 쉬운 개념", "freq": 10}
+{"id": 365, "lemma": "kaaba", "keep": true, "category": "religion", "reason": "카바, 이슬람 성지", "freq": 13}
+{"id": 366, "lemma": "since", "keep": true, "category": "time", "reason": "~이래로, 시간 부사", "freq": 10}
+{"id": 367, "lemma": "ahead", "keep": true, "category": "time", "reason": "앞서, 시간/공간 부사", "freq": 16}
+{"id": 368, "lemma": "pharaoh", "keep": true, "category": "job", "reason": "파라오, 고대 직업", "freq": 11}
+{"id": 369, "lemma": "height", "keep": true, "category": "property", "reason": "높이, 측정 형용사", "freq": 27}
+{"id": 370, "lemma": "leader", "keep": true, "category": "job", "reason": "지도자, 직업", "freq": 193}
+{"id": 371, "lemma": "nicely", "keep": true, "category": "manner", "reason": "멋지게, 행동 부사", "freq": 61}
+{"id": 372, "lemma": "brand", "keep": true, "category": "concept", "reason": "브랜드, 일상 개념", "freq": 10}
+{"id": 373, "lemma": "knew", "keep": false, "category": null, "reason": "know의 과거형", "freq": 87}
+{"id": 374, "lemma": "collection", "keep": true, "category": "concept", "reason": "수집, 쉬운 개념", "freq": 26}
+{"id": 375, "lemma": "indigenous", "keep": false, "category": null, "reason": "토착의, 5세 난해", "freq": 33}
+{"id": 376, "lemma": "forth", "keep": true, "category": "time", "reason": "앞으로, 방향 부사", "freq": 22}
+{"id": 377, "lemma": "chance", "keep": true, "category": "concept", "reason": "기회, 쉬운 개념", "freq": 30}
+{"id": 378, "lemma": "faith", "keep": true, "category": "concept", "reason": "믿음, 쉬운 개념", "freq": 26}
+{"id": 379, "lemma": "indus", "keep": true, "category": "culture", "reason": "인더스 문명, 문화", "freq": 35}
+{"id": 380, "lemma": "orthodox", "keep": true, "category": "religion", "reason": "정교회, 종교", "freq": 35}
+{"id": 381, "lemma": "sight", "keep": true, "category": "body", "reason": "시력/광경, 신체 감각", "freq": 47}
+{"id": 382, "lemma": "skull", "keep": true, "category": "body", "reason": "두개골, 신체 부위", "freq": 12}
+{"id": 383, "lemma": "battle", "keep": true, "category": "concept", "reason": "싸움, 쉬운 개념", "freq": 13}
+{"id": 384, "lemma": "president", "keep": true, "category": "job", "reason": "대통령, 직업", "freq": 38}
+{"id": 385, "lemma": "ours", "keep": true, "category": "quantity", "reason": "우리 것, 소유 대명사", "freq": 23}
+{"id": 386, "lemma": "mississippi", "keep": true, "category": "place", "reason": "미시시피 강, 지명", "freq": 38}
+{"id": 387, "lemma": "sens", "keep": false, "category": null, "reason": "불완전한 단어", "freq": 50}
+{"id": 388, "lemma": "slowly", "keep": true, "category": "manner", "reason": "천천히, 행동 부사", "freq": 963}
+{"id": 389, "lemma": "librarian", "keep": true, "category": "job", "reason": "사서, 직업", "freq": 74}
+{"id": 390, "lemma": "plat", "keep": false, "category": null, "reason": "평면도, 5세 낯섦", "freq": 228}
+{"id": 391, "lemma": "anyway", "keep": true, "category": "manner", "reason": "어쨌든, 흔한 부사", "freq": 31}
+{"id": 392, "lemma": "gently", "keep": true, "category": "manner", "reason": "부드럽게, 행동 부사", "freq": 58}
+{"id": 393, "lemma": "thinker", "keep": true, "category": "job", "reason": "사상가, 직업", "freq": 51}
+{"id": 394, "lemma": "mice", "keep": true, "category": "animal", "reason": "쥐들, 동물 복수형", "freq": 10}
+{"id": 395, "lemma": "mosque", "keep": true, "category": "religion", "reason": "모스크, 이슬람 사원", "freq": 43}
+{"id": 396, "lemma": "tolstoy", "keep": false, "category": null, "reason": "톨스토이, 낯선 인명", "freq": 40}
+{"id": 397, "lemma": "episode", "keep": true, "category": "concept", "reason": "에피소드, 일상 개념", "freq": 17}
+{"id": 398, "lemma": "ann", "keep": true, "category": "name", "reason": "앤, 흔한 이름", "freq": 13}
+{"id": 399, "lemma": "value", "keep": true, "category": "concept", "reason": "가치, 쉬운 개념", "freq": 10}
+{"id": 400, "lemma": "gun", "keep": false, "category": null, "reason": "민감한 무기, 부적합", "freq": 29}
+{"id": 401, "lemma": "imago", "keep": false, "category": null, "reason": "전문 생물학 용어", "freq": 78}
+{"id": 402, "lemma": "process", "keep": true, "category": "concept", "reason": "과정, 일상 개념", "freq": 35}
+{"id": 403, "lemma": "roman", "keep": true, "category": "culture", "reason": "로마, 문화/역사", "freq": 33}
+{"id": 404, "lemma": "edison", "keep": true, "category": "name", "reason": "발명가, 친숙한 이름", "freq": 38}
+{"id": 405, "lemma": "include", "keep": true, "category": "action", "reason": "포함하다, 기본 동사", "freq": 39}
+{"id": 406, "lemma": "somewhere", "keep": true, "category": "place", "reason": "어딘가, 장소 부사", "freq": 10}
+{"id": 407, "lemma": "sang", "keep": false, "category": null, "reason": "sing의 과거형", "freq": 185}
+{"id": 408, "lemma": "truly", "keep": true, "category": "manner", "reason": "진실로, 행동 부사", "freq": 56}
+{"id": 409, "lemma": "pasteur", "keep": false, "category": null, "reason": "낯선 인명", "freq": 33}
+{"id": 410, "lemma": "thomas", "keep": true, "category": "name", "reason": "흔한 이름, 친숙", "freq": 41}
+{"id": 411, "lemma": "threw", "keep": false, "category": null, "reason": "throw의 과거형", "freq": 20}
+{"id": 412, "lemma": "depression", "keep": false, "category": null, "reason": "성인 감정, 부적합", "freq": 28}
+{"id": 413, "lemma": "marx", "keep": false, "category": null, "reason": "낯선 인명", "freq": 30}
+{"id": 414, "lemma": "boo", "keep": true, "category": "sound", "reason": "놀랄 때 소리, 흔함", "freq": 10}

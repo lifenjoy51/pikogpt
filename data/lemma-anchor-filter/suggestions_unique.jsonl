@@ -1,0 +1,63 @@
+{"lemma": "elk", "category": "animal", "reason": "큰사슴, 5세 수준 동물 어휘", "batch": 1}
+{"lemma": "mule", "category": "animal", "reason": "노새, 어린이에게 친숙한 동물", "batch": 1}
+{"lemma": "cricket", "category": "animal", "reason": "귀뚜라미, 흔한 곤충 이름", "batch": 1}
+{"lemma": "parakeet", "category": "animal", "reason": "잉꼬, 반려조로 잘 알려짐", "batch": 1}
+{"lemma": "starling", "category": "animal", "reason": "찌르레기, 흔한 새 이름", "batch": 1}
+{"lemma": "tadpole", "category": "animal", "reason": "올챙이, 동물 성장 과정 어휘", "batch": 1}
+{"lemma": "vine", "category": "plant", "reason": "덩굴식물, 자연 어휘 확장", "batch": 1}
+{"lemma": "thistle", "category": "plant", "reason": "엉겅퀴, 가시 있는 식물", "batch": 1}
+{"lemma": "fern", "category": "plant", "reason": "고사리, 흔한 식물 이름", "batch": 1}
+{"lemma": "iris", "category": "plant", "reason": "붓꽃, 꽃 이름 배우기", "batch": 1}
+{"lemma": "eyelash", "category": "body", "reason": "속눈썹, 세부 신체 부위", "batch": 1}
+{"lemma": "knuckle", "category": "body", "reason": "손가락 마디, 신체 어휘", "batch": 1}
+{"lemma": "hip", "category": "body", "reason": "엉덩이, 신체 부위 명칭", "batch": 1}
+{"lemma": "nostril", "category": "body", "reason": "콧구멍, 코의 세부 명칭", "batch": 1}
+{"lemma": "cliff", "category": "nature", "reason": "절벽, 자연 지형 어휘", "batch": 1}
+{"lemma": "creek", "category": "nature", "reason": "개울, 작은 물줄기", "batch": 1}
+{"lemma": "meadow", "category": "nature", "reason": "초원, 넓은 들판", "batch": 1}
+{"lemma": "drizzle", "category": "weather", "reason": "이슬비, 날씨 표현 확장", "batch": 1}
+{"lemma": "thunderstorm", "category": "weather", "reason": "뇌우, 강한 날씨 현상", "batch": 1}
+{"lemma": "blizzard", "category": "weather", "reason": "눈보라, 강한 눈 날씨", "batch": 1}
+{"lemma": "hairbrush", "category": "object", "reason": "헤어브러시, 일상용품", "batch": 1}
+{"lemma": "broom", "category": "object", "reason": "빗자루, 청소 도구", "batch": 1}
+{"lemma": "mug", "category": "object", "reason": "머그컵, 음료 용기", "batch": 1}
+{"lemma": "toaster", "category": "object", "reason": "토스터기, 주방 가전", "batch": 1}
+{"lemma": "oatmeal", "category": "food", "reason": "오트밀, 아침 식사 음식", "batch": 1}
+{"lemma": "pretzel", "category": "food", "reason": "프레즐, 간식 종류", "batch": 1}
+{"lemma": "parlor", "category": "place", "reason": "응접실, 장소 이름 확장", "batch": 1}
+{"lemma": "dock", "category": "place", "reason": "부두, 항구 시설", "batch": 1}
+{"lemma": "playpen", "category": "place", "reason": "놀이방 울타리, 아기 공간", "batch": 1}
+{"lemma": "nursery", "category": "place", "reason": "보육원, 어린이 장소", "batch": 1}
+{"lemma": "nephew", "category": "family", "reason": "조카, 가족 관계 어휘", "batch": 1}
+{"lemma": "niece", "category": "family", "reason": "조카딸, 가족 관계 어휘", "batch": 1}
+{"lemma": "in-law", "category": "family", "reason": "사돈, 가족 관계 확장", "batch": 1}
+{"lemma": "stepmother", "category": "family", "reason": "새어머니, 가족 구성원", "batch": 1}
+{"lemma": "lonely", "category": "feeling", "reason": "외로운, 감정 표현", "batch": 1}
+{"lemma": "grateful", "category": "feeling", "reason": "감사한, 긍정 감정", "batch": 1}
+{"lemma": "sparkly", "category": "property", "reason": "반짝이는, 사물 특징", "batch": 1}
+{"lemma": "sturdy", "category": "property", "reason": "튼튼한, 사물 특징", "batch": 1}
+{"lemma": "vest", "category": "clothing", "reason": "조끼, 옷 종류", "batch": 1}
+{"lemma": "sandal", "category": "clothing", "reason": "샌들, 신발 종류", "batch": 1}
+{"lemma": "tongs", "category": "tool", "reason": "집게, 부엌 도구", "batch": 1}
+{"lemma": "strainer", "category": "tool", "reason": "체, 주방 도구", "batch": 1}
+{"lemma": "ladle", "category": "tool", "reason": "국자, 요리 도구", "batch": 1}
+{"lemma": "pogo", "category": "toy", "reason": "포고스틱, 장난감 이름", "batch": 1}
+{"lemma": "jump rope", "category": "toy", "reason": "줄넘기, 놀이 도구", "batch": 1}
+{"lemma": "slingshot", "category": "toy", "reason": "새총, 장난감 종류", "batch": 1}
+{"lemma": "politely", "category": "manner", "reason": "예의 바르게, 행동 방식", "batch": 1}
+{"lemma": "dozen", "category": "quantity", "reason": "12개, 수량 단위", "batch": 1}
+{"lemma": "dawn", "category": "time", "reason": "새벽, 시간 표현", "batch": 1}
+{"lemma": "dusk", "category": "time", "reason": "해질녘, 시간 표현", "batch": 1}
+{"lemma": "midnight", "category": "time", "reason": "자정, 시간 표현", "batch": 1}
+{"lemma": "plumber", "category": "job", "reason": "배관공, 직업 이름", "batch": 1}
+{"lemma": "carpenter", "category": "job", "reason": "목수, 직업 이름", "batch": 1}
+{"lemma": "courage", "category": "concept", "reason": "용기, 추상 명사", "batch": 1}
+{"lemma": "patience", "category": "concept", "reason": "인내, 추상 개념", "batch": 1}
+{"lemma": "lantern", "category": "culture", "reason": "등불, 문화적 물건", "batch": 1}
+{"lemma": "altar", "category": "religion", "reason": "제단, 종교 관련 어휘", "batch": 1}
+{"lemma": "sermon", "category": "religion", "reason": "설교, 종교 활동", "batch": 1}
+{"lemma": "chant", "category": "religion", "reason": "성가, 종교 의식", "batch": 1}
+{"lemma": "bob", "category": "name", "reason": "밥, 흔한 영어 이름", "batch": 1}
+{"lemma": "tim", "category": "name", "reason": "팀, 흔한 영어 이름", "batch": 1}
+{"lemma": "snore", "category": "other", "reason": "코골다, 잠자는 소리", "batch": 1}
+{"lemma": "stomp", "category": "other", "reason": "쿵쿵 밟다, 행동", "batch": 1}

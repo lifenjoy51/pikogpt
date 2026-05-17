@@ -1,0 +1,37 @@
+{
+  "lemma_sentences.txt": {
+    "lines": 3209,
+    "tokens": 715548,
+    "unique": 7839
+  },
+  "stories.txt": {
+    "lines": 41619,
+    "tokens": 2156063,
+    "unique": 5609
+  },
+  "dialogues.txt": {
+    "lines": 25512,
+    "tokens": 754202,
+    "unique": 5380
+  },
+  "wiki.txt": {
+    "lines": 10082,
+    "tokens": 778776,
+    "unique": 13645
+  },
+  "cause_seq.txt": {
+    "lines": 5680,
+    "tokens": 206079,
+    "unique": 7468
+  },
+  "chained.txt": {
+    "lines": 5834,
+    "tokens": 316247,
+    "unique": 7853
+  },
+  "counting.txt": {
+    "lines": 2747,
+    "tokens": 79198,
+    "unique": 4619
+  }
+}

@@ -1,0 +1,104 @@
+=== stories.txt (30) ===
+L3007: Mom and I go to buy lunch. We buy a meal at the small café. The meal is cheap and tastes good. I buy a sandwich and juice for a cheap price. Mom buys a salad meal that is also cheap. We eat our cheap 
+L4783: I try to remember my Portuguese words. The teacher speaks slow so I can understand. I remember the word for 'hello' is 'olá'. Portuguese is slow and beautiful. I practice at home to remember more word
+L6234: The hero must take action to help his friend. The monster is coming, so the hero takes action fast. He makes a quick plan. He runs quick to the river. The quick move saves the day. Everyone says, “You
+L6235: Lily likes to study the solar system at school. She studies the planets and the sun. The solar system is very interesting. She draws a picture of the system. Her teacher says, “Your study is good.” Li
+L6237: Dad asks, “Do you know the capital of our state?” I know the capital is Springfield. We live in this state. My teacher says every state has a capital. Now I know all the capitals. It is fun to know su
+L6238: Sam learns to use a compass in the forest. A compass helps you find your way. It is important to learn how to read a compass. Sam learns north from south. The guide says, “A compass is important for h
+L6240: I watch a man in the park. The man is very busy. He runs after a ball and feeds the ducks. I watch the busy man all morning. The man waves at me. He says, “You watch me work hard.” I smile and watch h
+L6496: We learn about letters in class. The teacher shows us Cyrillic letters. She says some letters are similar to English letters. We compare them one by one. A and А look similar. But some letters are not
+L7651: I enjoy my lunch at school. Today’s lunch is wonderful. I enjoy every bite of the wonderful food. My friend says her lunch is wonderful too. We both enjoy lunch together. The wonderful lunch makes us 
+L9529: A big red truck comes down our street very fast. My mom tells me to stop and wait. The truck does not stop at the sign – it goes fast and passes by. I stop at the corner and watch. The truck is too fa
+L9813: I want to visit Pakistan one day. My uncle says Pakistan is a beautiful country. He visits Pakistan every year and brings gifts. I hope to visit Pakistan soon to see its beautiful mountains. My friend
+L11912: Mom wanted to find a local coffee shop. We walked to the street and saw a small local café. The coffee there smelled good. Mom said she will find a nice local shop for her morning coffee. We sat and d
+L16391: I like to speak German. It sounds cool to me. My friend also likes German class. We learn cool words like 'Hallo' and 'Tschüss'. I like the German flag colors. It is cool to know another language. I w
+L16431: I think about numbers in school. The teacher says we can think of them as discrete. I think that is interesting. We count one apple, two apples, three — each is discrete. I think it is fun to learn ne
+L19257: I learn to write new words in school. Today I write the word ‘sun’. The word ‘sun’ is easy and pretty. My teacher says I write the word very well. I also write the word ‘moon’. Both words look pretty 
+L20469: We went to a small café. The waitress was pretty. She had a nice smile. I remember her name is Anna. She brought us cake. I remember the pretty waitress gave me extra cream. Mom said she is pretty. I 
+L20858: At the store I choose a fruit for a snack. I look at the apples and oranges. I choose a big red apple. The apple is perfect — not too soft and not too hard. My mom says, "That is a perfect fruit!" I a
+L22804: It is my friend's birthday. I need to choose a present for her. I look at many toys. I find a perfect present — a doll with a red dress. I choose it because she likes dolls. The present is perfect for
+L23184: Mom asked me to describe the waiter at the café. I said the waiter was very tall and kind. The tall waiter brought us our food with a smile. I tried to describe his uniform to Dad later. The waiter wo
+L23947: We went to look at the big dam. The dam was very high. It looked amazing. Water came out of the dam. I said, “Look how strong the dam is.” My dad said the dam is amazing. We took a picture of the amaz
+L23948: I remember my Arabic teacher. She gave me a key chain. I remember the key chain is blue. I use the key to open my box. The key has Arabic writing on it. I remember the Arabic word for key. It is “mift
+L23950: It rained, so I share my umbrella with my friend. The umbrella is nice and big. We walk together under the nice umbrella. I like to share. My friend says, “You are nice.” We share the umbrella all the
+L24333: In math class we learned about a polygon. I like polygons because they look cool. A triangle is a polygon with three sides. My teacher said a square is also a polygon. I really like drawing polygons—t
+L25484: I remember a funny conversation with my friend. We talked about a funny cat video. The conversation was so funny that I laughed a lot. I remember my friend’s funny face when she told the story. After 
+L25884: I remember when I had a big fear of the dark. My room was dark at night and I felt bad. I would call my mom because my fear was so big. I remember one night when the lights went out and it was really 
+L25889: My uncle had to fly to Nigeria for work. The fly was very long, almost all day. He was tired after that long fly. Nigeria is a country far away, so fly time is long. He told me Nigeria has many big ci
+L25890: We have a plan for February because it’s a busy month. I plan to start my new art class in February. Mom says February is busy with my brother’s birthday and school. I plan to make a nice card for him
+L26291: I am learning Portuguese, but I am slow. I remember some words like "olá" and "gato." My friend speaks Portuguese fast, but I am slow to understand. I try to remember new words every day. Sometimes I 
+L27622: Last Saturday, Dad took me to the shop to buy a new toy. We saw a new product on the shelf—a small red car. I said, 'Can we buy this product?' Dad said yes, so we bought the new toy. At home, I played
+L27835: Mom made a plan for a perfect afternoon. She told me the plan in the morning. I was so happy. We went to the park after lunch. The afternoon was sunny and warm. The park was perfect for a walk. We saw
+=== dialogues.txt (5) ===
+L12326: Look at this new book! <|turn|> Yes, it is new. I like it. <|turn|> Wow, what do you learn from it? <|turn|> I learn Cyrillic letters. <|turn|> Can you read a Cyrillic word? <|turn|> Yes, I can read '
+L18073: What do you know? <|turn|> Well, I know some Spanish words. <|turn|> Please tell me a common Spanish word. <|turn|> Yes, 'hola' is a common Spanish word. <|turn|> Do you know another common word? <|tu
+L19586: Hi! I speak Spanish. <|turn|> Hello! That is fun. <|turn|> What do you try to say? <|turn|> I try to say 'hello' in Spanish. <|turn|> Please try to say 'goodbye' too. <|turn|> Okay, I try 'adiós'. <|t
+L24864: Wow, the Spanish is fast! <|turn|> Yes, it is very fast. <|turn|> What is that fast sound? <|turn|> That is Spanish. People speak it. <|turn|> Oh, I hear Spanish now. <|turn|> Good! You hear it. <|tur
+L25377: Who do you remember from the park? <|turn|> Oh, I remember the waitress at the café. <|turn|> Wow, she was very pretty! <|turn|> Is she still pretty now?
+=== wiki.txt (30) ===
+L33: Cello\n\nThe cello is a big musical instrument that makes a deep, rich sound. It has four strings and is played with a bow. A person who plays the cello is called a cellist. The cello is part of the s
+L50: Togo\n\nTogo is a small country in West Africa. It is next to Ghana, Benin, and Burkina Faso. The capital city is Lomé. About 9 million people live there. Many people speak French. Togo has lots of mo
+L112: Bamboo\n\nBamboo is a giant grass that grows very tall and has a hard, wood-like stem. It grows in many warm places like Africa, America, and Asia. Bamboo can grow very fast—sometimes more than one me
+L336: North Sea\n\nThe North Sea is a big body of salt water in northern Europe. It is part of the Atlantic Ocean. The North Sea sits between Norway and Denmark on one side, and Scotland and England on the 
+L354: Venezuela\n\nVenezuela is a country in South America. The capital city is Caracas. People there speak Spanish and other languages. Venezuela has the tallest waterfall in the world, called Angel Falls.
+L420: Xinjiang\n\nXinjiang is a big place in the northwest of China. It is very large but not many people live there. The people who live there are mostly called Uyghurs. Xinjiang has big mountains, dry lan
+L432: Card game\n\nA card game is a game you play with a deck of cards. Each card has a picture on one side and a pattern on the other. You can only see your own cards, not the other players' cards. Some ca
+L564: Romania\n\nRomania is a country in Europe. It is near the Black Sea and the big Danube River. Tall mountains called the Carpathians go through the middle of Romania. The capital city is Bucharest, whi
+L684: Warsaw\n\nWarsaw is a big city and the capital of Poland. It is the biggest city in that country. About two million people live there. Warsaw sits on a river called the Vistula. The city has many scho
+L914: Burkina Faso\n\nBurkina Faso is a country in West Africa. It is next to Mali, Niger, Benin, Togo, Ghana, and Côte d'Ivoire. The country does not touch any ocean. The capital is Ouagadougou. People fro
+L921: Provence\n\nProvence is a place in the south of France. It is near the big river Rhône and the country of Italy. The biggest city there is Marseille. Other cities are Nice, Avignon, and Aix-en-Provenc
+L961: Andromeda galaxy\n\nThe Andromeda galaxy is a huge group of stars far, far away in space. It is the closest big galaxy to our own galaxy, the Milky Way. Andromeda looks like a small, fuzzy star in the
+L968: Colombia\n\nColombia is a country in South America. It is near the equator, so it is warm. Colombia has beaches on two big oceans: the Pacific Ocean and the Caribbean Sea. Many people live there, more
+L1160: Polish language\n\nPolish is a language that people speak in Poland. It is the main language there. Many people also speak Polish in other countries like the United States, Canada, and the United King
+L1162: History of the Earth\n\nThe history of the Earth is the story of how our planet came to be and changed over a very, very long time. Earth is very old—about 4.56 billion years old. That is much older t
+L1341: Hokkaidō\n\nHokkaidō is a big island in Japan. It is the northernmost island of Japan. It is very cold in winter and lots of snow falls. In summer it is warm or hot. Many people grow food there. It is
+L1381: Spanish language\n\nSpanish is a language that many people speak. It started from Latin a long time ago. People in Spain and many other countries speak Spanish. Over 489 million people speak Spanish a
+L1453: Salsa music\n\nSalsa music is a kind of music from Latin America. It mixes music from Cuba and Puerto Rico. People dance to salsa music with fast steps and happy sounds. The music uses drums, horns, a
+L1532: Hungary\n\nHungary is a country in Europe. It does not touch any ocean. Hungary is next to seven other countries: Slovakia, Ukraine, Romania, Serbia, Croatia, Slovenia, and Austria. The biggest river 
+L1611: Stockholm\n\nStockholm is the biggest city in Sweden and the capital. It is built on many islands with water all around. There are 14 islands and 57 bridges. The old part of the city is called Gamla S
+L1696: So Paulo\n\nSão Paulo is a very big city in Brazil. It is the biggest city in South America. More than 11 million people live there. The city has many tall buildings, cars, and buses. Many people work
+L1798: Turkish language\n\nTurkish is a language that people speak in Turkey and Cyprus. Many people around the world speak Turkish. It is a kind of language that is like other languages such as Azerbaijani 
+L1834: Māori people\n\nThe Māori people are the first people who lived in New Zealand. They came from faraway islands in the ocean a long, long time ago. Before other people arrived, they just called themsel
+L1881: Terracotta Army\n\nThe Terracotta Army is a big group of clay soldiers that were buried underground a long, long time ago. An old Chinese king named Qin Shi Huang had them made to protect him after he
+L1904: Mind\n\nThe mind is the part of you that thinks, remembers, and feels. It is inside your head. Your mind helps you make choices, like what to eat or play. It also lets you imagine things, like a castl
+L1930: Guatemala\n\nGuatemala is a country in Central America. It is next to Mexico, Belize, Honduras, and El Salvador. It also touches the Pacific Ocean. Many people live there—more than fourteen million. S
+L1991: Chemical reaction\n\nA chemical reaction is when one thing changes into something else. For example, when you bake a cake, the ingredients change into a cake. Some reactions are fast, like when a fire
+L2034: Hispaniola\n\nHispaniola is an island in the Caribbean Sea. It is a big island with two countries on it. One country is called Haiti, and the other is called the Dominican Republic. The island has man
+L2180: Writing\n\nWriting is a way to put words down so other people can read them later. People use special marks, like letters or pictures, to show what they want to say. Long ago, people wrote on clay, st
+L2252: Latin American literature\n\nLatin American literature is stories and poems written by people who live in Latin America. They write in Spanish or Portuguese. Some stories mix real things with magic, l
+=== cause_seq.txt (19) ===
+L567: If you visit Bordeaux, you can see big boats on the river. First, walk along the river and watch the boats. Then, eat a sweet cake called a canelé. Last, tell your friends about the pretty city.
+L601: Brasília is the capital of Brazil. First, people built Brasília in the middle of the country. Then, many workers moved there to help build the city. Last, the government moved to Brasília.
+L715: If you visit Cameroon, you can see a big mountain called Mount Cameroon. First, you fly to the capital city Yaoundé. Then, you drive north to see the mountain. Last, you hike up the mountain and look 
+L1019: If you visit Colombia, you can see tall green mountains. First, you fly to a big city like Bogotá. Then, you ride a bus up the mountain road. Last, you see coffee plants growing on the hills.
+L1252: If you visit the Czech Republic, you can see a big castle in Prague. First, you walk up a hill to the castle. Then, you look at the pretty glass windows. Last, you eat a sweet pastry called trdelník.
+L1983: If you learn German words, you can talk to people in Germany. First, say "Hallo" for hello. Then, say "Tschüss" for goodbye. Last, your new friend smiles at you.
+L2292: If you visit Hokkaidō in winter, you see a lot of snow. First, you put on a warm coat. Then, you can make a snowman outside. Last, you go inside to drink hot cocoa.
+L2316: Honshū is a big island in Japan. If you visit Honshū, you can see tall mountains. First, you fly to Tokyo. Then, you take a train to see Mount Fuji. Last, you eat sushi by the sea.
+L2380: If you learn Hungarian words, you can say hello to people in Hungary. First, learn to say 'szia' for hello. Then, practice saying 'köszönöm' for thank you. Last, you can greet a friend in Hungarian.
+L2956: If you visit Lyon, you can see two big rivers. First, walk by the Saône River. Then, cross a bridge to the Rhône River. Last, eat a tasty meal near the water.
+L3124: If you visit Melbourne, you can see big buildings and parks. First, take a train to the city. Then, walk to the river and watch the boats. Last, eat a snack at a café.
+L3343: First, we go to the Musée d'Orsay. Then, we see many paintings inside. Last, we look at the big clock.
+L3367: If you visit New Zealand, you might meet Māori people. They greet you with a nose press called hongi. First, they touch noses gently. Then, they share a breath. Last, you feel welcome.
+L3911: If you want to learn Polish, first listen to Polish songs. Then, practice saying simple words like 'dzień dobry'. Last, you can say a whole sentence in Polish.
+L3952: First, you learn words like "olá" for hello. Then, you say "obrigado" for thank you. Last, you can talk to people from Portugal.
+L4647: If you visit Slovakia, you can see tall mountains and old castles. First, you pack warm clothes because it can be cold. Then, you walk up a hill to see a big castle. Last, you eat a tasty dumpling cal
+L4684: If you go to São Paulo, you will see many tall buildings. First, you can walk on the busy streets. Then, you might eat a tasty snack from a food cart. Last, you can rest in a big park.
+L4685: If you visit São Tomé and Príncipe, you will see beautiful beaches. First, you fly to the island. Then, you can swim in the warm ocean. Last, you eat fresh fruit from the trees.
+L5421: If you learn Vietnamese, you can talk to people in Vietnam. First, learn simple words like "xin chào" for hello. Then, practice saying them every day. Last, you can say a whole sentence and make a new
+=== chained.txt (12) ===
+L625: Brasília is the capital of Brazil. A little girl named Ana lives there with her family. She sees big white buildings shaped like birds. She loves to look at them from her window. They shine bright in 
+L1286: Lena learned to say hello in Czech. She practiced the new words every day. She said "Dobrý den" to her teddy bear. It was fun to make the sounds. She told her mom the words too. Her mom smiled and sai
+L2361: Mia visited Hokkaidō with her family. She saw big white snowflakes fall from the sky. She built a small snowman in the soft white snow. She ate warm soup in a cozy house. She loved the cold air and th
+L2385: Tom lives on the big island of Honshū. He rides his bike to school every morning. He sees green mountains and rice fields on the way. The sun shines warm on his face. He loves his home on Honshū. It i
+L2450: Lena speaks Hungarian at home with her family. She loves how the words sound like a happy song. Every morning, she says "Jó reggelt" to her mom. She practices new words with her dad after dinner. Hung
+L2534: Lily learned about inequality in math class. She saw two piles of blocks—one big and one small. She said the big pile was not equal to the small pile. Her teacher smiled and showed her how to compare 
+L2540: Leo looked up at the night sky and saw stars that seemed to go on forever. He asked his dad if the stars ever ended. His dad said the universe is like infinity—it has no end. Leo thought about infinit
+L3455: A Māori boy named Tama lived near the ocean. He learned to weave flax baskets from his grandmother. She showed him how to make strong, flat strips. Tama wove them together with careful hands. He made 
+L4015: Lena speaks Polish at home with her family. She says 'dzień dobry' every morning to her mom. Her grandma teaches her Polish words for animals and colors. Lena loves to hear Polish stories before bed. 
+L4692: Lily has a special gift—her sight. She uses her eyes to see the bright red flowers in the garden. Every morning, she looks out the window and sees the sun rise. She loves to watch the birds fly across
+L4800: Sofia lives in São Paulo, a big city with tall buildings. She rides the bus to school every morning and looks out the window. She sees many cars and people walking fast. After school, she plays in the
+L5428: Lily found a shiny red button on the playground. She picked it up and looked at it closely. It was not a real button—it was a toy. She told her friend the truth about what she found. Her friend smiled
+=== counting.txt (2) ===
+L1606: There are seven Māori people in the room. Three Māori people are singing a song. Four Māori people are dancing. Four is more than three. Altogether, there are seven Māori people.
+L2624: I have two vicuñas in my picture. One vicuña is eating grass. The other vicuña is looking at me. Two is more than one.
