@@ -464,6 +464,48 @@ tasks.register<JavaExec>("runCcmcAllV2048M1TrainTurbo") {
     environment("TURBO_MAX_WORKERS", "8")
 }
 
+tasks.register<JavaExec>("runCcmcLemmaV1024LongTrainTurbo") {
+    description = "ccmc-lemma-v1024 장기 학습 (500k iter, earlyStop patience=20, expName=long-500k, 8 workers)"
+    mainClass.set("train.experiments.CcmcLemmaV1024LongTrainTurboKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf(
+        "-Xmx3g",
+        "--add-modules=jdk.incubator.vector",
+        "-XX:+AlwaysPreTouch",
+        "-XX:ActiveProcessorCount=12",
+        "-Djava.util.concurrent.ForkJoinPool.common.parallelism=12",
+    )
+    environment("TURBO_MAX_WORKERS", "8")
+}
+
+tasks.register<JavaExec>("runCcmcLemmaV1024MidTrainTurbo") {
+    description = "ccmc-lemma-v1024 중간 사이즈 학습 (d=64 L=7 h=2, ~414k params, 500k iter, expName=mid-414k, 4 workers)"
+    mainClass.set("train.experiments.CcmcLemmaV1024MidTrainTurboKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf(
+        "-Xmx4g",
+        "--add-modules=jdk.incubator.vector",
+        "-XX:+AlwaysPreTouch",
+        "-XX:ActiveProcessorCount=8",
+        "-Djava.util.concurrent.ForkJoinPool.common.parallelism=8",
+    )
+    environment("TURBO_MAX_WORKERS", "4")
+}
+
+tasks.register<JavaExec>("runCcmcLemmaV1024DeepTrainTurbo") {
+    description = "ccmc-lemma-v1024 deep narrow 학습 (d=64 L=20 h=2, ~1.06M params, 500k iter, expName=deep-1M, 4 workers)"
+    mainClass.set("train.experiments.CcmcLemmaV1024DeepTrainTurboKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    jvmArgs = listOf(
+        "-Xmx5g",
+        "--add-modules=jdk.incubator.vector",
+        "-XX:+AlwaysPreTouch",
+        "-XX:ActiveProcessorCount=8",
+        "-Djava.util.concurrent.ForkJoinPool.common.parallelism=8",
+    )
+    environment("TURBO_MAX_WORKERS", "4")
+}
+
 tasks.register<JavaExec>("runCcmcLemmaV1024TrainTurbo") {
     description = "ccmc-lemma-v1024 학습 (d=32 heads=2 L=5 blockSize=32, ~97k params, 10k iter)"
     mainClass.set("train.experiments.CcmcLemmaV1024TrainTurboKt")
