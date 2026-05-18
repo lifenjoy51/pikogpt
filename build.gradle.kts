@@ -645,6 +645,32 @@ tasks.register<JavaExec>("runBench10MMpsGraphTrain") {
     )
 }
 
+tasks.register<JavaExec>("runCcmcLemmaV1024MpsGraphTrain") {
+    description = "Run CcmcLemmaV1024MpsGraphTrain — ccmc-lemma-v1024 MPSGraph backend 학습 (P0.5 진입점)"
+    mainClass.set("train.experiments.CcmcLemmaV1024MpsGraphTrainKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    dependsOn(buildMpsGraphLib)
+    jvmArgs = listOf(
+        "-Xmx8g",
+        "--add-modules=jdk.incubator.vector",
+        "-XX:+AlwaysPreTouch",
+        "-Djava.library.path=${projectDir}/build/native",
+    )
+}
+
+tasks.register<JavaExec>("runCcmcLemmaV1024DeepMpsGraphTrain") {
+    description = "Run CcmcLemmaV1024DeepMpsGraphTrain — ccmc-lemma-v1024 deep-1M (~1M params) MPSGraph backend 학습 (turbo Deep mirror)"
+    mainClass.set("train.experiments.CcmcLemmaV1024DeepMpsGraphTrainKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    dependsOn(buildMpsGraphLib)
+    jvmArgs = listOf(
+        "-Xmx8g",
+        "--add-modules=jdk.incubator.vector",
+        "-XX:+AlwaysPreTouch",
+        "-Djava.library.path=${projectDir}/build/native",
+    )
+}
+
 tasks.register<JavaExec>("runBench10MMpsFp16Turbo") {
     description = "Run Bench10MMpsFp16Turbo — 10M (forward fp16 mixed precision, backward fp32). 학습 안정성 사용자 검증."
     mainClass.set("train.experiments.Bench10MMpsFp16TurboKt")

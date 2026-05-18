@@ -54,17 +54,112 @@ class MpsGraphSession private constructor(handle: Long) : AutoCloseable {
         cos: FloatArray, sin: FloatArray, mask: FloatArray,
         lr: Float, beta1: Float, beta2: Float, eps: Float, weightDecay: Float,
         stepT: Int,
+        gradClip: Float = 0.0f,
+        batchSize: Int = 1,
+        dropoutMask: FloatArray? = null,
     ): Float {
         check(handle != 0L) { "session closed" }
         require(tokenIds.size == targets.size)
+        require(tokenIds.size % batchSize == 0) {
+            "tokenIds.size ${tokenIds.size} not divisible by batchSize $batchSize"
+        }
         return nativeRunTrainingStep(handle, tokenIds, targets, cos, sin, mask,
-            lr, beta1, beta2, eps, weightDecay, stepT)
+            lr, beta1, beta2, eps, weightDecay, gradClip, stepT, batchSize, dropoutMask)
     }
 
     /** 검증/체크포인트용 weight 읽기. */
     fun readWeight(paramIndex: Int, out: FloatArray) {
         check(handle != 0L) { "session closed" }
         nativeReadWeight(handle, paramIndex, out)
+    }
+
+    /**
+     * P1.2 — 1 micro-step accumulate. forward + loss + backward 후 grad를 slot.gradBuffer에 누적.
+     * loss return. AdamW는 적용 안 됨 — N micro-step 후 runAdamStep 호출.
+     * gradient는 자동 누적 (accumGraph 안에서 gradOld + new_grad).
+     * batchSize 인자: tokenIds.size = batchSize * blockSize여야 한다.
+     */
+    fun runAccumStep(
+        tokenIds: IntArray, targets: IntArray,
+        cos: FloatArray, sin: FloatArray, mask: FloatArray,
+        batchSize: Int = 1,
+        dropoutMask: FloatArray? = null,
+    ): Float {
+        check(handle != 0L) { "session closed" }
+        require(tokenIds.size == targets.size)
+        require(tokenIds.size % batchSize == 0) {
+            "tokenIds.size ${tokenIds.size} not divisible by batchSize $batchSize"
+        }
+        return nativeRunAccumStep(handle, tokenIds, targets, cos, sin, mask, batchSize, dropoutMask)
+    }
+
+    /**
+     * Phase 3 — fused step: accumSteps × forward+backward+grad accumulate + AdamW를 단일
+     * MTLCommandBuffer에 encode + commit + wait. iter당 9번 분리 GPU run → 1번 commit으로 묶음.
+     *
+     * 입력 모두 flatten:
+     *   allTokenIds : [accumSteps * batchSize * blockSize]
+     *   allTargets  : [accumSteps * batchSize * blockSize]
+     *   allDropoutMask : [accumSteps * 2*L*B*T*E] (useDropout=true 시점만 사용)
+     *
+     * return: 마지막 micro-step loss.
+     */
+    fun runFusedStep(
+        allTokenIds: IntArray, allTargets: IntArray,
+        cos: FloatArray, sin: FloatArray, mask: FloatArray,
+        allDropoutMask: FloatArray?,
+        lr: Float, beta1: Float, beta2: Float, eps: Float, weightDecay: Float,
+        gradClip: Float, stepT: Int, batchSize: Int, accumSteps: Int,
+    ): Float {
+        check(handle != 0L) { "session closed" }
+        require(allTokenIds.size == allTargets.size)
+        require(accumSteps >= 1)
+        require(batchSize >= 1)
+        require(allTokenIds.size % (accumSteps * batchSize) == 0)
+        return nativeRunFusedStep(handle, allTokenIds, allTargets, cos, sin, mask, allDropoutMask,
+            lr, beta1, beta2, eps, weightDecay, gradClip, stepT, batchSize, accumSteps)
+    }
+
+    /**
+     * P1.2 — AdamW 1 step. slot.gradBuffer (누적된 grad) 사용 + reset.
+     * runAccumStep N번 → runAdamStep 1번 호출이 1 effective iter.
+     */
+    fun runAdamStep(
+        lr: Float, beta1: Float, beta2: Float, eps: Float, weightDecay: Float,
+        gradClip: Float, stepT: Int,
+    ) {
+        check(handle != 0L) { "session closed" }
+        nativeRunAdamStep(handle, lr, beta1, beta2, eps, weightDecay, gradClip, stepT)
+    }
+
+    /** P1.2 — 모든 slot.gradBuffer를 0으로 reset. 학습 시작 시 호출. */
+    fun resetGradAccum() {
+        check(handle != 0L) { "session closed" }
+        nativeResetGradAccum(handle)
+    }
+
+    /** P0.1 — AdamW m state 읽기 (체크포인트용). */
+    fun readOptimizerM(paramIndex: Int, out: FloatArray) {
+        check(handle != 0L) { "session closed" }
+        nativeReadOptimizerM(handle, paramIndex, out)
+    }
+
+    /** P0.1 — AdamW v state 읽기 (체크포인트용). */
+    fun readOptimizerV(paramIndex: Int, out: FloatArray) {
+        check(handle != 0L) { "session closed" }
+        nativeReadOptimizerV(handle, paramIndex, out)
+    }
+
+    /** P0.1 — AdamW m state 덮어쓰기 (resume용). */
+    fun loadOptimizerM(paramIndex: Int, data: FloatArray) {
+        check(handle != 0L) { "session closed" }
+        nativeLoadOptimizerM(handle, paramIndex, data)
+    }
+
+    /** P0.1 — AdamW v state 덮어쓰기 (resume용). */
+    fun loadOptimizerV(paramIndex: Int, data: FloatArray) {
+        check(handle != 0L) { "session closed" }
+        nativeLoadOptimizerV(handle, paramIndex, data)
     }
 
     /**
@@ -88,15 +183,42 @@ class MpsGraphSession private constructor(handle: Long) : AutoCloseable {
 
     /**
      * Phase 3 step 1: forward + CE loss. scalar loss return.
-     * targets: next-token labels per position. [T] int.
+     * targets: next-token labels per position. tokenIds.size = batchSize * blockSize.
+     * P1.1 — B>1 일반화. batchSize default 1로 backward compatible.
      */
     fun runForwardLoss(
         tokenIds: IntArray, targets: IntArray,
         cos: FloatArray, sin: FloatArray, mask: FloatArray,
+        batchSize: Int = 1,
     ): Float {
         check(handle != 0L) { "session closed" }
         require(tokenIds.size == targets.size) { "tokens.size != targets.size" }
-        return nativeRunForwardLoss(handle, tokenIds, targets, cos, sin, mask)
+        require(tokenIds.size % batchSize == 0) {
+            "tokenIds.size ${tokenIds.size} not divisible by batchSize $batchSize"
+        }
+        return nativeRunForwardLoss(handle, tokenIds, targets, cos, sin, mask, batchSize)
+    }
+
+    /**
+     * P3.1 — stepGraph를 compile → MPSGraphPackage 디렉터리로 serialize.
+     * 디스크에 저장된 package는 같은 모델/dtype/shape configuration의 다음 session에서 deserialize 가능.
+     * @return 성공 여부.
+     */
+    fun compileStepAndSerialize(
+        path: String, batchSize: Int, blockSize: Int,
+        beta1: Float = 0.9f, beta2: Float = 0.95f, eps: Float = 1e-8f, weightDecay: Float = 0.0f,
+    ): Boolean {
+        check(handle != 0L) { "session closed" }
+        return nativeCompileStepAndSerialize(handle, path, batchSize, blockSize, beta1, beta2, eps, weightDecay)
+    }
+
+    /**
+     * P3.1 — 디스크의 MPSGraphPackage를 load. 성공 시 cold start 절감 가능.
+     * 본 PoC는 deserialize 검증만 (run path는 graph 기반 유지).
+     */
+    fun loadStepExecutable(path: String): Boolean {
+        check(handle != 0L) { "session closed" }
+        return nativeLoadStepExecutable(handle, path)
     }
 
     /**
@@ -241,6 +363,10 @@ class MpsGraphSession private constructor(handle: Long) : AutoCloseable {
                 config.useSwiglu,
                 config.useRope,
                 config.tieWeights,
+                config.useVariableForStep,
+                config.useFp16,
+                config.useDropout,
+                config.dropoutProbability,
             )
             check(h != 0L) { "nativeCreateSession returned 0" }
             return MpsGraphSession(h)
@@ -261,6 +387,10 @@ class MpsGraphSession private constructor(handle: Long) : AutoCloseable {
             numLayers: Int, embedDim: Int, numHeads: Int, blockSize: Int,
             vocab: Int, batchSize: Int,
             useSwiglu: Boolean, useRope: Boolean, tieWeights: Boolean,
+            useVariableForStep: Boolean,
+            useFp16: Boolean,
+            useDropout: Boolean,
+            dropoutProbability: Float,
         ): Long
         @JvmStatic private external fun nativeDestroySession(handle: Long)
         @JvmStatic private external fun nativeLoadWeights(handle: Long, paramIndex: Int, data: FloatArray, shape: IntArray)
@@ -270,7 +400,15 @@ class MpsGraphSession private constructor(handle: Long) : AutoCloseable {
         @JvmStatic private external fun nativeRunForwardLoss(
             handle: Long,
             tokenIds: IntArray, targets: IntArray,
-            cos: FloatArray, sin: FloatArray, mask: FloatArray): Float
+            cos: FloatArray, sin: FloatArray, mask: FloatArray,
+            batchSize: Int): Float
+        // P3.1 — MPSGraphExecutable compile + serialize / deserialize
+        @JvmStatic private external fun nativeCompileStepAndSerialize(
+            handle: Long, path: String,
+            batchSize: Int, blockSize: Int,
+            beta1: Float, beta2: Float, eps: Float, weightDecay: Float): Boolean
+        @JvmStatic private external fun nativeLoadStepExecutable(
+            handle: Long, path: String): Boolean
         @JvmStatic private external fun nativeRunForwardBackward(
             handle: Long,
             tokenIds: IntArray, targets: IntArray,
@@ -282,9 +420,36 @@ class MpsGraphSession private constructor(handle: Long) : AutoCloseable {
             tokenIds: IntArray, targets: IntArray,
             cos: FloatArray, sin: FloatArray, mask: FloatArray,
             lr: Float, beta1: Float, beta2: Float, eps: Float, weightDecay: Float,
-            stepT: Int): Float
+            gradClip: Float, stepT: Int, batchSize: Int,
+            dropoutMask: FloatArray?): Float
         @JvmStatic private external fun nativeReadWeight(
             handle: Long, paramIndex: Int, out: FloatArray)
+        @JvmStatic private external fun nativeRunAccumStep(
+            handle: Long,
+            tokenIds: IntArray, targets: IntArray,
+            cos: FloatArray, sin: FloatArray, mask: FloatArray,
+            batchSize: Int,
+            dropoutMask: FloatArray?): Float
+        @JvmStatic private external fun nativeRunFusedStep(
+            handle: Long,
+            allTokenIds: IntArray, allTargets: IntArray,
+            cos: FloatArray, sin: FloatArray, mask: FloatArray,
+            allDropoutMask: FloatArray?,
+            lr: Float, beta1: Float, beta2: Float, eps: Float, weightDecay: Float,
+            gradClip: Float, stepT: Int, batchSize: Int, accumSteps: Int): Float
+        @JvmStatic private external fun nativeRunAdamStep(
+            handle: Long,
+            lr: Float, beta1: Float, beta2: Float, eps: Float, weightDecay: Float,
+            gradClip: Float, stepT: Int)
+        @JvmStatic private external fun nativeResetGradAccum(handle: Long)
+        @JvmStatic private external fun nativeReadOptimizerM(
+            handle: Long, paramIndex: Int, out: FloatArray)
+        @JvmStatic private external fun nativeReadOptimizerV(
+            handle: Long, paramIndex: Int, out: FloatArray)
+        @JvmStatic private external fun nativeLoadOptimizerM(
+            handle: Long, paramIndex: Int, data: FloatArray)
+        @JvmStatic private external fun nativeLoadOptimizerV(
+            handle: Long, paramIndex: Int, data: FloatArray)
         @JvmStatic private external fun nativeRunFullForward(
             handle: Long,
             tokenIds: IntArray, cos: FloatArray, sin: FloatArray, mask: FloatArray,

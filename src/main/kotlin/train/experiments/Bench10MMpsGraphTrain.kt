@@ -21,14 +21,15 @@ fun main(args: Array<String>) {
         println("[mps-graph] unavailable: ${MpsGraphSession.loadError}")
         return
     }
-    val maxIters = args.firstOrNull()?.toIntOrNull() ?: 50
+    val maxIters = args.getOrNull(0)?.toIntOrNull() ?: 50
+    // P1.1 — args[1]: batchSize. 기본 1.
+    val batchSize = args.getOrNull(1)?.toIntOrNull() ?: 1
 
     val embedDim = 256
     val numLayers = 16
     val numHeads = 8
     val blockSize = 32
     val vocab = 2000
-    val batchSize = 1
     val headDim = embedDim / numHeads
     val half = headDim / 2
 
@@ -75,13 +76,20 @@ fun main(args: Array<String>) {
     val eps = 1e-8f
     val wd = 0.01f
 
-    var lastLoss = Float.NaN
+    var lastLoss = 0f
     for (iter in 1..maxIters) {
         val (inputs, targets) = loader.getBatch()
+        val flatIn = IntArray(batchSize * blockSize)
+        val flatTg = IntArray(batchSize * blockSize)
+        for (b in 0 until batchSize) {
+            System.arraycopy(inputs[b], 0, flatIn, b * blockSize, blockSize)
+            System.arraycopy(targets[b], 0, flatTg, b * blockSize, blockSize)
+        }
         val stepMs = measureTimeMillis {
             lastLoss = session.runTrainingStep(
-                inputs[0], targets[0], cosTable, sinTable, mask,
+                flatIn, flatTg, cosTable, sinTable, mask,
                 lr, beta1, beta2, eps, wd, iter,
+                gradClip = 0f, batchSize = batchSize,
             )
         }
         if (iter == 1 || iter % 10 == 0 || iter == maxIters) {
@@ -92,7 +100,10 @@ fun main(args: Array<String>) {
     session.close()
 
     val totalMs = System.currentTimeMillis() - startTime
-    println("\n=== Bench10MMpsGraph 완료 ===")
-    println("총 시간: ${totalMs}ms (${maxIters} iter)")
+    val tokensPerIter = batchSize * blockSize
+    val totalTokens = tokensPerIter * maxIters
+    println("\n=== Bench10MMpsGraph 완료 (batchSize=$batchSize) ===")
+    println("총 시간: ${totalMs}ms (${maxIters} iter, ${totalTokens} tokens)")
     println("iter당 평균: ${totalMs / maxIters}ms")
+    println("tokens/sec: ${"%.1f".format(totalTokens * 1000.0 / totalMs)}")
 }

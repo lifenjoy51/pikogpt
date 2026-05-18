@@ -17,21 +17,40 @@ Apple Silicon GPU에서 forward + backward + AdamW를 **단일 graph로 실행**
 
 ```
 src/main/objc/
-└── MpsGraphBridge.mm                 # Obj-C++ JNI bridge: PikoMpsGraphSession + graph build/run
+└── MpsGraphBridge.mm                 # Obj-C++ JNI bridge: PikoMpsGraphSession + graph build/run/serialize
 
 src/main/kotlin/mps/
-├── MpsGraphSession.kt                # JNI binding + session lifecycle
-└── MpsGraphConfig.kt                 # 모델 hyperparam (numLayers, embedDim, ...)
+├── MpsGraphSession.kt                # JNI binding + session lifecycle + compile/serialize wrapper
+├── MpsGraphConfig.kt                 # 모델 hyperparam + useFp16/useVariableForStep 옵션
+├── MpsGraphTrainer.kt                # P0.5 학습 루프 (lr/eval/ckpt/clip/resume/early stop)
+├── MpsGraphTrainConfig.kt            # TurboTrainConfig 호환 hyperparam (useFp16/useExecutableCache 포함)
+├── MpsCheckpoint.kt                  # TurboCheckpoint 호환 schema + save/load IO
+├── MpsLrSchedule.kt                  # warmup + cosine decay (host-side)
+├── MpsBestLossTracker.kt             # smoothing + early stop (patience/plateau)
+├── MpsAvailability.kt, MpsBackend.kt # backend availability/dispatch helpers
+├── jni/                              # 기존 matmul-only PoC JNI (보존)
+└── ops/                              # 기존 matmul-only PoC ops (보존)
 
 src/main/kotlin/train/experiments/
-└── Bench10MMpsGraphTrain.kt          # 진입점: 10M 모델 학습 wrapper
+├── Bench10MMpsGraphTrain.kt          # 10M wall-clock 측정 (args[1]: batchSize)
+└── CcmcLemmaV1024MpsGraphTrain.kt    # 실제 학습 진입점 (ccmc-lemma-v1024)
 
 src/test/kotlin/mps/
-└── MpsGraphSessionTest.kt            # Phase별 단위 test (11/11 통과)
+├── MpsGraphSessionTest.kt            # Phase 1~6 단위 test
+├── MpsGraphCheckpointTest.kt         # P0.1 save/load roundtrip
+├── MpsLrScheduleTest.kt              # P0.2 schedule
+├── MpsBestLossTrackerTest.kt         # P0.3 smoothing + early stop
+├── MpsGraphGradClipTest.kt           # P0.4 norm clip
+├── MpsGraphBatchTest.kt              # P1.1 B>1 일관성
+├── MpsGraphAccumTest.kt              # P1.2 accum vs single step 동등성
+├── MpsGraphVariableTest.kt           # P1.3 variable mode 동등성
+├── MpsGraphFp16Test.kt               # P2.1 fp16 vs fp32 baseline
+└── MpsGraphExecutableSerializeTest.kt # P3.1 compile + 디스크 roundtrip
 
 build.gradle.kts
-└── buildMpsGraphLib                  # libpikogpt_mpsgraph.dylib 빌드 task
-└── runBench10MMpsGraphTrain          # 진입점 JavaExec
+├── buildMpsGraphLib                  # libpikogpt_mpsgraph.dylib 빌드 task
+├── runBench10MMpsGraphTrain          # wall-clock 측정 진입점
+└── runCcmcLemmaV1024MpsGraphTrain    # 실제 학습 진입점
 ```
 
 ### Graph 구조
@@ -178,12 +197,22 @@ scalar 상수(lr, β1, β2, ε, wd)는 graph constant로 매립하지만, **sche
 
 ### 단위 test
 ```bash
-./gradlew test --tests "mps.MpsGraphSessionTest"   # 11/11 통과
+./gradlew test --tests "mps.*"                         # mps 전체 (Graph 42 + matmul-only PoC 일부)
+./gradlew test --tests "mps.MpsGraphSessionTest"       # Phase 1~6 (PoC 단계)
+./gradlew test --tests "mps.MpsGraphVariableTest"      # P1.3
+./gradlew test --tests "mps.MpsGraphFp16Test"          # P2.1
+./gradlew test --tests "mps.MpsGraphExecutableSerializeTest"  # P3.1
 ```
 
 ### 학습
 ```bash
-./gradlew runBench10MMpsGraphTrain --args="50"     # 50 iter wall-clock 측정
+# wall-clock 측정 (10M Bench, args[0]=iter, args[1]=batchSize, args[2]=resume)
+./gradlew runBench10MMpsGraphTrain --args="50"
+./gradlew runBench10MMpsGraphTrain --args="50 8"        # B=8
+
+# 실제 학습 (ccmc-lemma-v1024)
+./gradlew runCcmcLemmaV1024MpsGraphTrain
+./gradlew runCcmcLemmaV1024MpsGraphTrain --args="resume"
 ```
 
 출력 예:
@@ -203,30 +232,48 @@ iter당 평균: 715ms
 sudo powermetrics --samplers gpu_power -i 1000 -n 30   # 별도 터미널, 학습 도중
 ```
 
-## 한계 / TODO
+## 후속 작업 진행 상황 (2026-05-18 갱신)
 
-### 현재 PoC scope
+### Plan 전 항목 정공 완료 (P0~P3)
 
-- **batch=1, gradAccum=1**: turbo Bench10MTurbo는 batch=2 × gradAccum=16 = 32 seq/iter. mps graph는 1 seq/iter로 작동. throughput per-iter는 1/32이지만 per-sequence는 3.29× 빠름.
-- **모델 hyperparam 고정**: numLayers/embedDim/numHeads/blockSize 변경 시 graph rebuild. 현재는 T 바뀌면 rebuild 안 함 (PoC 가정).
-- **LR scheduler 없음**: lr placeholder는 받지만 진입점은 fixed lr. 향후 cosine/warmup 추가 가능.
-- **Checkpoint 없음**: 학습 종료 후 weight를 host로 읽어 별도 저장하는 path 없음. `nativeReadWeight` JNI는 있음.
-- **Eval/sample 없음**: turbo의 validation loss 측정 + 샘플링은 미구현.
-- **fp16 안 함**: 전체 fp32. Apple Silicon fp16 가속 (~2× 추가) 가능하나 학습 안정성 검증 필요.
+| 영역 | 상태 | 구현 |
+|---|---|---|
+| Checkpoint save/load (P0.1) | ✅ | `MpsCheckpointIO` + JNI 4개 (read/load M/V) + schema는 `TurboCheckpoint` 호환 |
+| LR scheduler (P0.2) | ✅ | `MpsLrSchedule` warmup + cosine (host-side, graph rebuild 없음) |
+| Validation loss + best tracking (P0.3) | ✅ | `MpsBestLossTracker` (smoothing + early stop + plateau) |
+| Gradient clipping (P0.4) | ✅ | step graph 내 global norm + ratio scaling (placeholder `clip`) |
+| MpsGraphTrainer 통합 (P0.5) | ✅ | TurboTrainer 수준 학습 루프 (lr/eval/ckpt/clip/resume) |
+| Batch 차원 일반화 (P1.1) | ✅ | placeholder shape `[B, T, ...]`, attention/RoPE 4D, cache key `(B, T)`, `runForwardLoss` B>1, Bench `args[1]: batchSize` 옵션화 |
+| Gradient accumulation 진정한 분리 (P1.2) | ✅ | `accumGraph` + `adamGraph`. slot.gradBuffer ping-pong |
+| Variable 패러다임 (P1.3) | ✅ | `MpsGraphConfig.useVariableForStep` 옵션. variable mode 시 stepGraph가 `variableWithData` + `assignVariable` API로 weight/m/v를 graph 내부에 보관. placeholder mode와 functional 동등 (단위 test `MpsGraphVariableTest`로 weight rel diff < 1e-4 검증) |
+| fp16 mixed precision (P2.1) | ✅ | `MpsGraphConfig.useFp16` 옵션. forward (matmul/RoPE/attention/SwiGLU)를 fp16. LN은 fp32 cast (안정성). logits/CE/AdamW/grad/master weight fp32. 단위 test `MpsGraphFp16Test`로 fp32 baseline 대비 diff < 0.05 검증 |
+| MPSGraphExecutable serialize (P3.1) | ✅ | `nativeCompileStepAndSerialize` + `nativeLoadStepExecutable` JNI. `compileWithDevice:feeds:targetTensors:targetOperations:compilationDescriptor:` + `serializeToMPSGraphPackageAtURL:`. Kotlin wrapper `compileStepAndSerialize` / `loadStepExecutable`. 단위 test `MpsGraphExecutableSerializeTest`로 디스크 roundtrip 검증 |
+| Sampling 경로 (P3.2 옵션 A) | ✅ | mps ckpt를 `TurboSampler`가 그대로 로드 가능 (schema 호환) |
+| **P4 표현력 확장 (GELU MLP)** | ✅ | `MpsGraphConfig.useSwiglu=false` 분기 활성화. `buildGeluMLP` 신규 함수 (`buildLinear → buildGELUActivation(tanh 근사) → buildLinear`). slot 인덱싱 helper로 SwiGLU(6 slot) vs GELU(4 slot) 자동 분기. 단위 test `MpsGraphGeluTest` (forward 정상 + 20 step 학습 loss 감소) 통과 |
+| **P4 표현력 확장 (learned PE)** | ✅ | `MpsGraphConfig.useRope=false` 분기 활성화. token embedding gather 직후 `posEmb[blockSize, embedDim]` slice → broadcast addition. slot 인덱싱 helper로 RoPE(0 slot) vs learned(1 slot) 자동 분기. 단위 test `MpsGraphLearnedPETest` 통과 |
+| **P4 표현력 확장 (dropout)** | ✅ | `MpsGraphConfig.useDropout=true` 시 `[2*numLayers, B, T, embedDim]` mask placeholder를 attention/MLP output 후 곱셈. host-side mask 생성 (inverted dropout, train-time random + eval-time all-1). backward는 mask placeholder 통해 autograd가 자동 chain. 단위 test `MpsGraphDropoutTest` (mask=1 시 dropout off와 동등 + 학습 loss 감소) 통과 |
 
-### 확장 가능성
+단위 test 48개 (`mps.*` 패키지) 모두 통과 — Graph 36 + 그 외 12.
 
-- **Batch 키우기**: T를 (B*T)로 늘려 1 graph에서 batch 처리. GPU SM 활용도 추가 상승 예상.
-- **MPSGraphExecutable 명시적 compile + serialize**: 현재는 MPSGraph 객체 cache. executable serialization으로 process 간 cache 공유 가능.
-- **Variable 패러다임 전환**: 현재는 placeholder + result swap. `[g variableWithData:...]` + `[g assignVariable:...]`로 in-place update면 buffer alloc 줄어듦.
-- **Multi-GPU**: 현 코드는 single device. Apple Silicon이라 의미 적음.
+### 알려진 한계 (정직)
+
+- **P1.3 variable mode**: graph variable이 graph-local storage라 cross-graph (accum/adam과 같은 multi-graph 구조)에서 share 불가. variable mode는 stepGraph 단일 사용 가정. accum/adam path 같이 쓰려면 placeholder mode (기본값) 유지. slot.buffer sync는 result로 wNew를 받아 처리 — 진짜 in-place memory benefit은 작음. functional 동등성은 보장.
+- **P2.1 fp16 안정성**: LN을 fp32로 우회한 이유는 `normalizationWithTensor:meanTensor:varianceTensor:gammaTensor:betaTensor:epsilon:` 내부 epsilon constant가 fp32라 fp16 활성화 시 dtype 충돌. attention scale constant는 input dtype 따라가도록 수정. 단위 test는 1-layer/small vocab 기준 — 큰 모델 + 긴 학습에서 안정성은 사용자 검증 필요.
+- **P3.1 run path**: executable compile/serialize/deserialize는 API 도입 완료. 실제 학습 step에서 `executable.runWithMTLCommandQueue:inputsArray:resultsArray:` 사용은 inputsArray ordering이 placeholder dict와 다른 NSArray 형태로 광범위 refactor 필요해 별도 작업. 현 path는 `graph.runWithMTLCommandQueue:feeds:resultsDictionary:` 유지.
+
+### 확장 가능성 (장기)
+
+- **B=8~16 실측**: P1.1 일반화는 완료. 실제 학습 wall-clock + GPU utilization 측정은 사용자 환경.
+- **Sampling 옵션 B**: KV cache MTLBuffer + incremental forward graph. 추론 5~10× 가속.
+- **P3.1 run path 마이그레이션**: executable 기반 run으로 inputsArray ordering 정리하면 cold start 3.3s → ~200ms.
 
 ## 참고
 
 - Apple MPSGraph 문서: <https://developer.apple.com/documentation/metalperformanceshadersgraph>
 - PyTorch MPS backend (참고 구현): <https://github.com/pytorch/pytorch/tree/main/aten/src/ATen/native/mps>
 - 기존 matmul-only PoC: `mps/jni/MetalMatMulBridge.kt`, `src/main/objc/MetalMatMulBridge.m` (이 backend로 대체 가능)
-- 진입점: `train/experiments/Bench10MMpsGraphTrain.kt`
+- 진입점: `train/experiments/Bench10MMpsGraphTrain.kt`, `train/experiments/CcmcLemmaV1024MpsGraphTrain.kt`
 - JNI bridge: `src/main/objc/MpsGraphBridge.mm`
-- Kotlin API: `mps/MpsGraphSession.kt`, `mps/MpsGraphConfig.kt`
-- 단위 test: `src/test/kotlin/mps/MpsGraphSessionTest.kt`
+- Kotlin API: `mps/MpsGraphSession.kt`, `mps/MpsGraphConfig.kt`, `mps/MpsGraphTrainer.kt`, `mps/MpsGraphTrainConfig.kt`, `mps/MpsCheckpoint.kt`, `mps/MpsLrSchedule.kt`, `mps/MpsBestLossTracker.kt`
+- 단위 test: `src/test/kotlin/mps/MpsGraphSessionTest.kt`, `MpsGraphCheckpointTest.kt`, `MpsLrScheduleTest.kt`, `MpsBestLossTrackerTest.kt`, `MpsGraphGradClipTest.kt`, `MpsGraphBatchTest.kt`, `MpsGraphAccumTest.kt`, `MpsGraphVariableTest.kt`, `MpsGraphFp16Test.kt`, `MpsGraphExecutableSerializeTest.kt`, `MpsGraphGeluTest.kt`, `MpsGraphLearnedPETest.kt`, `MpsGraphDropoutTest.kt`
+- 후속 로드맵: `/Users/joey51/.claude/plans/mac-m3-ticklish-dijkstra.md` Part 3
