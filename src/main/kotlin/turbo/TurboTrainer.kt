@@ -326,7 +326,9 @@ class TurboTrainer(
         val accum = config.gradientAccumulationSteps
         val batch = config.batchSize
         val totalSeqs = accum * batch
-        val upstreamGrad = 1.0f / totalSeqs
+        // PyTorch 표준 일치 (nn.CrossEntropyLoss(reduction='mean') + micro accum 시 loss/accum):
+        // upstreamGrad = 1 / (accum * batch * blockSize) → backward 시작이 모든 token의 평균.
+        val upstreamGrad = 1.0f / (totalSeqs.toFloat() * config.blockSize.toFloat())
 
         val allSeqs = buildList<Pair<IntArray, IntArray>> {
             for (microStep in 0 until accum) {

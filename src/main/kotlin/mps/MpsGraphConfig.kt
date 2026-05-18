@@ -59,4 +59,11 @@ data class MpsGraphConfig(
      */
     val useDropout: Boolean = false,
     val dropoutProbability: Float = 0.0f,
+    /**
+     * PyTorch 표준 일치: 매 micro CE loss를 `/gradientAccumulationSteps`로 나눠서 backward 한다.
+     * 결과적으로 accum 끝난 누적 grad가 모든 token에 대한 평균.
+     *
+     * accumSteps=1이면 division 효과 없음 — single-step training과 동일.
+     */
+    val gradientAccumulationSteps: Int = 1,
 )

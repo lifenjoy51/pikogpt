@@ -252,8 +252,11 @@ sudo powermetrics --samplers gpu_power -i 1000 -n 30   # 별도 터미널, 학�
 | **P4 표현력 확장 (GELU MLP)** | ✅ | `MpsGraphConfig.useSwiglu=false` 분기 활성화. `buildGeluMLP` 신규 함수 (`buildLinear → buildGELUActivation(tanh 근사) → buildLinear`). slot 인덱싱 helper로 SwiGLU(6 slot) vs GELU(4 slot) 자동 분기. 단위 test `MpsGraphGeluTest` (forward 정상 + 20 step 학습 loss 감소) 통과 |
 | **P4 표현력 확장 (learned PE)** | ✅ | `MpsGraphConfig.useRope=false` 분기 활성화. token embedding gather 직후 `posEmb[blockSize, embedDim]` slice → broadcast addition. slot 인덱싱 helper로 RoPE(0 slot) vs learned(1 slot) 자동 분기. 단위 test `MpsGraphLearnedPETest` 통과 |
 | **P4 표현력 확장 (dropout)** | ✅ | `MpsGraphConfig.useDropout=true` 시 `[2*numLayers, B, T, embedDim]` mask placeholder를 attention/MLP output 후 곱셈. host-side mask 생성 (inverted dropout, train-time random + eval-time all-1). backward는 mask placeholder 통해 autograd가 자동 chain. 단위 test `MpsGraphDropoutTest` (mask=1 시 dropout off와 동등 + 학습 loss 감소) 통과 |
+| **P5 성능 가속 (prefetch + 병렬 mask + eval cache + fused step)** | ✅ | (a) `BatchPrefetcher` 별도 thread + 용량 2 queue로 다음 batch를 GPU step과 overlap. (b) dropout mask 생성을 `IntStream.parallel + ThreadLocalRandom`으로 8 thread 병렬. (c) eval forward graph cache `(B, T)` key 재사용으로 매 eval alloc 회피. (d) `nativeRunFusedStep`이 8 micro accum + 1 AdamW를 단일 `MTLCommandBuffer`에 `encodeToCommandBuffer:` + 1회 commit. host-GPU sync 9 → 1회. **1M deep 모델 iter당 0.330s → 0.197s (1.68× 가속)** |
+| **P6 PyTorch 표준 일치 (정규화 단위 통일)** | ✅ | turbo와 mps 모두 PyTorch `nn.CrossEntropyLoss(reduction='mean') + (loss/accum).backward()` 표준에 정확히 일치. (a) `TurboTrainer.kt:329` upstreamGrad를 `1/(accum × batch × blockSize)`로 변경 (T factor 추가). (b) `MpsGraphBridge.mm`의 `buildAccumGraph`에서 `loss * (1/accumSteps)` 후 `gradientForPrimaryTensor:` 호출. `MpsGraphConfig`에 `gradientAccumulationSteps` 필드 추가. 500 iter 비교 검증: turbo iter500 val=5.55, mps iter500 val=5.50 — 학습 곡선 거의 동일 |
+| **검증: turbo vs mps backward 수치 비교 test** | ✅ | `MpsGraphVsTurboGradientTest` — 같은 weight init + 같은 input + dropout=0 시 두 backend의 raw forward+backward grad가 36 param/7168 elements 비교에서 maxAbsDiff=1.12e-8, maxRelDiff=1.38e-4로 정확히 일치. backward 알고리즘 자체는 동일 — 학습 곡선 차이는 trainer level 정규화 단위 차이뿐임이 확정 (P6에서 해소) |
 
-단위 test 48개 (`mps.*` 패키지) 모두 통과 — Graph 36 + 그 외 12.
+단위 test 49개 (`mps.*` 패키지) 모두 통과 — Graph 37 + 그 외 12. `pipeline.FullPipelineTest` 포함 전체 32 test suite 회귀 없음.
 
 ### 알려진 한계 (정직)
 

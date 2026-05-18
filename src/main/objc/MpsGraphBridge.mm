@@ -117,6 +117,8 @@
 @property (nonatomic, assign) BOOL useFp16;             // P2.1 mixed precision forward
 @property (nonatomic, assign) BOOL useDropout;          // P4 — turbo 동등
 @property (nonatomic, assign) float dropoutProbability; // 0..1, useDropout=true 시점에만 의미
+// PyTorch 표준 일치 — buildAccumGraph에서 loss를 /accumSteps로 나눠서 grad가 micro-mean이 되도록.
+@property (nonatomic, assign) NSInteger accumSteps;
 // P4 — 학습 graph용 dropout mask placeholder. [2*numLayers, B, T, embedDim].
 @property (nonatomic, strong) MPSGraphTensor *stepDropoutMaskPh;
 @property (nonatomic, strong) MPSGraphTensor *accumDropoutMaskPh;
@@ -193,7 +195,8 @@ Java_mps_MpsGraphSession_nativeCreateSession(
     jint vocab, jint batchSize,
     jboolean useSwiglu, jboolean useRope, jboolean tieWeights,
     jboolean useVariableForStep, jboolean useFp16,
-    jboolean useDropout, jfloat dropoutProbability) {
+    jboolean useDropout, jfloat dropoutProbability,
+    jint gradientAccumulationSteps) {
     @autoreleasepool {
         PikoMpsGraphSession *s = [[PikoMpsGraphSession alloc] init];
         s.device = MTLCreateSystemDefaultDevice();
@@ -217,6 +220,8 @@ Java_mps_MpsGraphSession_nativeCreateSession(
         s.useFp16 = useFp16 == JNI_TRUE;
         s.useDropout = useDropout == JNI_TRUE;
         s.dropoutProbability = (float)dropoutProbability;
+        s.accumSteps = (NSInteger)gradientAccumulationSteps;
+        if (s.accumSteps < 1) s.accumSteps = 1;
 
         return (jlong)(intptr_t)CFBridgingRetain(s);
     }
@@ -1928,8 +1933,13 @@ static void buildAccumGraph(PikoMpsGraphSession *s, NSInteger B, NSInteger T) {
     MPSGraphTensor *loss = buildCELoss(g, logits, s.accumTgtPh, vocab);
     s.accumLoss = loss;
 
+    // PyTorch 표준 일치: 매 micro의 backward grad를 1/accumSteps로 스케일.
+    // accumSteps=1이면 invA=1.0 → 변경 없음.
+    MPSGraphTensor *invA = [g constantWithScalar:(1.0f / (float)s.accumSteps) dataType:MPSDataTypeFloat32];
+    MPSGraphTensor *lossScaled = [g multiplicationWithPrimaryTensor:loss secondaryTensor:invA name:@"loss_scaled_for_accum"];
+
     NSDictionary<MPSGraphTensor *, MPSGraphTensor *> *grads =
-        [g gradientForPrimaryTensor:loss withTensors:s.accumWPh name:nil];
+        [g gradientForPrimaryTensor:lossScaled withTensors:s.accumWPh name:nil];
 
     s.accumGradNew = [NSMutableArray array];
     for (NSInteger i = 0; i < N; i++) {
@@ -2359,8 +2369,10 @@ Java_mps_MpsGraphSession_nativeRunFusedStep(
         *((float *)[bc2Buf contents]) = bc2;
         *((float *)[clipBuf contents]) = (gradClip > 0.0f) ? gradClip : 1.0e30f;
 
-        // single commandBuffer for all 9 encodes
-        id<MTLCommandBuffer> cb = [s.commandQueue commandBuffer];
+        // single commandBuffer for all 9 encodes.
+        // `encodeToCommandBuffer:`는 `MPSCommandBuffer*`를 요구 (raw MTLCommandBuffer 넣으면
+        // MPS가 내부 `[buf commandBuffer]` 셀렉터 호출하다 NSInvalidArgumentException).
+        MPSCommandBuffer *cb = [MPSCommandBuffer commandBufferFromCommandQueue:s.commandQueue];
 
         for (NSInteger m = 0; m < A; m++) {
             NSMutableDictionary *feeds = [NSMutableDictionary dictionary];

@@ -38,6 +38,7 @@ class MpsGraphTrainer(
         useFp16 = trainConfig.useFp16,
         useDropout = trainConfig.dropoutProbability > 0.0f,
         dropoutProbability = trainConfig.dropoutProbability,
+        gradientAccumulationSteps = trainConfig.gradientAccumulationSteps,
         // useVariableForStep는 trainer가 accum/adam 분리 path를 사용하므로 false 유지.
     )
 

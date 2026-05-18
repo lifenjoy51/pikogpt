@@ -367,6 +367,7 @@ class MpsGraphSession private constructor(handle: Long) : AutoCloseable {
                 config.useFp16,
                 config.useDropout,
                 config.dropoutProbability,
+                config.gradientAccumulationSteps,
             )
             check(h != 0L) { "nativeCreateSession returned 0" }
             return MpsGraphSession(h)
@@ -391,6 +392,7 @@ class MpsGraphSession private constructor(handle: Long) : AutoCloseable {
             useFp16: Boolean,
             useDropout: Boolean,
             dropoutProbability: Float,
+            gradientAccumulationSteps: Int,
         ): Long
         @JvmStatic private external fun nativeDestroySession(handle: Long)
         @JvmStatic private external fun nativeLoadWeights(handle: Long, paramIndex: Int, data: FloatArray, shape: IntArray)
