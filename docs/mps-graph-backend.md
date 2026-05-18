@@ -255,8 +255,36 @@ sudo powermetrics --samplers gpu_power -i 1000 -n 30   # 별도 터미널, 학�
 | **P5 성능 가속 (prefetch + 병렬 mask + eval cache + fused step)** | ✅ | (a) `BatchPrefetcher` 별도 thread + 용량 2 queue로 다음 batch를 GPU step과 overlap. (b) dropout mask 생성을 `IntStream.parallel + ThreadLocalRandom`으로 8 thread 병렬. (c) eval forward graph cache `(B, T)` key 재사용으로 매 eval alloc 회피. (d) `nativeRunFusedStep`이 8 micro accum + 1 AdamW를 단일 `MTLCommandBuffer`에 `encodeToCommandBuffer:` + 1회 commit. host-GPU sync 9 → 1회. **1M deep 모델 iter당 0.330s → 0.197s (1.68× 가속)** |
 | **P6 PyTorch 표준 일치 (정규화 단위 통일)** | ✅ | turbo와 mps 모두 PyTorch `nn.CrossEntropyLoss(reduction='mean') + (loss/accum).backward()` 표준에 정확히 일치. (a) `TurboTrainer.kt:329` upstreamGrad를 `1/(accum × batch × blockSize)`로 변경 (T factor 추가). (b) `MpsGraphBridge.mm`의 `buildAccumGraph`에서 `loss * (1/accumSteps)` 후 `gradientForPrimaryTensor:` 호출. `MpsGraphConfig`에 `gradientAccumulationSteps` 필드 추가. 500 iter 비교 검증: turbo iter500 val=5.55, mps iter500 val=5.50 — 학습 곡선 거의 동일 |
 | **검증: turbo vs mps backward 수치 비교 test** | ✅ | `MpsGraphVsTurboGradientTest` — 같은 weight init + 같은 input + dropout=0 시 두 backend의 raw forward+backward grad가 36 param/7168 elements 비교에서 maxAbsDiff=1.12e-8, maxRelDiff=1.38e-4로 정확히 일치. backward 알고리즘 자체는 동일 — 학습 곡선 차이는 trainer level 정규화 단위 차이뿐임이 확정 (P6에서 해소) |
+| **P7 10M wide 진입점 + batch/vocab scaling 검증** | ✅ | 진입점 `CcmcLemmaV1024Wide10MMpsGraphTrain` (embedDim 256 × L=12, ~9.7M params, ccmc-lemma-v1024 corpus) 신규. vocab 2배/4배 변형 `V2048` / `V4096` 추가. 같은 backbone에서 vocab만 1024 → 2048 → 4096로 늘리며 best val + BPC 비교. 결과 표는 아래 "10M wide 검증" 섹션 참조. 학습/inference path 안정성 확인 |
 
 단위 test 49개 (`mps.*` 패키지) 모두 통과 — Graph 37 + 그 외 12. `pipeline.FullPipelineTest` 포함 전체 32 test suite 회귀 없음.
+
+### 10M wide 검증 (실 모델 학습 + GPU 측정)
+
+**batch scaling (10M v1024 wide, lr=3e-4 동일):**
+
+| batch × accum | iter당 | token/sec | GPU residency | GPU freq | GPU Power |
+|---|---:|---:|---:|---:|---:|
+| 8 × 8 | 0.213 s | 9,615 | 78% | 1398 MHz | 8.2 W |
+| 64 × 1 | 0.085 s | 24,094 | 81% | 1398 MHz | 18 W |
+| 128 × 1 | 0.144 s | 28,444 | ~85% | 1398 MHz | ~18 W |
+
+- batch 8 → 64: token/sec **2.5×** (CPU prep 8 micro → 1 micro amortize)
+- batch 64 → 128: token/sec **1.18×** (수확 체감 시작, memory-bandwidth 한계 접근)
+- residency 변화는 작음 — batch는 "시간당 work량" 늘리는 효과(Power 2배 ↑). idle gap 줄이는 효과는 다른 path 필요(command buffer double-buffer 등)
+- 1M Deep (batch 8×8)은 GPU freq 808/968 MHz가 dominant + Power 2.2W → **1M은 latency-bound, 10M부터 throughput-bound**
+
+**vocab scaling (10M wide, 같은 ccmc-lemma corpus + 같은 hyperparam):**
+
+| 모델 | params | iter | best val | ppl/tok | BPC (bits/char) | train/val gap |
+|---|---:|---:|---:|---:|---:|---:|
+| v1024 (Wide10M) | 9.75M | 9300 | 1.8832 | 6.57 | 0.797 | 0.35 |
+| v2048 (Wide10M) | 10.0M | 9300 | 1.9009 | 6.69 | 0.712 | 0.89 |
+| v4096 (Wide10M) | 10.5M | 9900 | 2.0289 | 7.61 | 0.691 | 1.04 |
+
+- BPC는 vocab 2배마다 **8~10% 개선** (수확 체감), v2048이 sweet spot
+- train/val gap은 vocab 4배에서 **1.04 nats** (val에서 모델이 train보다 **2.8× perplexity** 더 높음) — overfit 심해짐. lemma corpus 1.27M tokens는 v4096엔 데이터 부족
+- BPE artifact (깨진 subword)는 vocab 키울수록 감소 — v1024는 `opposquone` `shakesping` 같은 깨짐 빈번, v4096은 거의 없음. 다만 v4096은 train phrase 그대로 재현 빈번 (overfit 신호)
 
 ### 알려진 한계 (정직)
 

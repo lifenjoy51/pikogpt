@@ -671,6 +671,45 @@ tasks.register<JavaExec>("runCcmcLemmaV1024DeepMpsGraphTrain") {
     )
 }
 
+tasks.register<JavaExec>("runCcmcLemmaV1024Wide10MMpsGraphTrain") {
+    description = "Run CcmcLemmaV1024Wide10MMpsGraphTrain — ccmc-lemma-v1024 wide-10m (~9.7M params, embedDim 256 × L=12) MPSGraph backend 학습"
+    mainClass.set("train.experiments.CcmcLemmaV1024Wide10MMpsGraphTrainKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    dependsOn(buildMpsGraphLib)
+    jvmArgs = listOf(
+        "-Xmx8g",
+        "--add-modules=jdk.incubator.vector",
+        "-XX:+AlwaysPreTouch",
+        "-Djava.library.path=${projectDir}/build/native",
+    )
+}
+
+tasks.register<JavaExec>("runCcmcLemmaV2048Wide10MMpsGraphTrain") {
+    description = "Run CcmcLemmaV2048Wide10MMpsGraphTrain — ccmc-lemma-v2048 (vocab 2배 BPE 재학습 동일 corpus) wide-10m MPSGraph backend 학습"
+    mainClass.set("train.experiments.CcmcLemmaV2048Wide10MMpsGraphTrainKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    dependsOn(buildMpsGraphLib)
+    jvmArgs = listOf(
+        "-Xmx8g",
+        "--add-modules=jdk.incubator.vector",
+        "-XX:+AlwaysPreTouch",
+        "-Djava.library.path=${projectDir}/build/native",
+    )
+}
+
+tasks.register<JavaExec>("runCcmcLemmaV4096Wide10MMpsGraphTrain") {
+    description = "Run CcmcLemmaV4096Wide10MMpsGraphTrain — ccmc-lemma-v4096 (vocab 4배 BPE 재학습 동일 corpus) wide-10m MPSGraph backend 학습"
+    mainClass.set("train.experiments.CcmcLemmaV4096Wide10MMpsGraphTrainKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+    dependsOn(buildMpsGraphLib)
+    jvmArgs = listOf(
+        "-Xmx8g",
+        "--add-modules=jdk.incubator.vector",
+        "-XX:+AlwaysPreTouch",
+        "-Djava.library.path=${projectDir}/build/native",
+    )
+}
+
 tasks.register<JavaExec>("runBench10MMpsFp16Turbo") {
     description = "Run Bench10MMpsFp16Turbo — 10M (forward fp16 mixed precision, backward fp32). 학습 안정성 사용자 검증."
     mainClass.set("train.experiments.Bench10MMpsFp16TurboKt")
